@@ -3,7 +3,7 @@ interface Props {
   label?: string;
   tone?: "attention" | "positive" | "critical" | "info";
 }
-const { label = "Yang perlu dibaca", tone = "attention" } = Astro.props;
+const { label = "Catatan Analisis", tone = "attention" } = Astro.props;
 ---
 
 <aside class:list={["insight", `insight--${tone}`]}>

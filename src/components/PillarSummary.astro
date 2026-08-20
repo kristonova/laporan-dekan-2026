@@ -19,12 +19,12 @@ const { pillars } = Astro.props;
       <span class="pillar-card__number">{pillar.number}</span>
       <p class="pillar-card__label">{pillar.status}</p>
       <h3>{pillar.title}</h3>
-      <p class="pillar-card__score"><strong>{pillar.achieved}</strong><span>/ {pillar.total} tercapai</span></p>
+      <p class="pillar-card__score"><strong>{pillar.achieved}</strong><span>/ {pillar.total} indikator</span></p>
       <div class="pillar-card__track" aria-label={`${pillar.achieved} dari ${pillar.total} indikator tercapai`}>
         <i style={`width:${(pillar.achieved / pillar.total) * 100}%`}></i>
       </div>
       <p class="pillar-card__takeaway">{pillar.takeaway}</p>
-      <span class="pillar-card__link">Kembali ke pilar <span aria-hidden="true">↑</span></span>
+      <span class="pillar-card__link">Lihat rincian pilar <span aria-hidden="true">↑</span></span>
     </a>
   ))}
 </div>

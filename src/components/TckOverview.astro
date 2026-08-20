@@ -43,20 +43,20 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
 ---
 
 <div class="tck" data-tck-overview>
-  <div class="tck__summary" aria-label="Ringkasan TCK 2026">
+  <div class="tck__summary" aria-label="Ringkasan Capaian TCK 2026">
     <div><strong>{rows.length}</strong><span>indikator TCK</span></div>
-    <div><strong>{achieved}</strong><span>melampaui target TW3</span></div>
+    <div><strong>{achieved}</strong><span>memenuhi target TW3</span></div>
     <div><strong>{annual}</strong><span>melampaui target tahunan</span></div>
-    <div class="is-behind"><strong>{behind}</strong><span>tertinggal atau meleset</span></div>
+    <div class="is-behind"><strong>{behind}</strong><span>perlu akselerasi</span></div>
   </div>
 
   <div class="tck__context">
-    <p><strong>TW3 masih berjalan.</strong> Posisi ini ditarik pada 19 Agustus 2026; triwulan berakhir 30 September.</p>
-    <p><strong>Anggaran:</strong> {format(budgetPercent)}% terserap. Penyerapan secara pola menumpuk pada triwulan IV.</p>
+    <p><strong>Triwulan III Masih Berjalan:</strong> Posisi data ditarik per 19 Agustus 2026 (periode TW3 berakhir 30 September).</p>
+    <p><strong>Realisasi Anggaran:</strong> {format(budgetPercent)}% terserap. Sesuai siklus keuangan universitas, penyerapan anggaran terkonsentrasi pada Triwulan IV.</p>
   </div>
 
   <div class="tck__controls" data-tck-controls hidden>
-    <span>Tampilkan</span>
+    <span>Filter Tag</span>
     <button type="button" data-tck-filter="all" aria-pressed="true">Semua</button>
     {tags.map((tag) => <button type="button" data-tck-filter={tag} aria-pressed="false">{tag}</button>)}
   </div>
@@ -110,14 +110,14 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
   <div class="tck__legend" aria-label="Legenda status dan target">
     <span class="is-achieved">✓ Tercapai</span>
     <span class="is-approaching">≈ Mendekati</span>
-    <span class="is-lagging">! Tertinggal</span>
-    <span class="is-missed">× Meleset</span>
+    <span class="is-lagging">! Perlu Akselerasi</span>
+    <span class="is-missed">× Belum Tercapai</span>
     <span><i class="legend-marker legend-marker--tw3"></i> Target TW3</span>
     <span><i class="legend-marker legend-marker--annual"></i> Target tahunan</span>
   </div>
 
   <details class="tck__table">
-    <summary>Lihat 42 indikator sebagai tabel</summary>
+    <summary>Tampilkan tabel lengkap 42 indikator</summary>
     <div tabindex="0">
       <table>
         <caption>Posisi indikator TCK 2026 per 19 Agustus 2026</caption>
@@ -129,7 +129,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
     </div>
   </details>
   <footer class="tck__footer">
-    <span>Sumber: SIMASTER · sinkronisasi 19 Agustus 2026, 20.00 WIB</span>
+    <span>Sumber: SIMASTER UGM · Sinkronisasi 19 Agustus 2026, 20.00 WIB</span>
     <a href={resolvedCsvHref} download>Unduh CSV</a>
   </footer>
 </div>

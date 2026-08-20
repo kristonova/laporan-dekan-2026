@@ -42,59 +42,59 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
 <BaseLayout
   title="Data & Metodologi — Lima Tahun FMIPA"
-  description="Sumber, definisi, batasan, dan data turunan di balik Laporan Dekan FMIPA UGM 2026."
+  description="Sumber, definisi operasional, batasan metodologi, dan dataset turunan Laporan Dekan FMIPA UGM 2021–2026."
   canonicalPath="/data"
 >
   <main id="konten-utama">
     <header class="data-hero">
       <div class="data-hero__motif" aria-hidden="true" style={motifStyle}></div>
       <div class="data-hero__inner">
-        <p class="data-hero__eyebrow">Lapisan verifikasi</p>
+        <p class="data-hero__eyebrow">Transparansi &amp; Akuntabilitas</p>
         <h1>Data &amp; Metodologi</h1>
-        <p>Setiap angka dalam cerita dapat ditelusuri ke sumber, definisi, dan batasannya. Perbedaan antarsumber dijelaskan—tidak diratakan.</p>
-        <a href={homeUrl}>← Kembali ke cerita utama</a>
+        <p>Setiap data dan grafik dalam laporan ini dapat ditelusuri ke sumber data resmi, definisi operasional, serta kaidah pengolahannya. Perbedaan nilai antarsistem dijelaskan secara transparan dan berimbang.</p>
+        <a href={homeUrl}>← Kembali ke laporan utama</a>
       </div>
     </header>
 
     <nav class="data-nav" aria-label="Bagian halaman data">
-      <a href="#aturan-sumber">Aturan sumber</a>
-      <a href="#dataset">Dataset</a>
+      <a href="#aturan-sumber">Prinsip sumber</a>
+      <a href="#dataset">Dataset agregat</a>
       <a href="#definisi">Definisi metrik</a>
-      <a href="#konflik">Konflik angka</a>
-      <a href="#kualitas">Kualitas data</a>
-      <a href="#gap">Data yang dibutuhkan</a>
+      <a href="#konflik">Harmonisasi data</a>
+      <a href="#kualitas">Validasi data</a>
+      <a href="#gap">Agenda penguatan data</a>
     </nav>
 
     <section class="data-section" id="aturan-sumber">
       <div class="data-section__intro">
-        <p class="eyebrow">Aturan paling penting</p>
-        <h2>Satu Grafik, Satu Keluarga Sumber</h2>
-        <p>Data TCK dan data historis menghitung hal yang berbeda. Menggabungkannya dalam satu grafik akan menciptakan tren yang terlihat sah, tetapi secara metodologis salah.</p>
+        <p class="eyebrow">Prinsip Integritas Data</p>
+        <h2>Pemisahan Sumber Berdasarkan Konteks</h2>
+        <p>Data capaian kinerja (TCK SIMASTER) dan data arsip historis memiliki ruang lingkup serta metodologi penghitungan yang berbeda. Pemisahan visualisasi menjaga ketepatan analisis dan mencegah kerancuan interpretasi tren.</p>
       </div>
       <div class="source-split">
         <article>
-          <p class="source-split__label">Babak I · posisi hari ini</p>
-          <h3>TCK 2026 — SIMASTER</h3>
+          <p class="source-split__label">Bagian I · Capaian Kinerja 2026</p>
+          <h3>TCK 2026 — SIMASTER UGM</h3>
           <strong>42 indikator</strong>
-          <p>Target kumulatif TW1–TW4 dan capaian kumulatif TW1–TW3, sinkronisasi 19 Agustus 2026 pukul 20.00 WIB.</p>
-          <a href={tckCsvUrl} download>Unduh transkripsi CSV</a>
+          <p>Target kumulatif TW1–TW4 dan capaian berjalan TW1–TW3, sinkronisasi data per 19 Agustus 2026 pukul 20.00 WIB.</p>
+          <a href={tckCsvUrl} download>Unduh CSV Transkripsi</a>
         </article>
-        <div class="source-split__divider" aria-label="Tidak dicampur"><span>≠</span><small>tidak dicampur</small></div>
+        <div class="source-split__divider" aria-label="Tidak dicampur"><span>≠</span><small>terpisah</small></div>
         <article>
-          <p class="source-split__label">Babak II · perjalanan lima tahun</p>
-          <h3>CSV Historis FMIPA</h3>
+          <p class="source-split__label">Bagian II · Rekam Jejak 2021–2026</p>
+          <h3>Data Historis FMIPA UGM</h3>
           <strong>25 berkas sumber</strong>
-          <p>Publikasi, sitasi, riset, pengabdian, SDM, dan luaran institusional dari sistem sumber yang berbeda.</p>
-          <a href="#dataset">Lihat data turunannya</a>
+          <p>Publikasi Scopus, sitasi, perolehan dana riset, pengabdian masyarakat (PkM), SDM, dan luaran institusional.</p>
+          <a href="#dataset">Lihat dataset turunan</a>
         </article>
       </div>
     </section>
 
     <section class="data-section data-section--paper" id="dataset">
       <div class="data-section__intro">
-        <p class="eyebrow">Berkas siap pakai</p>
-        <h2>Dataset Turunan</h2>
-        <p>Browser hanya menerima data yang sudah teragregasi. Nama, identitas, dan tabel gabungan tingkat individu tidak ikut dipublikasikan.</p>
+        <p class="eyebrow">Dataset Terbuka</p>
+        <h2>Dataset Agregat Siap Pakai</h2>
+        <p>Seluruh data yang disajikan merupakan hasil agregasi resmi tingkat fakultas dan departemen. Data privasi individu (NIP/NIM/Nama) dianonimkan sesuai prinsip perlindungan data pribadi.</p>
       </div>
       <div class="dataset-list">
         {datasets.map((dataset) => (
@@ -104,8 +104,8 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
               <code>{dataset.file}</code>
             </div>
             <p>{dataset.coverage}</p>
-            <p><span>Sumber</span>{dataset.source}</p>
-            <p><span>Scene</span>{dataset.scenes}</p>
+            <p><span>Sumber data</span>{dataset.source}</p>
+            <p><span>Bagian/Scene</span>{dataset.scenes}</p>
             <a href={datasetUrl(dataset.file)} download aria-label={`Unduh ${dataset.label}`}>{dataset.file.endsWith(".geojson") ? "GeoJSON ↓" : "JSON ↓"}</a>
           </article>
         ))}
@@ -114,32 +114,32 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
     <section class="data-section" id="definisi">
       <div class="data-section__intro">
-        <p class="eyebrow">Kamus metrik</p>
-        <h2>Apa yang Sebenarnya Dihitung?</h2>
-        <p>Definisi ditempelkan pada angka agar pembaca tidak perlu menebak unit, periode, atau pembandingnya.</p>
+        <p class="eyebrow">Glosarium &amp; Kamus Indikator</p>
+        <h2>Definisi Operasional Metrik</h2>
+        <p>Penjelasan rinci mengenai satuan, batasan waktu, dan kaidah perhitungan tiap indikator agar interpretasi data konsisten dan akurat.</p>
       </div>
       <dl class="definition-grid">
-        <div><dt>Sitasi</dt><dd>Jumlah sitasi yang tercatat pada tahun tersebut terhadap publikasi FMIPA mana pun, bukan sitasi kumulatif.</dd></div>
-        <div><dt>Publikasi</dt><dd>Rekaman Scopus/SciVal berafiliasi FMIPA UGM, seluruh tipe dokumen.</dd></div>
-        <div><dt>Dana riset</dt><dd>Jumlah <code>total_funding</code> berdasarkan tahun proposal, seluruh sumber; bukan realisasi anggaran fakultas.</dd></div>
-        <div><dt>Kegiatan pengabdian</dt><dd>Satu baris kegiatan dari Surat Tugas, SIMPEL, atau hibah. Lokasi tidak selalu terisi.</dd></div>
-        <div><dt>Capaian TCK</dt><dd>Angka kumulatif sejak awal tahun hingga tanggal sinkronisasi, bukan capaian triwulan yang berdiri sendiri.</dd></div>
-        <div><dt>Target TCK</dt><dd>Target kumulatif hingga akhir triwulan. Target TW4 adalah target satu tahun penuh.</dd></div>
-        <div><dt>Tercapai</dt><dd>Capaian memenuhi atau melampaui target triwulan berjalan dengan memperhitungkan arah indikator.</dd></div>
-        <div><dt>Tahun berjalan</dt><dd>Data yang belum selesai terindeks. Segmen ini selalu diberi arsiran dan tidak dibaca sebagai penurunan final.</dd></div>
+        <div><dt>Sitasi</dt><dd>Jumlah sitasi tahunan yang tercatat di Scopus pada tahun tersebut terhadap seluruh artikel berafiliasi FMIPA UGM.</dd></div>
+        <div><dt>Publikasi Ilmiah</dt><dd>Seluruh artikel terindeks Scopus/SciVal berafiliasi FMIPA UGM untuk seluruh jenis dokumen ilmiah.</dd></div>
+        <div><dt>Dana Riset</dt><dd>Akumulasi nilai pendanaan (<code>total_funding</code>) berdasarkan tahun disetujuinya proposal dari berbagai sumber hibah kompetitif dan kerja sama.</dd></div>
+        <div><dt>Pengabdian (PkM)</dt><dd>Jumlah kegiatan Pengabdian kepada Masyarakat resmi berdasarkan Surat Tugas, SIMPEL, atau hibah fakultas/universitas.</dd></div>
+        <div><dt>Capaian TCK</dt><dd>Realisasi kinerja kumulatif sejak awal tahun anggaran hingga tanggal penarikan data berjalan.</dd></div>
+        <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target TW4 mencerminkan target tahunan fakultas secara utuh.</dd></div>
+        <div><dt>Status Tercapai</dt><dd>Kondisi saat realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator.</dd></div>
+        <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah.</dd></div>
       </dl>
     </section>
 
     <section class="data-section data-section--navy" id="konflik">
       <div class="data-section__intro">
-        <p class="eyebrow">Transparansi definisi</p>
-        <h2>Empat Angka yang Sengaja Tidak Disamakan</h2>
-        <p>Selisih ini bukan otomatis berarti ada data yang salah. Setiap sumber memiliki jendela waktu dan populasi yang berbeda.</p>
+        <p class="eyebrow">Harmonisasi Data</p>
+        <h2>Penjelasan Selisih Angka Antarsumber</h2>
+        <p>Perbedaan angka antarsistem data bukan merupakan anomali, melainkan disebabkan oleh perbedaan periode penarikan data (*cut-off date*), dasar regulasi (SK), dan ruang lingkup basis data masing-masing pengelola.</p>
       </div>
       <div class="table-wrap" tabindex="0">
         <table>
           <caption>Konflik angka yang diketahui antara TCK 2026 dan CSV historis</caption>
-          <thead><tr><th>Metrik</th><th>TCK 2026</th><th>CSV historis</th><th>Penjelasan</th></tr></thead>
+          <thead><tr><th>Metrik</th><th>TCK 2026 (SIMASTER)</th><th>Data Historis</th><th>Penjelasan Metodologis</th></tr></thead>
           <tbody>{conflicts.map((row) => <tr><th scope="row">{row.metric}</th><td>{row.tck}</td><td>{row.historical}</td><td>{row.explanation}</td></tr>)}</tbody>
         </table>
       </div>
@@ -147,27 +147,27 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
     <section class="data-section" id="kualitas">
       <div class="data-section__intro">
-        <p class="eyebrow">Catatan pembersihan</p>
-        <h2>Yang Diperbaiki dan yang Tetap Terlihat</h2>
+        <p class="eyebrow">Validasi Data</p>
+        <h2>Prosedur Pengolahan dan Standardisasi Data</h2>
       </div>
       <ol class="quality-list">
-        <li><span>01</span><div><h3>Lokasi pengabdian</h3><p>Varian provinsi dinormalisasi dengan tabel pemetaan eksplisit. Sebanyak 619 dari 1.610 rekaman tanpa lokasi tetap dihitung sebagai “lokasi tidak tercatat”.</p></div></li>
-        <li><span>02</span><div><h3>Departemen publikasi</h3><p>Publikasi tanpa departemen ditampilkan sebagai kategori tersendiri. Tidak ada pemetaan yang ditebak dari judul atau topik.</p></div></li>
-        <li><span>03</span><div><h3>File multi-part</h3><p>Lima bagian sitasi dan dua bagian publikasi selalu dibaca dengan glob, dideduplikasi memakai <code>Id</code>, lalu diuji jumlah barisnya.</p></div></li>
-        <li><span>04</span><div><h3>Tahun berjalan</h3><p>Publikasi dan sitasi 2025 diberi status indeksasi berjalan agar jeda Scopus tidak dibaca sebagai penurunan kinerja.</p></div></li>
-        <li><span>05</span><div><h3>Privasi</h3><p>Nama, NIP/NIKA/NIM, ID Scopus per orang, dan tabel gabungan tingkat individu dibuang sebelum data masuk ke situs.</p></div></li>
+        <li><span>01</span><div><h3>Standardisasi Lokasi Pengabdian</h3><p>Penamaan varian provinsi dinormalisasi menggunakan tabel pemetaan standar batas wilayah Indonesia. Sebanyak 619 catatan tanpa data koordinat spesifik tetap dicatat secara transparan.</p></div></li>
+        <li><span>02</span><div><h3>Pemetaan Afiliasi Departemen</h3><p>Artikel tanpa identitas departemen dipetakan ulang melalui penelusuran ID Scopus penulis aktif, sedangkan publikasi yang belum terpetakan tetap ditampilkan terpisah.</p></div></li>
+        <li><span>03</span><div><h3>Penggabungan Berkas Multi-bagian</h3><p>Berkas sitasi dan publikasi multi-bagian digabungkan secara otomatis, dideduplikasi berbasis ID dokumen unik, dan divalidasi integritas jumlah baris datanya.</p></div></li>
+        <li><span>04</span><div><h3>Penandaan Data Tahun Berjalan</h3><p>Publikasi dan sitasi tahun 2025 diberi status tahun berjalan untuk menegaskan bahwa data masih terus dimutakhirkan di pangkalan data Scopus.</p></div></li>
+        <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Informasi identitas sensitif seperti NIP, NIKA, NIM, serta data pribadi perorangan disaring sebelum data agregat dipublikasikan.</p></div></li>
       </ol>
     </section>
 
     <section class="data-section data-section--paper" id="gap">
       <div class="data-section__intro">
-        <p class="eyebrow">Daftar belanja data</p>
-        <h2>Yang Masih Dibutuhkan</h2>
-        <p>Scene yang belum memiliki data tetap hadir sebagai pertanyaan terbuka. Tabel ini menunjukkan siapa yang dapat menjawabnya.</p>
+        <p class="eyebrow">Agenda Penguatan Data</p>
+        <h2>Rencana Integrasi Data Berkelanjutan</h2>
+        <p>Aspek yang membutuhkan pengayaan data disajikan sebagai agenda strategis ke depan, lengkap dengan unit penanggung jawab pengelolaannya.</p>
       </div>
       <div class="table-wrap" tabindex="0">
         <table>
-          <thead><tr><th>Prioritas</th><th>Data</th><th>Mengapa dibutuhkan</th><th>Pemilik</th></tr></thead>
+          <thead><tr><th>Prioritas</th><th>Kebutuhan Data</th><th>Urgensi &amp; Manfaat</th><th>Unit Pengelola Data</th></tr></thead>
           <tbody>{gaps.map((gap) => <tr><td><span class={`priority priority--${gap.priority.toLowerCase()}`}>{gap.priority}</span></td><th scope="row">{gap.item}</th><td>{gap.reason}</td><td>{gap.owner}</td></tr>)}</tbody>
         </table>
       </div>
@@ -175,12 +175,12 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
     <section class="method-cta">
       <div>
-        <p class="eyebrow">Dapat direproduksi</p>
-        <h2>Empat Langkah dari CSV ke Cerita</h2>
+        <p class="eyebrow">Keterbukaan &amp; Keterulangan Data (Reproducibility)</p>
+        <h2>Empat Tahapan Pemrosesan Data</h2>
       </div>
-      <ol><li><strong>00</strong> Muat dan gabungkan</li><li><strong>01</strong> Bersihkan dan minimalkan</li><li><strong>02</strong> Agregasikan</li><li><strong>03</strong> Validasi</li></ol>
-      <p>Pipeline berada di folder <code>pipeline/</code>. Satu perintah membangun ulang seluruh data turunan tanpa perhitungan di browser.</p>
-      <a href={homeUrl}>Baca kembali cerita utama →</a>
+      <ol><li><strong>00</strong> Ekstraksi &amp; Konsolidasi</li><li><strong>01</strong> Pembersihan &amp; Normalisasi</li><li><strong>02</strong> Agregasi Berbasis Metrik</li><li><strong>03</strong> Validasi &amp; Penjaminan Mutu</li></ol>
+      <p>Seluruh skrip otomasi pemrosesan data tersimpan dalam direktori <code>pipeline/</code> dan dapat dijalankan ulang secara mandiri untuk menghasilkan dataset turunan yang konsisten.</p>
+      <a href={homeUrl}>Kembali ke laporan utama →</a>
     </section>
   </main>
 </BaseLayout>

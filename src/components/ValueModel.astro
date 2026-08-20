@@ -14,32 +14,32 @@ const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { m
 const fundingLabel = `Rp${format(metrics.funding_rp / 1_000_000_000, 2)} M`;
 ---
 
-<nav class="value-model" aria-label="Model nilai FMIPA">
+<nav class="value-model" aria-label="Alur transformasi nilai tridharma FMIPA">
   <a class="value-node value-node--input" href="#dana-riset">
-    <span>Masukan</span>
+    <span>Masukan (Input)</span>
     <strong>{fundingLabel}</strong>
     <small>dana riset 2021–2025</small>
   </a>
   <span class="value-arrow" aria-hidden="true">→</span>
   <div class="value-stage">
-    <span>Kegiatan</span>
+    <span>Aktivitas Tridharma</span>
     <div>
       <a href="#dana-riset"><strong>{format(metrics.research_n)}</strong><small>judul riset</small></a>
-      <a href="#jangkauan"><strong>{format(metrics.outreach_n)}</strong><small>kegiatan pengabdian</small></a>
+      <a href="#jangkauan"><strong>{format(metrics.outreach_n)}</strong><small>kegiatan pengabdian (PkM)</small></a>
     </div>
   </div>
   <span class="value-arrow" aria-hidden="true">→</span>
   <a class="value-node" href="#publikasi-departemen">
-    <span>Luaran</span>
+    <span>Luaran Ilmiah</span>
     <strong>{format(metrics.publications_n)}</strong>
-    <small>publikasi 2021–2025</small>
+    <small>artikel publikasi terindeks</small>
   </a>
   <span class="value-arrow" aria-hidden="true">→</span>
   <div class="value-stage value-stage--impact">
-    <span>Dampak terukur</span>
+    <span>Dampak Terukur</span>
     <div>
       <a href="#jangkauan-riset"><strong>{format(metrics.citations_n)}</strong><small>sitasi lima tahun</small></a>
-      <a href="#jangkauan"><strong>{format(metrics.mappable_outreach_n)}</strong><small>kegiatan dapat dipetakan</small></a>
+      <a href="#jangkauan"><strong>{format(metrics.mappable_outreach_n)}</strong><small>kegiatan PkM terpetakan</small></a>
     </div>
   </div>
 </nav>

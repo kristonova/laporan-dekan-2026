@@ -82,8 +82,8 @@ const axisTicks = Array.from({ length: Math.floor(maxPercent / 50) + 1 }, (_, in
 const statusLabel: Record<TckStatus, string> = {
   tercapai: "Tercapai",
   mendekati: "Mendekati",
-  tertinggal: "Tertinggal",
-  meleset: "Meleset",
+  tertinggal: "Perlu Akselerasi",
+  meleset: "Belum Tercapai",
 };
 const tableRows = data.map((row) => ({
   Indikator: row.label,

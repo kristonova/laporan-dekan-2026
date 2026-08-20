@@ -7,7 +7,7 @@ interface Props {
   knownValue?: string;
   tone?: "open" | "hold";
 }
-const { label = "Data belum tersedia", title, description, owner, knownValue, tone = "open" } = Astro.props;
+const { label = "Agenda Integrasi Data", title, description, owner, knownValue, tone = "open" } = Astro.props;
 ---
 
 <aside class:list={["data-gap", `data-gap--${tone}`]} aria-label={`${label}: ${title}`}>
@@ -15,9 +15,9 @@ const { label = "Data belum tersedia", title, description, owner, knownValue, to
   <div>
     <p class="data-gap__label">{label}</p>
     <h3>{title}</h3>
-    {knownValue && <p class="data-gap__known">Yang sudah diketahui: <strong>{knownValue}</strong></p>}
+    {knownValue && <p class="data-gap__known">Data yang telah terhimpun: <strong>{knownValue}</strong></p>}
     <p class="data-gap__description">{description}</p>
-    {owner && <p class="data-gap__owner">Sumber yang dibutuhkan · {owner}</p>}
+    {owner && <p class="data-gap__owner">Unit penanggung jawab data · {owner}</p>}
   </div>
 </aside>
 
