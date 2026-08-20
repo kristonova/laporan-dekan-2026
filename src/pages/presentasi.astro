@@ -191,7 +191,8 @@ const slides: any[] = [
   :global(body.presentation-page.presentation-enhanced [data-presentation-deck]) {
     position: relative;
     inline-size: 100%;
-    block-size: 100svh;
+    block-size: 100vh;
+    block-size: 100dvh;
     overflow: hidden;
   }
   :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) {
@@ -214,11 +215,14 @@ const slides: any[] = [
     pointer-events: auto;
     transition: opacity 500ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 0s;
   }
-  .deck-controls { position: fixed; z-index: 100; inset: 16px auto auto 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; padding: 6px; border: 1px solid rgba(255,255,255,.25); background: #0B1F2E; color: #fff; box-shadow: 0 5px 20px rgb(0 0 0 / 22%); }
-  .deck-controls a, .deck-controls button { min-height: 44px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.24); border-radius: 4px; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; }
+  .deck-controls { position: fixed; z-index: 100; inset: 14px auto auto 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; padding: 5px; border: 1px solid rgba(255,255,255,.25); background: rgb(11 31 46 / 94%); color: #fff; box-shadow: 0 5px 20px rgb(0 0 0 / 22%); opacity: .78; transition: opacity 180ms ease; }
+  .deck-controls:hover, .deck-controls:focus-within { opacity: 1; }
+  .deck-controls a, .deck-controls button { min-height: 40px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.24); border-radius: 4px; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; }
   .deck-controls button:hover, .deck-controls a:hover { background: rgba(255,255,255,.1); }.deck-controls button[aria-pressed="true"] { background: var(--ugm-gold); color: #0B1F2E; }.deck-controls button:disabled { opacity: .35; }
   .deck-controls span { min-width: 64px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
   .deck-help { position: fixed; z-index: 90; inset: auto auto 18px 50%; transform: translateX(-50%); margin: 0; color: rgba(255,255,255,.58); font-size: 10px; pointer-events: none; }
+  @media (hover: none) { .deck-controls { opacity: 1; } }
+  @media(max-width:1200px){.deck-controls [data-deck-notes],.deck-controls [data-deck-fullscreen]{inline-size:40px;padding-inline:0;font-size:0}.deck-controls [data-deck-notes]::before{content:"P";font-size:12px}.deck-controls [data-deck-fullscreen]::before{content:"⛶";font-size:18px;line-height:1}}
   @media(max-width:760px){.deck-controls{inset:8px 8px auto;transform:none;justify-content:center}.deck-controls a,.deck-controls button{padding-inline:9px}.deck-controls [data-deck-fullscreen],.deck-controls [data-deck-notes]{display:none}.deck-help{display:none}}
   @media (prefers-reduced-motion: reduce) {
     :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) { transition: none; }

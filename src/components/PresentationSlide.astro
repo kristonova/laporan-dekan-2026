@@ -32,7 +32,7 @@ const darkLogoUrl = withBase("/brand/logo-horizontal-white.png");
 const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
 ---
 
-<section class:list={["presentation-slide", { "presentation-slide--dark": dark }]} data-presentation-slide aria-labelledby={`slide-${number.replaceAll(".", "-")}-title`}>
+<section class:list={["presentation-slide", `presentation-slide--${mode}`, { "presentation-slide--dark": dark }]} data-presentation-slide aria-labelledby={`slide-${number.replaceAll(".", "-")}-title`}>
   <div class="presentation-slide__motif" aria-hidden="true" style={motifStyle}></div>
   <header class="presentation-slide__header">
     <div>
@@ -79,36 +79,133 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 </section>
 
 <style>
-  .presentation-slide { min-height: 100svh; height: 100svh; position: relative; overflow: hidden; padding: 38px 54px 44px; background: var(--surface-page); color: var(--text-primary); }
+  .presentation-slide {
+    --slide-pad-inline: max(clamp(32px, 3vw, 54px), calc((100vw - 1920px) / 2 + 54px));
+    --slide-pad-top: clamp(28px, 3.9dvh, 38px);
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    position: relative;
+    display: grid;
+    grid-template-rows: clamp(52px, 6.6dvh, 64px) minmax(0, 1fr) auto;
+    row-gap: clamp(8px, 1.2dvh, 14px);
+    overflow: hidden;
+    padding: var(--slide-pad-top) var(--slide-pad-inline) 18px;
+    background: var(--surface-page);
+    color: var(--text-primary);
+  }
   .presentation-slide--dark { background: var(--ugm-blue-deep); color: #fff; }
-  .presentation-slide__header { height: 64px; position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; }
+  .presentation-slide__header {
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
   .presentation-slide__header > div { display: flex; align-items: baseline; gap: 16px; }
   .presentation-slide__header p { color: var(--text-muted); font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
   .presentation-slide--dark .presentation-slide__header p { color: rgba(255,255,255,.62); }
   .presentation-slide__header span { color: var(--ugm-gold); font-weight: 700; }
   .presentation-slide__header img { width: 200px; height: auto; }
-  .presentation-slide__body { height: calc(100% - 112px); display: grid; grid-template-columns: minmax(360px, .88fr) minmax(500px, 1.12fr); gap: clamp(36px, 5vw, 76px); align-items: center; }
-  .presentation-slide__rule { width: 82px; height: 3px; margin-block-end: 28px; background: var(--ugm-gold); }
-  .presentation-slide h2 { max-width: 12ch; color: inherit; font-family: var(--font-display); font-size: clamp(44px, 4.6vw, 68px); line-height: 1; letter-spacing: -.03em; }
-  .presentation-slide__copy > p { max-width: 48ch; margin-block-start: 24px; color: var(--text-secondary); font-size: clamp(17px, 1.55vw, 22px); line-height: 1.48; }
+  .presentation-slide__body {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(360px, .88fr) minmax(0, 1.12fr);
+    gap: clamp(36px, 5vw, 76px);
+    align-items: stretch;
+  }
+  .presentation-slide__copy { min-width: 0; min-height: 0; display: grid; align-content: center; }
+  .presentation-slide__rule { width: 82px; height: 3px; margin-block-end: clamp(18px, 2.8dvh, 28px); background: var(--ugm-gold); }
+  .presentation-slide h2 { max-width: 14ch; color: inherit; font-family: var(--font-display); font-size: clamp(44px, min(4.6vw, 7.5dvh), 68px); line-height: 1; letter-spacing: -.03em; }
+  .presentation-slide__copy > p { max-width: 48ch; margin-block-start: clamp(16px, 2.4dvh, 24px); color: var(--text-secondary); font-size: clamp(17px, min(1.55vw, 2.4dvh), 22px); line-height: 1.48; }
   .presentation-slide--dark .presentation-slide__copy > p { color: rgba(255,255,255,.75); }
-  .presentation-visual { min-height: 430px; display: grid; align-content: center; }
-  .presentation-visual--stat, .presentation-visual--gap { padding: 46px; border-inline-start: 4px solid var(--ugm-gold); }
-  .presentation-visual--stat > strong, .presentation-visual--gap > strong { color: var(--ugm-blue); font-size: clamp(84px, 11vw, 156px); font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -.06em; line-height: .85; }
+  .presentation-visual {
+    min-width: 0;
+    min-height: 0;
+    block-size: min(58dvh, 640px, 100%);
+    align-self: center;
+    display: grid;
+    align-content: center;
+  }
+  .presentation-visual--bars, .presentation-visual--status, .presentation-visual--cards {
+    grid-template-rows: minmax(0, 1fr);
+    align-content: stretch;
+  }
+  .presentation-visual--stat, .presentation-visual--gap { padding: clamp(30px, 4.8dvh, 52px); border-inline-start: 4px solid var(--ugm-gold); }
+  .presentation-visual--stat > strong, .presentation-visual--gap > strong { color: var(--ugm-blue); font-size: clamp(84px, min(11vw, 16dvh), 168px); font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -.06em; line-height: .85; }
   .presentation-slide--dark .presentation-visual--stat > strong, .presentation-slide--dark .presentation-visual--gap > strong { color: var(--ugm-gold); }
-  .presentation-visual--stat > span, .presentation-visual--gap > span { max-width: 28ch; margin-block-start: 26px; color: var(--text-secondary); font-size: 24px; line-height: 1.25; }
+  .presentation-visual--stat > span, .presentation-visual--gap > span { max-width: 28ch; margin-block-start: 26px; color: var(--text-secondary); font-size: clamp(20px, 2.5dvh, 26px); line-height: 1.25; }
   .presentation-slide--dark .presentation-visual--stat > span, .presentation-slide--dark .presentation-visual--gap > span { color: rgba(255,255,255,.76); }
-  .presentation-bars { display: grid; gap: 20px; }
+  .presentation-bars { min-height: 0; block-size: 100%; display: grid; align-content: space-evenly; gap: clamp(16px, 2.1dvh, 24px); }
   .presentation-bar > div { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
-  .presentation-bar span { color: inherit; font-size: 17px; }.presentation-bar strong { color: var(--bar-color); font-size: 25px; font-weight: 700; font-variant-numeric: tabular-nums; }.presentation-bar > i { height: 13px; margin-block-start: 7px; display: block; background: var(--border-subtle); }.presentation-bar > i b { height: 100%; display: block; background: var(--bar-color); }.presentation-bar small { display: block; margin-block-start: 5px; color: var(--text-muted); }.presentation-bar--good { --bar-color: var(--status-achieved); }.presentation-bar--near { --bar-color: var(--status-info); }.presentation-bar--behind { --bar-color: var(--status-lagging); }.presentation-bar--missed { --bar-color: var(--status-missed); }.presentation-bar--neutral { --bar-color: var(--ugm-blue); }
-  .presentation-slide--dark .presentation-bar--neutral { --bar-color: var(--ugm-gold); }.presentation-slide--dark .presentation-bar > i { background: rgba(255,255,255,.16); }
-  .presentation-flow { display: grid; grid-template-columns: repeat(7, auto); align-items: center; gap: 12px; }
-  .presentation-flow > div { min-width: 132px; min-height: 160px; padding: 22px; border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-blue); background: var(--surface-card); display: flex; flex-direction: column; justify-content: center; }.presentation-flow strong { color: var(--ugm-blue); font-size: 31px; font-weight: 300; }.presentation-flow span { margin-block-start: 8px; color: var(--text-secondary); font-size: 13px; }.presentation-flow > i { color: var(--status-approaching); font-size: 24px; font-style: normal; }
-  .presentation-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }.presentation-cards article { min-height: 170px; padding: 24px; border: 1px solid var(--border-default); border-top: 4px solid var(--card-color); background: var(--surface-card); color: var(--text-primary); }.presentation-cards article.is-good { --card-color: var(--status-achieved); }.presentation-cards article.is-near { --card-color: var(--status-info); }.presentation-cards article.is-behind { --card-color: var(--status-lagging); }.presentation-cards article.is-missed { --card-color: var(--status-missed); }.presentation-cards article.is-neutral { --card-color: var(--ugm-blue); }.presentation-cards strong { color: var(--card-color); font-size: 34px; font-weight: 300; }.presentation-cards h3 { margin-block-start: 8px; color: var(--text-primary); font-family: var(--font-ui); font-size: 17px; }.presentation-cards p { margin-block-start: 8px; color: var(--text-secondary); font-size: 13px; }
-  .presentation-slide__footer { position: absolute; inset: auto 54px 18px; display: flex; justify-content: space-between; gap: 20px; color: var(--text-muted); font-size: 16px; letter-spacing: .02em; }.presentation-slide--dark .presentation-slide__footer { color: rgba(255,255,255,.7); }
+  .presentation-bar span { color: inherit; font-size: clamp(15px, 1.9dvh, 18px); }
+  .presentation-bar strong { color: var(--bar-color); font-size: clamp(22px, 2.8dvh, 28px); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .presentation-bar > i { height: clamp(10px, 1.35dvh, 14px); margin-block-start: 7px; display: block; background: var(--border-subtle); }
+  .presentation-bar > i b { height: 100%; display: block; background: var(--bar-color); }
+  .presentation-bar small { display: block; margin-block-start: 5px; color: var(--text-muted); }
+  .presentation-bar--good { --bar-color: var(--status-achieved); }
+  .presentation-bar--near { --bar-color: var(--status-info); }
+  .presentation-bar--behind { --bar-color: var(--status-lagging); }
+  .presentation-bar--missed { --bar-color: var(--status-missed); }
+  .presentation-bar--neutral { --bar-color: var(--ugm-blue); }
+  .presentation-slide--dark .presentation-bar--neutral { --bar-color: var(--ugm-gold); }
+  .presentation-slide--dark .presentation-bar > i { background: rgba(255,255,255,.16); }
+  .presentation-flow { min-width: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: clamp(8px, 1vw, 14px); }
+  .presentation-flow > div { min-width: 0; min-height: clamp(260px, 36dvh, 360px); padding: clamp(16px, 2.4dvh, 24px) clamp(12px, 1.1vw, 20px); border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-blue); background: var(--surface-card); display: flex; flex-direction: column; justify-content: center; }
+  .presentation-flow strong { color: var(--ugm-blue); font-size: clamp(25px, min(1.9vw, 4.2dvh), 38px); font-weight: 300; line-height: 1.1; white-space: nowrap; }
+  .presentation-flow span { margin-block-start: 10px; color: var(--text-secondary); font-size: clamp(13px, 1.7dvh, 17px); line-height: 1.35; }
+  .presentation-flow > i { align-self: center; color: var(--status-approaching); font-size: clamp(20px, 2.8dvh, 28px); font-style: normal; }
+  .presentation-cards { min-height: 0; block-size: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8dvh, 20px); }
+  .presentation-cards article { min-width: 0; min-height: 0; padding: clamp(20px, 2.8dvh, 30px); border: 1px solid var(--border-default); border-top: 4px solid var(--card-color); background: var(--surface-card); color: var(--text-primary); display: flex; flex-direction: column; justify-content: center; }
+  .presentation-cards article.is-good { --card-color: var(--status-achieved); }
+  .presentation-cards article.is-near { --card-color: var(--status-info); }
+  .presentation-cards article.is-behind { --card-color: var(--status-lagging); }
+  .presentation-cards article.is-missed { --card-color: var(--status-missed); }
+  .presentation-cards article.is-neutral { --card-color: var(--ugm-blue); }
+  .presentation-cards strong { color: var(--card-color); font-size: clamp(36px, 4.8dvh, 50px); font-weight: 300; line-height: 1.05; }
+  .presentation-cards h3 { margin-block-start: 10px; color: var(--text-primary); font-family: var(--font-ui); font-size: clamp(17px, 2dvh, 21px); }
+  .presentation-cards p { margin-block-start: 8px; color: var(--text-secondary); font-size: clamp(13px, 1.5dvh, 16px); line-height: 1.35; }
+  .presentation-slide__footer { min-width: 0; align-self: end; display: flex; justify-content: space-between; gap: 20px; color: var(--text-muted); font-size: clamp(13px, 1.55dvh, 16px); letter-spacing: .02em; }
+  .presentation-slide--dark .presentation-slide__footer { color: rgba(255,255,255,.7); }
   .presentation-slide::after { content: ""; position: absolute; inset: auto 0 0; height: 10px; background: var(--ugm-gold); }
-  .presentation-slide__motif { display: none; position: absolute; inset: -30% -12% auto auto; width: min(62vw, 760px); aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; opacity: .08; filter: brightness(0) invert(1); }.presentation-slide--dark .presentation-slide__motif { display: block; }
-  .presenter-notes { display: none; position: absolute; z-index: 10; inset: auto 54px 46px auto; width: min(520px, calc(100% - 108px)); padding: 20px 24px; border: 2px solid var(--ugm-gold); background: #0B1F2E; color: #fff; box-shadow: 0 14px 40px rgb(0 0 0 / 28%); }.presenter-notes strong { color: var(--ugm-gold); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }.presenter-notes p { margin-block-start: 8px; color: #fff; font-size: 15px; }
+  .presentation-slide__motif { display: none; position: absolute; inset: -30% -12% auto auto; width: min(62vw, 760px); aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; opacity: .08; filter: brightness(0) invert(1); }
+  .presentation-slide--dark .presentation-slide__motif { display: block; }
+  .presenter-notes { display: none; position: absolute; z-index: 10; inset: auto var(--slide-pad-inline) 46px auto; width: min(520px, calc(100% - 64px)); padding: 20px 24px; border: 2px solid var(--ugm-gold); background: #0B1F2E; color: #fff; box-shadow: 0 14px 40px rgb(0 0 0 / 28%); }
+  .presenter-notes strong { color: var(--ugm-gold); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .presenter-notes p { margin-block-start: 8px; color: #fff; font-size: 15px; }
   [data-notes-visible="true"] .presenter-notes { display: block; }
-  @media(max-width:900px){.presentation-slide{height:auto;min-height:100svh;padding:28px 28px 54px}.presentation-slide__body{height:auto;grid-template-columns:1fr;align-content:center}.presentation-visual{min-height:260px}.presentation-flow{grid-template-columns:1fr}.presentation-flow>i{transform:rotate(90deg);justify-self:center}.presentation-slide__footer{inset-inline:28px;font-size:13px}.presentation-slide__header p{font-size:13px}.presentation-slide__header img{width:180px}}
+
+  @media (min-width: 901px) and (max-height: 720px) {
+    .presentation-slide { --slide-pad-top: 20px; grid-template-rows: 52px minmax(0, 1fr) auto; row-gap: 6px; }
+    .presentation-slide__header img { width: 170px; }
+    .presentation-visual { block-size: min(56dvh, 100%); }
+    .presentation-flow > div { min-height: clamp(140px, 24dvh, 180px); }
+    .presentation-cards article { padding: 18px 22px; }
+  }
+
+  @media (min-width: 901px) and (max-width: 1200px) {
+    .presentation-slide h2 { font-size: clamp(42px, 4.2vw, 54px); }
+    .presentation-slide--flow .presentation-slide__body { grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr); gap: 28px; }
+    .presentation-slide--flow .presentation-flow { gap: 6px; }
+    .presentation-slide--flow .presentation-flow > div { padding-inline: 10px; }
+    .presentation-slide--flow .presentation-flow strong { font-size: clamp(20px, 2.4vw, 28px); }
+  }
+
+  @media (max-width: 900px) {
+    .presentation-slide { height: auto; min-height: 100vh; min-height: 100dvh; grid-template-rows: auto auto auto; padding: 28px 28px 18px; }
+    .presentation-slide__body { grid-template-columns: 1fr; align-content: center; gap: 30px; }
+    .presentation-visual { block-size: auto; min-height: 260px; }
+    .presentation-cards { block-size: auto; grid-template-rows: none; }
+    .presentation-cards article { min-height: 150px; }
+    .presentation-flow { grid-template-columns: 1fr; }
+    .presentation-flow > div { min-height: 140px; }
+    .presentation-flow > i { transform: rotate(90deg); justify-self: center; }
+    .presentation-slide__footer { font-size: 13px; }
+    .presentation-slide__header p { font-size: 13px; }
+    .presentation-slide__header img { width: 180px; }
+    .presenter-notes { inset-inline-end: 28px; width: calc(100% - 56px); }
+  }
 </style>
