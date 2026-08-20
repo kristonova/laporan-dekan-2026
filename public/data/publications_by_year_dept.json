@@ -1,0 +1,212 @@
+[
+  {
+    "year": 2020,
+    "department": "Belum terpetakan",
+    "count": 38,
+    "mapping": "unmapped",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "department": "Fisika",
+    "count": 87,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 70,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "department": "Kimia",
+    "count": 137,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "department": "Matematika",
+    "count": 41,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "department": "Belum terpetakan",
+    "count": 44,
+    "mapping": "unmapped",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "department": "Fisika",
+    "count": 88,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 87,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "department": "Kimia",
+    "count": 153,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "department": "Matematika",
+    "count": 53,
+    "mapping": "scopus_id_majority",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "department": "Belum terpetakan",
+    "count": 18,
+    "mapping": "unmapped",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "department": "Fisika",
+    "count": 94,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 117,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "department": "Kimia",
+    "count": 185,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "department": "Matematika",
+    "count": 73,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "department": "Belum terpetakan",
+    "count": 15,
+    "mapping": "unmapped",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "department": "Fisika",
+    "count": 99,
+    "mapping": "source",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 95,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "department": "Kimia",
+    "count": 132,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "department": "Matematika",
+    "count": 76,
+    "mapping": "source",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "department": "Belum terpetakan",
+    "count": 21,
+    "mapping": "unmapped",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "department": "Fisika",
+    "count": 127,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 120,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "department": "Kimia",
+    "count": 190,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "department": "Matematika",
+    "count": 85,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "department": "Belum terpetakan",
+    "count": 21,
+    "mapping": "unmapped",
+    "is_partial": true
+  },
+  {
+    "year": 2025,
+    "department": "Fisika",
+    "count": 123,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  },
+  {
+    "year": 2025,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 100,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  },
+  {
+    "year": 2025,
+    "department": "Kimia",
+    "count": 148,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  },
+  {
+    "year": 2025,
+    "department": "Matematika",
+    "count": 89,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  }
+]

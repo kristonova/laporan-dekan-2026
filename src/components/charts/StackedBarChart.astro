@@ -1,0 +1,236 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps, ChartSeries } from "./_types";
+import { SERIES_COLORS, finite, formatCompact, niceMax, scaleLinear, slugify, ticks } from "./_utils";
+
+type Row = Record<string, unknown>;
+interface Props extends Omit<ChartChromeProps<Row>, "tableRows" | "tableColumns"> {
+  data: Row[];
+  xKey: string;
+  series: ChartSeries[];
+  width?: number;
+  height?: number;
+  normalized?: boolean;
+  yMax?: number;
+  yLabel?: string;
+  xFormatter?: (value: unknown) => string;
+  valueFormatter?: (value: number) => string;
+  provisionalX?: string | number;
+  provisionalLabel?: string;
+}
+
+const {
+  data,
+  xKey,
+  series,
+  width = 960,
+  height = 540,
+  normalized = false,
+  yMax,
+  yLabel,
+  xFormatter = (value) => String(value ?? ""),
+  valueFormatter = formatCompact,
+  provisionalX,
+  provisionalLabel = "Data berjalan",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 32, right: 26, bottom: 104, left: 72 };
+const plotWidth = width - margin.left - margin.right;
+const plotHeight = height - margin.top - margin.bottom;
+const totals = data.map((row) => series.reduce((sum, item) => sum + Math.max(0, finite(row[item.key])), 0));
+const domainMax = normalized ? 100 : yMax ?? niceMax(Math.max(1, ...totals));
+const y = (value: number) => margin.top + plotHeight - scaleLinear(value, 0, domainMax, 0, plotHeight);
+const slotWidth = plotWidth / Math.max(1, data.length);
+const barWidth = Math.min(78, slotWidth * 0.68);
+const yTicks = ticks(0, domainMax, 4);
+const patterns = ["solid", "diagonal", "dots", "cross"] as const;
+const preparedSeries = series.map((item, index) => ({
+  ...item,
+  color: item.color ?? SERIES_COLORS[index % SERIES_COLORS.length],
+  pattern: item.pattern ?? patterns[index % patterns.length],
+}));
+const tableColumns = [
+  { key: xKey, label: xKey, format: (value: unknown) => xFormatter(value) },
+  ...series.map((item) => ({
+    key: item.key,
+    label: item.label,
+    align: "end" as const,
+    format: (value: unknown) => Number.isFinite(Number(value)) ? valueFormatter(Number(value)) : "—",
+  })),
+];
+const provisionalIndex = data.findIndex((row) => String(row[xKey]) === String(provisionalX));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={data}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={600}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Grafik batang bertumpuk untuk {data.length} kategori dan {series.length} seri. Pola permukaan membedakan seri selain warna.
+    </desc>
+    <defs>
+      {preparedSeries.map((item, index) => (
+        <pattern id={`${id}-series-${index}`} width="9" height="9" patternUnits="userSpaceOnUse">
+          <rect width="9" height="9" fill={item.color} />
+          {item.pattern === "diagonal" && <path d="M -2 2 L 2 -2 M 0 9 L 9 0 M 7 11 L 11 7" stroke="#fff" stroke-width="1.4" opacity="0.5" />}
+          {item.pattern === "dots" && <circle cx="3" cy="3" r="1.2" fill="#fff" opacity="0.58" />}
+          {item.pattern === "cross" && <path d="M 1 4.5 H 8 M 4.5 1 V 8" stroke="#fff" stroke-width="1.1" opacity="0.48" />}
+        </pattern>
+      ))}
+      <pattern id={`${id}-provisional`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="8" stroke="var(--ink, #332c2b)" stroke-width="2" opacity="0.22" />
+      </pattern>
+    </defs>
+
+    <g class="grid" aria-hidden="true">
+      {yTicks.map((tick) => (
+        <g>
+          <line x1={margin.left} x2={margin.left + plotWidth} y1={y(tick)} y2={y(tick)} />
+          <text x={margin.left - 11} y={y(tick) + 4} text-anchor="end">{normalized ? `${Math.round(tick)}%` : valueFormatter(tick)}</text>
+        </g>
+      ))}
+      {yLabel && <text class="axis-label" x={margin.left} y="14">{yLabel}</text>}
+    </g>
+
+    {data.map((row, rowIndex) => {
+      const total = totals[rowIndex];
+      let cumulative = 0;
+      const centerX = margin.left + slotWidth * rowIndex + slotWidth / 2;
+      return (
+        <g class="stack">
+          {preparedSeries.map((item, seriesIndex) => {
+            const rawValue = Math.max(0, finite(row[item.key]));
+            const value = normalized ? (total === 0 ? 0 : (rawValue / total) * 100) : rawValue;
+            const segmentTop = cumulative + value;
+            const segmentY = y(segmentTop);
+            const segmentHeight = Math.max(0, y(cumulative) - segmentY - (seriesIndex === 0 ? 0 : 2));
+            cumulative = segmentTop;
+            const tooltip = `${xFormatter(row[xKey])}, ${item.label}: ${valueFormatter(rawValue)}${normalized ? ` (${formatCompact(value)}%)` : ""}`;
+            return value > 0 ? (
+              <rect
+                class="segment"
+                x={centerX - barWidth / 2}
+                y={segmentY}
+                width={barWidth}
+                height={segmentHeight}
+                rx="2"
+                fill={`url(#${id}-series-${seriesIndex})`}
+                tabindex="0"
+                data-tooltip={tooltip}
+                aria-label={tooltip}
+              />
+            ) : null;
+          })}
+          {rowIndex === provisionalIndex && (
+            <rect
+              class="provisional-overlay"
+              x={centerX - barWidth / 2 - 4}
+              y={margin.top}
+              width={barWidth + 8}
+              height={plotHeight}
+              fill={`url(#${id}-provisional)`}
+              aria-hidden="true"
+            />
+          )}
+          <text class="x-label" x={centerX} y={margin.top + plotHeight + 25} text-anchor="middle">{xFormatter(row[xKey])}</text>
+          {rowIndex === provisionalIndex && <text class="provisional-label" x={centerX} y={margin.top + plotHeight + 43} text-anchor="middle">{provisionalLabel}</text>}
+        </g>
+      );
+    })}
+
+    <g class="legend" transform={`translate(${margin.left}, ${height - 45})`} aria-label="Legenda">
+      {preparedSeries.map((item, index) => {
+        const itemWidth = plotWidth / Math.max(1, preparedSeries.length);
+        return (
+          <g transform={`translate(${index * itemWidth}, 0)`}>
+            <rect width="18" height="18" rx="2" fill={`url(#${id}-series-${index})`} />
+            <text x="25" y="13">{item.label}</text>
+          </g>
+        );
+      })}
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grid line {
+    stroke: var(--rule-light, #e4e7e9);
+  }
+
+  .grid text,
+  .x-label,
+  .provisional-label {
+    fill: var(--ink-muted, #656b70);
+    font-size: 12px;
+  }
+
+  .grid .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .provisional-label {
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .segment {
+    stroke: var(--surface, #fff);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .segment:hover,
+  .segment:focus {
+    opacity: 0.76;
+  }
+
+  .segment:focus-visible {
+    outline: none;
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+
+  .provisional-overlay {
+    pointer-events: none;
+  }
+
+  .legend text {
+    fill: currentColor;
+    font-size: 11px;
+    font-weight: 650;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .segment { transition: none; }
+  }
+</style>

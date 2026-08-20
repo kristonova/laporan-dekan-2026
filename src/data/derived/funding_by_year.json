@@ -1,0 +1,149 @@
+[
+  {
+    "year": 2019,
+    "amount": 2522500000.0,
+    "n": 160,
+    "type": "Belum terklasifikasi",
+    "is_partial": false
+  },
+  {
+    "year": 2019,
+    "amount": 2777500000.0,
+    "n": 175,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2019,
+    "amount": 210000000.0,
+    "n": 12,
+    "type": "external",
+    "is_partial": false
+  },
+  {
+    "year": 2019,
+    "amount": 45000000.0,
+    "n": 3,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "amount": 2810000000.0,
+    "n": 170,
+    "type": "Belum terklasifikasi",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "amount": 3175000000.0,
+    "n": 187,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "amount": 365000000.0,
+    "n": 17,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "amount": 3077050000.0,
+    "n": 175,
+    "type": "Belum terklasifikasi",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "amount": 3302050000.0,
+    "n": 190,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "amount": 225000000.0,
+    "n": 15,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "amount": 27937586572.0,
+    "n": 431,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "amount": 25717586572.0,
+    "n": 260,
+    "type": "external",
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "amount": 2220000000.0,
+    "n": 171,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "amount": 35269887478.0,
+    "n": 278,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "amount": 33012387478.0,
+    "n": 151,
+    "type": "external",
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "amount": 2257500000.0,
+    "n": 127,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "amount": 74907666960.0,
+    "n": 196,
+    "type": "Total",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "amount": 73092666960.0,
+    "n": 75,
+    "type": "external",
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "amount": 1815000000.0,
+    "n": 121,
+    "type": "internal",
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "amount": 69505732463.0,
+    "n": 174,
+    "type": "Belum terklasifikasi",
+    "is_partial": true
+  },
+  {
+    "year": 2025,
+    "amount": 69505732463.0,
+    "n": 174,
+    "type": "Total",
+    "is_partial": true
+  }
+]

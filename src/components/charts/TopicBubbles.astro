@@ -1,0 +1,276 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, finite, formatNumber, scaleLinear, slugify, textLines } from "./_utils";
+
+interface TopicNode extends Record<string, unknown> {
+  label: string;
+  value: number;
+  group?: string;
+  color?: string;
+  detail?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<TopicNode>, "tableRows" | "tableColumns"> {
+  nodes: TopicNode[];
+  width?: number;
+  height?: number;
+  maxNodes?: number;
+  labelCount?: number;
+  valueLabel?: string;
+  valueFormatter?: (value: number) => string;
+}
+
+const {
+  nodes,
+  width = 1040,
+  height = 660,
+  maxNodes = 120,
+  labelCount = 5,
+  valueLabel = "publikasi",
+  valueFormatter = (value) => formatNumber(value, 1),
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const sortedNodes = [...nodes].filter((node) => finite(node.value) >= 0).sort((a, b) => finite(b.value) - finite(a.value));
+const visibleNodes = sortedNodes.slice(0, maxNodes);
+const groups = [...new Set(visibleNodes.map((node) => node.group ?? "Lainnya"))];
+const groupIndex = new Map(groups.map((group, index) => [group, index]));
+const plot = { left: 18, top: 28, right: width - 284, bottom: height - 78 };
+const plotWidth = plot.right - plot.left;
+const plotHeight = plot.bottom - plot.top;
+const center = { x: plot.left + plotWidth / 2, y: plot.top + plotHeight / 2 };
+const values = visibleNodes.map((node) => finite(node.value));
+const minValue = Math.min(...values, 0);
+const maxValue = Math.max(...values, 1);
+const maxRadius = visibleNodes.length > 85 ? 27 : visibleNodes.length > 40 ? 36 : 50;
+const minRadius = visibleNodes.length > 85 ? 5.5 : 8;
+const nodeRadius = (value: number) => minRadius + Math.sqrt(scaleLinear(value, minValue, maxValue, 0, 1)) * (maxRadius - minRadius);
+
+type PositionedNode = TopicNode & { x: number; y: number; r: number; groupName: string; groupIndex: number; visibleIndex: number };
+const placed: PositionedNode[] = [];
+const fits = (x: number, y: number, r: number) => {
+  if (x - r < plot.left || x + r > plot.right || y - r < plot.top || y + r > plot.bottom) return false;
+  return placed.every((other) => Math.hypot(x - other.x, y - other.y) >= r + other.r + 2);
+};
+
+visibleNodes.forEach((node, visibleIndex) => {
+  let r = nodeRadius(finite(node.value));
+  let chosen: { x: number; y: number } | undefined;
+  if (visibleIndex === 0) chosen = center;
+
+  for (let shrink = 0; !chosen && shrink < 4; shrink += 1) {
+    const candidates: { x: number; y: number; distance: number }[] = [];
+    for (const anchor of placed) {
+      for (let angleIndex = 0; angleIndex < 40; angleIndex += 1) {
+        const angle = (Math.PI * 2 * angleIndex) / 40 + visibleIndex * 0.21;
+        const distance = anchor.r + r + 2;
+        const x = anchor.x + Math.cos(angle) * distance;
+        const y = anchor.y + Math.sin(angle) * distance;
+        if (fits(x, y, r)) candidates.push({ x, y, distance: Math.hypot(x - center.x, y - center.y) });
+      }
+    }
+    candidates.sort((a, b) => a.distance - b.distance);
+    chosen = candidates[0];
+    if (!chosen) r *= 0.86;
+  }
+
+  if (!chosen) {
+    const columns = Math.max(1, Math.floor(plotWidth / (minRadius * 2 + 4)));
+    const fallbackIndex = placed.length;
+    chosen = {
+      x: plot.left + minRadius + (fallbackIndex % columns) * (minRadius * 2 + 4),
+      y: plot.top + minRadius + Math.floor(fallbackIndex / columns) * (minRadius * 2 + 4),
+    };
+    r = minRadius;
+  }
+
+  const groupName = node.group ?? "Lainnya";
+  placed.push({ ...node, ...chosen, r, groupName, groupIndex: groupIndex.get(groupName) ?? 0, visibleIndex });
+});
+
+const callouts = placed.slice(0, Math.min(labelCount, placed.length)).map((node, index, all) => ({
+  ...node,
+  calloutY: plot.top + 26 + (index * Math.max(70, plotHeight - 52)) / Math.max(1, all.length - 1),
+}));
+const tableRows = sortedNodes.map((node) => ({
+  Topik: node.label,
+  Kelompok: node.group ?? "Lainnya",
+  Jumlah: node.value,
+  Keterangan: node.detail ?? "—",
+}));
+const omitted = Math.max(0, sortedNodes.length - visibleNodes.length);
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Topik", label: "Topik" },
+    { key: "Kelompok", label: "Kelompok" },
+    { key: "Jumlah", label: "Jumlah", align: "end" },
+    { key: "Keterangan", label: "Keterangan" },
+  ]}
+  class={className}
+  {hideHeader}
+  minPlotWidth={680}
+  note={omitted > 0 ? `Bidang grafik menampilkan ${visibleNodes.length} topik terbesar agar tetap terbaca; ${omitted} topik lain tersedia di tabel.` : undefined}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Peta gelembung untuk {visibleNodes.length} topik. Luas gelembung mengikuti {valueLabel}; warna, tekstur, dan legenda langsung menunjukkan kelompok.
+    </desc>
+    <defs>
+      {groups.map((group, index) => {
+        const color = visibleNodes.find((node) => (node.group ?? "Lainnya") === group)?.color ?? SERIES_COLORS[index % SERIES_COLORS.length];
+        return (
+          <pattern id={`${id}-group-${index}`} width="10" height="10" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill={color} />
+            {index % 4 === 1 && <path d="M -2 2 L 2 -2 M 0 10 L 10 0 M 8 12 L 12 8" stroke="#fff" stroke-width="1.3" opacity="0.42" />}
+            {index % 4 === 2 && <circle cx="3" cy="3" r="1.2" fill="#fff" opacity="0.55" />}
+            {index % 4 === 3 && <path d="M 1 5 H 9 M 5 1 V 9" stroke="#fff" stroke-width="1.1" opacity="0.46" />}
+          </pattern>
+        );
+      })}
+    </defs>
+
+    <rect class="plot-boundary" x={plot.left} y={plot.top} width={plotWidth} height={plotHeight} rx="8" aria-hidden="true" />
+    {placed.map((node) => {
+      const tooltip = `${node.label}: ${valueFormatter(node.value)} ${valueLabel}; ${node.groupName}${node.detail ? `. ${node.detail}` : ""}`;
+      return (
+        <g class="topic-group">
+          <circle
+            class="topic-hit"
+            cx={node.x}
+            cy={node.y}
+            r={Math.max(22, node.r)}
+            tabindex="0"
+            data-tooltip={tooltip}
+            aria-label={tooltip}
+          />
+          <circle
+            class="topic"
+            cx={node.x}
+            cy={node.y}
+            r={node.r}
+            fill={`url(#${id}-group-${node.groupIndex})`}
+            aria-hidden="true"
+          />
+        </g>
+      );
+    })}
+
+    <g class="callouts" aria-hidden="true">
+      {callouts.map((node, index) => {
+        const lines = textLines(node.label, 28, 2);
+        const calloutX = plot.right + 34;
+        return (
+          <g>
+            <path d={`M ${node.x + node.r * 0.7} ${node.y} C ${plot.right + 10} ${node.y}, ${plot.right + 10} ${node.calloutY}, ${calloutX - 8} ${node.calloutY}`} />
+            <circle cx={calloutX} cy={node.calloutY - 5} r="11" fill={`url(#${id}-group-${node.groupIndex})`} />
+            <text class="rank" x={calloutX} y={node.calloutY - 1} text-anchor="middle">{index + 1}</text>
+            <text class="callout-label" x={calloutX + 19} y={node.calloutY - 9}>
+              {lines.map((line, lineIndex) => <tspan x={calloutX + 19} dy={lineIndex === 0 ? 0 : 14}>{line}</tspan>)}
+              <tspan class="callout-value" x={calloutX + 19} dy="16">{valueFormatter(node.value)} {valueLabel}</tspan>
+            </text>
+          </g>
+        );
+      })}
+    </g>
+
+    <g class="legend" transform={`translate(${plot.left}, ${height - 42})`} aria-label="Legenda kelompok">
+      {groups.slice(0, 5).map((group, index) => {
+        const itemWidth = plotWidth / Math.max(1, Math.min(groups.length, 5));
+        return (
+          <g transform={`translate(${index * itemWidth}, 0)`}>
+            <circle cx="8" cy="8" r="7" fill={`url(#${id}-group-${index})`} />
+            <text x="21" y="12">{group}</text>
+          </g>
+        );
+      })}
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .plot-boundary {
+    fill: var(--surface-subtle, #f7f8f8);
+    stroke: var(--rule, #d9dde0);
+  }
+
+  .topic {
+    pointer-events: none;
+    stroke: var(--surface, #fff);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), stroke-width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .topic-hit {
+    fill: transparent;
+  }
+
+  .topic-hit:hover + .topic,
+  .topic-hit:focus + .topic {
+    opacity: 0.78;
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 4;
+  }
+
+  .topic-hit:focus-visible { outline: none; }
+
+  .callouts path {
+    fill: none;
+    stroke: var(--rule-strong, #9ca7ad);
+    stroke-width: 1;
+  }
+
+  .callouts .rank {
+    fill: #fff;
+    font-size: 10px;
+    font-weight: 850;
+  }
+
+  .callout-label {
+    fill: currentColor;
+    font-size: 11px;
+    font-weight: 750;
+  }
+
+  .callout-value {
+    fill: var(--ink-muted, #62696e);
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .legend text {
+    fill: currentColor;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .topic { transition: none; }
+  }
+</style>

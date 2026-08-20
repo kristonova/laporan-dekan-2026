@@ -1,0 +1,61 @@
+---
+interface Datum { year: number; amount: number; }
+interface Props { data: Datum[]; }
+const { data } = Astro.props;
+const sorted = [...data].sort((a,b) => a.year - b.year);
+const width = 760, height = 500;
+const margin = { top: 52, right: 32, bottom: 64, left: 74 };
+const plotW = width - margin.left - margin.right, plotH = height - margin.top - margin.bottom;
+const barW = Math.min(60, (plotW / Math.max(sorted.length, 1)) * .62);
+const x = (index:number) => margin.left + (index + .5) * (plotW / sorted.length) - barW/2;
+const y = (value:number, max:number) => margin.top + plotH - (value/max)*plotH;
+const format = (value:number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(value);
+const early = sorted.filter((row) => row.year <= 2021);
+---
+
+<div class="funding-shift" data-funding-shift data-stage="full">
+  <div class="funding-shift__graphic">
+    <div class="funding-shift__stage funding-shift__stage--early" data-funding-graphic="early">
+      <p><strong>Skala awal</strong><span>Maksimum Rp4 miliar</span></p>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Dana riset 2019 sampai 2021 pada skala maksimum empat miliar rupiah">
+        {[0,1,2,3,4].map((tick) => <g><line x1={margin.left} x2={width-margin.right} y1={y(tick,4)} y2={y(tick,4)} /><text x={margin.left-12} y={y(tick,4)+4} text-anchor="end">{tick}</text></g>)}
+        {early.map((row,index) => <g><rect x={margin.left+(index+.5)*(plotW/early.length)-barW/2} y={y(row.amount,4)} width={barW} height={margin.top+plotH-y(row.amount,4)} rx="4" /><text class="value" x={margin.left+(index+.5)*(plotW/early.length)} y={y(row.amount,4)-12} text-anchor="middle">{format(row.amount)}</text><text x={margin.left+(index+.5)*(plotW/early.length)} y={height-28} text-anchor="middle">{row.year}</text></g>)}
+      </svg>
+    </div>
+    <div class="funding-shift__stage funding-shift__stage--full" data-funding-graphic="full">
+      <p><strong>Skala lima tahun</strong><span>Maksimum Rp80 miliar</span></p>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Dana riset 2019 sampai 2025 pada skala maksimum delapan puluh miliar rupiah">
+        <defs><pattern id="funding-running-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="var(--ugm-blue)" /><line x1="0" y1="0" x2="0" y2="8" stroke="#fff" stroke-width="2" opacity=".45" /></pattern></defs>
+        {[0,20,40,60,80].map((tick) => <g><line x1={margin.left} x2={width-margin.right} y1={y(tick,80)} y2={y(tick,80)} /><text x={margin.left-12} y={y(tick,80)+4} text-anchor="end">{tick}</text></g>)}
+        {sorted.map((row,index) => <g class:list={{ "is-current": row.year === 2025 }}><rect x={x(index)} y={y(row.amount,80)} width={barW} height={margin.top+plotH-y(row.amount,80)} rx="4" /><text class="value" x={x(index)+barW/2} y={y(row.amount,80)-12} text-anchor="middle">{format(row.amount)}</text><text x={x(index)+barW/2} y={height-28} text-anchor="middle">{row.year}</text></g>)}
+      </svg>
+    </div>
+  </div>
+  <div class="funding-shift__steps">
+    <article data-funding-step="early"><span>Skala 2019–2021</span><h3>Selama tiga tahun, ruangnya hanya Rp4 miliar.</h3><p>Dana bergerak dari Rp2,78 miliar menjadi Rp3,30 miliar. Pertumbuhannya nyata, tetapi masih berada pada satu skala yang sama.</p></article>
+    <article data-funding-step="full"><span>Skala 2019–2025</span><h3>Lalu sumbunya harus dibuka dua puluh kali lebih lebar.</h3><p>Pada 2024 dana mencapai Rp74,91 miliar. Bar 2021 yang tadi memenuhi bidang kini hampir menjadi garis.</p></article>
+    <article data-funding-step="full"><span>Koreksi</span><h3>2025 mulai melandai.</h3><p>Rp69,51 miliar masih jauh di atas awal periode, tetapi lebih rendah dari puncak 2024. Ini perlu dipertahankan, bukan dianggap otomatis berlanjut.</p></article>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-funding-shift]").forEach((root) => {
+    const steps = [...root.querySelectorAll<HTMLElement>("[data-funding-step]")];
+    if (!("IntersectionObserver" in window) || matchMedia("(max-width: 767px)").matches) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];
+      if (visible) root.dataset.stage = (visible.target as HTMLElement).dataset.fundingStep ?? "full";
+    }, { rootMargin: "-30% 0px -45%", threshold: [0,.25,.5,.75,1] });
+    steps.forEach((step) => observer.observe(step));
+  });
+</script>
+
+<style>
+  .funding-shift { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: clamp(32px, 6vw, 74px); align-items: start; }
+  .funding-shift__graphic { position: sticky; top: 104px; min-height: 560px; border: 1px solid var(--border-subtle); background: var(--surface-card); }
+  .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity 450ms var(--ease-standard); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--ugm-blue); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
+  .funding-shift[data-stage="early"] .funding-shift__stage--full { opacity: 0; pointer-events: none; }.funding-shift[data-stage="full"] .funding-shift__stage--early { opacity: 0; pointer-events: none; }
+  .funding-shift__steps { display: grid; gap: 40vh; padding-block: 8vh 35vh; }.funding-shift__steps article { padding: 28px; border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-gold); background: var(--surface-card); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
+  @media(max-width:767px){.funding-shift{grid-template-columns:1fr}.funding-shift__graphic{position:relative;top:auto;min-height:0;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
+  @media(prefers-reduced-motion:reduce){.funding-shift__stage{transition:none}}
+</style>

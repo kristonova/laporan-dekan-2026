@@ -1,0 +1,28 @@
+---
+interface Props {
+  label?: string;
+  tone?: "attention" | "positive" | "critical" | "info";
+}
+const { label = "Yang perlu dibaca", tone = "attention" } = Astro.props;
+---
+
+<aside class:list={["insight", `insight--${tone}`]}>
+  <p class="insight__label">{label}</p>
+  <div class="insight__body"><slot /></div>
+</aside>
+
+<style>
+  .insight {
+    margin-block-start: clamp(28px, 4vw, 48px);
+    padding: 24px 28px;
+    border-inline-start: 4px solid var(--insight-color);
+    background: var(--insight-surface);
+  }
+  .insight--attention { --insight-color: var(--status-approaching); --insight-surface: var(--surface-tint-warm); }
+  .insight--positive { --insight-color: var(--status-achieved); --insight-surface: var(--status-achieved-surface); }
+  .insight--critical { --insight-color: var(--status-missed); --insight-surface: var(--status-missed-surface); }
+  .insight--info { --insight-color: var(--status-info); --insight-surface: var(--status-info-surface); }
+  .insight__label { margin: 0 0 8px; color: var(--insight-color); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .insight__body { max-width: 78ch; color: var(--text-primary); font-size: 16px; line-height: 1.6; }
+  .insight__body :global(p) { margin: 0; }
+</style>

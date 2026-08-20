@@ -1,0 +1,78 @@
+---
+import { withBase } from "../lib/paths";
+
+const homeUrl = withBase("/");
+const dataUrl = withBase("/data");
+const presentationUrl = withBase("/presentasi");
+const logoUrl = withBase("/brand/logo-horizontal-white.png");
+---
+
+<footer class="site-footer">
+  <div class="site-footer__main">
+    <div class="site-footer__identity">
+      <img src={logoUrl} width="260" height="47" alt="Universitas Gadjah Mada" />
+      <p>Fakultas Matematika dan Ilmu Pengetahuan Alam<br />Bulaksumur, Yogyakarta 55281</p>
+    </div>
+    <div>
+      <p class="site-footer__eyebrow">Laporan</p>
+      <a href={homeUrl}>Lima Tahun FMIPA</a>
+      <a href={dataUrl}>Data &amp; metodologi</a>
+      <a href={presentationUrl}>Mode presentasi</a>
+    </div>
+    <div>
+      <p class="site-footer__eyebrow">Sumber utama</p>
+      <span>TCK 2026 · SIMASTER</span>
+      <span>Data historis FMIPA 2019–2025</span>
+      <span>Sinkronisasi 19 Agustus 2026</span>
+    </div>
+  </div>
+  <div class="site-footer__meta">
+    <span>MERAKYAT, MANDIRI, BERKELANJUTAN</span>
+    <span>Laporan Dekan FMIPA UGM 2021–2026</span>
+  </div>
+  <div class="site-footer__band" aria-hidden="true"></div>
+</footer>
+
+<style>
+  .site-footer { background: var(--ugm-blue-deep); color: #fff; }
+  .site-footer__main {
+    width: min(calc(100% - (2 * var(--page-gutter))), var(--content-max));
+    margin-inline: auto;
+    padding-block: 72px 48px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.2fr;
+    gap: 64px;
+  }
+  .site-footer__identity img { display: block; width: min(260px, 100%); height: auto; }
+  .site-footer p { color: rgba(255,255,255,.72); margin: 18px 0 0; }
+  .site-footer__main > div:not(:first-child) { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .site-footer__main a, .site-footer__main span { color: rgba(255,255,255,.82); font-size: 14px; }
+  .site-footer__main a { text-decoration-color: rgba(255,255,255,.3); }
+  .site-footer__eyebrow {
+    color: var(--ugm-gold) !important;
+    margin: 0 0 8px !important;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .site-footer__meta {
+    width: min(calc(100% - (2 * var(--page-gutter))), var(--content-max));
+    margin-inline: auto;
+    padding-block: 20px;
+    border-top: 1px solid rgba(255,255,255,.18);
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    color: rgba(255,255,255,.72);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .site-footer__band { height: 14px; background: var(--ugm-gold); }
+  @media (max-width: 760px) {
+    .site-footer__main { grid-template-columns: 1fr; gap: 36px; padding-block: 56px 40px; }
+    .site-footer__meta { flex-direction: column; }
+  }
+</style>

@@ -1,0 +1,1181 @@
+[
+  {
+    "country": "Japan",
+    "iso3": "JPN",
+    "n": 190,
+    "years": [
+      {
+        "year": 2020,
+        "n": 35
+      },
+      {
+        "year": 2021,
+        "n": 26
+      },
+      {
+        "year": 2022,
+        "n": 36
+      },
+      {
+        "year": 2023,
+        "n": 27
+      },
+      {
+        "year": 2024,
+        "n": 28
+      },
+      {
+        "year": 2025,
+        "n": 38
+      }
+    ]
+  },
+  {
+    "country": "South Korea",
+    "iso3": "KOR",
+    "n": 70,
+    "years": [
+      {
+        "year": 2021,
+        "n": 2
+      },
+      {
+        "year": 2022,
+        "n": 7
+      },
+      {
+        "year": 2023,
+        "n": 15
+      },
+      {
+        "year": 2024,
+        "n": 26
+      },
+      {
+        "year": 2025,
+        "n": 20
+      }
+    ]
+  },
+  {
+    "country": "Malaysia",
+    "iso3": "MYS",
+    "n": 63,
+    "years": [
+      {
+        "year": 2020,
+        "n": 8
+      },
+      {
+        "year": 2021,
+        "n": 6
+      },
+      {
+        "year": 2022,
+        "n": 13
+      },
+      {
+        "year": 2023,
+        "n": 10
+      },
+      {
+        "year": 2024,
+        "n": 15
+      },
+      {
+        "year": 2025,
+        "n": 11
+      }
+    ]
+  },
+  {
+    "country": "Germany",
+    "iso3": "DEU",
+    "n": 57,
+    "years": [
+      {
+        "year": 2020,
+        "n": 6
+      },
+      {
+        "year": 2021,
+        "n": 10
+      },
+      {
+        "year": 2022,
+        "n": 8
+      },
+      {
+        "year": 2023,
+        "n": 10
+      },
+      {
+        "year": 2024,
+        "n": 16
+      },
+      {
+        "year": 2025,
+        "n": 7
+      }
+    ]
+  },
+  {
+    "country": "Taiwan",
+    "iso3": "TWN",
+    "n": 56,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2021,
+        "n": 11
+      },
+      {
+        "year": 2022,
+        "n": 10
+      },
+      {
+        "year": 2023,
+        "n": 11
+      },
+      {
+        "year": 2024,
+        "n": 12
+      },
+      {
+        "year": 2025,
+        "n": 10
+      }
+    ]
+  },
+  {
+    "country": "Austria",
+    "iso3": "AUT",
+    "n": 51,
+    "years": [
+      {
+        "year": 2020,
+        "n": 7
+      },
+      {
+        "year": 2021,
+        "n": 8
+      },
+      {
+        "year": 2022,
+        "n": 11
+      },
+      {
+        "year": 2023,
+        "n": 5
+      },
+      {
+        "year": 2024,
+        "n": 14
+      },
+      {
+        "year": 2025,
+        "n": 6
+      }
+    ]
+  },
+  {
+    "country": "India",
+    "iso3": "IND",
+    "n": 37,
+    "years": [
+      {
+        "year": 2021,
+        "n": 2
+      },
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2023,
+        "n": 6
+      },
+      {
+        "year": 2024,
+        "n": 12
+      },
+      {
+        "year": 2025,
+        "n": 16
+      }
+    ]
+  },
+  {
+    "country": "Australia",
+    "iso3": "AUS",
+    "n": 33,
+    "years": [
+      {
+        "year": 2020,
+        "n": 6
+      },
+      {
+        "year": 2021,
+        "n": 10
+      },
+      {
+        "year": 2022,
+        "n": 8
+      },
+      {
+        "year": 2023,
+        "n": 5
+      },
+      {
+        "year": 2024,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "United States",
+    "iso3": "USA",
+    "n": 28,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2021,
+        "n": 4
+      },
+      {
+        "year": 2022,
+        "n": 4
+      },
+      {
+        "year": 2023,
+        "n": 8
+      },
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 8
+      }
+    ]
+  },
+  {
+    "country": "United Kingdom",
+    "iso3": "GBR",
+    "n": 27,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2021,
+        "n": 5
+      },
+      {
+        "year": 2022,
+        "n": 5
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 6
+      },
+      {
+        "year": 2025,
+        "n": 8
+      }
+    ]
+  },
+  {
+    "country": "Saudi Arabia",
+    "iso3": "",
+    "n": 26,
+    "years": [
+      {
+        "year": 2021,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 4
+      },
+      {
+        "year": 2023,
+        "n": 4
+      },
+      {
+        "year": 2024,
+        "n": 11
+      },
+      {
+        "year": 2025,
+        "n": 6
+      }
+    ]
+  },
+  {
+    "country": "Netherlands",
+    "iso3": "NLD",
+    "n": 22,
+    "years": [
+      {
+        "year": 2021,
+        "n": 3
+      },
+      {
+        "year": 2022,
+        "n": 6
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 5
+      },
+      {
+        "year": 2025,
+        "n": 6
+      }
+    ]
+  },
+  {
+    "country": "France",
+    "iso3": "FRA",
+    "n": 18,
+    "years": [
+      {
+        "year": 2020,
+        "n": 5
+      },
+      {
+        "year": 2021,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 7
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Singapore",
+    "iso3": "SGP",
+    "n": 15,
+    "years": [
+      {
+        "year": 2020,
+        "n": 3
+      },
+      {
+        "year": 2022,
+        "n": 2
+      },
+      {
+        "year": 2023,
+        "n": 3
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Thailand",
+    "iso3": "THA",
+    "n": 14,
+    "years": [
+      {
+        "year": 2022,
+        "n": 2
+      },
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 7
+      }
+    ]
+  },
+  {
+    "country": "China",
+    "iso3": "CHN",
+    "n": 14,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2021,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 2
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 4
+      }
+    ]
+  },
+  {
+    "country": "Pakistan",
+    "iso3": "PAK",
+    "n": 11,
+    "years": [
+      {
+        "year": 2022,
+        "n": 2
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Italy",
+    "iso3": "ITA",
+    "n": 11,
+    "years": [
+      {
+        "year": 2022,
+        "n": 3
+      },
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Iran",
+    "iso3": "",
+    "n": 9,
+    "years": [
+      {
+        "year": 2021,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 3
+      },
+      {
+        "year": 2025,
+        "n": 5
+      }
+    ]
+  },
+  {
+    "country": "Brunei Darussalam",
+    "iso3": "",
+    "n": 8,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "United Arab Emirates",
+    "iso3": "",
+    "n": 8,
+    "years": [
+      {
+        "year": 2021,
+        "n": 3
+      },
+      {
+        "year": 2022,
+        "n": 3
+      },
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Spain",
+    "iso3": "",
+    "n": 8,
+    "years": [
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Canada",
+    "iso3": "",
+    "n": 7,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Egypt",
+    "iso3": "",
+    "n": 7,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 4
+      },
+      {
+        "year": 2025,
+        "n": 2
+      }
+    ]
+  },
+  {
+    "country": "Belgium",
+    "iso3": "",
+    "n": 7,
+    "years": [
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 3
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Sweden",
+    "iso3": "",
+    "n": 6,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 3
+      },
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Finland",
+    "iso3": "",
+    "n": 6,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2021,
+        "n": 2
+      },
+      {
+        "year": 2024,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Tanzania",
+    "iso3": "",
+    "n": 5,
+    "years": [
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 3
+      }
+    ]
+  },
+  {
+    "country": "Switzerland",
+    "iso3": "",
+    "n": 5,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Hong Kong",
+    "iso3": "HKG",
+    "n": 4,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Cuba",
+    "iso3": "",
+    "n": 4,
+    "years": [
+      {
+        "year": 2025,
+        "n": 4
+      }
+    ]
+  },
+  {
+    "country": "South Africa",
+    "iso3": "",
+    "n": 4,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2022,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Czech Republic",
+    "iso3": "",
+    "n": 4,
+    "years": [
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 2
+      }
+    ]
+  },
+  {
+    "country": "Viet Nam",
+    "iso3": "",
+    "n": 4,
+    "years": [
+      {
+        "year": 2021,
+        "n": 3
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Brazil",
+    "iso3": "",
+    "n": 4,
+    "years": [
+      {
+        "year": 2020,
+        "n": 2
+      },
+      {
+        "year": 2021,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Poland",
+    "iso3": "",
+    "n": 3,
+    "years": [
+      {
+        "year": 2023,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Turkey",
+    "iso3": "",
+    "n": 3,
+    "years": [
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Ireland",
+    "iso3": "",
+    "n": 3,
+    "years": [
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Ukraine",
+    "iso3": "",
+    "n": 3,
+    "years": [
+      {
+        "year": 2021,
+        "n": 2
+      },
+      {
+        "year": 2022,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Morocco",
+    "iso3": "",
+    "n": 3,
+    "years": [
+      {
+        "year": 2024,
+        "n": 2
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Qatar",
+    "iso3": "QAT",
+    "n": 2,
+    "years": [
+      {
+        "year": 2022,
+        "n": 1
+      },
+      {
+        "year": 2023,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Philippines",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Kazakhstan",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2024,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Croatia",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      },
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Nigeria",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2024,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Russian Federation",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      },
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Iraq",
+    "iso3": "",
+    "n": 2,
+    "years": [
+      {
+        "year": 2023,
+        "n": 2
+      }
+    ]
+  },
+  {
+    "country": "Panama",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Greece",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Hungary",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Sri Lanka",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Algeria",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2025,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Libya",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Slovakia",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Timor-Leste",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2021,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Ethiopia",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "New Zealand",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2023,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Romania",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Norway",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2024,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Chile",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      }
+    ]
+  },
+  {
+    "country": "Bangladesh",
+    "iso3": "",
+    "n": 1,
+    "years": [
+      {
+        "year": 2020,
+        "n": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Lima Tahun FMIPA</title>
+  <desc id="desc">Web data story Laporan Dekan FMIPA Universitas Gadjah Mada 2026.</desc>
+  <rect width="1200" height="630" fill="#0B1F2E"/>
+  <rect y="612" width="1200" height="18" fill="#FED400"/>
+  <path d="M942 0h258v630H942z" fill="#004A74"/>
+  <g fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2">
+    <circle cx="1085" cy="194" r="76"/>
+    <circle cx="1085" cy="194" r="126"/>
+    <circle cx="1085" cy="194" r="176"/>
+    <circle cx="1085" cy="194" r="226"/>
+    <circle cx="1085" cy="194" r="276"/>
+  </g>
+  <image href="logo-horizontal-white.png" x="72" y="60" width="360" height="103" preserveAspectRatio="xMinYMid meet"/>
+  <path d="M72 212h82v3H72z" fill="#FED400"/>
+  <text x="72" y="288" fill="#FED400" font-family="Gama Serif, Georgia, serif" font-size="76" font-weight="700">Lima Tahun FMIPA</text>
+  <text x="72" y="348" fill="#fff" font-family="Gama Sans, Arial, sans-serif" font-size="28">Laporan Dekan FMIPA UGM 2026</text>
+  <text x="72" y="470" fill="#fff" font-family="Gama Sans, Arial, sans-serif" font-size="76" font-weight="700">70.905 sitasi</text>
+  <text x="72" y="514" fill="#D7DDE1" font-family="Gama Sans, Arial, sans-serif" font-size="24">Dua pertiganya terjadi dalam lima tahun terakhir.</text>
+</svg>

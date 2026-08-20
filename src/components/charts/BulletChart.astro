@@ -1,0 +1,281 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps, TckStatus } from "./_types";
+import {
+  STATUS_COLORS,
+  STATUS_SYMBOLS,
+  clamp,
+  finite,
+  formatNumber,
+  roundedEndBarPath,
+  slugify,
+  textLines,
+} from "./_utils";
+
+interface BulletDatum extends Record<string, unknown> {
+  label: string;
+  actual: number;
+  target: number;
+  annualTarget?: number;
+  ratio?: number;
+  annualRatio?: number;
+  actualLabel?: string;
+  status?: TckStatus;
+  group?: string;
+  direction?: "up" | "down";
+  provisional?: boolean;
+  note?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<BulletDatum>, "tableRows" | "tableColumns"> {
+  data: BulletDatum[];
+  width?: number;
+  rowHeight?: number;
+  maxPercent?: number;
+  targetLabel?: string;
+  annualTargetLabel?: string;
+  axisLabel?: string;
+}
+
+const {
+  data,
+  width = 980,
+  rowHeight = 52,
+  maxPercent = 200,
+  targetLabel = "Target triwulan berjalan",
+  annualTargetLabel = "Target tahunan",
+  axisLabel = "% terhadap target",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 68, right: 176, bottom: 30, left: 300 };
+const plotWidth = width - margin.left - margin.right;
+const groupNames = [...new Set(data.map((row) => row.group).filter(Boolean))] as string[];
+const grouped = groupNames.length > 0;
+let cursor = margin.top;
+const positioned = data.map((row, index) => {
+  const priorGroup = index > 0 ? data[index - 1].group : undefined;
+  const beginsGroup = grouped && row.group !== priorGroup;
+  if (beginsGroup) cursor += index === 0 ? 24 : 38;
+  const y = cursor;
+  cursor += rowHeight;
+
+  const target = finite(row.target);
+  const actual = finite(row.actual);
+  const direction = row.direction ?? "up";
+  const rawRatio = row.ratio ?? (direction === "down" ? (actual === 0 ? maxPercent + 1 : (target / actual) * 100) : target === 0 ? 0 : (actual / target) * 100);
+  const annualTarget = finite(row.annualTarget, target);
+  const annualRatio = row.annualRatio ?? (direction === "down" ? (actual === 0 ? maxPercent + 1 : (annualTarget / actual) * 100) : target === 0 ? 0 : (annualTarget / target) * 100);
+  return { ...row, y, beginsGroup, rawRatio, annualRatio, actual, target, annualTarget };
+});
+const height = Math.max(220, cursor + margin.bottom + 16);
+const x = (percent: number) => margin.left + (clamp(percent, 0, maxPercent) / maxPercent) * plotWidth;
+const axisTicks = Array.from({ length: Math.floor(maxPercent / 50) + 1 }, (_, index) => index * 50);
+const statusLabel: Record<TckStatus, string> = {
+  tercapai: "Tercapai",
+  mendekati: "Mendekati",
+  tertinggal: "Tertinggal",
+  meleset: "Meleset",
+};
+const tableRows = data.map((row) => ({
+  Indikator: row.label,
+  Pilar: row.group ?? "—",
+  Capaian: row.actualLabel ?? formatNumber(row.actual, 2),
+  "Target berjalan": formatNumber(row.target, 2),
+  "Target tahunan": row.annualTarget === undefined ? "—" : formatNumber(row.annualTarget, 2),
+  Status: row.status ? statusLabel[row.status] : "—",
+}));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Indikator", label: "Indikator" },
+    { key: "Pilar", label: "Pilar" },
+    { key: "Capaian", label: "Capaian", align: "end" },
+    { key: "Target berjalan", label: "Target berjalan", align: "end" },
+    { key: "Target tahunan", label: "Target tahunan", align: "end" },
+    { key: "Status", label: "Status" },
+  ]}
+  class={className}
+  {hideHeader}
+  minPlotWidth={760}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Grafik peluru untuk {data.length} indikator. Batang menunjukkan capaian, garis utuh menunjukkan target berjalan,
+      dan garis putus-putus menunjukkan target tahunan.
+    </desc>
+    <defs>
+      <pattern id={`${id}-provisional`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="8" height="8" fill="transparent"></rect>
+        <line x1="0" y1="0" x2="0" y2="8" stroke="#ffffff" stroke-width="2" opacity="0.42"></line>
+      </pattern>
+    </defs>
+
+    <g class="axis" aria-hidden="true">
+      {axisTicks.map((tick) => (
+        <g>
+          <line x1={x(tick)} x2={x(tick)} y1={margin.top - 18} y2={height - margin.bottom} />
+          <text x={x(tick)} y={margin.top - 28} text-anchor="middle">{tick}%</text>
+        </g>
+      ))}
+      <text class="axis-label" x={margin.left + plotWidth / 2} y="16" text-anchor="middle">{axisLabel}</text>
+    </g>
+
+    {positioned.map((row) => {
+      const barY = row.y + 7;
+      const barHeight = 18;
+      const barWidth = Math.max(2, x(row.rawRatio) - margin.left);
+      const annualX = x(row.annualRatio);
+      const targetX = x(100);
+      const labelLines = textLines(row.label, 39, 2);
+      const status = row.status;
+      const tooltip = `${row.label}: capaian ${row.actualLabel ?? formatNumber(row.actual, 2)}; ${formatNumber(row.rawRatio, 1)}% dari target berjalan${row.annualTarget === undefined ? "" : `; target tahunan ${formatNumber(row.annualTarget, 2)}`}.`;
+      return (
+        <g class="bullet-row" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          {row.beginsGroup && (
+            <text class="group-label" x="0" y={row.y - 13}>{row.group}</text>
+          )}
+          <text class="row-label" x={margin.left - 14} y={row.y + (labelLines.length === 1 ? 20 : 13)} text-anchor="end">
+            {labelLines.map((line, lineIndex) => (
+              <tspan x={margin.left - 14} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>
+            ))}
+          </text>
+          <line class="track" x1={margin.left} x2={margin.left + plotWidth} y1={barY + barHeight / 2} y2={barY + barHeight / 2} />
+          <path
+            class:list={["actual", row.provisional && "is-provisional"]}
+            d={roundedEndBarPath(margin.left, barY, barWidth, barHeight, 4)}
+            fill={status ? STATUS_COLORS[status] : "var(--chart-primary, #004a74)"}
+          />
+          {row.provisional && (
+            <path d={roundedEndBarPath(margin.left, barY, barWidth, barHeight, 4)} fill={`url(#${id}-provisional)`} aria-hidden="true" />
+          )}
+          <line class="annual-target" x1={annualX} x2={annualX} y1={barY - 3} y2={barY + barHeight + 3} />
+          <line class="current-target" x1={targetX} x2={targetX} y1={barY - 5} y2={barY + barHeight + 5} />
+          {row.rawRatio > maxPercent && <text class="overflow" x={margin.left + plotWidth + 7} y={barY + 15}>▸</text>}
+          <text class="raw-value" x={margin.left + plotWidth + 24} y={barY + 14}>{row.actualLabel ?? formatNumber(row.actual, 2)}</text>
+          {status && (
+            <text class:list={["status", `status-${status}`]} x={width - 2} y={barY + 14} text-anchor="end">
+              {STATUS_SYMBOLS[status]} {statusLabel[status]}
+            </text>
+          )}
+        </g>
+      );
+    })}
+
+    <g class="key" transform={`translate(${margin.left}, ${height - 8})`} aria-hidden="true">
+      <line class="current-target" x1="0" x2="0" y1="-14" y2="4" />
+      <text x="8" y="0">{targetLabel}</text>
+      <line class="annual-target" x1="190" x2="190" y1="-14" y2="4" />
+      <text x="198" y="0">{annualTargetLabel}</text>
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .axis line {
+    stroke: var(--rule-light, #e7e9eb);
+    stroke-width: 1;
+  }
+
+  .axis text,
+  .key text {
+    fill: var(--ink-muted, #61676c);
+    font-size: 11px;
+  }
+
+  .axis .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .group-label {
+    fill: var(--brand-blue, #004a74);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .row-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .track {
+    stroke: var(--rule, #d8dcdf);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+
+  .actual {
+    transition: d 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .current-target {
+    stroke: var(--ink, #332c2b);
+    stroke-width: 2;
+  }
+
+  .annual-target {
+    stroke: var(--ink-muted, #72787d);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+  }
+
+  .raw-value,
+  .status,
+  .overflow {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .overflow {
+    fill: var(--brand-blue, #004a74);
+    font-size: 16px;
+  }
+
+  .status-tercapai { fill: var(--status-tercapai, #147a55); }
+  .status-mendekati { fill: var(--status-mendekati, #806000); }
+  .status-tertinggal { fill: var(--status-tertinggal, #8a4908); }
+  .status-meleset { fill: var(--status-meleset, #b42318); }
+
+  .bullet-row:focus-visible {
+    outline: none;
+  }
+
+  .bullet-row:focus-visible .track {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 8;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .actual { transition: none; }
+  }
+</style>

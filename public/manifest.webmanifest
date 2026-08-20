@@ -1,0 +1,19 @@
+{
+  "name": "Lima Tahun FMIPA — Laporan Dekan 2026",
+  "short_name": "Lima Tahun FMIPA",
+  "description": "Web data story pertanggungjawaban Dekan FMIPA UGM periode 2021–2026.",
+  "lang": "id-ID",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0B1F2E",
+  "theme_color": "#0B1F2E",
+  "icons": [
+    {
+      "src": "./brand/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

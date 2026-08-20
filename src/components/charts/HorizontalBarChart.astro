@@ -1,0 +1,201 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, finite, formatCompact, niceMax, roundedEndBarPath, slugify, textLines, ticks } from "./_utils";
+
+interface BarDatum extends Record<string, unknown> {
+  label: string;
+  value: number;
+  valueLabel?: string;
+  color?: string;
+  group?: string;
+  annotation?: string;
+  provisional?: boolean;
+}
+
+interface Props extends Omit<ChartChromeProps<BarDatum>, "tableRows" | "tableColumns"> {
+  data: BarDatum[];
+  width?: number;
+  rowHeight?: number;
+  max?: number;
+  sort?: "ascending" | "descending" | "none";
+  axisLabel?: string;
+  valueFormatter?: (value: number) => string;
+  target?: number;
+  targetLabel?: string;
+}
+
+const {
+  data,
+  width = 900,
+  rowHeight = 54,
+  max,
+  sort = "none",
+  axisLabel,
+  valueFormatter = formatCompact,
+  target,
+  targetLabel = "Target",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const sortedData = [...data].sort((a, b) => sort === "ascending" ? a.value - b.value : sort === "descending" ? b.value - a.value : 0);
+const margin = { top: 52, right: 154, bottom: 34, left: 250 };
+const plotWidth = width - margin.left - margin.right;
+const dataMax = Math.max(0, ...sortedData.map((row) => finite(row.value)), finite(target));
+const domainMax = max ?? niceMax(dataMax, 4);
+const x = (value: number) => margin.left + (Math.max(0, value) / Math.max(1, domainMax)) * plotWidth;
+const axisTicks = ticks(0, domainMax, 4);
+const height = margin.top + sortedData.length * rowHeight + margin.bottom;
+const tableRows = sortedData.map((row) => ({
+  Kategori: row.label,
+  Nilai: row.valueLabel ?? valueFormatter(row.value),
+  Kelompok: row.group ?? "—",
+  Catatan: row.annotation ?? "—",
+}));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Kategori", label: "Kategori" },
+    { key: "Nilai", label: "Nilai", align: "end" },
+    { key: "Kelompok", label: "Kelompok" },
+    { key: "Catatan", label: "Catatan" },
+  ]}
+  class={className}
+  {hideHeader}
+  minPlotWidth={620}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>Grafik batang horizontal berisi {data.length} kategori, diurutkan {sort === "none" ? "sesuai data" : sort}.</desc>
+    <defs>
+      <pattern id={`${id}-provisional`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="8" stroke="#fff" stroke-width="2" opacity="0.45" />
+      </pattern>
+    </defs>
+
+    <g class="axis" aria-hidden="true">
+      {axisTicks.map((tick) => (
+        <g>
+          <line x1={x(tick)} x2={x(tick)} y1={margin.top - 8} y2={height - margin.bottom} />
+          <text x={x(tick)} y={margin.top - 17} text-anchor="middle">{valueFormatter(tick)}</text>
+        </g>
+      ))}
+      {axisLabel && <text class="axis-label" x={margin.left + plotWidth / 2} y="13" text-anchor="middle">{axisLabel}</text>}
+    </g>
+
+    {target !== undefined && (
+      <g class="target" aria-hidden="true">
+        <line x1={x(target)} x2={x(target)} y1={margin.top - 10} y2={height - margin.bottom} />
+        <text x={x(target) + 5} y={height - 8}>{targetLabel}: {valueFormatter(target)}</text>
+      </g>
+    )}
+
+    {sortedData.map((row, index) => {
+      const y = margin.top + index * rowHeight + 8;
+      const barHeight = 24;
+      const barWidth = Math.max(2, x(finite(row.value)) - margin.left);
+      const labelLines = textLines(row.label, 31, 2);
+      const color = row.color ?? SERIES_COLORS[index % SERIES_COLORS.length];
+      const tooltip = `${row.label}: ${row.valueLabel ?? valueFormatter(row.value)}${row.annotation ? `. ${row.annotation}` : ""}`;
+      return (
+        <g class="bar-row" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <text class="category" x={margin.left - 14} y={y + (labelLines.length === 1 ? 17 : 10)} text-anchor="end">
+            {labelLines.map((line, lineIndex) => (
+              <tspan x={margin.left - 14} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>
+            ))}
+          </text>
+          <path d={roundedEndBarPath(margin.left, y, barWidth, barHeight, 4)} fill={color} />
+          {row.provisional && (
+            <path d={roundedEndBarPath(margin.left, y, barWidth, barHeight, 4)} fill={`url(#${id}-provisional)`} aria-hidden="true" />
+          )}
+          <text class="value" x={Math.min(width - margin.right + 8, x(row.value) + 9)} y={y + 17}>
+            {row.valueLabel ?? valueFormatter(row.value)}
+          </text>
+          {row.annotation && <text class="annotation" x={width - 3} y={y + 17} text-anchor="end">{row.annotation}</text>}
+        </g>
+      );
+    })}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .axis line {
+    stroke: var(--rule-light, #e5e8ea);
+  }
+
+  .axis text,
+  .target text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .axis .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .category,
+  .value {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .annotation {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .target line {
+    stroke: var(--ink, #332c2b);
+    stroke-width: 2;
+    stroke-dasharray: 5 4;
+  }
+
+  .bar-row path {
+    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bar-row:focus-visible {
+    outline: none;
+  }
+
+  .bar-row:hover path:first-of-type,
+  .bar-row:focus path:first-of-type {
+    opacity: 0.76;
+  }
+
+  .bar-row:focus-visible path:first-of-type {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar-row path { transition: none; }
+  }
+</style>

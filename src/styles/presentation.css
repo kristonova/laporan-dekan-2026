@@ -1,0 +1,210 @@
+/*
+ * Full-screen Rapat Senat mode. Import after global.css on /presentasi only.
+ * Activate with data-mode="presentation", data-presentation="true", or
+ * .presentation-mode on the route's outermost element.
+ */
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode) {
+  --type-xs: 1.05rem;
+  --type-sm: 1.225rem;
+  --type-body: 1.4rem;
+  --type-lead: 1.75rem;
+  --type-h3: 2.45rem;
+  --type-h2: 3.5rem;
+  --type-display: 5.6rem;
+  --type-hero: 8.4rem;
+  --type-hero-fluid: clamp(4.9rem, 9vw, var(--type-hero));
+  --type-display-fluid: clamp(3.5rem, 6vw, var(--type-display));
+  --gutter-page: clamp(3rem, 4.2vw, 5rem);
+  --gutter-section: clamp(4rem, 8vh, 7rem);
+  --chart-min-height: min(35rem, 58vh);
+  /* Projector gamma: the PRD specifies the darker Kimia step in this mode. */
+  --dept-kimia: #199e70;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100vh;
+  block-size: 100svh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-deck, [data-presentation-deck]) {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  background: var(--surface-page);
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-slide, [data-presentation-slide]) {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 100%;
+  min-block-size: 0;
+  padding: var(--gutter-page);
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-slide.is-active, [data-presentation-slide][aria-hidden="false"]) {
+  z-index: 1;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.scene, [data-scene]) {
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 100%;
+  min-block-size: 0;
+  padding: var(--gutter-page);
+  overflow: hidden;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.sticky-scene) {
+  block-size: 100%;
+  align-items: center;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.sticky-graphic, [data-sticky-graphic]) {
+  position: static;
+  min-block-size: 0;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.chart-stage) {
+  max-block-size: 62vh;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.chart-actions, [data-table-toggle], [data-download]) {
+  display: none;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-controls, [data-presentation-controls]) {
+  position: fixed;
+  inset-inline-end: var(--space-6);
+  inset-block-end: var(--space-6);
+  z-index: var(--z-overlay);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-progress, [data-presentation-progress]) {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--z-overlay);
+  block-size: var(--rule-height);
+  background: var(--border-on-dark);
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presentation-progress__bar, [data-presentation-progress-bar]) {
+  inline-size: var(--presentation-progress, 0%);
+  block-size: 100%;
+  background: var(--ugm-gold);
+  transition: inline-size var(--duration-fast) var(--ease-standard);
+}
+
+:where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+  :where(.presenter-notes, [data-presenter-notes]) {
+  position: fixed;
+  inset-inline: var(--gutter-page);
+  inset-block-end: var(--space-8);
+  z-index: var(--z-overlay);
+  display: none;
+  max-block-size: 38vh;
+  padding: var(--space-6);
+  overflow: auto;
+  color: #ffffff;
+  background: rgb(11 31 46 / 96%);
+  border: var(--border-width) solid rgb(255 255 255 / 36%);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  font-size: 1rem;
+}
+
+:where(
+    [data-mode="presentation"][data-notes="open"],
+    [data-presentation="true"][data-notes="open"],
+    .presentation-mode[data-notes="open"]
+  )
+  :where(.presenter-notes, [data-presenter-notes]) {
+  display: block;
+}
+
+@media (max-width: 63.999rem), (max-height: 39.999rem) {
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode) {
+    --type-xs: 0.875rem;
+    --type-sm: 1rem;
+    --type-body: 1.125rem;
+    --type-lead: 1.4rem;
+    --type-h3: 2rem;
+    --type-h2: 2.8rem;
+    --type-display: 4.5rem;
+    --type-hero: 6.5rem;
+    --gutter-page: clamp(1.5rem, 4vw, 3rem);
+    --chart-min-height: 16rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+    :where(.presentation-slide, [data-presentation-slide]) {
+    transition: none;
+  }
+}
+
+@page {
+  size: 16in 9in;
+  margin: 0;
+}
+
+@media print {
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode) {
+    block-size: auto;
+    overflow: visible;
+  }
+
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+    :where(.presentation-deck, [data-presentation-deck]) {
+    block-size: auto;
+    overflow: visible;
+  }
+
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+    :where(.presentation-slide, [data-presentation-slide]) {
+    position: relative;
+    display: grid !important;
+    inline-size: 16in;
+    block-size: 9in;
+    break-after: page;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  :where([data-mode="presentation"], [data-presentation="true"], .presentation-mode)
+    :where(.presentation-controls, [data-presentation-controls], .presentation-progress, [data-presentation-progress], .presenter-notes, [data-presenter-notes]) {
+    display: none !important;
+  }
+}

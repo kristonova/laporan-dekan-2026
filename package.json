@@ -1,0 +1,26 @@
+{
+  "name": "lima-tahun-fmipa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build && node pipeline/build-service-worker.mjs",
+    "preview": "astro preview",
+    "data": "python3 pipeline/00_load.py && python3 pipeline/01_clean.py && python3 pipeline/02_aggregate.py",
+    "validate:data": "python3 pipeline/03_validate.py",
+    "check": "astro check",
+    "verify": "npm run data && npm run validate:data && npm run build && node pipeline/check-build.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.2.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.2"
+  }
+}

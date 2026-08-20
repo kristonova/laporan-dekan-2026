@@ -1,0 +1,31 @@
+year,department,count,mapping,is_partial
+2020,Belum terpetakan,38,unmapped,False
+2020,Fisika,87,scopus_id_majority,False
+2020,Ilmu Komputer dan Elektronika,70,scopus_id_majority,False
+2020,Kimia,137,scopus_id_majority,False
+2020,Matematika,41,scopus_id_majority,False
+2021,Belum terpetakan,44,unmapped,False
+2021,Fisika,88,scopus_id_majority,False
+2021,Ilmu Komputer dan Elektronika,87,scopus_id_majority,False
+2021,Kimia,153,scopus_id_majority,False
+2021,Matematika,53,scopus_id_majority,False
+2022,Belum terpetakan,18,unmapped,False
+2022,Fisika,94,"scopus_id_majority,source",False
+2022,Ilmu Komputer dan Elektronika,117,"scopus_id_majority,source",False
+2022,Kimia,185,"scopus_id_majority,source",False
+2022,Matematika,73,"scopus_id_majority,source",False
+2023,Belum terpetakan,15,unmapped,False
+2023,Fisika,99,source,False
+2023,Ilmu Komputer dan Elektronika,95,"scopus_id_majority,source",False
+2023,Kimia,132,"scopus_id_majority,source",False
+2023,Matematika,76,source,False
+2024,Belum terpetakan,21,unmapped,False
+2024,Fisika,127,"scopus_id_majority,source",False
+2024,Ilmu Komputer dan Elektronika,120,"scopus_id_majority,source",False
+2024,Kimia,190,"scopus_id_majority,source",False
+2024,Matematika,85,"scopus_id_majority,source",False
+2025,Belum terpetakan,21,unmapped,True
+2025,Fisika,123,"scopus_id_majority,source",True
+2025,Ilmu Komputer dan Elektronika,100,"scopus_id_majority,source",True
+2025,Kimia,148,"scopus_id_majority,source",True
+2025,Matematika,89,"scopus_id_majority,source",True

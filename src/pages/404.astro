@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/paths";
+
+const homeUrl = withBase("/");
+---
+<BaseLayout title="Halaman Tidak Ditemukan — Lima Tahun FMIPA" description="Halaman yang diminta tidak ditemukan.">
+  <main id="konten-utama" class="not-found">
+    <p>404</p>
+    <h1>Halaman Tidak Ditemukan</h1>
+    <span>Tautan ini mungkin sudah berubah atau tidak termasuk dalam laporan.</span>
+    <a href={homeUrl}>Kembali ke cerita utama</a>
+  </main>
+</BaseLayout>
+<style>
+  .not-found { min-height: 70svh; padding: 100px var(--page-gutter); display: grid; place-content: center; text-align: center; background: var(--ugm-blue-deep); color: #fff; }
+  .not-found p { color: var(--ugm-gold); font-size: 72px; font-weight: 300; }.not-found h1 { color: #fff; }.not-found span { margin-block-start: 18px; color: rgba(255,255,255,.72); }.not-found a { margin-block-start: 30px; color: #fff; font-weight: 700; }
+</style>

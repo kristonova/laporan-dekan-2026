@@ -1,0 +1,46 @@
+---
+interface Props {
+  id: string;
+  number: string;
+  title: string;
+  evidence: string;
+  color: "blue" | "orange" | "green" | "violet";
+  summary: string;
+}
+const { id, number, title, evidence, color, summary } = Astro.props;
+---
+
+<section class={`pillar-header pillar-header--${color}`} {id} aria-labelledby={`${id}-title`}>
+  <div class="pillar-header__inner" data-reveal>
+    <div class="pillar-header__number" aria-hidden="true">{number}</div>
+    <div>
+      <p class="pillar-header__eyebrow">Pilar {number} · {evidence}</p>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <p>{summary}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillar-header { padding: clamp(72px, 9vw, 112px) var(--page-gutter); background: var(--surface-subtle); scroll-margin-top: 76px; }
+  .pillar-header__inner { width: min(100%, 980px); margin-inline: auto; display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 5vw, 62px); align-items: start; }
+  .pillar-header__number {
+    width: clamp(72px, 10vw, 112px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    background: var(--pillar-color);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 70px);
+    line-height: 1;
+  }
+  .pillar-header__eyebrow { margin: 0 0 16px; color: var(--pillar-color); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  .pillar-header h2 { color: var(--text-primary); font-family: var(--font-display); font-size: clamp(42px, 6vw, 72px); letter-spacing: -.03em; line-height: 1; }
+  .pillar-header p:last-child { max-width: 680px; margin: 22px 0 0; color: var(--text-secondary); font-size: 19px; line-height: 1.55; }
+  .pillar-header--blue { --pillar-color: var(--dept-fisika); }
+  .pillar-header--orange { --pillar-color: var(--dept-ike); }
+  .pillar-header--green { --pillar-color: var(--dept-kimia); }
+  .pillar-header--violet { --pillar-color: var(--dept-matematika); }
+  @media (max-width: 620px) { .pillar-header__inner { grid-template-columns: 1fr; } }
+</style>

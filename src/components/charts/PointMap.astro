@@ -1,0 +1,403 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { clamp, finite, formatNumber, scaleLinear, slugify } from "./_utils";
+import indonesiaProvincesRaw from "../../data/geo/indonesia-provinces.json";
+import { withBase } from "../../lib/paths";
+
+type Position = [number, number];
+type PolygonCoordinates = Position[][];
+interface ProvinceFeature {
+  type: "Feature";
+  properties: { code: string; name: string; level: string };
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: PolygonCoordinates | PolygonCoordinates[];
+  };
+}
+
+interface MapPoint extends Record<string, unknown> {
+  lat: number;
+  lng: number;
+  label: string;
+  value?: number;
+  year?: number | string;
+  color?: string;
+  detail?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<MapPoint>, "tableRows" | "tableColumns"> {
+  points: MapPoint[];
+  width?: number;
+  height?: number;
+  bounds?: { minLat: number; maxLat: number; minLng: number; maxLng: number };
+  accumulate?: boolean;
+  labelCount?: number;
+  showSmallMultiples?: boolean;
+  pointLabel?: string;
+  basemap?: "indonesia-geojson" | "grid";
+}
+
+const {
+  points,
+  width = 960,
+  height = 470,
+  bounds = { minLat: -11, maxLat: 6.5, minLng: 94.5, maxLng: 141.5 },
+  accumulate = true,
+  labelCount = 5,
+  showSmallMultiples = true,
+  pointLabel = "kegiatan",
+  basemap = "indonesia-geojson",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 36, right: 28, bottom: 35, left: 38 };
+const hasCoordinates = (point: MapPoint) => point.lat !== null && point.lat !== undefined && point.lng !== null && point.lng !== undefined && Number.isFinite(Number(point.lat)) && Number.isFinite(Number(point.lng));
+const validPoints = points.filter(hasCoordinates);
+const invalidCount = points
+  .filter((point) => !hasCoordinates(point))
+  .reduce((sum, point) => sum + finite(point.value, 1), 0);
+const years = [...new Set(validPoints.map((point) => point.year).filter((year) => year !== undefined))].sort((a, b) => String(a).localeCompare(String(b), "id", { numeric: true }));
+const finalYear = years.at(-1);
+const maxValue = Math.max(1, ...validPoints.map((point) => finite(point.value, 1)));
+const projectX = (lng: number) => scaleLinear(lng, bounds.minLng, bounds.maxLng, margin.left, width - margin.right);
+const projectY = (lat: number) => scaleLinear(lat, bounds.maxLat, bounds.minLat, margin.top, height - margin.bottom);
+const radius = (value: number) => 4 + Math.sqrt(Math.max(0, value) / maxValue) * 9;
+const visibleAt = (point: MapPoint, year: string | number | undefined) => {
+  if (year === undefined || point.year === undefined) return true;
+  return accumulate ? Number(point.year) <= Number(year) : String(point.year) === String(year);
+};
+const topLabels = [...validPoints].sort((a, b) => finite(b.value, 1) - finite(a.value, 1)).slice(0, labelCount);
+const provinceFeatures = (indonesiaProvincesRaw as unknown as { features: ProvinceFeature[] }).features;
+const indonesiaGeoJsonUrl = withBase("/data/indonesia-provinces.geojson");
+const ringPath = (ring: Position[]) => ring.length
+  ? `${ring.map(([lng, lat], index) => `${index === 0 ? "M" : "L"}${projectX(lng).toFixed(2)} ${projectY(lat).toFixed(2)}`).join(" ")} Z`
+  : "";
+const provincePath = (feature: ProvinceFeature) => {
+  const polygons = feature.geometry.type === "Polygon"
+    ? [feature.geometry.coordinates as PolygonCoordinates]
+    : feature.geometry.coordinates as PolygonCoordinates[];
+  return polygons.flatMap((polygon) => polygon.map(ringPath)).join(" ");
+};
+const tableRows = points.map((point) => ({
+  Lokasi: point.label,
+  Tahun: point.year ?? "—",
+  Lintang: point.lat,
+  Bujur: point.lng,
+  Jumlah: point.value ?? 1,
+  Keterangan: point.detail ?? "—",
+}));
+const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).reduce((sum, point) => sum + finite(point.value, 1), 0);
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Lokasi", label: "Lokasi" },
+    { key: "Tahun", label: "Tahun" },
+    { key: "Lintang", label: "Lintang", align: "end" },
+    { key: "Bujur", label: "Bujur", align: "end" },
+    { key: "Jumlah", label: "Jumlah", align: "end" },
+    { key: "Keterangan", label: "Keterangan" },
+  ]}
+  class={className}
+  {hideHeader}
+  note={invalidCount > 0 ? `${formatNumber(invalidCount)} rekaman tanpa koordinat tetap dihitung dalam tabel, tetapi tidak dipaksakan masuk ke peta.` : undefined}
+>
+  <div
+    class="point-map"
+    data-point-map
+    data-accumulate={accumulate ? "true" : "false"}
+    data-default-year={String(finalYear ?? "all")}
+    data-point-label={pointLabel}
+  >
+    {
+      years.length > 1 && (
+        <div class="point-map__controls" role="group" aria-label="Pilih tahun peta" data-map-controls hidden>
+          {years.map((year) => (
+            <button type="button" data-map-year={String(year)} aria-pressed={String(year) === String(finalYear) ? "true" : "false"}>{year}</button>
+          ))}
+        </div>
+      )
+    }
+    <p class="point-map__counter" aria-live="polite">
+      <output data-map-output>{formatNumber(latestCount)} {pointLabel}</output>
+      {finalYear !== undefined && <span data-map-output-year> · hingga {finalYear}</span>}
+    </p>
+    <svg class="point-map__main" viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+      <title id={`${id}-svg-title`}>{title}</title>
+      <desc id={`${id}-svg-desc`}>
+        Peta titik {basemap === "indonesia-geojson" ? "di atas batas 38 provinsi Indonesia dari GeoJSON publik" : "berbasis koordinat"}. Posisi titik memakai lintang dan bujur; ukuran menunjukkan jumlah.
+      </desc>
+      <g class="graticule" aria-hidden="true">
+        {[100, 110, 120, 130, 140].map((lng) => <line x1={projectX(lng)} x2={projectX(lng)} y1={margin.top} y2={height - margin.bottom} />)}
+        {[-10, -5, 0, 5].map((lat) => <line x1={margin.left} x2={width - margin.right} y1={projectY(lat)} y2={projectY(lat)} />)}
+      </g>
+      {basemap === "indonesia-geojson" && (
+        <g class="basemap" aria-label="Batas 38 provinsi Indonesia">
+          {provinceFeatures.map((province) => <path d={provincePath(province)} fill-rule="evenodd" aria-label={province.properties.name} />)}
+        </g>
+      )}
+      {validPoints.map((point) => {
+        const pointValue = finite(point.value, 1);
+        const tooltip = `${point.label}${point.year === undefined ? "" : `, ${point.year}`}: ${formatNumber(pointValue)} ${pointLabel}${point.detail ? `. ${point.detail}` : ""}`;
+        const initiallyVisible = visibleAt(point, finalYear);
+        return (
+          <g
+            class:list={["map-point", { "is-map-hidden": !initiallyVisible }]}
+            data-map-point
+            data-year={String(point.year ?? "")}
+            data-value={pointValue}
+            tabindex={initiallyVisible ? "0" : "-1"}
+            aria-hidden={!initiallyVisible}
+            data-tooltip={tooltip}
+            aria-label={tooltip}
+          >
+            <circle class="hit-area" cx={projectX(point.lng)} cy={projectY(point.lat)} r="22" />
+            <circle
+              class="point"
+              cx={projectX(point.lng)}
+              cy={projectY(point.lat)}
+              r={radius(pointValue)}
+              fill={point.color ?? "var(--brand-blue, #004a74)"}
+            />
+          </g>
+        );
+      })}
+      <g class="map-labels" aria-hidden="true">
+        {topLabels.map((point) => (
+          <g>
+            <line x1={projectX(point.lng)} x2={projectX(point.lng) + 10} y1={projectY(point.lat)} y2={projectY(point.lat) - 11} />
+            <text x={projectX(point.lng) + 13} y={projectY(point.lat) - 12}>{point.label}</text>
+          </g>
+        ))}
+      </g>
+      <text class="schematic-note" x={width - margin.right} y={height - 8} text-anchor="end">
+        {basemap === "indonesia-geojson" ? "Batas 38 provinsi · titik pada centroid provinsi" : "Plot koordinat"}
+      </text>
+    </svg>
+
+    {
+      showSmallMultiples && years.length > 1 && (
+        <div class="point-map__small-multiples" aria-label="Peta per tahun">
+          {years.slice(0, 6).map((year) => {
+            const panelPoints = validPoints.filter((point) => visibleAt(point, year));
+            const panelTotal = panelPoints.reduce((sum, point) => sum + finite(point.value, 1), 0);
+            return (
+              <figure class="map-panel">
+                <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${year}: ${formatNumber(panelTotal)} ${pointLabel}`}>
+                  {basemap === "indonesia-geojson" && (
+                    <g class="basemap">
+                      {provinceFeatures.map((province) => <path d={provincePath(province)} fill-rule="evenodd" />)}
+                    </g>
+                  )}
+                  {panelPoints.map((point) => (
+                    <circle
+                      class="point"
+                      cx={projectX(point.lng)}
+                      cy={projectY(point.lat)}
+                      r={clamp(radius(finite(point.value, 1)), 5, 13)}
+                      fill={point.color ?? "var(--brand-blue, #004a74)"}
+                    />
+                  ))}
+                </svg>
+                <figcaption><strong>{year}</strong> · {formatNumber(panelTotal)} {pointLabel}</figcaption>
+              </figure>
+            );
+          })}
+        </div>
+      )
+    }
+    <p class="point-map__attribution">
+      Batas provinsi: Peta Nusa / Laravel Nusa, Kepmendagri 2025, lisensi MIT ·
+      <a href={indonesiaGeoJsonUrl} download>Unduh GeoJSON</a>
+    </p>
+  </div>
+</ChartFrame>
+
+<style>
+  .point-map {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .point-map__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-block-end: 0.65rem;
+  }
+
+  .point-map__controls button {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--brand-blue, #004a74);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    color: var(--brand-blue, #004a74);
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+    transition: color 300ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .point-map__controls button[aria-pressed="true"] {
+    background: var(--brand-blue, #004a74);
+    color: #fff;
+  }
+
+  .point-map__controls button:focus-visible {
+    outline: 3px solid var(--attention, #fed400);
+    outline-offset: 2px;
+  }
+
+  .point-map__counter {
+    margin: 0 0 0.25rem;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.85rem;
+  }
+
+  .point-map__counter output {
+    color: var(--ink, #332c2b);
+    font-size: 1.35rem;
+    font-weight: 850;
+  }
+
+  .point-map__main {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .graticule line {
+    stroke: var(--rule-light, #e5e8ea);
+    stroke-width: 1;
+    stroke-dasharray: 2 5;
+  }
+
+  .basemap path {
+    fill: var(--surface-subtle, #f0f3f4);
+    stroke: var(--rule-strong, #aeb8be);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .map-point {
+    opacity: 1;
+    transform: scale(1);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .map-point.is-map-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.72);
+  }
+
+  .hit-area {
+    fill: transparent;
+  }
+
+  .point {
+    fill-opacity: 0.72;
+    stroke: var(--surface, #fff);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    transition: r 300ms cubic-bezier(0.4, 0, 0.2, 1), fill-opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .map-point:focus-visible {
+    outline: none;
+  }
+
+  .map-point:hover .point,
+  .map-point:focus .point {
+    fill-opacity: 1;
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 4;
+  }
+
+  .map-labels line {
+    stroke: var(--ink, #332c2b);
+  }
+
+  .map-labels text,
+  .schematic-note {
+    fill: var(--ink-muted, #60676c);
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .point-map__small-multiples {
+    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .map-panel {
+    margin: 0;
+    padding: 0.45rem;
+    border: 1px solid var(--rule, #d7dcdf);
+    border-radius: var(--radius-sm, 0.35rem);
+  }
+
+  .map-panel svg {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .map-panel figcaption {
+    color: var(--ink-muted, #60676c);
+    font-size: 0.75rem;
+  }
+
+  .point-map__attribution {
+    margin-block-start: 0.65rem;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.72rem;
+    text-align: end;
+  }
+
+  @media (max-width: 47.99rem) {
+    .point-map__main,
+    .point-map__controls,
+    .point-map__counter {
+      display: none;
+    }
+
+    .point-map__small-multiples {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 25rem) {
+    .point-map__small-multiples { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .point,
+    .map-point,
+    .point-map__controls button { transition: none; }
+  }
+</style>

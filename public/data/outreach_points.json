@@ -1,0 +1,3182 @@
+[
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 78,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 7,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daring",
+    "n": 1,
+    "location_status": "online",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandung",
+    "province": "Jawa Barat",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Bogor",
+    "province": "Jawa Barat",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Magelang",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Sragen",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Surakarta",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "\"Malang, Surabaya\"",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Gresik",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Grobogan",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Pacitan",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kalimantan Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2021,
+    "lat": null,
+    "lng": null,
+    "regency": "Ternate",
+    "province": "Maluku Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 63,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Kulon Progo",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Badung",
+    "province": "Bali",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Denpasar",
+    "province": "Bali",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Karangasem",
+    "province": "Bali",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Kuta",
+    "province": "Bali",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang",
+    "province": "Banten",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Timur",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Badung",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Gunungkidul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Kulon Progo",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 21,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 29,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Badung",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandung",
+    "province": "Jawa Barat",
+    "n": 10,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Bekasi",
+    "province": "Jawa Barat",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Bogor",
+    "province": "Jawa Barat",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Banyumas",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Brebes",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Jepara",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Karanganyar",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Karimun Jawa",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Kebumen",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Klaten",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Magelang",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Semarang",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Solo",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Sragen",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Surakarta",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Wonosobo",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Banyuwangi",
+    "province": "Jawa Timur",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Madiun",
+    "province": "Jawa Timur",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Malang",
+    "province": "Jawa Timur",
+    "n": 7,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "Jawa Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Selatan",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Bangka Barat",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Belitung",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Pangkal Pinang",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Ternate",
+    "province": "Maluku Utara",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Lombok Barat",
+    "province": "Nusa Tenggara Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Lombok Timur",
+    "province": "Nusa Tenggara Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Mataram",
+    "province": "Nusa Tenggara Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Timor Tengah Utara",
+    "province": "Nusa Tenggara Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar",
+    "province": "Sulawesi Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Palu",
+    "province": "Sulawesi Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Padang",
+    "province": "Sumatera Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2022,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 9,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Daring",
+    "province": "",
+    "n": 11,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Sabah",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Badung",
+    "province": "Bali",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Karangasem",
+    "province": "Bali",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Banten",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang",
+    "province": "Banten",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bengkulu",
+    "province": "Bengkulu",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Barat",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat",
+    "province": "DKI Jakarta",
+    "n": 8,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "n": 7,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Timur",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Utara",
+    "province": "DKI Jakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat,Bandung",
+    "province": "DKI Jakarta + Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 15,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 10,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Gunungkidul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Kota Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Kulon Progo",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 17,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Wonogiri",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 34,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Daring",
+    "province": "Daring",
+    "n": 2,
+    "location_status": "online",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandung",
+    "province": "Jawa Barat",
+    "n": 10,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bekasi",
+    "province": "Jawa Barat",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bogor",
+    "province": "Jawa Barat",
+    "n": 16,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "CIkarang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Ciamis",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Depok",
+    "province": "Jawa Barat",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Indramayu",
+    "province": "Jawa Barat",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Karawang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Sumedang",
+    "province": "Jawa Barat",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Banyumas",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Brebes",
+    "province": "Jawa Tengah",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Cilacap",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Karanganyar",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Kebumen",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Klaten",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Magelang",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Malang",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Semarang",
+    "province": "Jawa Tengah",
+    "n": 8,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Solo",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Sukoharjo",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Surakarta",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Wonogiri",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Banyuwangi",
+    "province": "Jawa Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Kota Batu",
+    "province": "Jawa Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Madiun",
+    "province": "Jawa Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Madura",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Malang",
+    "province": "Jawa Timur",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Pasuruan",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "Jawa Timur",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Selatan",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kalimantan Timur",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Samarinda",
+    "province": "Kalimantan Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Simenggaris",
+    "province": "Kalimantan Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Pangkal Pinang",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandar Lampung",
+    "province": "Lampung",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Lampung Selatan",
+    "province": "Lampung",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Ambon",
+    "province": "Maluku",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Ternate",
+    "province": "Maluku Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Mataram",
+    "province": "Nusa Tenggara Barat",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Kupang",
+    "province": "Nusa Tenggara Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Jayapura",
+    "province": "Papua",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Sorong",
+    "province": "Papua Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Pekanbaru",
+    "province": "Riau",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar",
+    "province": "Sulawesi Selatan",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar (Hybrid)",
+    "province": "Sulawesi Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sulawesi Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Palu",
+    "province": "Sulawesi Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Buton",
+    "province": "Sulawesi Tenggara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Gorontalo",
+    "province": "Sulawesi Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Manado",
+    "province": "Sulawesi Utara",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Padang",
+    "province": "Sumatera Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2023,
+    "lat": null,
+    "lng": null,
+    "regency": "Medan",
+    "province": "Sumatera Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 52,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bengkulu",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Daring",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Wonogiri",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Aceh",
+    "province": "Aceh",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banda Aceh",
+    "province": "Aceh",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Bali",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Badung",
+    "province": "Bali",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Denpasar",
+    "province": "Bali",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Lebak",
+    "province": "Banten",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang",
+    "province": "Banten",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang Selatan",
+    "province": "Banten",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Bengkulu",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Malaybay",
+    "province": "Bukidnon",
+    "n": 1,
+    "location_status": "foreign",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "DKI Jakarta",
+    "n": 16,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Barat",
+    "province": "DKI Jakarta",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat",
+    "province": "DKI Jakarta",
+    "n": 24,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "n": 24,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Timur",
+    "province": "DKI Jakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Utara",
+    "province": "DKI Jakarta",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "DKI Jakarta + Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Gunung Kidul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Kulon Progo",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 37,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 7,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Daring",
+    "province": "Daring",
+    "n": 23,
+    "location_status": "online",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Gorontalo",
+    "province": "Gorontalo",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandung",
+    "province": "Jawa Barat",
+    "n": 24,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bekasi",
+    "province": "Jawa Barat",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bogor",
+    "province": "Jawa Barat",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Cikarang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Cirebon",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Depok",
+    "province": "Jawa Barat",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Majalengka",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Purwakarta",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Sumedang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarnegara",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Brebes",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Klaten",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Kudus",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Magelang",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Pekalongan",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Pemalang",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Ponorogo",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Purwokerto",
+    "province": "Jawa Tengah",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Semarang",
+    "province": "Jawa Tengah",
+    "n": 14,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Solo",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Sukoharjo",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Surakarta",
+    "province": "Jawa Tengah",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Temanggung",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Wonogiri",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banyumas",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Blitar",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jember",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Madiun",
+    "province": "Jawa Timur",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Malang",
+    "province": "Jawa Timur",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Sidoarjo",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "Jawa Timur",
+    "n": 11,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Pontianak",
+    "province": "Kalimantan Barat",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarbaru",
+    "province": "Kalimantan Selatan",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Selatan",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Palangkaraya",
+    "province": "Kalimantan Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Balikpapan",
+    "province": "Kalimantan Timur",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Kutai",
+    "province": "Kalimantan Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Samarinda",
+    "province": "Kalimantan Timur",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Lampung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandar Lampung",
+    "province": "Lampung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Lampung Selatan",
+    "province": "Lampung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Mataram",
+    "province": "Nusa Tenggara Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Kefamenanu",
+    "province": "Nusa Tenggara Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Kupang",
+    "province": "Nusa Tenggara Timur",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Manado",
+    "province": "Nusa Tenggara Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Jayapura",
+    "province": "Papua",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Riau",
+    "n": 6,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Batam",
+    "province": "Riau",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Pekanbaru",
+    "province": "Riau",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar",
+    "province": "Sulawesi Selatan",
+    "n": 8,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Banggal",
+    "province": "Sulawesi Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar",
+    "province": "Sulawesi Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Palu",
+    "province": "Sulawesi Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Baubau",
+    "province": "Sulawesi Tenggara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Buton",
+    "province": "Sulawesi Tenggara",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Manado",
+    "province": "Sulawesi Utara",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Padang",
+    "province": "Sumatera Barat",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Bangka Belitung",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Musi Rawas",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Medan",
+    "province": "Sumatera Utara",
+    "n": 9,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Nias",
+    "province": "Sumatera Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2024,
+    "lat": null,
+    "lng": null,
+    "regency": "Melbourne",
+    "province": "Victoria",
+    "n": 1,
+    "location_status": "foreign",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 305,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Bali",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Karangasem",
+    "province": "Bali",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Tangerang Selatan",
+    "province": "Banten",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "DKI Jakarta",
+    "n": 13,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Pusat",
+    "province": "DKI Jakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Selatan",
+    "province": "DKI Jakarta",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Kemayoran",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Pesanggrahan",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Semanggi",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 28,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bantul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 4,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Condongcatur",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Gunung Kidul",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 11,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Yogyakarta",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Daring",
+    "n": 2,
+    "location_status": "online",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bandung",
+    "province": "Jawa Barat",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bekasi",
+    "province": "Jawa Barat",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bogor",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Cirebon",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Depok",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Sumedang",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jepara",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Magelang",
+    "province": "Jawa Tengah",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Purbalingga",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Purwokerto",
+    "province": "Jawa Tengah",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Semarang",
+    "province": "Jawa Tengah",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Surakarta",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jember",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Pasuruan",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Ponorogo",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "Jawa Timur",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Pontianak",
+    "province": "Kalimantan Barat",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Banjarmasin",
+    "province": "Kalimantan Selatan",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bontang",
+    "province": "Kalimantan Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Kepulauan Bangka Belitung",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Halmahera Utara",
+    "province": "Maluku Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Ternate",
+    "province": "Maluku Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Jayapura",
+    "province": "Papua",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Mimika",
+    "province": "Papua Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Riau",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Pekanbaru",
+    "province": "Riau",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Makassar",
+    "province": "Sulawesi Selatan",
+    "n": 5,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Sulawesi Tenggara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Bekasi",
+    "province": "Sumatera Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Padang",
+    "province": "Sumatera Barat",
+    "n": 3,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Binjai",
+    "province": "Sumatera Utara",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2025,
+    "lat": null,
+    "lng": null,
+    "regency": "Medan",
+    "province": "Sumatera Utara",
+    "n": 2,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": 2026,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 2,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "",
+    "n": 110,
+    "location_status": "missing",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Cilacap",
+    "province": "",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Jakarta Timur",
+    "province": "DKI Jakarta",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Sleman",
+    "province": "Daerah Istimewa Yogyakarta",
+    "n": 7,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Daring",
+    "province": "Daring",
+    "n": 1,
+    "location_status": "online",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Cilacap",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Depok",
+    "province": "Jawa Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Semarang",
+    "province": "Jawa Tengah",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Surabaya",
+    "province": "Jawa Timur",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Lombok Tengah",
+    "province": "Nusa Tenggara Barat",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  },
+  {
+    "year": null,
+    "lat": null,
+    "lng": null,
+    "regency": "Palembang",
+    "province": "Sumatera Selatan",
+    "n": 1,
+    "location_status": "recorded",
+    "coordinate_source": null
+  }
+]

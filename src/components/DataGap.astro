@@ -1,0 +1,61 @@
+---
+interface Props {
+  label?: string;
+  title: string;
+  description: string;
+  owner?: string;
+  knownValue?: string;
+  tone?: "open" | "hold";
+}
+const { label = "Data belum tersedia", title, description, owner, knownValue, tone = "open" } = Astro.props;
+---
+
+<aside class:list={["data-gap", `data-gap--${tone}`]} aria-label={`${label}: ${title}`}>
+  <div class="data-gap__icon" aria-hidden="true">?</div>
+  <div>
+    <p class="data-gap__label">{label}</p>
+    <h3>{title}</h3>
+    {knownValue && <p class="data-gap__known">Yang sudah diketahui: <strong>{knownValue}</strong></p>}
+    <p class="data-gap__description">{description}</p>
+    {owner && <p class="data-gap__owner">Sumber yang dibutuhkan · {owner}</p>}
+  </div>
+</aside>
+
+<style>
+  .data-gap {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: clamp(26px, 4vw, 44px);
+    border: 1px solid var(--border-default);
+    border-top: 4px solid var(--status-lagging);
+    background: var(--surface-card);
+  }
+  .data-gap--hold { border-top-color: var(--status-missed); }
+  .data-gap__icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    color: var(--status-lagging);
+    font-family: var(--font-display);
+    font-size: 28px;
+  }
+  .data-gap--hold .data-gap__icon { color: var(--status-missed); }
+  .data-gap__label {
+    margin: 0 0 10px;
+    color: var(--status-lagging);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .data-gap--hold .data-gap__label { color: var(--status-missed); }
+  .data-gap h3 { color: var(--text-primary); font-size: clamp(24px, 3vw, 34px); }
+  .data-gap__known { margin: 18px 0 0; color: var(--text-primary); }
+  .data-gap__description { max-width: 70ch; margin: 14px 0 0; color: var(--text-secondary); }
+  .data-gap__owner { margin: 20px 0 0; color: var(--text-muted); font-size: 13px; }
+  @media (max-width: 560px) { .data-gap { grid-template-columns: 1fr; } }
+</style>

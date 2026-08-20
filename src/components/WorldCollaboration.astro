@@ -1,0 +1,101 @@
+---
+import worldRaw from "../data/geo/world-countries.json";
+import { withBase } from "../lib/paths";
+
+interface Country { country: string; iso3?: string; n: number; }
+interface Props { countries: Country[]; total?: number; }
+type Position = [number, number];
+type Polygon = Position[][];
+interface WorldFeature {
+  properties: { ADMIN?: string; ADM0_A3?: string };
+  geometry:
+    | { type: "Polygon"; coordinates: Polygon }
+    | { type: "MultiPolygon"; coordinates: Polygon[] };
+}
+interface WorldCollection { features: WorldFeature[]; }
+
+const { countries, total = 62 } = Astro.props;
+const coordinates: Record<string, [number, number]> = {
+  "Jepang": [139.7, 35.7], "Japan": [139.7, 35.7],
+  "Korea Selatan": [127.8, 36.4], "South Korea": [127.8, 36.4],
+  "Malaysia": [101.7, 3.1], "Jerman": [13.4, 52.5], "Germany": [13.4, 52.5],
+  "Taiwan": [121.0, 23.7], "Austria": [16.4, 48.2], "India": [77.2, 28.6],
+  "Australia": [151.2, -33.9], "Amerika Serikat": [-77.0, 38.9], "United States": [-77.0, 38.9],
+  "Singapura": [103.8, 1.35], "Singapore": [103.8, 1.35],
+};
+const width = 1000, height = 480;
+const north = 84, south = -58;
+const project = ([lng, lat]: Position) => [((lng + 180) / 360) * width, ((north - lat) / (north - south)) * height] as const;
+const origin = project([110.37, -7.8]);
+const mapped = countries.map((country) => ({ ...country, coord: coordinates[country.country] })).filter((item) => item.coord).slice(0, 9);
+const max = Math.max(1, ...mapped.map((item) => item.n));
+const world = worldRaw as unknown as WorldCollection;
+const ringPath = (ring: Position[]) => `${ring.map((point, index) => {
+  const [x, y] = project(point);
+  return `${index === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+}).join(" ")} Z`;
+const polygonPath = (polygon: Polygon) => polygon.map(ringPath).join(" ");
+const geometryPath = (feature: WorldFeature) => feature.geometry.type === "Polygon"
+  ? polygonPath(feature.geometry.coordinates)
+  : feature.geometry.coordinates.map(polygonPath).join(" ");
+const partnerCodes = new Set(mapped.map((item) => item.iso3).filter(Boolean));
+const land = world.features
+  .filter((feature) => feature.properties.ADMIN !== "Antarctica")
+  .map((feature) => ({
+    path: geometryPath(feature),
+    name: feature.properties.ADMIN ?? "Negara",
+    partner: partnerCodes.has(feature.properties.ADM0_A3),
+  }));
+const graticuleLongitudes = [-120, -60, 0, 60, 120].map((longitude) => project([longitude, 0])[0]);
+const graticuleLatitudes = [-30, 0, 30, 60].map((latitude) => project([0, latitude])[1]);
+const labelLayout: Record<string, { dx: number; dy: number; anchor: "start" | "end" }> = {
+  Jepang: { dx: -12, dy: -14, anchor: "end" },
+  "Korea Selatan": { dx: -12, dy: 18, anchor: "end" },
+  Malaysia: { dx: -12, dy: -14, anchor: "end" },
+  Jerman: { dx: 12, dy: -14, anchor: "start" },
+  Taiwan: { dx: -12, dy: 19, anchor: "end" },
+  Austria: { dx: 12, dy: 19, anchor: "start" },
+};
+const arcPath = (target: readonly [number, number]) => {
+  const midX = (origin[0] + target[0]) / 2;
+  const midY = Math.min(origin[1], target[1]) - Math.max(35, Math.abs(origin[0] - target[0]) * .16);
+  return `M${origin[0]},${origin[1]} Q${midX},${midY} ${target[0]},${target[1]}`;
+};
+const worldGeoJsonUrl = withBase("/data/world-countries.geojson");
+---
+
+<div class="world-network">
+  <div class="world-network__map">
+    <div class="world-network__count"><strong>{total}</strong><span>negara mitra</span></div>
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby="world-title world-desc">
+      <title id="world-title">Peta jejaring kolaborasi internasional FMIPA</title>
+      <desc id="world-desc">Garis menghubungkan Yogyakarta dengan sembilan negara mitra terbesar. Ketebalan garis menunjukkan jumlah publikasi bersama. Batas negara berasal dari GeoJSON Natural Earth skala 1 banding 110 juta.</desc>
+      <g class="world-network__grid" aria-hidden="true">{graticuleLatitudes.map((y) => <line x1="0" y1={y} x2={width} y2={y} />)}{graticuleLongitudes.map((x) => <line x1={x} y1="0" x2={x} y2={height} />)}</g>
+      <g class="world-network__land" aria-hidden="true">{land.map((country) => <path class:list={{ "is-partner": country.partner }} d={country.path}><title>{country.name}</title></path>)}</g>
+      <g class="world-network__arcs">{mapped.map((item) => { const point = project(item.coord!); return <path d={arcPath(point)} style={`--arc-weight:${1.5 + (item.n / max) * 4}`} />; })}</g>
+      <circle class="world-network__origin" cx={origin[0]} cy={origin[1]} r="7"><title>Yogyakarta · FMIPA UGM</title></circle>
+      {mapped.map((item, index) => { const [x,y] = project(item.coord!); const label = labelLayout[item.country] ?? { dx: x > 780 ? -12 : 12, dy: -12, anchor: x > 780 ? "end" as const : "start" as const }; return <g class="world-network__point"><circle cx={x} cy={y} r={5 + Math.sqrt(item.n/max)*8}><title>{item.country}: {item.n} publikasi</title></circle>{index < 6 && <text x={x + label.dx} y={y + label.dy} text-anchor={label.anchor}>{item.country} · {item.n}</text>}</g>; })}
+    </svg>
+    <div class="world-network__meta">
+      <span>Made with Natural Earth · 1:110m · WGS 84</span>
+      <span><a href="https://github.com/nvkelso/natural-earth-vector" target="_blank" rel="noreferrer">Sumber</a><a href={worldGeoJsonUrl} download>GeoJSON ↓</a></span>
+    </div>
+  </div>
+  <div class="world-network__trend">
+    <p>Publikasi multinegara</p>
+    <div><strong>18,4%</strong><span>2021</span></div>
+    <i aria-hidden="true">→</i>
+    <div><strong>27,7%</strong><span>2025</span></div>
+  </div>
+</div>
+
+<style>
+  .world-network { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 32px; align-items: stretch; }
+  .world-network__map { position: relative; isolation: isolate; min-width: 0; border: 1px solid var(--border-subtle); background: var(--surface-card); }
+  .world-network__map svg { display: block; width: 100%; height: auto; }
+  .world-network__count { position: absolute; z-index: 2; inset: 22px auto auto 24px; display: flex; flex-direction: column; }.world-network__count strong { color: var(--ugm-blue); font-size: 42px; font-weight: 300; line-height: 1; }.world-network__count span { margin-block-start: 5px; color: var(--text-muted); font-size: 12px; }
+  .world-network__grid line { stroke: var(--grid-line); stroke-width: 1; vector-effect: non-scaling-stroke; }.world-network__land path { fill: var(--surface-2); stroke: var(--border-default); stroke-width: .8; vector-effect: non-scaling-stroke; }.world-network__land path.is-partner { fill: color-mix(in srgb, var(--ugm-blue-sky) 18%, var(--surface-2)); }.world-network__arcs path { fill: none; stroke: var(--ugm-blue-sky); stroke-width: var(--arc-weight); stroke-linecap: round; opacity: .62; }.world-network__origin { fill: var(--ugm-gold); stroke: var(--ugm-blue-deep); stroke-width: 3; }.world-network__point circle { fill: var(--ugm-blue); stroke: #fff; stroke-width: 2; }.world-network__point text { fill: var(--text-primary); font: 700 12px var(--font-ui); paint-order: stroke; stroke: var(--surface-card); stroke-width: 4; stroke-linejoin: round; }
+  .world-network__meta { min-height: 42px; padding: 10px 14px; border-block-start: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--text-muted); font-size: 11px; }.world-network__meta > span:last-child { display: flex; gap: 14px; }.world-network__meta a { color: var(--ugm-blue); font-weight: 700; }
+  .world-network__trend { padding: 30px; border-top: 4px solid var(--ugm-gold); background: var(--ugm-blue-deep); color: #fff; display: flex; flex-direction: column; justify-content: center; }.world-network__trend > p { margin: 0 0 28px; color: rgba(255,255,255,.7); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }.world-network__trend div { display: flex; justify-content: space-between; align-items: baseline; }.world-network__trend strong { color: var(--ugm-gold); font-size: 38px; font-weight: 300; }.world-network__trend span { color: rgba(255,255,255,.65); font-size: 12px; }.world-network__trend i { margin-block: 13px; color: rgba(255,255,255,.55); font-size: 24px; font-style: normal; transform: rotate(90deg); align-self: flex-start; }
+  @media(max-width:800px){.world-network{grid-template-columns:1fr}.world-network__trend{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}.world-network__trend>p{grid-column:1/-1}.world-network__trend i{transform:none;align-self:center;justify-self:center}.world-network__trend div{flex-direction:column}.world-network__map{overflow-x:auto}.world-network__map svg{min-width:680px}.world-network__meta{min-width:680px}}
+</style>

@@ -1,0 +1,187 @@
+[
+  {
+    "year": 1987,
+    "citations": 1,
+    "is_partial": false
+  },
+  {
+    "year": 1989,
+    "citations": 1,
+    "is_partial": false
+  },
+  {
+    "year": 1991,
+    "citations": 3,
+    "is_partial": false
+  },
+  {
+    "year": 1992,
+    "citations": 3,
+    "is_partial": false
+  },
+  {
+    "year": 1993,
+    "citations": 2,
+    "is_partial": false
+  },
+  {
+    "year": 1994,
+    "citations": 3,
+    "is_partial": false
+  },
+  {
+    "year": 1995,
+    "citations": 6,
+    "is_partial": false
+  },
+  {
+    "year": 1996,
+    "citations": 34,
+    "is_partial": false
+  },
+  {
+    "year": 1997,
+    "citations": 43,
+    "is_partial": false
+  },
+  {
+    "year": 1998,
+    "citations": 81,
+    "is_partial": false
+  },
+  {
+    "year": 1999,
+    "citations": 91,
+    "is_partial": false
+  },
+  {
+    "year": 2000,
+    "citations": 73,
+    "is_partial": false
+  },
+  {
+    "year": 2001,
+    "citations": 85,
+    "is_partial": false
+  },
+  {
+    "year": 2002,
+    "citations": 113,
+    "is_partial": false
+  },
+  {
+    "year": 2003,
+    "citations": 102,
+    "is_partial": false
+  },
+  {
+    "year": 2004,
+    "citations": 120,
+    "is_partial": false
+  },
+  {
+    "year": 2005,
+    "citations": 173,
+    "is_partial": false
+  },
+  {
+    "year": 2006,
+    "citations": 225,
+    "is_partial": false
+  },
+  {
+    "year": 2007,
+    "citations": 356,
+    "is_partial": false
+  },
+  {
+    "year": 2008,
+    "citations": 381,
+    "is_partial": false
+  },
+  {
+    "year": 2009,
+    "citations": 427,
+    "is_partial": false
+  },
+  {
+    "year": 2010,
+    "citations": 478,
+    "is_partial": false
+  },
+  {
+    "year": 2011,
+    "citations": 540,
+    "is_partial": false
+  },
+  {
+    "year": 2012,
+    "citations": 738,
+    "is_partial": false
+  },
+  {
+    "year": 2013,
+    "citations": 853,
+    "is_partial": false
+  },
+  {
+    "year": 2014,
+    "citations": 1000,
+    "is_partial": false
+  },
+  {
+    "year": 2015,
+    "citations": 1365,
+    "is_partial": false
+  },
+  {
+    "year": 2016,
+    "citations": 1695,
+    "is_partial": false
+  },
+  {
+    "year": 2017,
+    "citations": 2466,
+    "is_partial": false
+  },
+  {
+    "year": 2018,
+    "citations": 3113,
+    "is_partial": false
+  },
+  {
+    "year": 2019,
+    "citations": 4129,
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "citations": 5275,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "citations": 7175,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "citations": 8718,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "citations": 10495,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "citations": 12629,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "citations": 7913,
+    "is_partial": true
+  }
+]

@@ -1,0 +1,155 @@
+---
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { withBase } from "../lib/paths";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  chrome?: boolean;
+  bodyClass?: string;
+  image?: string;
+}
+
+const {
+  title = "Lima Tahun FMIPA — Laporan Dekan FMIPA UGM 2026",
+  description = "Pertanggungjawaban berbasis data Fakultas Matematika dan Ilmu Pengetahuan Alam Universitas Gadjah Mada untuk periode 2021–2026.",
+  canonicalPath = Astro.url.pathname,
+  chrome = true,
+  bodyClass = "",
+  image = "/brand/og-lima-tahun-fmipa.svg",
+} = Astro.props;
+
+const canonical = Astro.site ? new URL(withBase(canonicalPath), Astro.site) : undefined;
+const socialImage = /^https?:\/\//.test(image)
+  ? image
+  : Astro.site
+    ? new URL(withBase(image), Astro.site)
+    : undefined;
+const faviconUrl = withBase("/brand/favicon.svg");
+const manifestUrl = withBase("/manifest.webmanifest");
+const serviceWorkerUrl = withBase("/sw.js");
+const fontFaces = [
+  { family: "Gama Sans", locals: ["Gama-Sans light", "Gama Sans Light"], file: "GamaSans-Light.otf", style: "normal", weight: 300 },
+  { family: "Gama Sans", locals: ["Gama-Sans Light-Italic", "Gama Sans Light Italic"], file: "GamaSans-LightItalic.otf", style: "italic", weight: 300 },
+  { family: "Gama Sans", locals: ["Gama-Sans", "Gama Sans"], file: "GamaSans-Regular.otf", style: "normal", weight: 400 },
+  { family: "Gama Sans", locals: ["Gama-Sans Italic", "Gama Sans Italic"], file: "GamaSans-Italic.otf", style: "italic", weight: 400 },
+  { family: "Gama Sans", locals: ["Gama-Sans Bold", "Gama Sans Bold"], file: "GamaSans-Bold.otf", style: "normal", weight: 700 },
+  { family: "Gama Sans", locals: ["Gama-Sans Bold Italic", "Gama Sans Bold Italic"], file: "GamaSans-BoldItalic.otf", style: "italic", weight: 700 },
+  { family: "Gama Serif", locals: ["Gama-Serif", "Gama Serif"], file: "GamaSerif-Regular.otf", style: "normal", weight: 400 },
+  { family: "Gama Serif", locals: ["Gama-Serif Italic", "Gama Serif Italic"], file: "GamaSerif-Italic.otf", style: "italic", weight: 400 },
+  { family: "Gama Serif", locals: ["Gama-Serif Bold", "Gama Serif Bold"], file: "GamaSerif-Bold.otf", style: "normal", weight: 700 },
+  { family: "Gama Serif", locals: ["Gama-Serif Bold Italic", "Gama Serif Bold Italic"], file: "GamaSerif-BoldItalic.otf", style: "italic", weight: 700 },
+];
+const fontFaceStyles = fontFaces.map(({ family, locals, file, style, weight }) => `
+@font-face {
+  font-family: ${JSON.stringify(family)};
+  src: ${locals.map((name) => `local(${JSON.stringify(name)})`).join(", ")}, url(${JSON.stringify(withBase(`/fonts/${file}`))}) format("opentype");
+  font-style: ${style};
+  font-weight: ${weight};
+  font-display: swap;
+}`).join("\n");
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Report",
+  name: title,
+  description,
+  datePublished: "2026-09-12",
+  inLanguage: "id-ID",
+  author: {
+    "@type": "Organization",
+    name: "Fakultas Matematika dan Ilmu Pengetahuan Alam Universitas Gadjah Mada",
+  },
+};
+---
+
+<!doctype html>
+<html lang="id" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#0B1F2E" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/svg+xml" href={faviconUrl} />
+    <link rel="manifest" href={manifestUrl} />
+    <style is:inline set:html={fontFaceStyles}></style>
+    <title>{title}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem("fmipa-theme");
+        if (savedTheme === "dark" || savedTheme === "light") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (_) {}
+    </script>
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+    {chrome && <SiteHeader />}
+    <slot />
+    {chrome && <SiteFooter />}
+    <script is:inline define:vars={{ serviceWorkerUrl }}>
+      const themeButton = document.querySelector("[data-theme-toggle]");
+      const updateThemeLabel = () => {
+        if (!(themeButton instanceof HTMLButtonElement)) return;
+        const isDark = document.documentElement.dataset.theme === "dark";
+        themeButton.setAttribute("aria-pressed", String(isDark));
+        themeButton.querySelector("span")?.replaceChildren(isDark ? "Mode terang" : "Mode gelap");
+      };
+      themeButton?.addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        try { localStorage.setItem("fmipa-theme", next); } catch (_) {}
+        updateThemeLabel();
+      });
+      updateThemeLabel();
+
+      const progress = document.querySelector("[data-reading-progress]");
+      const updateProgress = () => {
+        if (!(progress instanceof HTMLElement)) return;
+        const distance = document.documentElement.scrollHeight - window.innerHeight;
+        const value = distance > 0 ? Math.min(1, Math.max(0, window.scrollY / distance)) : 0;
+        progress.style.setProperty("--reading-progress", `${value * 100}%`);
+        progress.setAttribute("aria-valuenow", String(Math.round(value * 100)));
+      };
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      window.addEventListener("resize", updateProgress, { passive: true });
+      updateProgress();
+
+      if ("serviceWorker" in navigator && location.protocol !== "file:") {
+        window.addEventListener("load", async () => {
+          const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+          if (isLocal) {
+            const wasControlled = Boolean(navigator.serviceWorker.controller);
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map((registration) => registration.unregister()));
+            if ("caches" in window) {
+              const cacheNames = await window.caches.keys();
+              await Promise.all(cacheNames.filter((name) => name.startsWith("lima-tahun-fmipa-")).map((name) => window.caches.delete(name)));
+            }
+            if (wasControlled && sessionStorage.getItem("fmipa-local-sw-cleared") !== "true") {
+              sessionStorage.setItem("fmipa-local-sw-cleared", "true");
+              location.reload();
+            } else if (!wasControlled) {
+              sessionStorage.removeItem("fmipa-local-sw-cleared");
+            }
+            return;
+          }
+          navigator.serviceWorker.register(serviceWorkerUrl).catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>

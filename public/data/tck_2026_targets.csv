@@ -1,0 +1,43 @@
+no,pilar,indikator,satuan,target_tw1,target_tw2,target_tw3,target_tw4,tag,program_renstra,arah
+1a,Kontribusi,Jumlah kerja sama yang dilakukan program studi semua jenjang,PKS,15,44,87,144,IKU,Penguatan kerja sama dengan mitra dalam mendukung kegiatan Tridharma yang melibatkan dosen dan mahasiswa,naik
+1b,Kontribusi,Jumlah luaran kerja sama antara PT dengan start-up/industri/lembaga yang dilakukan program studi semua jenjang,Judul,13,39,78,130,IKU,Penguatan kerja sama dengan mitra dalam mendukung kegiatan Tridharma yang melibatkan dosen dan mahasiswa,naik
+1c,Kontribusi,Jumlah creative funding yang dihasilkan dari kerja sama aktif,Miliar Rupiah,7,17,33,55,,Penguatan kerja sama dengan mitra dalam mendukung kegiatan Tridharma yang melibatkan dosen dan mahasiswa,naik
+2a,Reputasi,Jumlah program studi semua jenjang yang memiliki akreditasi atau sertifikat internasional yang diakui pemerintah (Sarjana dan Sarjana Terapan),Program Studi,7,7,7,7,,Peningkatan pengakuan keunggulan program studi di tingkat nasional dan internasional,naik
+2b,Reputasi,Jumlah program studi semua jenjang yang memiliki akreditasi atau sertifikat internasional yang diakui pemerintah (Pascasarjana: Magister dan Doktor),Program Studi,8,8,8,8,,Peningkatan pengakuan keunggulan program studi di tingkat nasional dan internasional,naik
+3,Reputasi,Jumlah program studi yang terakreditasi A/Unggul oleh BAN-PT atau LAM,Program Studi,15,15,15,16,,Peningkatan pengakuan keunggulan program studi di tingkat nasional dan internasional,naik
+4a,Employability,Jumlah mahasiswa asing semua jenjang (Kredit),mahasiswa,26,76,152,252,,Pengembangan sistem penerimaan mahasiswa yang mengakomodir keberagaman,naik
+4b,Employability,Jumlah mahasiswa asing semua jenjang (Non Kredit),mahasiswa,29,87,173,288,,Pengembangan sistem penerimaan mahasiswa yang mengakomodir keberagaman,naik
+5a,Employability,"Jumlah lulusan sarjana dan sarjana terapan yang berhasil mendapatkan penghasilan, melanjutkan studi, atau menjadi wiraswasta dalam jangka waktu 1 tahun setelah kelulusan",Lulusan,47,139,278,462,IKU,Pengembangan personalisasi pendidikan sebagai turunan program Merdeka Belajar Kampus Merdeka,naik
+5b,Employability,Persentase mahasiswa sarjana dan sarjana terapan semester >=5 yang terdaftar di aplikasi LinkedIn,Persen,10,30,60,99,,Pengembangan personalisasi pendidikan sebagai turunan program Merdeka Belajar Kampus Merdeka,naik
+6,Employability,Jumlah pengguna lulusan (alumni semua jenjang sebagai pengguna lulusan) yang berpotensi menjadi responden UGM untuk employer survey,Pengguna Lulusan,36,108,216,360,QS,Pengembangan personalisasi pendidikan sebagai turunan program Merdeka Belajar Kampus Merdeka,naik
+7,Kontribusi,Jumlah muatan pembelajaran secara online yang dapat diakses masyarakat luas,Judul,9,27,53,88,SDGs,Perluasan akses learning management system ke masyarakat (Universitas Tanpa Batas),naik
+8a,Employability,Jumlah mahasiswa sarjana dan sarjana terapan yang menjalankan kegiatan pembelajaran di luar program studi minimal 10 (sepuluh) SKS,mahasiswa,51,153,306,510,IKU,Penguatan MBKM UGM,naik
+8b1,Employability,Persentase mahasiswa semua jenjang yang lulus tepat waktu (S1),Persen,7,19,37,61,IKU,Penguatan MBKM UGM,naik
+8b2,Employability,Persentase mahasiswa semua jenjang yang lulus tepat waktu (S2),Persen,9,25,49,81,IKU,Penguatan MBKM UGM,naik
+8b3,Employability,Persentase mahasiswa semua jenjang yang lulus tepat waktu (S3),Persen,6,17,33,54,IKU,Penguatan MBKM UGM,naik
+9,Employability,Jumlah mahasiswa berprestasi,mahasiswa,50,150,300,500,IKU,Penguatan Mahasiswa Berprestasi,naik
+10,Employability,"Jumlah mahasiswa pascasarjana dari program fast track, RPL (Rekognisi Pembelajaran Lampau), dan PMDSU",mahasiswa,5,13,25,41,QS,Penguatan fast track dan PMDSU,naik
+11,Reputasi,Jumlah publikasi mahasiswa Doktoral dalam jurnal internasional,Judul,18,54,108,180,QS; THE,Peningkatan publikasi mahasiswa Doktoral dalam jurnal internasional,naik
+12,Kontribusi,"Jumlah hasil karya transdisiplin dosen dan mahasiswa yang telah diseminasi secara luas ke publik (3 minute thesis, ala TED talks) atau kanal pengetahuan (vlog dosen/policy brief)",Judul,5,15,30,50,,Penguatan forum transfer keilmuan lintas individu dan lintas disiplin secara terlembaga,naik
+13,Kontribusi,Jumlah luaran dosen yang diterapkan oleh masyarakat/industri/pemerintah atau berhasil mendapat rekognisi internasional,Judul,73,218,435,725,QS; THE; IKU,Pengembangan riset translasional meliputi riset flagship dan riset unggulan kompetitif,naik
+14,Reputasi,Jumlah luaran penelitian multidisiplin yang melibatkan peneliti lebih dari satu fakultas/departemen/subjek/bidang ilmu yang berbeda,Judul,10,30,60,100,IKU,Pengembangan riset translasional meliputi riset flagship dan riset unggulan kompetitif,naik
+15,Reputasi,Jumlah sitasi dosen,Sitasi,500,1500,3000,5000,IKU; QS,Pengembangan riset translasional meliputi riset flagship dan riset unggulan kompetitif,naik
+16,Reputasi,Jumlah publikasi dosen berindeks Scopus atau Web of Science (WoS),Judul,40,120,240,400,THE; IKU; QS,Pengembangan perpustakaan dosen,naik
+17,Kontribusi,Jumlah hasil riset dan inovasi yang berorientasi pada penyelesaian masalah di masyarakat,Judul,5,15,30,50,SDGs; IKU,Pengembangan sumber daya riset serta penelitian dan pengembangan yang mudah dimanfaatkan oleh masyarakat,naik
+18,Reputasi,Jumlah mitra penelitian internasional yang telah menghasilkan minimal 3 publikasi dalam 5 tahun terakhir,mitra,5,15,30,50,IKU; QS,Peningkatan kebermanfaatan dan perluasan jejaring penelitian internasional,naik
+19a,Kontribusi,"Jumlah luaran tridharma, kerja sama dan kemitraan serta inisiatif institusional yang mendukung SDGs 1, 4, 17, 8, dan 9",Judul,20,60,120,200,IKU,Peningkatan penelitian yang mengadopsi prinsip-prinsip SDGs,naik
+19b,Kontribusi,Jumlah pemberitaan kegiatan SDGs,Tagging,100,300,600,1000,SDGs; IKU,Peningkatan penelitian yang mengadopsi prinsip-prinsip SDGs,naik
+20,Kontribusi,Jumlah luaran pengabdian masyarakat yang diterapkan kepada masyarakat,Judul,60,180,360,600,,Pengembangan pengabdian kepada masyarakat yang berhasil mendapat rekognisi internasional atau diterapkan oleh masyarakat,naik
+21a,Kesejahteraan,"Jumlah dosen yang bekerja sebagai praktisi (konsultan, tenaga ahli independen, narasumber) di dunia industri dalam 5 tahun terakhir, < 6 bulan",Dosen,18,54,108,179,,Peningkatan kualitas dosen,naik
+21b,Kesejahteraan,"Jumlah dosen yang bekerja sebagai praktisi (konsultan, tenaga ahli independen, narasumber) di dunia industri dalam 5 tahun terakhir, >= 6 bulan",Dosen,10,30,60,100,,Peningkatan kualitas dosen,naik
+22,Kesejahteraan,Jumlah dosen yang berkegiatan tridharma di kampus lain dalam 5 (lima) tahun terakhir,Dosen,9,27,54,90,IKU,Peningkatan kualitas dosen,naik
+23,Kesejahteraan,Jumlah dosen yang mendapatkan rekognisi internasional,Dosen,17,49,98,162,,Peningkatan kualitas dosen,naik
+24,Kesejahteraan,Jumlah dosen tetap berkualifikasi akademik S3,Dosen,156,157,159,160,THE,Percepatan pertumbuhan dosen berkualifikasi S3,naik
+25,Kesejahteraan,"Jumlah dosen memiliki sertifikat kompetensi/profesi/keterampilan yang diakui oleh dunia usaha, dunia industri, atau masyarakat",Dosen,16,48,96,160,,Pengembangan kompetensi dosen,naik
+26,Kesejahteraan,"Jumlah dosen yang berasal dari kalangan praktisi profesional, dunia usaha, atau dunia industri",Dosen,4,11,22,36,IKU; THE,Pengembangan kompetensi dosen,naik
+27,Kesejahteraan,Jumlah dosen tetap tenaga pengajar,Dosen,24,22,20,18,,Pengembangan kompetensi dosen,turun
+28,Reputasi,Jumlah dosen/peneliti internasional yang melaksanakan kegiatan pendidikan atau penelitian,Dosen,16,48,96,160,QS; THE,Peningkatan dosen/peneliti internasional,naik
+29,Reputasi,Jumlah dosen luar negeri yang berpotensi menjadi responden academic survey,Dosen,36,108,216,360,,Peningkatan dosen/peneliti internasional,naik
+30,Kesejahteraan,Jumlah Guru Besar,Dosen,53,54,55,57,THE,Percepatan Guru Besar yang relevan dengan bidang keilmuan,naik
+31,Kesejahteraan,Jumlah fasilitas disabilitas yang memenuhi persyaratan kemudahan bangunan gedung,Unit,17,18,19,20,GREEN METRIC,"Penguatan pembangunan infrastruktur UGM yang inklusif, berkelanjutan serta berbasis green environment",naik
+32,Kesejahteraan,Persentase kenaikan nilai hijau bangunan,Persen,1,2,5,10,,"Penguatan pembangunan infrastruktur UGM yang inklusif, berkelanjutan serta berbasis green environment",naik

@@ -1,0 +1,227 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PresentationSlide from "../components/PresentationSlide.astro";
+import { withBase } from "../lib/paths";
+import "../styles/presentation.css";
+import citationsRaw from "../data/derived/citations_by_year.json";
+import countriesRaw from "../data/derived/collab_countries.json";
+import fundingRaw from "../data/derived/funding_by_year.json";
+import institutionRaw from "../data/derived/institution_snapshot.json";
+import journalsRaw from "../data/derived/journals.json";
+import lecturersRaw from "../data/derived/lecturers_positions.json";
+import mediaRaw from "../data/derived/media_by_year.json";
+import outreachRaw from "../data/derived/outreach_by_year.json";
+import outreachPointsRaw from "../data/derived/outreach_points.json";
+import publicationsRaw from "../data/derived/publications_by_year_dept.json";
+import sdgRaw from "../data/derived/sdg_matrix.json";
+import sintaRaw from "../data/derived/sinta_by_dept.json";
+import studentResearchRaw from "../data/derived/student_research_by_year.json";
+import tckRaw from "../data/derived/tck_2026_joined.json";
+import topicsRaw from "../data/derived/topics.json";
+import valueModelRaw from "../data/derived/value_model.json";
+
+const format = (value: number, digits = 2) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
+const tone = (status: string) => ({ tercapai: "good", mendekati: "near", tertinggal: "behind", meleset: "missed" }[status] ?? "neutral");
+const tckByNo = new Map(tckRaw.map((row) => [String(row.no), row]));
+const tck = (no: string) => {
+  const row = tckByNo.get(no);
+  if (!row) throw new Error(`Indikator TCK ${no} tidak ditemukan`);
+  return row;
+};
+const statusItem = (no: string, label: string, target: "target_tw3" | "target_tw4" = "target_tw3") => {
+  const row = tck(no);
+  return { label, value: row.capaian_tw3, max: row[target], display: `${format(row.capaian_tw3)} / ${format(row[target])}`, status: tone(row.status_tw3) };
+};
+
+const citationTotal = citationsRaw.reduce((sum, row) => sum + row.citations, 0);
+const citationRecent = citationsRaw.filter((row) => row.year >= 2021 && row.year <= 2025).reduce((sum, row) => sum + row.citations, 0);
+const citationByYear = new Map(citationsRaw.map((row) => [row.year, row.citations]));
+const citationStart = Math.min(...citationsRaw.map((row) => row.year));
+const tckAchieved = tckRaw.filter((row) => row.status_tw3 === "tercapai").length;
+const tckAnnual = tckRaw.filter((row) => row.status_thd_tahunan === "tercapai").length;
+const tckNear = tckRaw.filter((row) => row.status_tw3 === "mendekati").length;
+const tckBehind = tckRaw.length - tckAchieved - tckNear;
+const publicationTotals = new Map<string, number>();
+publicationsRaw.forEach((row) => publicationTotals.set(row.department, (publicationTotals.get(row.department) ?? 0) + row.count));
+const publicationItems = [
+  ["Kimia", "Kimia", "good"],
+  ["Fisika", "Fisika", undefined],
+  ["Ilmu Komputer dan Elektronika", "Ilmu Komputer & Elektronika", undefined],
+  ["Matematika", "Matematika", undefined],
+  ["Belum terpetakan", "Belum terpetakan", "behind"],
+].map(([key, label, status]) => ({ label, value: publicationTotals.get(key ?? "") ?? 0, display: format(publicationTotals.get(key ?? "") ?? 0), status }));
+const countryNames: Record<string, string> = { Japan: "Jepang", "South Korea": "Korea Selatan", Germany: "Jerman" };
+const countryItems = countriesRaw.slice(0, 5).map((row) => ({ label: countryNames[row.country] ?? row.country, value: row.n, display: format(row.n) }));
+const positionTotals = new Map<string, number>();
+lecturersRaw.forEach((row) => positionTotals.set(row.position, (positionTotals.get(row.position) ?? 0) + row.n));
+const sintaByDepartment = new Map(sintaRaw.map((row) => [row.department, row]));
+const fundingByYear = new Map(fundingRaw.filter((row) => row.type === "Total").map((row) => [row.year, row.amount / 1_000_000_000]));
+const outreachByYear = new Map(outreachRaw.map((row) => [row.year, row.n]));
+const outreachArchiveMissing = outreachPointsRaw.filter((row) => row.location_status === "missing").reduce((sum, row) => sum + row.n, 0);
+const sdgByNumber = new Map(sdgRaw.map((row) => [row.sdg, row]));
+const journalTotals = new Map<string, number>();
+journalsRaw.forEach((row) => journalTotals.set(row.journal, (journalTotals.get(row.journal) ?? 0) + row.n));
+const journalLabels: Record<string, string> = {
+  "Indonesian Journal of Chemistry (IJC)": "Indonesian Journal of Chemistry",
+  "Indonesian Journal of Computing and Cybernetics Systems (IJCCS)": "IJCCS",
+  "Indonesian Journal of Electronics and Instrumentation Systems (IJEIS)": "IJEIS",
+  "Jurnal Matematika Thales (JMT)": "Jurnal Matematika Thales",
+};
+const journalItems = [...journalTotals]
+  .filter(([name]) => name !== "Belum terklasifikasi")
+  .map(([name, value]) => ({ label: journalLabels[name] ?? name, value, display: format(value) }));
+const journalClassified = journalItems.reduce((sum, item) => sum + item.value, 0);
+const mediaTotal = mediaRaw.reduce((sum, row) => sum + row.n, 0);
+const studentResearchTotal = studentResearchRaw.reduce((sum, row) => sum + row.n, 0);
+const pillarSummary = [
+  ["Reputasi", "Reputasi akademik", "good"],
+  ["Kontribusi", "Kontribusi terhadap bangsa", "missed"],
+  ["Employability", "Employability", "near"],
+  ["Kesejahteraan", "Kesejahteraan", "good"],
+].map(([key, label, status]) => {
+  const rows = tckRaw.filter((row) => row.pilar === key);
+  return { label, display: `${rows.filter((row) => row.status_tw3 === "tercapai").length} / ${rows.length}`, status };
+});
+const creativeFundingRatio = Math.round((tck("1c").capaian_tw3 / tck("1c").target_tw3) * 100);
+const fundingChange = ((fundingByYear.get(2025) ?? 0) / (fundingByYear.get(2024) ?? 1) - 1) * 100;
+const homeUrl = withBase("/");
+
+const slides: any[] = [
+  { number: "0.0", kicker: "Pembuka", title: "Dua Pertiga dalam Lima Tahun", takeaway: `Dari seluruh arsip sitasi ${citationStart}–2025, sebagian besarnya terjadi pada satu periode kepemimpinan ini.`, mode: "stat", stat: format(citationTotal), statLabel: `sitasi seluruh arsip · ${format((citationRecent / citationTotal) * 100, 1)}% terjadi pada 2021–2025`, dark: true, source: `CSV sitasi FMIPA, ${citationStart}–2025`, note: `Berhenti setelah menyebut ${format(citationTotal)}. Lalu tekankan: ${format(citationRecent)} sitasi terjadi hanya dalam lima tahun terakhir.` },
+  { number: "1.1", kicker: "Babak I · Posisi hari ini", title: "FMIPA Hari Ini", takeaway: "Fakultas ini adalah sistem yang ditopang orang, program studi, departemen, dan laboratorium—bukan sekadar kumpulan angka.", mode: "cards", items: [{ label: "Dosen", display: format(institutionRaw.lecturers) }, { label: "Tenaga kependidikan", display: format(institutionRaw.academic_staff) }, { label: "Program studi", display: format(institutionRaw.study_programmes) }, { label: "Laboratorium", display: format(institutionRaw.laboratories) }], source: "Data kepegawaian dan unit FMIPA", note: `Empat departemen menaungi ${institutionRaw.study_programmes} program studi: 8 Sarjana, 5 Magister, dan 4 Doktor.` },
+  { number: "1.2", kicker: "Babak I · Akuntabilitas", title: `Posisi terhadap ${tckRaw.length} Target`, takeaway: "Capaian yang kuat tidak meniadakan pekerjaan yang tertinggal. Keduanya dibaca pada tanggal dan pembanding yang sama.", mode: "status", items: [{ label: "Melampaui target TW3", value: tckAchieved, max: tckRaw.length, display: format(tckAchieved), status: "good" }, { label: "Melampaui target tahunan", value: tckAnnual, max: tckRaw.length, display: format(tckAnnual), status: "good" }, { label: "Mendekati", value: tckNear, max: tckRaw.length, display: format(tckNear), status: "near" }, { label: "Tertinggal atau meleset", value: tckBehind, max: tckRaw.length, display: format(tckBehind), status: "missed" }], source: "SIMASTER, 19 Agustus 2026", note: "Jangan menyebut ini hasil akhir tahun. TW3 baru berakhir 30 September." },
+  { number: "1.3", kicker: "Babak I · Model nilai", title: "Dari Sumber Daya ke Dampak", takeaway: "Lima tahun dapat dibaca sebagai aliran: dana dan kerja akademik menjadi kegiatan, luaran, lalu jangkauan.", mode: "flow", items: [{ label: "dana riset", display: `Rp${format(valueModelRaw.metrics.funding_rp / 1_000_000_000)} M` }, { label: "riset & pengabdian", display: format(valueModelRaw.metrics.research_n + valueModelRaw.metrics.outreach_n) }, { label: "publikasi", display: format(valueModelRaw.metrics.publications_n) }, { label: "sitasi", display: format(valueModelRaw.metrics.citations_n) }], source: "Agregat CSV historis 2021–2025", note: "Angka dana adalah dana proposal riset, bukan realisasi anggaran fakultas." },
+  { number: "2.1", kicker: "Pilar 1 · Reputasi akademik", title: "Jangkauan Riset Bertumbuh", takeaway: "Sitasi tahunan naik lebih dari tiga kali dalam enam tahun penuh yang dapat dibandingkan.", mode: "bars", items: [2019, 2021, 2023, 2024, 2025].map((year) => ({ label: year === 2025 ? "2025 · indeksasi berjalan" : String(year), value: citationByYear.get(year) ?? 0, display: format(citationByYear.get(year) ?? 0), status: year === 2025 ? "near" : undefined })), source: "CSV sitasi FMIPA", note: "2025 belum lengkap karena jeda indeksasi Scopus. Jangan membacanya sebagai penurunan final." },
+  { number: "2.2", kicker: "Pilar 1 · Reputasi akademik", title: "Empat Departemen, Satu Portofolio", takeaway: "Remap ID Scopus membuat 94,2% publikasi 2020–2025 dapat dibaca per departemen.", mode: "bars", items: publicationItems, source: "SciVal / Scopus, 2020–2025", note: "Sebanyak 157 rekaman tetap belum terpetakan dan ditampilkan, bukan dibuang. Pemetaan 2020–2021 berasal dari mayoritas ID Scopus penulis." },
+  { number: "2.3", kicker: "Pilar 1 · Reputasi akademik", title: `${format(topicsRaw.length)} Klaster Topik`, takeaway: "Material, energi, kecerdasan buatan, lingkungan, dan sensor membentuk bentang riset yang saling berdekatan.", mode: "cards", items: ["Adsorpsi ion logam", "Pirolisis & bio-oil", "Segmentasi citra & DNN", "Fotokatalisis TiO₂"].map((label, index) => ({ label, display: format(topicsRaw[index]?.n ?? 0) })), source: "SciVal topic clusters", note: "Empat contoh ini adalah klaster terbesar, bukan daftar prioritas resmi fakultas." },
+  { number: "2.4", kicker: "Pilar 1 · Reputasi akademik", title: `Jejaring ${countriesRaw.length} Negara`, takeaway: "Kolaborasi multinegara meningkat dari 18,4% menjadi 27,7% dalam lima tahun.", mode: "bars", items: countryItems, source: "SciVal / Scopus", note: "Jumlah negara tidak memasukkan Indonesia. Tekankan perubahan proporsi publikasi lintas negara, bukan hanya jumlah negara." },
+  { number: "2.5", kicker: "Pilar 1 · Reputasi akademik", title: "Siapa yang Menghasilkannya?", takeaway: "Satu dari lima dosen pada snapshot kepegawaian tercatat sebagai Guru Besar.", mode: "bars", items: ["Asisten Ahli", "Lektor", "Lektor Kepala", "Guru Besar", "Belum terisi"].map((label) => ({ label, value: positionTotals.get(label) ?? 0, display: format(positionTotals.get(label) ?? 0), status: label === "Guru Besar" ? "good" : label === "Belum terisi" ? "behind" : undefined })), source: "CSV kepegawaian, snapshot 2025", note: `TCK 2026 menyebut ${format(tck("30").capaian_tw3)} Guru Besar. Snapshot dan jendela SIMASTER berbeda.` },
+  { number: "2.6", kicker: "Pilar 1 · Pertanyaan terbuka", title: "Produktivitas Belum Merata", takeaway: "Reputasi tumbuh, tetapi jaringan riset dan publikasi mahasiswa doktoral belum bergerak secepat output keseluruhan.", mode: "cards", items: [{ label: "Publikasi mahasiswa doktoral", display: `${format(tck("11").capaian_tw3)} / ${format(tck("11").target_tw3)}`, status: tone(tck("11").status_tw3), description: "Target TW3" }, { label: "Mitra riset internasional", display: `${format(tck("18").capaian_tw3)} / ${format(tck("18").target_tw3)}`, status: tone(tck("18").status_tw3), description: "Target TW3" }, { label: "Median SINTA Kimia", display: format(sintaByDepartment.get("Kimia")?.median ?? 0) }, { label: "Median SINTA Matematika", display: format(sintaByDepartment.get("Matematika")?.median ?? 0), status: "missed" }], source: "SIMASTER + snapshot SINTA (tidak dicampur dalam satu grafik)", note: "Median memakai observasi tengah-atas untuk jumlah dosen genap, sama dengan definisi PRD." },
+  { number: "3.1", kicker: "Pilar 2 · Kontribusi terhadap bangsa", title: "Dana Riset Melompat 22,7 Kali", takeaway: `Skala berubah setelah 2021: Rp${format(fundingByYear.get(2021) ?? 0)} miliar menjadi Rp${format(fundingByYear.get(2024) ?? 0)} miliar pada 2024.`, mode: "bars", items: [2019, 2021, 2022, 2023, 2024, 2025].map((year) => ({ label: String(year), value: fundingByYear.get(year) ?? 0, display: `Rp${format(fundingByYear.get(year) ?? 0)} M`, status: year === 2024 ? "good" : year === 2025 ? "near" : undefined })), source: "CSV riset FMIPA", note: "2025 melandai, tetapi tetap jauh di atas skala awal periode. Jangan menyamakan dana riset dengan anggaran fakultas." },
+  { number: "3.2", kicker: "Pilar 2 · Kontribusi terhadap bangsa", title: `Dari ${format(outreachByYear.get(2021) ?? 0)} Menjadi ${format(outreachByYear.get(2025) ?? 0)} Kegiatan`, takeaway: `${format(valueModelRaw.metrics.mappable_outreach_n)} dari ${format(valueModelRaw.metrics.outreach_n)} kegiatan 2021–2025 dapat dipetakan ke centroid provinsi.`, mode: "bars", items: [2021, 2022, 2023, 2024, 2025].map((year) => ({ label: String(year), value: outreachByYear.get(year) ?? 0, display: format(outreachByYear.get(year) ?? 0), status: year === 2025 ? "good" : undefined })), source: "CSV pengabdian FMIPA", note: `${format(outreachArchiveMissing)} dari 1.610 catatan seluruh arsip tidak memiliki label lokasi. Sebanyak ${format(valueModelRaw.metrics.raw_location_labels_n)} label kabupaten/lokasi pada periode masih mentah dan tidak diklaim sebagai wilayah unik.` },
+  { number: "3.3", kicker: "Pilar 2 · Kontribusi terhadap bangsa", title: "Empat SDG Menonjol", takeaway: "Industri dan inovasi memimpin, tetapi tujuan 1, 5, dan 10 bernilai nol pada penandaan data riset.", mode: "cards", items: [[9, "SDG 9 · Industri & inovasi"], [3, "SDG 3 · Kesehatan"], [12, "SDG 12 · Konsumsi bertanggung jawab"], [6, "SDG 6 · Air bersih"]].map(([number, label]) => ({ label, display: format(sdgByNumber.get(Number(number))?.research_n ?? 0), status: Number(number) === 9 ? "good" : undefined })), source: "CSV riset + SciVal", note: "Nol berarti belum ada tag pada data, bukan otomatis tidak ada aktivitas sama sekali." },
+  { number: "3.4", kicker: "Pilar 2 · Diseminasi", title: "Ilmu Mengalir melalui Jurnal", takeaway: `Empat jurnal FMIPA memuat ${format(journalClassified)} artikel terklasifikasi; paparan media belum memiliki rangkaian data lima tahun.`, mode: "bars", items: journalItems, source: "Data jurnal internal FMIPA", note: `Satu dari ${format(journalsRaw.reduce((sum, row) => sum + row.n, 0))} rekaman jurnal belum terklasifikasi. Data media hanya ${format(mediaTotal)} baris dan mulai 2023.` },
+  { number: "3.5", kicker: "Pilar 2 · Pertanyaan terbuka", title: "Produksi Belum Sama Cepat dengan Penyaluran", takeaway: "Tiga dari sepuluh indikator tercapai. Creative funding dan MOOC menjadi jarak terbesar.", mode: "cards", items: [{ label: "Creative funding", display: `Rp${format(tck("1c").capaian_tw3)} / Rp${format(tck("1c").target_tw3)} M`, status: tone(tck("1c").status_tw3) }, { label: "MOOC publik", display: `${format(tck("7").capaian_tw3)} / ${format(tck("7").target_tw3)}`, status: tone(tck("7").status_tw3) }, { label: "Luaran tridharma ber-SDG", display: `${format(tck("19a").capaian_tw3)} / ${format(tck("19a").target_tw3)}`, status: tone(tck("19a").status_tw3) }, { label: "Lokasi pengabdian kosong", display: format(outreachArchiveMissing), status: "behind" }], source: "SIMASTER + CSV pengabdian", note: "Ini scene koreksi utama. Sampaikan apa adanya: kapasitas produksi tumbuh lebih cepat daripada mekanisme penyaluran keluar kampus." },
+  { number: "4.1", kicker: "Pilar 3 · Employability", title: "Ke Mana Lulusan Pergi?", takeaway: "Angka total tersedia. Sektor dan wilayah belum dapat dijawab tanpa tracer study rinci.", mode: "stat", stat: format(tck("5a").capaian_tw3), statLabel: "lulusan bekerja, melanjutkan studi, atau berwirausaha", source: "SIMASTER TCK #5a", note: "Ini angka respons yang tercatat, bukan seluruh lulusan. Jangan menyimpulkan angka ini sebagai tingkat penyerapan lulusan." },
+  { number: "4.2", kicker: "Pilar 3 · Employability", title: "Berapa Lama Menunggu Kerja?", takeaway: "Distribusi masa tunggu per program studi belum tersedia dan tidak boleh digantikan dengan rata-rata nasional atau perkiraan.", mode: "gap", statLabel: "Tracer study rinci dibutuhkan", source: "Data belum tersedia", note: "Sebutkan ini sebagai pekerjaan konkret untuk periode berikutnya: turunkan distribusi, bukan hanya agregat." },
+  { number: "4.3", kicker: "Pilar 3 · Bekal sebelum lulus", title: "Satu Target Tahunan Sudah Terlewati", takeaway: "MBKM melampaui target tahunan, sementara indikator lain bergerak pada lintasan yang berbeda.", mode: "status", items: [statusItem("8a", "MBKM ≥10 SKS", "target_tw4"), statusItem("9", "Mahasiswa berprestasi", "target_tw4"), statusItem("10", "Fast track / RPL / PMDSU", "target_tw4"), statusItem("5b", "Aktif di LinkedIn", "target_tw4")], source: "SIMASTER", note: "Status warna dibaca terhadap target TW3; angka pembanding pada kartu adalah target tahunan." },
+  { number: "4.4", kicker: "Pilar 3 · Keterbukaan", title: "Mahasiswa Asing Masih di Bawah Lintasan", takeaway: "Baik kegiatan kredit maupun non-kredit tertinggal dari target triwulan III.", mode: "status", items: [statusItem("4a", "Kredit"), statusItem("4b", "Non-kredit")], source: "SIMASTER TCK #4a–4b", note: `Target tahunan: ${format(tck("4a").target_tw4)} kredit dan ${format(tck("4b").target_tw4)} non-kredit.` },
+  { number: "4.5", kicker: "Pilar 3 · Kelulusan", title: "Wisuda Agustus Mengubah Kurva", takeaway: "Kenaikan Sarjana pada TW3 adalah efek kalender wisuda; bukan perubahan mendadak pada proses pembelajaran.", mode: "bars", items: [["8b1", "Sarjana"], ["8b2", "Magister"], ["8b3", "Doktor"]].map(([no, label]) => ({ label: `${label} · TW1 → TW3`, value: tck(no).capaian_tw3, max: tck(no).target_tw3, display: `${format(tck(no).capaian_tw1)}% → ${format(tck(no).capaian_tw3)}%`, status: tone(tck(no).status_tw3) })), source: "SIMASTER TCK #8b1–8b3", note: "Status dibaca terhadap target TW3. Lonjakan Sarjana mencerminkan wisuda periode Agustus." },
+  { number: "4.3′", kicker: "Pilar 3 · Keterlibatan riset", title: `${format(studentResearchTotal)} Riset Melibatkan Mahasiswa`, takeaway: "Keterlibatan mahasiswa Sarjana hampir seluruhnya tercatat pada 2023 dan 2024.", mode: "bars", items: studentResearchRaw.map((row) => ({ label: String(row.year), value: row.n, display: format(row.n), status: row.year === 2024 ? "good" : undefined })), source: "CSV riset FMIPA", note: "Ini indikator berbasis tag TCK pada judul riset, bukan sensus seluruh pengalaman riset mahasiswa." },
+  { number: "5.1", kicker: "Pilar 4 · Kesejahteraan", title: "Sembilan dari Sebelas Tercapai", takeaway: "Karier dan rekognisi dosen bergerak kuat; beberapa lonjakan lebih mungkin mencerminkan pencatatan susulan.", mode: "cards", items: [{ label: "Dosen S3", display: format(tck("24").capaian_tw3), status: tone(tck("24").status_tw3) }, { label: "Guru Besar", display: `${format(tck("30").capaian_tw3)} / ${format(tck("30").target_tw3)}`, status: tone(tck("30").status_tw3) }, { label: "Sertifikat kompetensi", display: format(tck("25").capaian_tw3), status: tone(tck("25").status_tw3), description: `Naik dari ${format(tck("25").capaian_tw2)} pada TW2` }, { label: "Rekognisi internasional", display: format(tck("23").capaian_tw3), status: tone(tck("23").status_tw3) }], source: "SIMASTER", note: "Lonjakan sertifikasi perlu penjelasan; jangan disajikan sebagai prestasi mendadak tanpa konteks." },
+  { number: "5.2", kicker: "Pilar 4 · Inklusi", title: `${format(tck("31").capaian_tw3)} Fasilitas Disabilitas`, takeaway: `Target tahunan ${format(tck("31").target_tw4)} unit sudah dilampaui. Angka hijau bangunan ditahan sampai anomali terkonfirmasi.`, mode: "stat", stat: format(tck("31").capaian_tw3), statLabel: `unit fasilitas disabilitas · target tahunan ${format(tck("31").target_tw4)}`, source: "SIMASTER TCK #31", note: "Jangan tampilkan indikator #32. Nilainya 13,1 → 25,55 → 0 dan masih perlu klarifikasi." },
+  { number: "5.3", kicker: "Pilar 4 · Keselamatan", title: "Apakah Ini Ruang yang Aman?", takeaway: "TCK 2026 tidak lagi memuat kecelakaan kerja, kekerasan, kesehatan, atau timbulan sampah.", mode: "gap", statLabel: "Data Satgas PPKS dan HSE dibutuhkan", source: "Data belum tersedia", note: "Tidak adanya indikator di TCK bukan bukti nol kasus. Hindari frasa 'nol sebagai capaian' sebelum data resmi tersedia." },
+  { number: "6.1", kicker: "Babak III · Yang diserahkan", title: "Pekerjaan yang Belum Selesai", takeaway: "Pertanggungjawaban ini menyerahkan masalah yang terukur, bukan daftar harapan umum.", mode: "cards", items: [{ label: "Indikator tertinggal", display: `${format(tckBehind)} / ${format(tckRaw.length)}`, status: "missed" }, { label: "Creative funding", display: `${format(creativeFundingRatio)}% lintasan`, status: "missed" }, { label: "Tracer & keselamatan", display: "2 gap data", status: "behind" }, { label: "Dana riset 2025", display: `${fundingChange < 0 ? "−" : "+"}${format(Math.abs(fundingChange), 1)}%`, status: "near" }], source: "SIMASTER + CSV historis", note: "Indikator tertinggal diberi bobot yang sama seperti angka yang tercapai." },
+  { number: "6.2", kicker: "Babak III · Titik awal", title: "Empat Baseline untuk Periode Berikutnya", takeaway: "Reputasi, kontribusi, employability, dan kesejahteraan kini memiliki angka dasar, sumber terbuka, dan pertanyaan yang dapat diuji.", mode: "cards", items: pillarSummary, source: "SIMASTER, 19 Agustus 2026", note: "Tutup dengan ajakan: gunakan halaman Data & Metodologi sebagai titik mulai pembaruan 2027, bukan membuat laporan dari nol." },
+];
+---
+
+<BaseLayout
+  title="Mode Presentasi — Lima Tahun FMIPA"
+  description="Mode layar penuh untuk Rapat Senat Terbuka FMIPA UGM 2026."
+  canonicalPath="/presentasi"
+  chrome={false}
+  bodyClass="presentation-page"
+>
+  <main id="konten-utama" class="presentation-deck" data-presentation-deck>
+    {slides.map((slide) => <PresentationSlide {...slide} />)}
+  </main>
+  <nav class="deck-controls" aria-label="Kontrol presentasi">
+    <a href={homeUrl} title="Keluar dari mode presentasi">Keluar</a>
+    <button type="button" data-deck-prev aria-label="Scene sebelumnya">←</button>
+    <span data-deck-counter aria-live="polite">1 / {slides.length}</span>
+    <button type="button" data-deck-next aria-label="Scene berikutnya">→</button>
+    <button type="button" data-deck-notes aria-pressed="false" title="Tampilkan catatan presenter (P)">Catatan</button>
+    <button type="button" data-deck-fullscreen title="Layar penuh (F)">Layar penuh</button>
+  </nav>
+  <p class="deck-help">← → navigasi · P catatan · F layar penuh</p>
+
+  <script>
+    const deck = document.querySelector<HTMLElement>("[data-presentation-deck]");
+    const slides = [...document.querySelectorAll<HTMLElement>("[data-presentation-slide]")];
+    const counter = document.querySelector<HTMLElement>("[data-deck-counter]");
+    const prev = document.querySelector<HTMLButtonElement>("[data-deck-prev]");
+    const next = document.querySelector<HTMLButtonElement>("[data-deck-next]");
+    const notes = document.querySelector<HTMLButtonElement>("[data-deck-notes]");
+    const fullscreen = document.querySelector<HTMLButtonElement>("[data-deck-fullscreen]");
+    let index = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace("#scene-", "")) - 1 || 0));
+
+    const activate = (requested: number) => {
+      index = Math.max(0, Math.min(slides.length - 1, requested));
+      slides.forEach((slide, slideIndex) => {
+        const active = slideIndex === index;
+        slide.toggleAttribute("data-active", active);
+        slide.setAttribute("aria-hidden", String(!active));
+      });
+      if (counter) counter.textContent = `${index + 1} / ${slides.length}`;
+      if (prev) prev.disabled = index === 0;
+      if (next) next.disabled = index === slides.length - 1;
+      history.replaceState(null, "", `#scene-${index + 1}`);
+    };
+
+    document.body.classList.add("presentation-enhanced");
+    activate(index);
+    prev?.addEventListener("click", () => activate(index - 1));
+    next?.addEventListener("click", () => activate(index + 1));
+    notes?.addEventListener("click", () => {
+      const visible = document.body.dataset.notesVisible !== "true";
+      document.body.dataset.notesVisible = String(visible);
+      notes.setAttribute("aria-pressed", String(visible));
+    });
+    fullscreen?.addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+    document.addEventListener("keydown", (event) => {
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) { event.preventDefault(); activate(index + 1); }
+      if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); activate(index - 1); }
+      if (event.key === "Home") { event.preventDefault(); activate(0); }
+      if (event.key === "End") { event.preventDefault(); activate(slides.length - 1); }
+      if (event.key.toLowerCase() === "p") { event.preventDefault(); notes?.click(); }
+      if (event.key.toLowerCase() === "f") { event.preventDefault(); fullscreen?.click(); }
+    });
+    deck?.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).closest("a,button,aside")) return;
+      const x = (event as MouseEvent).clientX;
+      activate(index + (x > window.innerWidth / 2 ? 1 : -1));
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  :global(body.presentation-page) { overflow: auto; background: #0B1F2E; }
+  :global(body.presentation-page.presentation-enhanced) { overflow: hidden; }
+  :global(body.presentation-page.presentation-enhanced [data-presentation-deck]) {
+    position: relative;
+    inline-size: 100%;
+    block-size: 100svh;
+    overflow: hidden;
+  }
+  :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+    transition: opacity 500ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 500ms;
+  }
+  :global(body.presentation-page.presentation-enhanced [data-presentation-slide][data-active]) {
+    z-index: 2;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 500ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 0s;
+  }
+  .deck-controls { position: fixed; z-index: 100; inset: 16px auto auto 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; padding: 6px; border: 1px solid rgba(255,255,255,.25); background: #0B1F2E; color: #fff; box-shadow: 0 5px 20px rgb(0 0 0 / 22%); }
+  .deck-controls a, .deck-controls button { min-height: 44px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.24); border-radius: 4px; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; }
+  .deck-controls button:hover, .deck-controls a:hover { background: rgba(255,255,255,.1); }.deck-controls button[aria-pressed="true"] { background: var(--ugm-gold); color: #0B1F2E; }.deck-controls button:disabled { opacity: .35; }
+  .deck-controls span { min-width: 64px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .deck-help { position: fixed; z-index: 90; inset: auto auto 18px 50%; transform: translateX(-50%); margin: 0; color: rgba(255,255,255,.58); font-size: 10px; pointer-events: none; }
+  @media(max-width:760px){.deck-controls{inset:8px 8px auto;transform:none;justify-content:center}.deck-controls a,.deck-controls button{padding-inline:9px}.deck-controls [data-deck-fullscreen],.deck-controls [data-deck-notes]{display:none}.deck-help{display:none}}
+  @media (prefers-reduced-motion: reduce) {
+    :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) { transition: none; }
+  }
+  @media print { .deck-controls,.deck-help{display:none!important}:global(body.presentation-page){overflow:visible!important}:global(body.presentation-page [data-presentation-slide]){display:block!important;visibility:visible!important;opacity:1!important;break-after:page;transition:none!important} }
+</style>

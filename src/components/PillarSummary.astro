@@ -1,0 +1,64 @@
+---
+interface Pillar {
+  number: string;
+  title: string;
+  status: string;
+  achieved: number;
+  total: number;
+  takeaway: string;
+  href: string;
+  color: "blue" | "orange" | "green" | "violet";
+}
+interface Props { pillars: Pillar[]; }
+const { pillars } = Astro.props;
+---
+
+<div class="pillar-summary">
+  {pillars.map((pillar) => (
+    <a class={`pillar-card pillar-card--${pillar.color}`} href={pillar.href}>
+      <span class="pillar-card__number">{pillar.number}</span>
+      <p class="pillar-card__label">{pillar.status}</p>
+      <h3>{pillar.title}</h3>
+      <p class="pillar-card__score"><strong>{pillar.achieved}</strong><span>/ {pillar.total} tercapai</span></p>
+      <div class="pillar-card__track" aria-label={`${pillar.achieved} dari ${pillar.total} indikator tercapai`}>
+        <i style={`width:${(pillar.achieved / pillar.total) * 100}%`}></i>
+      </div>
+      <p class="pillar-card__takeaway">{pillar.takeaway}</p>
+      <span class="pillar-card__link">Kembali ke pilar <span aria-hidden="true">↑</span></span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .pillar-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .pillar-card {
+    --pillar: var(--ugm-blue);
+    min-width: 0;
+    min-height: 360px;
+    padding: 28px;
+    border: 1px solid var(--border-default);
+    border-top: 5px solid var(--pillar);
+    background: var(--surface-card);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+  }
+  .pillar-card:hover { background: var(--surface-tint); color: var(--text-primary); }
+  .pillar-card--blue { --pillar: var(--dept-fisika); }
+  .pillar-card--orange { --pillar: var(--dept-ike); }
+  .pillar-card--green { --pillar: var(--dept-kimia); }
+  .pillar-card--violet { --pillar: var(--dept-matematika); }
+  .pillar-card__number { width: 36px; height: 36px; display: grid; place-items: center; background: var(--pillar); color: #fff; font-weight: 700; }
+  .pillar-card__label { margin: 20px 0 8px; color: var(--pillar); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .pillar-card h3 { color: var(--text-primary); font-family: var(--font-display); font-size: 25px; line-height: 1.1; }
+  .pillar-card__score { margin: 26px 0 0; display: flex; align-items: baseline; gap: 8px; }
+  .pillar-card__score strong { font-size: 42px; font-weight: 300; line-height: 1; }
+  .pillar-card__score span { color: var(--text-muted); font-size: 13px; }
+  .pillar-card__track { height: 7px; margin-block-start: 12px; background: var(--border-subtle); overflow: hidden; }
+  .pillar-card__track i { height: 100%; display: block; background: var(--pillar); }
+  .pillar-card__takeaway { margin: 24px 0 0; color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+  .pillar-card__link { margin-block-start: auto; padding-block-start: 24px; color: var(--pillar); font-size: 13px; font-weight: 700; }
+  @media (max-width: 1000px) { .pillar-summary { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .pillar-summary { grid-template-columns: 1fr; } .pillar-card { min-height: 0; } }
+</style>

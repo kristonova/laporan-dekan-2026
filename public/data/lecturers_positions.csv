@@ -1,0 +1,19 @@
+position,department,n
+Asisten Ahli,Fisika,4
+Asisten Ahli,Ilmu Komputer dan Elektronika,16
+Asisten Ahli,Kimia,3
+Asisten Ahli,Matematika,8
+Belum terisi,Ilmu Komputer dan Elektronika,1
+Belum terisi,Matematika,2
+Guru Besar,Fisika,12
+Guru Besar,Ilmu Komputer dan Elektronika,6
+Guru Besar,Kimia,18
+Guru Besar,Matematika,6
+Lektor,Fisika,23
+Lektor,Ilmu Komputer dan Elektronika,26
+Lektor,Kimia,12
+Lektor,Matematika,23
+Lektor Kepala,Fisika,13
+Lektor Kepala,Ilmu Komputer dan Elektronika,10
+Lektor Kepala,Kimia,9
+Lektor Kepala,Matematika,11

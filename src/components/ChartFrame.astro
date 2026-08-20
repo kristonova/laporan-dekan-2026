@@ -1,0 +1,94 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  source: string;
+  updated?: string;
+  downloadHref?: string;
+  downloadName?: string;
+  note?: string;
+  dark?: boolean;
+  tableLabel?: string;
+}
+const {
+  source,
+  updated,
+  downloadHref,
+  downloadName = "data.csv",
+  note,
+  dark = false,
+  tableLabel = "Lihat sebagai tabel",
+} = Astro.props;
+const hasTable = Astro.slots.has("table");
+const resolvedDownloadHref = downloadHref ? withBase(downloadHref) : undefined;
+---
+
+<figure class:list={["chart-frame", { "chart-frame--dark": dark }]}>
+  <div class="chart-frame__plot"><slot /></div>
+  {note && <figcaption class="chart-frame__note">{note}</figcaption>}
+  {hasTable && (
+    <details class="chart-frame__table">
+      <summary>{tableLabel}</summary>
+      <div class="table-scroll"><slot name="table" /></div>
+    </details>
+  )}
+  <footer class="chart-frame__footer">
+    <p><strong>Sumber:</strong> {source}{updated && <> · {updated}</>}</p>
+    <div class="chart-frame__actions">
+      {hasTable && <span aria-hidden="true">Tabel tersedia</span>}
+      {resolvedDownloadHref && <a href={resolvedDownloadHref} download={downloadName}>Unduh CSV</a>}
+    </div>
+  </footer>
+</figure>
+
+<style>
+  .chart-frame { margin: 0; }
+  .chart-frame__plot { min-width: 0; }
+  .chart-frame__note {
+    max-width: 80ch;
+    margin-block-start: 18px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .chart-frame__table {
+    margin-block-start: 22px;
+    border-block: 1px solid var(--border-subtle);
+  }
+  .chart-frame__table summary {
+    padding-block: 14px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .table-scroll { overflow-x: auto; padding-block-end: 14px; }
+  .table-scroll :global(table) { min-width: 560px; font-size: 14px; }
+  .chart-frame__footer {
+    margin-block-start: 22px;
+    padding-block-start: 14px;
+    border-block-start: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .chart-frame__footer p { margin: 0; }
+  .chart-frame__footer strong { color: var(--text-secondary); }
+  .chart-frame__actions { display: flex; flex: none; align-items: center; gap: 14px; }
+  .chart-frame__actions span { color: var(--text-muted); }
+  .chart-frame__actions a { font-weight: 700; }
+  .chart-frame--dark .chart-frame__note,
+  .chart-frame--dark .chart-frame__footer { color: rgba(255,255,255,.65); }
+  .chart-frame--dark .chart-frame__footer strong,
+  .chart-frame--dark .chart-frame__actions a,
+  .chart-frame--dark .chart-frame__table summary { color: #fff; }
+  .chart-frame--dark .chart-frame__footer,
+  .chart-frame--dark .chart-frame__table { border-color: rgba(255,255,255,.18); }
+  @media (max-width: 640px) {
+    .chart-frame__footer { flex-direction: column; }
+  }
+</style>

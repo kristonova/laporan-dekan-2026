@@ -1,0 +1,26 @@
+[
+  {
+    "department": "Kimia",
+    "total": 106392.0,
+    "median": 1765.0,
+    "n": 44
+  },
+  {
+    "department": "Fisika",
+    "total": 50031.0,
+    "median": 513.0,
+    "n": 54
+  },
+  {
+    "department": "Ilmu Komputer dan Elektronika",
+    "total": 49411.0,
+    "median": 459.0,
+    "n": 56
+  },
+  {
+    "department": "Matematika",
+    "total": 30416.0,
+    "median": 317.0,
+    "n": 51
+  }
+]

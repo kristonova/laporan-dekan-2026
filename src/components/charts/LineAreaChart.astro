@@ -1,0 +1,313 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps, ChartSeries } from "./_types";
+import { SERIES_COLORS, formatCompact, niceMax, scaleLinear, slugify, ticks } from "./_utils";
+
+type Row = Record<string, unknown>;
+interface Props extends Omit<ChartChromeProps<Row>, "tableRows" | "tableColumns"> {
+  data: Row[];
+  xKey: string;
+  series: ChartSeries[];
+  width?: number;
+  height?: number;
+  yDomain?: [number, number];
+  area?: boolean;
+  yLabel?: string;
+  xFormatter?: (value: unknown) => string;
+  valueFormatter?: (value: number) => string;
+  provisionalX?: string | number;
+  provisionalLabel?: string;
+  showMarkers?: boolean;
+}
+
+const {
+  data,
+  xKey,
+  series,
+  width = 960,
+  height = 520,
+  yDomain,
+  area = true,
+  yLabel,
+  xFormatter = (value) => String(value ?? ""),
+  valueFormatter = formatCompact,
+  provisionalX,
+  provisionalLabel = "Indeksasi berjalan",
+  showMarkers = true,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 30, right: series.length > 1 ? 132 : 54, bottom: 58, left: 76 };
+const plotWidth = width - margin.left - margin.right;
+const plotHeight = height - margin.top - margin.bottom;
+const values = data.flatMap((row) => series.map((item) => Number(row[item.key])).filter(Number.isFinite));
+const inferredMin = Math.min(0, ...values);
+const inferredMax = niceMax(Math.max(1, ...values));
+const [yMin, yMax] = yDomain ?? [inferredMin, inferredMax];
+const xPosition = (index: number) =>
+  data.length <= 1 ? margin.left + plotWidth / 2 : margin.left + (index / (data.length - 1)) * plotWidth;
+const yPosition = (value: number) => margin.top + plotHeight - scaleLinear(value, yMin, yMax, 0, plotHeight);
+const yTicks = ticks(yMin, yMax, 4);
+const prepared = series.map((item, seriesIndex) => {
+  const points = data
+    .map((row, index) => ({
+      row,
+      index,
+      x: xPosition(index),
+      value: Number(row[item.key]),
+    }))
+    .filter((point) => Number.isFinite(point.value))
+    .map((point) => ({ ...point, y: yPosition(point.value) }));
+  const path = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+  const areaPath = points.length
+    ? `${path} L ${points.at(-1)!.x} ${yPosition(Math.max(0, yMin))} L ${points[0].x} ${yPosition(Math.max(0, yMin))} Z`
+    : "";
+  return {
+    ...item,
+    color: item.color ?? SERIES_COLORS[seriesIndex % SERIES_COLORS.length],
+    points,
+    path,
+    areaPath,
+    last: points.at(-1),
+  };
+});
+const provisionalIndex = data.findIndex((row) => String(row[xKey]) === String(provisionalX));
+const provisionalStartX = provisionalIndex >= 0
+  ? provisionalIndex === 0
+    ? margin.left
+    : (xPosition(provisionalIndex - 1) + xPosition(provisionalIndex)) / 2
+  : undefined;
+const tableColumns = [
+  { key: xKey, label: xKey, format: (value: unknown) => xFormatter(value) },
+  ...series.map((item) => ({
+    key: item.key,
+    label: item.label,
+    align: "end" as const,
+    format: (value: unknown) => Number.isFinite(Number(value)) ? valueFormatter(Number(value)) : "—",
+  })),
+];
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={data}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={560}
+>
+  <svg data-line-chart viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Grafik {area ? "area dan garis" : "garis"} dengan {series.length} seri dan {data.length} titik waktu. Nilai lengkap tersedia pada tabel.
+    </desc>
+    <defs>
+      <pattern id={`${id}-incomplete`} width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="9" stroke="var(--ink-muted, #687078)" stroke-width="2" opacity="0.25" />
+      </pattern>
+    </defs>
+
+    <g class="grid" aria-hidden="true">
+      {yTicks.map((tick) => (
+        <g>
+          <line x1={margin.left} x2={margin.left + plotWidth} y1={yPosition(tick)} y2={yPosition(tick)} />
+          <text x={margin.left - 12} y={yPosition(tick) + 4} text-anchor="end">{valueFormatter(tick)}</text>
+        </g>
+      ))}
+    </g>
+
+    {yLabel && <text class="axis-label" x={margin.left} y="15">{yLabel}</text>}
+
+    {area && prepared.map((item) => (
+      <path class="area" d={item.areaPath} fill={item.color} fill-opacity="0.13" aria-hidden="true" />
+    ))}
+
+    {prepared.map((item) => (
+      <path
+        class:list={["line", item.pattern === "diagonal" && "is-dashed"]}
+        d={item.path}
+        fill="none"
+        stroke={item.color}
+      />
+    ))}
+
+    {provisionalStartX !== undefined && (
+      <g class="provisional" aria-hidden="true">
+        <rect
+          x={provisionalStartX}
+          y={margin.top}
+          width={margin.left + plotWidth - provisionalStartX}
+          height={plotHeight}
+          fill={`url(#${id}-incomplete)`}
+        />
+        <text x={margin.left + plotWidth - 4} y={margin.top + 16} text-anchor="end">{provisionalLabel}</text>
+      </g>
+    )}
+
+    <g class="x-axis" aria-hidden="true">
+      {data.map((row, index) => (
+        <g>
+          <line x1={xPosition(index)} x2={xPosition(index)} y1={margin.top + plotHeight} y2={margin.top + plotHeight + 6} />
+          <text x={xPosition(index)} y={margin.top + plotHeight + 25} text-anchor="middle">{xFormatter(row[xKey])}</text>
+        </g>
+      ))}
+    </g>
+
+    <line
+      class="crosshair"
+      x1={margin.left}
+      x2={margin.left}
+      y1={margin.top}
+      y2={margin.top + plotHeight}
+      data-chart-crosshair
+      style="display:none"
+      aria-hidden="true"
+    />
+
+    {showMarkers && prepared.map((item) => item.points.map((point) => {
+      const xValue = xFormatter(point.row[xKey]);
+      const tooltip = `${item.label}, ${xValue}: ${valueFormatter(point.value)}`;
+      return (
+        <g class="marker-group">
+          <circle
+            class="marker-hit"
+            cx={point.x}
+            cy={point.y}
+            r="22"
+            tabindex="0"
+            data-tooltip={tooltip}
+            data-crosshair-x={point.x}
+            aria-label={tooltip}
+          />
+          <circle
+            class="marker"
+            cx={point.x}
+            cy={point.y}
+            r="5"
+            fill={item.color}
+            stroke="var(--surface, #fff)"
+            stroke-width="2"
+            aria-hidden="true"
+          />
+        </g>
+      );
+    }))}
+
+    {prepared.map((item) => item.last && (
+      <g class="direct-label" aria-hidden="true">
+        <line x1={item.last.x + 7} x2={item.last.x + 18} y1={item.last.y} y2={item.last.y} stroke={item.color} />
+        <text x={item.last.x + 23} y={item.last.y + 4}>{item.label}</text>
+      </g>
+    ))}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grid line {
+    stroke: var(--rule-light, #e4e7e9);
+    stroke-width: 1;
+  }
+
+  .grid text,
+  .x-axis text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 12px;
+  }
+
+  .x-axis line {
+    stroke: var(--rule, #cfd4d7);
+  }
+
+  .axis-label {
+    fill: var(--ink-muted, #656b70);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .line {
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .line.is-dashed {
+    stroke-dasharray: 8 5;
+  }
+
+  .area {
+    pointer-events: none;
+  }
+
+  .marker {
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
+    transition: r 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .marker-hit {
+    fill: transparent;
+  }
+
+  .crosshair {
+    stroke: var(--ink-muted, #656b70);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+    pointer-events: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .marker-hit:hover + .marker,
+  .marker-hit:focus + .marker {
+    r: 8px;
+  }
+
+  .marker-hit:focus-visible {
+    outline: none;
+  }
+
+  .marker-hit:focus-visible + .marker {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 4;
+  }
+
+  .direct-label line {
+    stroke-width: 2;
+  }
+
+  .direct-label text {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .provisional text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marker { transition: none; }
+  }
+</style>

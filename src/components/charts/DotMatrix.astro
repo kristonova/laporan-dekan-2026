@@ -1,0 +1,196 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, formatNumber, slugify } from "./_utils";
+
+interface DotGroup extends Record<string, unknown> {
+  label: string;
+  count: number;
+  color?: string;
+  description?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<DotGroup>, "tableRows" | "tableColumns"> {
+  groups: DotGroup[];
+  columns?: number;
+  unitValue?: number;
+  maxDots?: number;
+  unitLabel?: string;
+  width?: number;
+  dotSize?: number;
+}
+
+const {
+  groups,
+  columns = 20,
+  unitValue: requestedUnit,
+  maxDots = 500,
+  unitLabel = "orang",
+  width = 780,
+  dotSize = 12,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const total = groups.reduce((sum, group) => sum + Math.max(0, group.count), 0);
+const unitValue = requestedUnit ?? Math.max(1, Math.ceil(total / maxDots));
+const preparedGroups = groups.map((group, groupIndex) => ({
+  ...group,
+  color: group.color ?? SERIES_COLORS[groupIndex % SERIES_COLORS.length],
+  dots: Math.ceil(Math.max(0, group.count) / unitValue),
+  pattern: groupIndex % 4,
+}));
+const totalDots = preparedGroups.reduce((sum, group) => sum + group.dots, 0);
+const xStep = Math.min(26, (width - 56) / Math.max(1, columns - 1));
+const usedColumns = Math.min(columns, Math.max(1, totalDots));
+const startX = (width - (usedColumns - 1) * xStep) / 2;
+let offset = 0;
+const positionedGroups = preparedGroups.map((group) => {
+  const start = offset;
+  offset += group.dots;
+  return {
+    ...group,
+    points: Array.from({ length: group.dots }, (_, dotIndex) => {
+      const matrixIndex = start + dotIndex;
+      return {
+        x: startX + (matrixIndex % columns) * xStep,
+        y: 34 + Math.floor(matrixIndex / columns) * (dotSize + 7),
+        isPartial: dotIndex === group.dots - 1 && group.count % unitValue !== 0,
+      };
+    }),
+  };
+});
+const rows = Math.max(1, Math.ceil(offset / columns));
+const matrixHeight = 42 + rows * (dotSize + 7);
+const legendColumns = Math.min(2, Math.max(1, groups.length));
+const legendRows = Math.ceil(groups.length / legendColumns);
+const height = matrixHeight + legendRows * 36 + 48;
+const tableRows = groups.map((group) => ({
+  Kelompok: group.label,
+  Jumlah: group.count,
+  Keterangan: group.description ?? "—",
+}));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Kelompok", label: "Kelompok" },
+    { key: "Jumlah", label: "Jumlah", align: "end" },
+    { key: "Keterangan", label: "Keterangan" },
+  ]}
+  class={className}
+  {hideHeader}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Matriks {offset} simbol yang mewakili total {formatNumber(total)} {unitLabel}. Setiap simbol mewakili {formatNumber(unitValue)} {unitLabel}.
+    </desc>
+    <defs>
+      {preparedGroups.map((group, index) => (
+        <pattern id={`${id}-dot-${index}`} width="8" height="8" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill={group.color} />
+          {group.pattern === 1 && <path d="M -2 2 L 2 -2 M 0 8 L 8 0 M 6 10 L 10 6" stroke="#fff" stroke-width="1.25" opacity="0.48" />}
+          {group.pattern === 2 && <circle cx="2.5" cy="2.5" r="1" fill="#fff" opacity="0.6" />}
+          {group.pattern === 3 && <path d="M 1 4 H 7 M 4 1 V 7" stroke="#fff" stroke-width="1" opacity="0.5" />}
+        </pattern>
+      ))}
+    </defs>
+
+    <text class="unit-key" x="2" y="14">1 simbol = {formatNumber(unitValue)} {unitLabel}</text>
+    {positionedGroups.map((group, groupIndex) => {
+      const tooltip = `${group.label}: ${formatNumber(group.count)} ${unitLabel}${group.description ? `. ${group.description}` : ""}`;
+      return (
+        <g class="dot-group" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          {group.points.map((point) => (
+            <circle
+              cx={point.x}
+              cy={point.y}
+              r={dotSize / 2}
+              fill={`url(#${id}-dot-${groupIndex})`}
+              fill-opacity={point.isPartial ? 0.55 : 1}
+              stroke="var(--surface, #fff)"
+              stroke-width="1.5"
+              aria-hidden="true"
+            />
+          ))}
+        </g>
+      );
+    })}
+
+    <g class="legend" transform={`translate(2, ${matrixHeight + 17})`}>
+      {positionedGroups.map((group, groupIndex) => {
+        const column = groupIndex % legendColumns;
+        const row = Math.floor(groupIndex / legendColumns);
+        const columnWidth = (width - 4) / legendColumns;
+        return (
+          <g transform={`translate(${column * columnWidth}, ${row * 36})`}>
+            <circle cx="9" cy="9" r="7" fill={`url(#${id}-dot-${groupIndex})`} />
+            <text x="23" y="7">{group.label}</text>
+            <text class="legend-value" x="23" y="23">{formatNumber(group.count)} {unitLabel}</text>
+          </g>
+        );
+      })}
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .unit-key,
+  .legend-value {
+    fill: var(--ink-muted, #646a70);
+    font-size: 11px;
+  }
+
+  .legend text:not(.legend-value) {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .dot-group circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    vector-effect: non-scaling-stroke;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dot-group:hover circle,
+  .dot-group:focus circle {
+    transform: scale(1.12);
+  }
+
+  .dot-group:focus-visible {
+    outline: none;
+  }
+
+  .dot-group:focus-visible circle {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-group circle { transition: none; }
+  }
+</style>

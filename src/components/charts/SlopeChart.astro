@@ -1,0 +1,217 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, finite, formatNumber, scaleLinear, slugify, ticks } from "./_utils";
+
+interface SlopeDatum extends Record<string, unknown> {
+  label: string;
+  start: number;
+  end: number;
+  color?: string;
+  startLabel?: string;
+  endLabel?: string;
+  note?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<SlopeDatum>, "tableRows" | "tableColumns"> {
+  data: SlopeDatum[];
+  startTitle: string;
+  endTitle: string;
+  width?: number;
+  height?: number;
+  domain?: [number, number];
+  valueFormatter?: (value: number) => string;
+  yLabel?: string;
+}
+
+const {
+  data,
+  startTitle,
+  endTitle,
+  width = 900,
+  height = 500,
+  domain,
+  valueFormatter = (value) => formatNumber(value, 1),
+  yLabel,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 72, right: 205, bottom: 42, left: 205 };
+const plotHeight = height - margin.top - margin.bottom;
+const allValues = data.flatMap((row) => [finite(row.start), finite(row.end)]);
+const range = Math.max(...allValues) - Math.min(...allValues);
+const padding = range === 0 ? Math.max(1, Math.abs(allValues[0] ?? 1) * 0.1) : range * 0.1;
+const [minValue, maxValue] = domain ?? [Math.min(...allValues) - padding, Math.max(...allValues) + padding];
+const y = (value: number) => margin.top + plotHeight - scaleLinear(value, minValue, maxValue, 0, plotHeight);
+const leftX = margin.left;
+const rightX = width - margin.right;
+
+function distributeLabels(values: { index: number; y: number }[], minY: number, maxY: number, gap = 21): Map<number, number> {
+  const sorted = [...values].sort((a, b) => a.y - b.y).map((item) => ({ ...item }));
+  for (let index = 1; index < sorted.length; index += 1) {
+    sorted[index].y = Math.max(sorted[index].y, sorted[index - 1].y + gap);
+  }
+  if (sorted.length && sorted.at(-1)!.y > maxY) {
+    sorted[sorted.length - 1].y = maxY;
+    for (let index = sorted.length - 2; index >= 0; index -= 1) {
+      sorted[index].y = Math.min(sorted[index].y, sorted[index + 1].y - gap);
+    }
+  }
+  if (sorted.length && sorted[0].y < minY) {
+    const shift = minY - sorted[0].y;
+    sorted.forEach((item) => { item.y += shift; });
+  }
+  return new Map(sorted.map((item) => [item.index, item.y]));
+}
+
+const leftLabels = distributeLabels(data.map((row, index) => ({ index, y: y(row.start) })), margin.top, margin.top + plotHeight);
+const rightLabels = distributeLabels(data.map((row, index) => ({ index, y: y(row.end) })), margin.top, margin.top + plotHeight);
+const gridTicks = ticks(minValue, maxValue, 4);
+const tableRows = data.map((row) => ({
+  Kelompok: row.label,
+  [startTitle]: row.startLabel ?? valueFormatter(row.start),
+  [endTitle]: row.endLabel ?? valueFormatter(row.end),
+  Perubahan: valueFormatter(row.end - row.start),
+  Catatan: row.note ?? "—",
+}));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "Kelompok", label: "Kelompok" },
+    { key: startTitle, label: startTitle, align: "end" },
+    { key: endTitle, label: endTitle, align: "end" },
+    { key: "Perubahan", label: "Perubahan", align: "end" },
+    { key: "Catatan", label: "Catatan" },
+  ]}
+  class={className}
+  {hideHeader}
+  minPlotWidth={600}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>Grafik kemiringan membandingkan {startTitle} dan {endTitle} untuk {data.length} kelompok.</desc>
+
+    <g class="grid" aria-hidden="true">
+      {gridTicks.map((tick) => <line x1={leftX} x2={rightX} y1={y(tick)} y2={y(tick)} />)}
+      {yLabel && <text x={leftX} y="16">{yLabel}</text>}
+    </g>
+    <g class="headers" aria-hidden="true">
+      <text x={leftX} y="40" text-anchor="middle">{startTitle}</text>
+      <text x={rightX} y="40" text-anchor="middle">{endTitle}</text>
+    </g>
+
+    {data.map((row, index) => {
+      const startY = y(row.start);
+      const endY = y(row.end);
+      const leftLabelY = leftLabels.get(index) ?? startY;
+      const rightLabelY = rightLabels.get(index) ?? endY;
+      const color = row.color ?? SERIES_COLORS[index % SERIES_COLORS.length];
+      const delta = row.end - row.start;
+      const direction = delta > 0 ? "naik" : delta < 0 ? "turun" : "tetap";
+      const tooltip = `${row.label}: ${row.startLabel ?? valueFormatter(row.start)} menjadi ${row.endLabel ?? valueFormatter(row.end)}; ${direction} ${valueFormatter(Math.abs(delta))}.${row.note ? ` ${row.note}` : ""}`;
+      return (
+        <g class="slope" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <line class="connector" x1={leftX} x2={rightX} y1={startY} y2={endY} stroke={color} />
+          <circle cx={leftX} cy={startY} r="5" fill={color} />
+          <circle cx={rightX} cy={endY} r="5" fill={color} />
+          {Math.abs(leftLabelY - startY) > 2 && <line class="leader" x1={leftX - 8} x2={leftX - 19} y1={startY} y2={leftLabelY} />}
+          {Math.abs(rightLabelY - endY) > 2 && <line class="leader" x1={rightX + 8} x2={rightX + 19} y1={endY} y2={rightLabelY} />}
+          <text class="left-label" x={leftX - 24} y={leftLabelY + 4} text-anchor="end">
+            <tspan class="series-name">{row.label}</tspan>
+            <tspan> · {row.startLabel ?? valueFormatter(row.start)}</tspan>
+          </text>
+          <text class="right-label" x={rightX + 24} y={rightLabelY + 4}>
+            <tspan class="series-name">{row.label}</tspan>
+            <tspan> · {row.endLabel ?? valueFormatter(row.end)}</tspan>
+          </text>
+        </g>
+      );
+    })}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grid line {
+    stroke: var(--rule-light, #e5e8ea);
+  }
+
+  .grid text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .headers text {
+    fill: currentColor;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .connector {
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .slope circle {
+    stroke: var(--surface, #fff);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .slope text {
+    fill: currentColor;
+    font-size: 11px;
+  }
+
+  .series-name {
+    font-weight: 800;
+  }
+
+  .leader {
+    stroke: var(--ink-muted, #656b70);
+    stroke-width: 1;
+  }
+
+  .slope:focus-visible {
+    outline: none;
+  }
+
+  .slope:hover .connector,
+  .slope:focus .connector {
+    stroke-width: 5;
+  }
+
+  .slope:focus-visible circle {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 4;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .connector { transition: none; }
+  }
+</style>

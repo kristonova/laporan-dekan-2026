@@ -1,0 +1,145 @@
+---
+import { stripBase, withBase } from "../lib/paths";
+
+const path = stripBase(Astro.url.pathname);
+const homeUrl = withBase("/");
+const positionUrl = withBase("/#posisi");
+const pillarsUrl = withBase("/#empat-pilar");
+const dataUrl = withBase("/data");
+const presentationUrl = withBase("/presentasi");
+const logoUrl = withBase("/brand/logo-horizontal-stackup.png");
+---
+
+<header class="site-header" data-site-header>
+  <div
+    class="reading-progress"
+    data-reading-progress
+    role="progressbar"
+    aria-label="Kemajuan membaca"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+  ></div>
+  <div class="site-header__inner">
+    <a class="site-header__brand" href={homeUrl} aria-label="Lima Tahun FMIPA — beranda">
+      <img src={logoUrl} width="200" height="57" alt="Universitas Gadjah Mada" />
+      <span class="site-header__faculty">Fakultas Matematika dan Ilmu Pengetahuan Alam</span>
+    </a>
+
+    <nav class="site-header__nav" aria-label="Navigasi utama">
+      <a href={positionUrl} class:list={{ active: path === "/" }}>Posisi 2026</a>
+      <a href={pillarsUrl} class:list={{ active: path === "/" }}>Empat pilar</a>
+      <a href={dataUrl} class:list={{ active: path.startsWith("/data") }}>Data &amp; metodologi</a>
+    </nav>
+
+    <div class="site-header__actions">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+        <span>Mode gelap</span>
+      </button>
+      <a class="presentation-link" href={presentationUrl}>Mode presentasi</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 50;
+    background: var(--surface-page);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .reading-progress {
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    pointer-events: none;
+    background: linear-gradient(90deg, var(--ugm-gold) var(--reading-progress, 0%), transparent 0);
+  }
+  .site-header__inner {
+    width: min(calc(100% - (2 * var(--page-gutter))), var(--content-max));
+    min-height: 82px;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text-primary);
+    text-decoration: none;
+    flex: none;
+  }
+  .site-header__brand img { width: 200px; height: auto; display: block; }
+  .site-header__faculty {
+    max-width: 238px;
+    padding-inline-start: 14px;
+    border-inline-start: 1px solid var(--border-default);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+  .site-header__nav { display: flex; align-items: stretch; gap: 22px; margin-inline-start: auto; }
+  .site-header__nav a {
+    position: relative;
+    padding-block: 26px 23px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-header__nav a:hover,
+  .site-header__nav a.active { color: var(--text-primary); }
+  .site-header__nav a.active::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 3px;
+    background: var(--ugm-gold);
+  }
+  .site-header__actions { display: flex; align-items: center; gap: 10px; }
+  .theme-toggle,
+  .presentation-link {
+    min-height: 44px;
+    border: 1px solid var(--border-default);
+    border-radius: 4px;
+    padding: 9px 12px;
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .presentation-link { background: var(--ugm-blue); border-color: var(--ugm-blue); color: #fff; }
+  .theme-toggle:hover { border-color: var(--ugm-blue); background: var(--surface-tint); }
+  .presentation-link:hover { background: var(--ugm-blue-strong); color: #fff; }
+
+  @media (max-width: 980px) {
+    .site-header__inner { min-height: 76px; gap: 14px; }
+    .site-header__brand img { width: 190px; }
+    .site-header__faculty { display: none; }
+    .site-header__nav { display: none; }
+    .site-header__actions { margin-inline-start: auto; }
+    .theme-toggle span { font-size: 0; }
+    .theme-toggle span::after { content: "Tema"; font-size: 13px; }
+  }
+  @media (max-width: 1240px) {
+    .site-header__nav { display: none; }
+    .site-header__actions { margin-inline-start: auto; }
+  }
+  @media (max-width: 520px) {
+    .site-header__brand img { width: 190px; }
+    .presentation-link { padding-inline: 10px; }
+    .theme-toggle { display: none; }
+  }
+  @media (max-width: 360px) {
+    .site-header__brand img { width: 154px; }
+    .presentation-link { font-size: 12px; }
+  }
+</style>

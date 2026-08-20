@@ -1,0 +1,75 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  number: string;
+  title: string;
+  description: string;
+  id?: string;
+  tone?: "navy" | "light";
+}
+const { number, title, description, id, tone = "navy" } = Astro.props;
+const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
+---
+
+<section class:list={["chapter-intro", `chapter-intro--${tone}`]} {id} aria-labelledby={`${id ?? "chapter"}-title`}>
+  <div class="chapter-intro__motif" aria-hidden="true" style={motifStyle}></div>
+  <div class="chapter-intro__inner" data-reveal>
+    <p class="chapter-intro__number">{number}</p>
+    <div class="chapter-intro__rule" aria-hidden="true"></div>
+    <h2 id={`${id ?? "chapter"}-title`}>{title}</h2>
+    <p class="chapter-intro__description">{description}</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .chapter-intro {
+    min-height: min(82vh, 820px);
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    padding: clamp(88px, 11vw, 156px) var(--page-gutter);
+  }
+  .chapter-intro--navy { background: var(--ugm-blue-deep); color: #fff; }
+  .chapter-intro--light { background: var(--surface-subtle); color: var(--text-primary); }
+  .chapter-intro__inner { width: min(100%, 900px); position: relative; z-index: 1; }
+  .chapter-intro__number {
+    margin: 0 0 18px;
+    color: var(--ugm-gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+  .chapter-intro__rule { width: 82px; height: 3px; background: var(--ugm-gold); margin-block-end: 30px; }
+  .chapter-intro h2 {
+    max-width: 820px;
+    color: inherit;
+    font-family: var(--font-display);
+    font-size: clamp(46px, 7vw, 88px);
+    line-height: .98;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  .chapter-intro__description {
+    max-width: 660px;
+    margin: 30px 0 0;
+    color: color-mix(in srgb, currentColor 78%, transparent);
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1.5;
+  }
+  .chapter-intro__motif {
+    position: absolute;
+    inset: -18% -8% auto auto;
+    width: min(60vw, 720px);
+    aspect-ratio: 1;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: .11;
+    filter: brightness(0) invert(1);
+  }
+  .chapter-intro--light .chapter-intro__motif { filter: none; opacity: .06; }
+</style>

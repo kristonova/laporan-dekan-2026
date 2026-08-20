@@ -1,0 +1,50 @@
+raw,canonical,bps_code,scope
+"D. I. Yogyakarta, Jawa Tengah",Daerah Istimewa Yogyakarta + Jawa Tengah,MULTI,multi
+Aceh,Aceh,11,province
+Bali,Bali,51,province
+Bangka Belitung,Kepulauan Bangka Belitung,19,province
+Banten,Banten,36,province
+Bekasi,Jawa Barat,32,city_as_province
+Bengkulu,Bengkulu,17,province
+Bukidnon,Bukidnon,PH-10,foreign
+D. I. Yogyakarta,Daerah Istimewa Yogyakarta,34,province
+Daring,Daring,ONLINE,online
+DI Yogyakarta,Daerah Istimewa Yogyakarta,34,province
+DKI Jakarta,DKI Jakarta,31,province
+"DKI Jakarta,Jawa Barat",DKI Jakarta + Jawa Barat,MULTI,multi
+Gorontalo,Gorontalo,75,province
+Jakarta,DKI Jakarta,31,province
+Jakarta Selatan,DKI Jakarta,31,city_as_province
+Jawa Barat,Jawa Barat,32,province
+Jawa Tengah,Jawa Tengah,33,province
+Jawa tengah,Jawa Tengah,33,province
+Jawa Timur,Jawa Timur,35,province
+Jawa Tinguh,Jawa Tengah,33,typo
+Kalimantan Barat,Kalimantan Barat,61,province
+Kalimantan Selatan,Kalimantan Selatan,63,province
+Kalimantan Timur,Kalimantan Timur,64,province
+Kalimantan Utara,Kalimantan Utara,65,province
+Kepulauan Bangka Belitung,Kepulauan Bangka Belitung,19,province
+Lampung,Lampung,18,province
+Maluku,Maluku,81,province
+Maluku Utara,Maluku Utara,82,province
+NAD,Aceh,11,alias
+NTT,Nusa Tenggara Timur,53,alias
+Nusa Tenggara Barat,Nusa Tenggara Barat,52,province
+Nusa Tenggara Timur,Nusa Tenggara Timur,53,province
+Online,Daring,ONLINE,online
+Papua,Papua,91,province
+Papua Barat,Papua Barat,92,province
+Papua Tengah,Papua Tengah,94,province
+Riau,Riau,14,province
+RIau,Riau,14,typo
+Sulawesi Selatan,Sulawesi Selatan,73,province
+Sulawesi Tengah,Sulawesi Tengah,72,province
+Sulawesi Tenggara,Sulawesi Tenggara,74,province
+Sulawesi Utara,Sulawesi Utara,71,province
+Sumatera Barat,Sumatera Barat,13,province
+Sumatera Selatan,Sumatera Selatan,16,province
+Sumatera Utara,Sumatera Utara,12,province
+Sumatra Selatan,Sumatera Selatan,16,alias
+Victoria,Victoria,AU-VIC,foreign
+Yogyakarta,Daerah Istimewa Yogyakarta,34,alias

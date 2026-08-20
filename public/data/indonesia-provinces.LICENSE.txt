@@ -1,0 +1,14 @@
+Indonesia province boundaries
+
+Source: https://github.com/AlfianAliM/Indonesia-GeoJSON
+Original file: provinsi.geojson
+Repository commit: 169e53b256e99ee9d3f30c863c05e964a45f7008
+Original SHA-256: 7bf28fb7f8ab4c84904c1f9b0334e09dc36f0dbe92579efa3e84f6caddc98df6
+Generated: 16 February 2026 by Peta Nusa
+Data reference: Kepmendagri No. 300.2.2-2138 Tahun 2025
+Copyright: © Creasi.co - Laravel Nusa
+License: MIT
+
+The bundled GeoJSON was cleaned and topologically simplified with Mapshaper
+(`weighted 3% keep-shapes`, coordinate precision 0.001°) for web display. All
+38 province features and their names/codes remain.

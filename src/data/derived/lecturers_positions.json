@@ -1,0 +1,92 @@
+[
+  {
+    "position": "Asisten Ahli",
+    "department": "Fisika",
+    "n": 4
+  },
+  {
+    "position": "Asisten Ahli",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 16
+  },
+  {
+    "position": "Asisten Ahli",
+    "department": "Kimia",
+    "n": 3
+  },
+  {
+    "position": "Asisten Ahli",
+    "department": "Matematika",
+    "n": 8
+  },
+  {
+    "position": "Belum terisi",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 1
+  },
+  {
+    "position": "Belum terisi",
+    "department": "Matematika",
+    "n": 2
+  },
+  {
+    "position": "Guru Besar",
+    "department": "Fisika",
+    "n": 12
+  },
+  {
+    "position": "Guru Besar",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 6
+  },
+  {
+    "position": "Guru Besar",
+    "department": "Kimia",
+    "n": 18
+  },
+  {
+    "position": "Guru Besar",
+    "department": "Matematika",
+    "n": 6
+  },
+  {
+    "position": "Lektor",
+    "department": "Fisika",
+    "n": 23
+  },
+  {
+    "position": "Lektor",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 26
+  },
+  {
+    "position": "Lektor",
+    "department": "Kimia",
+    "n": 12
+  },
+  {
+    "position": "Lektor",
+    "department": "Matematika",
+    "n": 23
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Fisika",
+    "n": 13
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 10
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Kimia",
+    "n": 9
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Matematika",
+    "n": 11
+  }
+]

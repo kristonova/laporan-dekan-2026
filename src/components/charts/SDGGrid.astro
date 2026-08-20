@@ -1,0 +1,289 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { formatNumber, slugify } from "./_utils";
+
+interface SdgMode {
+  key: string;
+  label: string;
+}
+
+interface SdgItem extends Record<string, unknown> {
+  sdg: number;
+  label: string;
+  value?: number;
+  values?: Record<string, number>;
+  color?: string;
+  note?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<SdgItem>, "tableRows" | "tableColumns"> {
+  items: SdgItem[];
+  modes?: SdgMode[];
+  defaultMode?: string;
+  valueLabel?: string;
+  zeroLabel?: string;
+  valueFormatter?: (value: number) => string;
+}
+
+const SDG_COLORS = [
+  "#e5243b", "#dda63a", "#4c9f38", "#c5192d", "#ff3a21", "#26bde2", "#fcc30b", "#a21942", "#fd6925",
+  "#dd1367", "#fd9d24", "#bf8b2e", "#3f7e44", "#0a97d9", "#56c02b", "#00689d", "#19486a",
+];
+
+const {
+  items,
+  modes = [{ key: "value", label: "Jumlah" }],
+  defaultMode = modes[0]?.key ?? "value",
+  valueLabel = "kegiatan",
+  zeroLabel = "Belum tercatat",
+  valueFormatter = (value) => formatNumber(value, 1),
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const valueFor = (item: SdgItem, key: string) => key === "value" ? Number(item.value ?? item.values?.[key] ?? 0) : Number(item.values?.[key] ?? 0);
+const maxima = Object.fromEntries(modes.map((mode) => [mode.key, Math.max(1, ...items.map((item) => valueFor(item, mode.key)))]));
+const tableRows = items.map((item) => ({
+  SDG: `SDG ${item.sdg}`,
+  Tujuan: item.label,
+  ...Object.fromEntries(modes.map((mode) => [mode.label, valueFormatter(valueFor(item, mode.key))])),
+  Catatan: item.note ?? "—",
+}));
+const tableColumns = [
+  { key: "SDG", label: "SDG" },
+  { key: "Tujuan", label: "Tujuan" },
+  ...modes.map((mode) => ({ key: mode.label, label: mode.label, align: "end" as const })),
+  { key: "Catatan", label: "Catatan" },
+];
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+>
+  <div
+    class="sdg-grid"
+    data-sdg-grid
+    data-default-mode={defaultMode}
+    data-chart-title={title}
+  >
+    {
+      modes.length > 1 && (
+        <div class="sdg-grid__controls" role="group" aria-label="Pilih ukuran pada grid SDG" data-sdg-controls hidden>
+          {modes.map((mode) => (
+            <button type="button" data-sdg-mode={mode.key} aria-pressed={mode.key === defaultMode ? "true" : "false"}>
+              {mode.label}
+            </button>
+          ))}
+        </div>
+      )
+    }
+    <ol class="sdg-grid__list" aria-label="Tujuh belas Tujuan Pembangunan Berkelanjutan">
+      {items.map((item) => {
+        const color = item.color ?? SDG_COLORS[(item.sdg - 1) % SDG_COLORS.length];
+        const initialValue = valueFor(item, defaultMode);
+        const initialPercent = Math.max(0, Math.min(100, (initialValue / maxima[defaultMode]) * 100));
+        return (
+          <li
+            class:list={["sdg-card", initialValue === 0 && "is-zero"]}
+            style={`--sdg-color:${color};--sdg-fill:${initialPercent}%`}
+            data-sdg-card
+          >
+            <span class="sdg-card__fill" aria-hidden="true" />
+            <span class="sdg-card__number" aria-hidden="true">{item.sdg}</span>
+            <span class="sdg-card__label">SDG {item.sdg}: {item.label}</span>
+            <span class="sdg-card__values">
+              {modes.map((mode) => {
+                const value = valueFor(item, mode.key);
+                const percent = Math.max(0, Math.min(100, (value / maxima[mode.key]) * 100));
+                return (
+                  <span
+                    class="sdg-card__value"
+                    data-mode-value={mode.key}
+                    data-fill={percent.toFixed(2)}
+                    data-raw-value={value}
+                  >
+                    <span class="sdg-card__mode">{modes.length > 1 ? `${mode.label}: ` : ""}</span>
+                    <strong>{valueFormatter(value)}</strong>
+                    <span>{value === 0 ? zeroLabel : valueLabel}</span>
+                  </span>
+                );
+              })}
+            </span>
+            {item.note && <span class="sdg-card__note">{item.note}</span>}
+          </li>
+        );
+      })}
+    </ol>
+    <p class="sdg-grid__noscript">Tanpa interaksi, semua ukuran ditampilkan pada setiap kartu.</p>
+  </div>
+</ChartFrame>
+
+<style>
+  .sdg-grid {
+    color: var(--ink, #332c2b);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sdg-grid__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-block-end: 1rem;
+  }
+
+  .sdg-grid__controls button {
+    min-block-size: 44px;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--brand-blue, #004a74);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    color: var(--brand-blue, #004a74);
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .sdg-grid__controls button[aria-pressed="true"] {
+    background: var(--brand-blue, #004a74);
+    color: #fff;
+  }
+
+  .sdg-grid__controls button:focus-visible {
+    outline: 3px solid var(--attention, #fed400);
+    outline-offset: 2px;
+  }
+
+  .sdg-grid__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sdg-card {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.4rem 0.65rem;
+    min-block-size: 9.25rem;
+    padding: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--sdg-color);
+    border-color: color-mix(in srgb, var(--sdg-color), #fff 46%);
+    border-radius: var(--radius-md, 0.5rem);
+    background: var(--surface, #fff);
+  }
+
+  .sdg-card__fill {
+    position: absolute;
+    z-index: -1;
+    inset: auto 0 0;
+    block-size: var(--sdg-fill);
+    background: var(--sdg-color);
+    opacity: 0.14;
+    transition: block-size 360ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sdg-card__number {
+    display: grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: 0.25rem;
+    background: var(--sdg-color);
+    color: #fff;
+    font-weight: 850;
+    line-height: 1;
+  }
+
+  .sdg-card__label {
+    align-self: center;
+    font-size: 0.78rem;
+    font-weight: 750;
+    line-height: 1.25;
+  }
+
+  .sdg-card__values {
+    grid-column: 1 / -1;
+    display: grid;
+    align-content: end;
+    gap: 0.25rem;
+  }
+
+  .sdg-card__value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    color: var(--ink-muted, #5f666b);
+    font-size: 0.72rem;
+  }
+
+  .sdg-card__value strong {
+    color: var(--ink, #332c2b);
+    font-size: 1.2rem;
+  }
+
+  .sdg-card__mode {
+    font-weight: 700;
+  }
+
+  .sdg-card__note {
+    grid-column: 1 / -1;
+    color: var(--ink-muted, #5f666b);
+    font-size: 0.68rem;
+  }
+
+  .sdg-card.is-zero {
+    border-style: dashed;
+  }
+
+  .sdg-card.is-zero .sdg-card__number {
+    background: var(--ink-muted, #697177);
+  }
+
+  .sdg-grid__noscript {
+    margin: 0.65rem 0 0;
+    color: var(--ink-muted, #5f666b);
+    font-size: 0.75rem;
+  }
+
+  .sdg-grid.is-enhanced .sdg-grid__noscript {
+    display: none;
+  }
+
+  @media (max-width: 47.99rem) {
+    .sdg-grid__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sdg-card { min-block-size: 8.5rem; }
+  }
+
+  @media (max-width: 23rem) {
+    .sdg-grid__list { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sdg-card__fill { transition: none; }
+  }
+</style>

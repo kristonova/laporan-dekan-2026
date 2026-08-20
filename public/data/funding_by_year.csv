@@ -1,0 +1,22 @@
+year,amount,n,type,is_partial
+2019,2522500000.0,160,Belum terklasifikasi,False
+2019,2777500000.0,175,Total,False
+2019,210000000.0,12,external,False
+2019,45000000.0,3,internal,False
+2020,2810000000.0,170,Belum terklasifikasi,False
+2020,3175000000.0,187,Total,False
+2020,365000000.0,17,internal,False
+2021,3077050000.0,175,Belum terklasifikasi,False
+2021,3302050000.0,190,Total,False
+2021,225000000.0,15,internal,False
+2022,27937586572.0,431,Total,False
+2022,25717586572.0,260,external,False
+2022,2220000000.0,171,internal,False
+2023,35269887478.0,278,Total,False
+2023,33012387478.0,151,external,False
+2023,2257500000.0,127,internal,False
+2024,74907666960.0,196,Total,False
+2024,73092666960.0,75,external,False
+2024,1815000000.0,121,internal,False
+2025,69505732463.0,174,Belum terklasifikasi,True
+2025,69505732463.0,174,Total,True
