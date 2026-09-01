@@ -1,7 +1,7 @@
 ---
 import ChartFrame from "./ChartFrame.astro";
 import type { ChartChromeProps, ChartSeries } from "./_types";
-import { SERIES_COLORS, formatCompact, niceMax, scaleLinear, slugify, ticks } from "./_utils";
+import { SERIES_COLORS, formatCompact, niceMax, scaleLinear, slugify, spreadLabels, ticks } from "./_utils";
 
 type Row = Record<string, unknown>;
 interface Props extends Omit<ChartChromeProps<Row>, "tableRows" | "tableColumns"> {
@@ -45,7 +45,11 @@ const {
   hideHeader,
 } = Astro.props;
 
-const margin = { top: 30, right: series.length > 1 ? 132 : 54, bottom: 58, left: 76 };
+/* The right gutter holds the direct label at the end of each line, so it is
+   sized from the longest series name rather than from a guess. A single-series
+   chart still gets a label ("Sitasi"), which the old fixed 54px clipped. */
+const longestSeriesLabel = Math.max(0, ...series.map((item) => item.label.length));
+const margin = { top: 30, right: Math.max(64, Math.round(longestSeriesLabel * 7.2) + 40), bottom: 58, left: 76 };
 const plotWidth = width - margin.left - margin.right;
 const plotHeight = height - margin.top - margin.bottom;
 const values = data.flatMap((row) => series.map((item) => Number(row[item.key])).filter(Number.isFinite));
@@ -79,6 +83,11 @@ const prepared = series.map((item, seriesIndex) => {
     last: points.at(-1),
   };
 });
+const labelled = prepared
+  .map((item, index) => ({ index, y: item.last?.y }))
+  .filter((item): item is { index: number; y: number } => item.y !== undefined);
+const endLabels = spreadLabels(labelled, margin.top + 6, margin.top + plotHeight - 6, 17);
+
 const provisionalIndex = data.findIndex((row) => String(row[xKey]) === String(provisionalX));
 const provisionalStartX = provisionalIndex >= 0
   ? provisionalIndex === 0
@@ -207,18 +216,22 @@ const tableColumns = [
       );
     }))}
 
-    {prepared.map((item) => item.last && (
-      <g class="direct-label" aria-hidden="true">
-        <line x1={item.last.x + 7} x2={item.last.x + 18} y1={item.last.y} y2={item.last.y} stroke={item.color} />
-        <text x={item.last.x + 23} y={item.last.y + 4}>{item.label}</text>
-      </g>
-    ))}
+    {prepared.map((item, index) => {
+      if (!item.last) return null;
+      const labelY = endLabels.get(index) ?? item.last.y;
+      return (
+        <g class="direct-label" aria-hidden="true">
+          <line x1={item.last.x + 7} x2={item.last.x + 18} y1={item.last.y} y2={labelY} stroke={item.color} />
+          <text x={item.last.x + 23} y={labelY + 4}>{item.label}</text>
+        </g>
+      );
+    })}
   </svg>
 </ChartFrame>
 
 <style>
   svg {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -262,7 +275,7 @@ const tableColumns = [
   .marker {
     pointer-events: none;
     vector-effect: non-scaling-stroke;
-    transition: r 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: r var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .marker-hit {

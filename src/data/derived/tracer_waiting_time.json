@@ -1,0 +1,162 @@
+[
+  {
+    "prodi": "S1 Elektronika Dan Instrumentasi",
+    "kategori": "0–3 bulan",
+    "n": 20
+  },
+  {
+    "prodi": "S1 Elektronika Dan Instrumentasi",
+    "kategori": "4–6 bulan",
+    "n": 17
+  },
+  {
+    "prodi": "S1 Elektronika Dan Instrumentasi",
+    "kategori": "7–12 bulan",
+    "n": 4
+  },
+  {
+    "prodi": "S1 Elektronika Dan Instrumentasi",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 28
+  },
+  {
+    "prodi": "S1 Fisika",
+    "kategori": "0–3 bulan",
+    "n": 6
+  },
+  {
+    "prodi": "S1 Fisika",
+    "kategori": "4–6 bulan",
+    "n": 14
+  },
+  {
+    "prodi": "S1 Fisika",
+    "kategori": "7–12 bulan",
+    "n": 2
+  },
+  {
+    "prodi": "S1 Fisika",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 14
+  },
+  {
+    "prodi": "S1 Geofisika",
+    "kategori": "0–3 bulan",
+    "n": 16
+  },
+  {
+    "prodi": "S1 Geofisika",
+    "kategori": "4–6 bulan",
+    "n": 10
+  },
+  {
+    "prodi": "S1 Geofisika",
+    "kategori": "7–12 bulan",
+    "n": 1
+  },
+  {
+    "prodi": "S1 Geofisika",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 14
+  },
+  {
+    "prodi": "S1 Ilmu Aktuaria",
+    "kategori": "0–3 bulan",
+    "n": 13
+  },
+  {
+    "prodi": "S1 Ilmu Aktuaria",
+    "kategori": "4–6 bulan",
+    "n": 9
+  },
+  {
+    "prodi": "S1 Ilmu Aktuaria",
+    "kategori": "7–12 bulan",
+    "n": 3
+  },
+  {
+    "prodi": "S1 Ilmu Aktuaria",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 5
+  },
+  {
+    "prodi": "S1 Ilmu Komputer",
+    "kategori": "0–3 bulan",
+    "n": 33
+  },
+  {
+    "prodi": "S1 Ilmu Komputer",
+    "kategori": "4–6 bulan",
+    "n": 23
+  },
+  {
+    "prodi": "S1 Ilmu Komputer",
+    "kategori": "7–12 bulan",
+    "n": 4
+  },
+  {
+    "prodi": "S1 Ilmu Komputer",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 56
+  },
+  {
+    "prodi": "S1 Kimia",
+    "kategori": "0–3 bulan",
+    "n": 67
+  },
+  {
+    "prodi": "S1 Kimia",
+    "kategori": "4–6 bulan",
+    "n": 46
+  },
+  {
+    "prodi": "S1 Kimia",
+    "kategori": "7–12 bulan",
+    "n": 16
+  },
+  {
+    "prodi": "S1 Kimia",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 40
+  },
+  {
+    "prodi": "S1 Matematika",
+    "kategori": "0–3 bulan",
+    "n": 15
+  },
+  {
+    "prodi": "S1 Matematika",
+    "kategori": "4–6 bulan",
+    "n": 18
+  },
+  {
+    "prodi": "S1 Matematika",
+    "kategori": "7–12 bulan",
+    "n": 3
+  },
+  {
+    "prodi": "S1 Matematika",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 20
+  },
+  {
+    "prodi": "S1 Statistika",
+    "kategori": "0–3 bulan",
+    "n": 24
+  },
+  {
+    "prodi": "S1 Statistika",
+    "kategori": "4–6 bulan",
+    "n": 21
+  },
+  {
+    "prodi": "S1 Statistika",
+    "kategori": "7–12 bulan",
+    "n": 4
+  },
+  {
+    "prodi": "S1 Statistika",
+    "kategori": "Sudah bekerja sebelum lulus",
+    "n": 7
+  }
+]

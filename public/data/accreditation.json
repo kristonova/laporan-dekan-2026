@@ -1,0 +1,328 @@
+{
+  "prodi_nasional": 18,
+  "prodi_unggul": 15,
+  "prodi_internasional": 15,
+  "per_lembaga": [
+    {
+      "lembaga": "LAMSAMA",
+      "n": 9
+    },
+    {
+      "lembaga": "LAM INFOKOM",
+      "n": 5
+    },
+    {
+      "lembaga": "BAN-PT",
+      "n": 4
+    }
+  ],
+  "internasional_per_jenjang": [
+    {
+      "jenjang_grup": "Pascasarjana",
+      "n": 8
+    },
+    {
+      "jenjang_grup": "Sarjana",
+      "n": 7
+    }
+  ],
+  "daftar": [
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "S1 Ilmu Komputer",
+      "lembaga": "LAM INFOKOM",
+      "periode": "2023-2028",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "S1 Elektronika dan Instrumentasi",
+      "lembaga": "LAM INFOKOM",
+      "periode": "2024-2029",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "Magister Ilmu Komputer",
+      "lembaga": "LAM INFOKOM",
+      "periode": "2024-2029",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "Doktor Ilmu Komputer",
+      "lembaga": "BAN-PT",
+      "periode": "2020-2025",
+      "nilai": "A"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "Magister Kecerdasan Artifisial",
+      "lembaga": "LAM INFOKOM",
+      "periode": "2023-2028",
+      "nilai": "B"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Ilmu Komputer dan Elektronika",
+      "prodi": "Magister Elektronika dan Instrumentasi",
+      "lembaga": "LAM INFOKOM",
+      "periode": "2024-2029",
+      "nilai": "B"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Fisika",
+      "prodi": "S1 Fisika",
+      "lembaga": "LAMSAMA",
+      "periode": "2023-2028",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Fisika",
+      "prodi": "S1 Geofisika",
+      "lembaga": "LAMSAMA",
+      "periode": "2023-2028",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Fisika",
+      "prodi": "Magister Fisika",
+      "lembaga": "BAN-PT",
+      "periode": "2021-2026",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Fisika",
+      "prodi": "Doktor Fisika",
+      "lembaga": "LAMSAMA",
+      "periode": "2025-2030",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Matematika",
+      "prodi": "S1 Matematika",
+      "lembaga": "LAMSAMA",
+      "periode": "2023-2028",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Matematika",
+      "prodi": "S1 Statistika",
+      "lembaga": "LAMSAMA",
+      "periode": "2023-2028",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Matematika",
+      "prodi": "S1 Aktuaria",
+      "lembaga": "BAN-PT",
+      "periode": "2022-2027",
+      "nilai": "B"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Matematika",
+      "prodi": "Magister Matematika",
+      "lembaga": "BAN-PT",
+      "periode": "2021-2026",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Matematika",
+      "prodi": "Doktor Matematika",
+      "lembaga": "LAMSAMA",
+      "periode": "2025-2030",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Kimia",
+      "prodi": "S1 Kimia",
+      "lembaga": "LAMSAMA",
+      "periode": "2023-2027",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Kimia",
+      "prodi": "Magister Kimia",
+      "lembaga": "LAMSAMA",
+      "periode": "2025-2030",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Nasional",
+      "jenjang_grup": "",
+      "departemen": "Kimia",
+      "prodi": "Doktor Kimia",
+      "lembaga": "LAMSAMA",
+      "periode": "2025-2030",
+      "nilai": "Unggul"
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Ilmu Komputer",
+      "lembaga": "ASIIN",
+      "periode": "2023-2030",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Elektronika dan Instrumentasi",
+      "lembaga": "ASIIN",
+      "periode": "2024-2031",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Matematika",
+      "lembaga": "ASIIN",
+      "periode": "2023-2030",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Statistika",
+      "lembaga": "ASIIN",
+      "periode": "2023-2030",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Kimia",
+      "lembaga": "RSC",
+      "periode": "2023-2027",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Geofisika",
+      "lembaga": "ASIIN",
+      "periode": "2024-2025",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Sarjana",
+      "departemen": "",
+      "prodi": "S1 Fisika",
+      "lembaga": "ASIIN",
+      "periode": "2024-2025",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Magister Ilmu Komputer",
+      "lembaga": "ASIIN",
+      "periode": "2024-2031",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Doktor Ilmu Komputer",
+      "lembaga": "ASIIN",
+      "periode": "2023-2029",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Magister Kimia",
+      "lembaga": "RSC",
+      "periode": "2023-2027",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Magister Fisika",
+      "lembaga": "ASIIN",
+      "periode": "2024-2025",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Doktor Fisika",
+      "lembaga": "ASIIN",
+      "periode": "2024-2025",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Magister Matematika",
+      "lembaga": "ASIIN",
+      "periode": "2025-2030",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Doktor Matematika",
+      "lembaga": "ASIIN",
+      "periode": "2025-2030",
+      "nilai": ""
+    },
+    {
+      "lingkup": "Internasional",
+      "jenjang_grup": "Pascasarjana",
+      "departemen": "",
+      "prodi": "Doktor Kimia",
+      "lembaga": "ASIIN",
+      "periode": "2025-2030",
+      "nilai": ""
+    }
+  ]
+}

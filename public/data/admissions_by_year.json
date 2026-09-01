@@ -1,0 +1,362 @@
+[
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Elektronika dan Instrumentasi",
+    "tahun": 2022,
+    "peminat": 905,
+    "diterima": 117,
+    "registrasi": 108,
+    "keketatan": 0.1293
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "tahun": 2022,
+    "peminat": 4222,
+    "diterima": 161,
+    "registrasi": 130,
+    "keketatan": 0.0381
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "tahun": 2022,
+    "peminat": 1661,
+    "diterima": 170,
+    "registrasi": 159,
+    "keketatan": 0.1023
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Ilmu Aktuaria",
+    "tahun": 2022,
+    "peminat": 1607,
+    "diterima": 58,
+    "registrasi": 47,
+    "keketatan": 0.0361
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "tahun": 2022,
+    "peminat": 1666,
+    "diterima": 93,
+    "registrasi": 82,
+    "keketatan": 0.0558
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "tahun": 2022,
+    "peminat": 2536,
+    "diterima": 64,
+    "registrasi": 59,
+    "keketatan": 0.0252
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "tahun": 2022,
+    "peminat": 543,
+    "diterima": 84,
+    "registrasi": 70,
+    "keketatan": 0.1547
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "tahun": 2022,
+    "peminat": 517,
+    "diterima": 67,
+    "registrasi": 62,
+    "keketatan": 0.1296
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Elektronika dan Instrumentasi",
+    "tahun": 2023,
+    "peminat": 963,
+    "diterima": 115,
+    "registrasi": 104,
+    "keketatan": 0.1194
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "tahun": 2023,
+    "peminat": 4346,
+    "diterima": 162,
+    "registrasi": 141,
+    "keketatan": 0.0373
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "tahun": 2023,
+    "peminat": 1282,
+    "diterima": 182,
+    "registrasi": 159,
+    "keketatan": 0.142
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Ilmu Aktuaria",
+    "tahun": 2023,
+    "peminat": 1769,
+    "diterima": 57,
+    "registrasi": 53,
+    "keketatan": 0.0322
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "tahun": 2023,
+    "peminat": 1358,
+    "diterima": 89,
+    "registrasi": 85,
+    "keketatan": 0.0655
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "tahun": 2023,
+    "peminat": 2372,
+    "diterima": 67,
+    "registrasi": 60,
+    "keketatan": 0.0282
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "tahun": 2023,
+    "peminat": 542,
+    "diterima": 77,
+    "registrasi": 69,
+    "keketatan": 0.1421
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "tahun": 2023,
+    "peminat": 1049,
+    "diterima": 78,
+    "registrasi": 72,
+    "keketatan": 0.0744
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Elektronika dan Instrumentasi",
+    "tahun": 2024,
+    "peminat": 827,
+    "diterima": 99,
+    "registrasi": 96,
+    "keketatan": 0.1197
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "tahun": 2024,
+    "peminat": 3378,
+    "diterima": 160,
+    "registrasi": 143,
+    "keketatan": 0.0474
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "tahun": 2024,
+    "peminat": 1190,
+    "diterima": 165,
+    "registrasi": 149,
+    "keketatan": 0.1387
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Ilmu Aktuaria",
+    "tahun": 2024,
+    "peminat": 1314,
+    "diterima": 54,
+    "registrasi": 46,
+    "keketatan": 0.0411
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "tahun": 2024,
+    "peminat": 937,
+    "diterima": 86,
+    "registrasi": 82,
+    "keketatan": 0.0918
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "tahun": 2024,
+    "peminat": 1725,
+    "diterima": 64,
+    "registrasi": 57,
+    "keketatan": 0.0371
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "tahun": 2024,
+    "peminat": 350,
+    "diterima": 55,
+    "registrasi": 50,
+    "keketatan": 0.1571
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "tahun": 2024,
+    "peminat": 579,
+    "diterima": 74,
+    "registrasi": 72,
+    "keketatan": 0.1278
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Elektronika dan Instrumentasi",
+    "tahun": 2025,
+    "peminat": 952,
+    "diterima": 120,
+    "registrasi": 114,
+    "keketatan": 0.1261
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "tahun": 2025,
+    "peminat": 3003,
+    "diterima": 181,
+    "registrasi": 146,
+    "keketatan": 0.0603
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "tahun": 2025,
+    "peminat": 1334,
+    "diterima": 187,
+    "registrasi": 170,
+    "keketatan": 0.1402
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Ilmu Aktuaria",
+    "tahun": 2025,
+    "peminat": 1065,
+    "diterima": 63,
+    "registrasi": 60,
+    "keketatan": 0.0592
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "tahun": 2025,
+    "peminat": 872,
+    "diterima": 79,
+    "registrasi": 72,
+    "keketatan": 0.0906
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "tahun": 2025,
+    "peminat": 1394,
+    "diterima": 90,
+    "registrasi": 81,
+    "keketatan": 0.0646
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "tahun": 2025,
+    "peminat": 486,
+    "diterima": 98,
+    "registrasi": 90,
+    "keketatan": 0.2016
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "tahun": 2025,
+    "peminat": 967,
+    "diterima": 80,
+    "registrasi": 75,
+    "keketatan": 0.0827
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Elektronika dan Instrumentasi",
+    "tahun": 2026,
+    "peminat": 1241,
+    "diterima": 128,
+    "registrasi": 122,
+    "keketatan": 0.1031
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "tahun": 2026,
+    "peminat": 2258,
+    "diterima": 183,
+    "registrasi": 143,
+    "keketatan": 0.081
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "tahun": 2026,
+    "peminat": 1343,
+    "diterima": 186,
+    "registrasi": 182,
+    "keketatan": 0.1385
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Ilmu Aktuaria",
+    "tahun": 2026,
+    "peminat": 1395,
+    "diterima": 63,
+    "registrasi": 57,
+    "keketatan": 0.0452
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "tahun": 2026,
+    "peminat": 988,
+    "diterima": 80,
+    "registrasi": 77,
+    "keketatan": 0.081
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "tahun": 2026,
+    "peminat": 1945,
+    "diterima": 102,
+    "registrasi": 96,
+    "keketatan": 0.0524
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "tahun": 2026,
+    "peminat": 596,
+    "diterima": 94,
+    "registrasi": 87,
+    "keketatan": 0.1577
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "tahun": 2026,
+    "peminat": 1000,
+    "diterima": 83,
+    "registrasi": 80,
+    "keketatan": 0.083
+  }
+]

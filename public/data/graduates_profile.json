@@ -1,0 +1,132 @@
+[
+  {
+    "jenjang": "Doktor",
+    "tahun": 2022,
+    "tahun_ajaran": "2021/2022",
+    "lulusan": 26,
+    "total_tercatat": 26.0,
+    "ipk_rerata": 3.69,
+    "cumlaude": null,
+    "lama_studi": "60.43"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2023,
+    "tahun_ajaran": "2022/2023",
+    "lulusan": 54,
+    "total_tercatat": 54.0,
+    "ipk_rerata": 3.87,
+    "cumlaude": null,
+    "lama_studi": "54.67"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2024,
+    "tahun_ajaran": "2023/2024",
+    "lulusan": 44,
+    "total_tercatat": 44.0,
+    "ipk_rerata": 3.9,
+    "cumlaude": null,
+    "lama_studi": "56.13"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2025,
+    "tahun_ajaran": "2024/2025",
+    "lulusan": 47,
+    "total_tercatat": 47.0,
+    "ipk_rerata": 3.89,
+    "cumlaude": null,
+    "lama_studi": "48.18"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2022,
+    "tahun_ajaran": "2021/2022",
+    "lulusan": 156,
+    "total_tercatat": 156.0,
+    "ipk_rerata": 3.64,
+    "cumlaude": null,
+    "lama_studi": "29.54"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2023,
+    "tahun_ajaran": "2022/2023",
+    "lulusan": 208,
+    "total_tercatat": 208.0,
+    "ipk_rerata": 3.65,
+    "cumlaude": null,
+    "lama_studi": "30.04"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "tahun_ajaran": "2023/2024",
+    "lulusan": 183,
+    "total_tercatat": 183.0,
+    "ipk_rerata": 3.72,
+    "cumlaude": null,
+    "lama_studi": "26.54"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "tahun_ajaran": "2024/2025",
+    "lulusan": 180,
+    "total_tercatat": 180.0,
+    "ipk_rerata": 3.74,
+    "cumlaude": null,
+    "lama_studi": "25.32"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "tahun_ajaran": "2021/2022",
+    "lulusan": 475,
+    "total_tercatat": 475.0,
+    "ipk_rerata": 3.21,
+    "cumlaude": 178.0,
+    "lama_studi": "4 th 7 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "tahun_ajaran": "2022/2023",
+    "lulusan": 635,
+    "total_tercatat": 635.0,
+    "ipk_rerata": 3.13,
+    "cumlaude": 324.0,
+    "lama_studi": "4 th 5 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "tahun_ajaran": "2023/2024",
+    "lulusan": 632,
+    "total_tercatat": 632.0,
+    "ipk_rerata": 3.21,
+    "cumlaude": 390.0,
+    "lama_studi": "4 th 3 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "tahun_ajaran": "2024/2025",
+    "lulusan": 728,
+    "total_tercatat": 728.0,
+    "ipk_rerata": 3.27,
+    "cumlaude": 438.0,
+    "lama_studi": "4 th 3 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "tahun_ajaran": "2025/2026",
+    "lulusan": 709,
+    "total_tercatat": 709.0,
+    "ipk_rerata": 3.3,
+    "cumlaude": 376.0,
+    "lama_studi": "4 th 3 bln"
+  }
+]

@@ -1,0 +1,434 @@
+[
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2019,
+    "mahasiswa": 4
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2020,
+    "mahasiswa": 6
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2021,
+    "mahasiswa": 19
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2022,
+    "mahasiswa": 43
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2023,
+    "mahasiswa": 46
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2024,
+    "mahasiswa": 43
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Aktuaria",
+    "angkatan": 2025,
+    "mahasiswa": 60
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2019,
+    "mahasiswa": 2
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2020,
+    "mahasiswa": 14
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2021,
+    "mahasiswa": 29
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2022,
+    "mahasiswa": 94
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2023,
+    "mahasiswa": 87
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2024,
+    "mahasiswa": 87
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "ELINS",
+    "angkatan": 2025,
+    "mahasiswa": 114
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2019,
+    "mahasiswa": 1
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2020,
+    "mahasiswa": 6
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2021,
+    "mahasiswa": 25
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2022,
+    "mahasiswa": 66
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2023,
+    "mahasiswa": 63
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2024,
+    "mahasiswa": 48
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Fisika",
+    "angkatan": 2025,
+    "mahasiswa": 90
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2019,
+    "mahasiswa": 6
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2020,
+    "mahasiswa": 3
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2021,
+    "mahasiswa": 40
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2022,
+    "mahasiswa": 54
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2023,
+    "mahasiswa": 66
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2024,
+    "mahasiswa": 70
+  },
+  {
+    "departemen": "Dep. Fisika",
+    "prodi": "Geofisika",
+    "angkatan": 2025,
+    "mahasiswa": 75
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2019,
+    "mahasiswa": 4
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2020,
+    "mahasiswa": 16
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2021,
+    "mahasiswa": 37
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2022,
+    "mahasiswa": 104
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2023,
+    "mahasiswa": 115
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2024,
+    "mahasiswa": 125
+  },
+  {
+    "departemen": "Dep IKE",
+    "prodi": "Ilmu Komputer",
+    "angkatan": 2025,
+    "mahasiswa": 146
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2017,
+    "mahasiswa": 1
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2018,
+    "mahasiswa": 1
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2019,
+    "mahasiswa": 10
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2020,
+    "mahasiswa": 24
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2021,
+    "mahasiswa": 68
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2022,
+    "mahasiswa": 142
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2023,
+    "mahasiswa": 144
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2024,
+    "mahasiswa": 145
+  },
+  {
+    "departemen": "Dep Kimia",
+    "prodi": "Kimia",
+    "angkatan": 2025,
+    "mahasiswa": 170
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2019,
+    "mahasiswa": 6
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2020,
+    "mahasiswa": 11
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2021,
+    "mahasiswa": 55
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2022,
+    "mahasiswa": 70
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2023,
+    "mahasiswa": 76
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2024,
+    "mahasiswa": 78
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Matematika",
+    "angkatan": 2025,
+    "mahasiswa": 72
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2017,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2018,
+    "mahasiswa": 0
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2019,
+    "mahasiswa": 2
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2020,
+    "mahasiswa": 4
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2021,
+    "mahasiswa": 19
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2022,
+    "mahasiswa": 56
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2023,
+    "mahasiswa": 51
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2024,
+    "mahasiswa": 53
+  },
+  {
+    "departemen": "Dep Matematika",
+    "prodi": "Statistika",
+    "angkatan": 2025,
+    "mahasiswa": 81
+  }
+]

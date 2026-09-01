@@ -1,0 +1,440 @@
+[
+  {
+    "jenjang": "Doktor",
+    "tahun": 2022,
+    "prodi": "Doktor Fisika",
+    "lulusan": 1
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2022,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 12
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2022,
+    "prodi": "Doktor Kimia",
+    "lulusan": 7
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2022,
+    "prodi": "Doktor Matematika",
+    "lulusan": 6
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2023,
+    "prodi": "Doktor Fisika",
+    "lulusan": 7
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2023,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 15
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2023,
+    "prodi": "Doktor Kimia",
+    "lulusan": 22
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2023,
+    "prodi": "Doktor Matematika",
+    "lulusan": 10
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2024,
+    "prodi": "Doktor Fisika",
+    "lulusan": 4
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2024,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 15
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2024,
+    "prodi": "Doktor Kimia",
+    "lulusan": 13
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2024,
+    "prodi": "Doktor Matematika",
+    "lulusan": 12
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2025,
+    "prodi": "Doktor Fisika",
+    "lulusan": 15
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2025,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 14
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2025,
+    "prodi": "Doktor Kimia",
+    "lulusan": 13
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2025,
+    "prodi": "Doktor Matematika",
+    "lulusan": 5
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2022,
+    "prodi": "Magister Fisika",
+    "lulusan": 44
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2022,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 45
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2022,
+    "prodi": "Magister Kimia",
+    "lulusan": 36
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2022,
+    "prodi": "Magister Matematika",
+    "lulusan": 31
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2023,
+    "prodi": "Magister Fisika",
+    "lulusan": 35
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2023,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 53
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2023,
+    "prodi": "Magister Kimia",
+    "lulusan": 72
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2023,
+    "prodi": "Magister Matematika",
+    "lulusan": 48
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "prodi": "Magister Fisika",
+    "lulusan": 40
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 39
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "prodi": "Magister Kecerdasan Artifisial",
+    "lulusan": 13
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "prodi": "Magister Kimia",
+    "lulusan": 52
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2024,
+    "prodi": "Magister Matematika",
+    "lulusan": 39
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "prodi": "Magister Fisika",
+    "lulusan": 23
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 63
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "prodi": "Magister Kecerdasan Artifisial",
+    "lulusan": 11
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "prodi": "Magister Kimia",
+    "lulusan": 42
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2025,
+    "prodi": "Magister Matematika",
+    "lulusan": 41
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 61
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Fisika",
+    "lulusan": 71
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Geofisika",
+    "lulusan": 37
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 93
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Kimia",
+    "lulusan": 126
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Matematika",
+    "lulusan": 45
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2022,
+    "prodi": "S1 Statistika",
+    "lulusan": 42
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 80
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Fisika",
+    "lulusan": 74
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Geofisika",
+    "lulusan": 62
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Ilmu Aktuaria",
+    "lulusan": 16
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 114
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Kimia",
+    "lulusan": 170
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Matematika",
+    "lulusan": 56
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2023,
+    "prodi": "S1 Statistika",
+    "lulusan": 63
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 80
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Fisika",
+    "lulusan": 83
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Geofisika",
+    "lulusan": 67
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Ilmu Aktuaria",
+    "lulusan": 31
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 95
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Kimia",
+    "lulusan": 164
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Matematika",
+    "lulusan": 59
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2024,
+    "prodi": "S1 Statistika",
+    "lulusan": 53
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 113
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Fisika",
+    "lulusan": 66
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Geofisika",
+    "lulusan": 53
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Ilmu Aktuaria",
+    "lulusan": 44
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 136
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Kimia",
+    "lulusan": 144
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Matematika",
+    "lulusan": 93
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2025,
+    "prodi": "S1 Statistika",
+    "lulusan": 79
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 83
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Fisika",
+    "lulusan": 54
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Geofisika",
+    "lulusan": 60
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Ilmu Aktuaria",
+    "lulusan": 51
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 122
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Kimia",
+    "lulusan": 170
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Matematika",
+    "lulusan": 90
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2026,
+    "prodi": "S1 Statistika",
+    "lulusan": 79
+  }
+]

@@ -144,12 +144,11 @@ function initReveal(root: InitializableRoot): void {
       if (!entries.some((entry) => entry.isIntersecting)) return;
       observer.disconnect();
       const delay = Math.max(0, Math.min(240, Number(element.dataset.revealDelay) || 0));
+      /* Fades only, and short. The UGM identity allows no scale-in, no spring
+         and nothing slower than 240ms, so the entrance is opacity alone. */
       element.animate(
-        [
-          { opacity: 0, transform: "translateY(24px) scale(0.992)" },
-          { opacity: 1, transform: "translateY(0) scale(1)" },
-        ],
-        { duration: 560, delay, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "both" },
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 240, delay, easing: "cubic-bezier(0.2, 0, 0.2, 1)", fill: "both" },
       );
     }, { threshold: 0.12, rootMargin: "0px 0px -8%" });
     observer.observe(element);

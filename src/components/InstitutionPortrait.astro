@@ -56,11 +56,12 @@ const lecturerDots = departments.flatMap((department) =>
 
 <style>
   .portrait { display: grid; gap: 36px; }
+  /* One column: the two groups read in sequence at full width, so their dot
+     matrices share a scale instead of being drawn at two different densities
+     in two columns of unequal width. */
   .portrait__people {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, .85fr);
-    gap: 28px;
-    align-items: center;
+    gap: 32px;
     padding: clamp(24px, 4vw, 48px);
     border: 1px solid var(--border-subtle);
     background: var(--surface-card);
@@ -68,8 +69,8 @@ const lecturerDots = departments.flatMap((department) =>
   .portrait__group { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 8px 14px; }
   .portrait__group strong { color: var(--ugm-blue); font-size: clamp(48px, 7vw, 82px); font-weight: 300; line-height: 1; }
   .portrait__group span { color: var(--text-secondary); font-size: 16px; }
-  .portrait__dots { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(24, 1fr); gap: 4px; margin-block-start: 10px; }
-  .portrait__plus { color: var(--ugm-gold-dark); font-size: 48px; font-weight: 300; }
+  .portrait__dots { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(34, 1fr); gap: 5px; margin-block-start: 14px; }
+  .portrait__plus { justify-self: start; color: var(--ugm-gold-dark); font-size: 40px; font-weight: 300; line-height: 1; }
   .dot { display: inline-block; width: 9px; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 0 0 1px var(--surface-card); }
   .dot--fisika { background: var(--dept-fisika); }
   .dot--ike { background: var(--dept-ike); }
@@ -84,10 +85,12 @@ const lecturerDots = departments.flatMap((department) =>
   .portrait__structure small { margin-block-start: 6px; color: var(--text-muted); }
   .portrait__legend { display: flex; flex-wrap: wrap; gap: 12px 22px; padding: 0; margin: 0; list-style: none; color: var(--text-secondary); font-size: 13px; }
   .portrait__legend li { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+  @media (max-width: 900px) {
+    .portrait__dots { grid-template-columns: repeat(24, 1fr); }
+  }
   @media (max-width: 700px) {
-    .portrait__people { grid-template-columns: 1fr; }
     .portrait__plus { display: none; }
-    .portrait__dots { grid-template-columns: repeat(20, 1fr); }
+    .portrait__dots { grid-template-columns: repeat(18, 1fr); gap: 4px; }
     .portrait__structure { grid-template-columns: 1fr; }
     .portrait__structure > div + div { border-inline-start: 0; border-block-start: 1px solid var(--border-subtle); }
   }

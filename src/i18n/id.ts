@@ -30,14 +30,75 @@ export const chapters = {
   },
 };
 
+/**
+ * Figures that move whenever a source workbook is refreshed. Any deck sentence
+ * that quotes one is written as a function so the copy can never drift from the
+ * data the same page renders.
+ */
+export interface SceneValues {
+  lecturers: number;
+  academicStaff: number;
+  studyProgrammes: number;
+  laboratories: number;
+  activeStudents: number;
+  tckTotal: number;
+  tckAchieved: number;
+  tckBehind: number;
+  contributionAchieved: number;
+  contributionTotal: number;
+  welfareAchieved: number;
+  welfareTotal: number;
+  partnershipTotal: number;
+  partnershipInternational: number;
+  partnershipCountries: number;
+  admissionsApplicants: number;
+  admissionsApplicantsFirst: number;
+  admissionsSeats: number;
+  admissionsRegistered: number;
+  admissionsTightnessFirst: number;
+  admissionsTightnessLast: number;
+  admissionsYieldFirst: number;
+  admissionsYieldLast: number;
+  admissionsFirstYear: number;
+  admissionsLastYear: number;
+  graduatesLatest: number;
+  achievementsTotal: number;
+  achievementsInternational: number;
+  tracerRespondents: number;
+  tracerWithinSixMonths: number;
+  tracerTopSector: string;
+  tracerBeforeGraduation: number;
+  foreignCredit: number;
+  foreignNonCredit: number;
+  disabilityFacilities: number;
+  disabilityTarget: number;
+  posbinduVisits: number;
+  posbinduSessions: number;
+  posbinduRegistered: number;
+  posbinduLecturers: number;
+  posbinduStaff: number;
+  posbinduTopRisk: string;
+  posbinduTopRiskShare: number;
+  format: (value: number, digits?: number) => string;
+}
+
+type Deck = string | ((values: SceneValues) => string);
+
+interface Scene {
+  question: string;
+  deck: Deck;
+}
+
 export const scenes = {
   "1.1": {
     question: "Bagaimana Komposisi FMIPA Saat Ini?",
-    deck: "Empat departemen dan 17 program studi didukung oleh 203 dosen, 164 tenaga kependidikan, serta 16 laboratorium terpadu.",
+    deck: (v) =>
+      `Empat departemen dan ${v.format(v.studyProgrammes)} program studi didukung oleh ${v.format(v.lecturers)} dosen, ${v.format(v.academicStaff)} tenaga kependidikan, ${v.format(v.laboratories)} laboratorium terpadu, serta ${v.format(v.activeStudents)} mahasiswa sarjana aktif.`,
   },
   "1.2": {
     question: "Bagaimana Ketercapaian terhadap Target Kinerja?",
-    deck: "Sebanyak 24 dari 42 indikator telah melampaui target Triwulan III, sementara 14 indikator lainnya masih dalam proses akselerasi—seluruhnya disajikan secara terbuka.",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.tckAchieved)} dari ${v.format(v.tckTotal)} indikator telah memenuhi target triwulan berjalan, sementara ${v.format(v.tckBehind)} indikator lainnya masih dalam proses akselerasi—seluruhnya disajikan secara terbuka beserta catatan kualitas datanya.`,
   },
   "1.3": {
     question: "Alur Transformasi: Dari Sumber Daya Menuju Dampak",
@@ -61,7 +122,8 @@ export const scenes = {
   },
   "2.5": {
     question: "Bagaimana Komposisi dan Jenjang Jabatan Dosen?",
-    deck: "Dari total 203 dosen tetap pada data kepegawaian aktif, sebanyak 42 orang (20,7%) telah mengemban jabatan fungsional Guru Besar.",
+    deck: (v) =>
+      `Dari total ${v.format(v.lecturers)} dosen tetap pada data kepegawaian aktif, sebanyak 42 orang (20,7%) telah mengemban jabatan fungsional Guru Besar.`,
   },
   "2.6": {
     question: "Aspek Apa yang Perlu Ditingkatkan pada Reputasi Akademik?",
@@ -84,16 +146,24 @@ export const scenes = {
     deck: "Empat jurnal ilmiah terbitan FMIPA telah memuat 461 artikel terindeks. Sementara itu, dokumentasi paparan media massa mulai dihimpun secara terstruktur sejak 2023.",
   },
   "3.5": {
+    question: "Seberapa Luas Jejaring Kemitraan yang Dibangun?",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.partnershipTotal)} dokumen kerja sama ditandatangani sepanjang 2021–2026, ${v.format(v.partnershipInternational)} di antaranya bersama mitra luar negeri dari ${v.format(v.partnershipCountries)} negara.`,
+  },
+  "3.6": {
     question: "Tantangan Apa yang Dihadapi pada Pilar Kontribusi?",
-    deck: "Pilar ini menghadapi target kinerja paling menantang: 3 dari 10 indikator telah melampaui target Triwulan III, dengan prioritas akselerasi pada creative funding dan luaran tridharma.",
+    deck: (v) =>
+      `Pilar ini menghadapi target kinerja paling menantang: ${v.format(v.contributionAchieved)} dari ${v.format(v.contributionTotal)} indikator telah memenuhi target triwulan berjalan, dengan prioritas akselerasi pada luaran tridharma dan pemberitaan ber-SDGs.`,
   },
   "4.1": {
     question: "Bagaimana Daya Serap dan Kiprah Lulusan FMIPA?",
-    deck: "Data capaian mencatat 133 lulusan pada periode pantau telah terserap kerja, berwirausaha, atau studi lanjut. Rincian sebaran sektor dan wilayah akan diperkuat melalui tracer study tingkat prodi.",
+    deck: (v) =>
+      `Tracer study mencatat ${v.format(v.tracerRespondents)} responden lulusan; sektor ${v.tracerTopSector} menjadi tujuan karier terbesar, disusul sektor keuangan dan pendidikan.`,
   },
   "4.2": {
     question: "Berapa Rata-rata Masa Tunggu Kerja Lulusan?",
-    deck: "Data detail masa tunggu per program studi saat ini dihimpun terpusat oleh universitas, menjadi agenda prioritas penguatan integrasi data untuk periode selanjutnya.",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.tracerWithinSixMonths)} dari ${v.format(v.tracerRespondents)} responden memperoleh pekerjaan dalam enam bulan setelah lulus, dan ${v.format(v.tracerBeforeGraduation)} di antaranya bahkan telah bekerja sebelum tanggal kelulusan.`,
   },
   "4.3": {
     question: "Bagaimana Kesiapan Karier Mahasiswa Sebelum Lulus?",
@@ -101,11 +171,22 @@ export const scenes = {
   },
   "4.4": {
     question: "Bagaimana Capaian Internasionalisasi Mahasiswa Asing?",
-    deck: "Tercatat 118 mahasiswa asing program credit-earning dan 83 program non-kredit, yang terus dipacu menuju pemenuhan target akhir tahun.",
+    deck: (v) =>
+      `Tercatat ${v.format(v.foreignCredit)} mahasiswa asing program credit-earning dan ${v.format(v.foreignNonCredit)} program non-kredit, yang terus dipacu menuju pemenuhan target akhir tahun.`,
   },
   "4.5": {
     question: "Bagaimana Tingkat Kelulusan Tepat Waktu Mahasiswa?",
-    deck: "Persentase kelulusan tepat waktu jenjang Sarjana meningkat tajam pada Triwulan III selaras dengan agenda wisuda periode Agustus, mencerminkan siklus kelulusan tahunan.",
+    deck: "Persentase kelulusan tepat waktu ketiga jenjang melampaui target triwulan berjalan. Angka terkini yang sahih berasal dari Triwulan II karena kolom Triwulan III pada berkas sumber memuat cacah mahasiswa, bukan persentase.",
+  },
+  "4.6": {
+    question: "Seberapa Ketat Seleksi Masuk dan Sekuat Apa Minat Calon Mahasiswa?",
+    deck: (v) =>
+      `Minat masuk menyusut dari ${v.format(v.admissionsApplicantsFirst)} pelamar pada ${v.admissionsFirstYear} menjadi ${v.format(v.admissionsApplicants)} pada ${v.admissionsLastYear}, sementara daya tampung justru bertambah menjadi ${v.format(v.admissionsSeats)} kursi—keketatan seleksi karena itu melonggar dari 1 : ${v.format(v.admissionsTightnessFirst, 1)} menjadi 1 : ${v.format(v.admissionsTightnessLast, 1)}. Sisi lain menguat: ${v.format(v.admissionsYieldLast, 1)}% yang diterima melakukan registrasi, naik dari ${v.format(v.admissionsYieldFirst, 1)}%.`,
+  },
+  "4.7": {
+    question: "Bagaimana Profil Lulusan dan Prestasi Mahasiswa?",
+    deck: (v) =>
+      `Lulusan sarjana mencapai ${v.format(v.graduatesLatest)} orang pada tahun akademik terakhir, sementara ${v.format(v.achievementsTotal)} prestasi kompetisi tercatat sejak 2022 dengan ${v.format(v.achievementsInternational)} di antaranya pada tingkat internasional.`,
   },
   "4.3p": {
     question: "Seberapa Besar Keterlibatan Mahasiswa dalam Riset?",
@@ -113,24 +194,34 @@ export const scenes = {
   },
   "5.1": {
     question: "Bagaimana Pengembangan Karier dan Kualifikasi SDM?",
-    deck: "Sebanyak 9 dari 11 indikator pilar kesejahteraan dan tata kelola telah melampaui target Triwulan III, didorong oleh akselerasi kenaikan jabatan fungsional dan sertifikasi pendidik.",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator pilar kesejahteraan dan tata kelola telah memenuhi target triwulan berjalan, didorong oleh akselerasi kenaikan jabatan fungsional dan rekognisi internasional.`,
   },
   "5.2": {
     question: "Bagaimana Penguatan Fasilitas Kampus Inklusif dan Berkelanjutan?",
-    deck: "Penyediaan 23 unit fasilitas ramah disabilitas telah melampaui target tahunan (20 unit). Sementara itu, verifikasi data implementasi green building terus dikoordinasikan bersama universitas.",
+    deck: (v) =>
+      `Penyediaan ${v.format(v.disabilityFacilities)} unit fasilitas ramah disabilitas telah melampaui target tahunan (${v.format(v.disabilityTarget)} unit). Sementara itu, verifikasi data implementasi green building terus dikoordinasikan bersama universitas.`,
   },
   "5.3": {
-    question: "Bagaimana Penjaminan Keselamatan Kerja dan Ruang Aman Kampus?",
-    deck: "Aspek K3L, pencegahan kekerasan seksual, serta kesehatan sivitas akademika tetap menjadi komitmen utama yang pengukurannya terus diintegrasikan ke dalam sistem pemantauan berkala fakultas.",
+    question: "Bagaimana Penjaminan Kesehatan dan Ruang Aman Sivitas?",
+    deck: (v) =>
+      `Program Health Promoting University memeriksa ${v.format(v.posbinduLecturers)} kunjungan dosen dan ${v.format(v.posbinduStaff)} kunjungan tenaga kependidikan pada ${v.format(v.posbinduSessions)} sesi Posbindu sepanjang 2026. ${v.posbinduTopRisk} menjadi temuan terbanyak: ${v.format(v.posbinduTopRiskShare)}% peserta yang diperiksa berada pada ambang berisiko.`,
   },
   "6.1": {
     question: "Evaluasi dan Agenda Akselerasi Kinerja",
-    deck: "Pemetaan terhadap 14 indikator yang memerlukan akselerasi, penguatan integrasi sistem data lulusan dan keselamatan, serta strategi antisipasi keberlanjutan pendanaan riset ke depan.",
+    deck: (v) =>
+      `Pemetaan terhadap ${v.format(v.tckBehind)} indikator yang memerlukan akselerasi, penguatan integrasi sistem data lulusan dan keselamatan, serta strategi antisipasi keberlanjutan pendanaan riset ke depan.`,
   },
   "6.2": {
     question: "Pijakan Data untuk Periode Kepemimpinan Berikutnya",
     deck: "Seluruh data capaian empat pilar kini terdokumentasi secara transparan sebagai basis data awal yang siap ditindaklanjuti dan dikembangkan oleh pimpinan fakultas selanjutnya.",
   },
-} as const;
+} satisfies Record<string, Scene>;
 
 export type SceneKey = keyof typeof scenes;
+
+/** Resolve a scene deck, running the volatile ones against the current data. */
+export function deckOf(key: SceneKey, values: SceneValues): string {
+  const { deck } = scenes[key] as Scene;
+  return typeof deck === "function" ? deck(values) : deck;
+}

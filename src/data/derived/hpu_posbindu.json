@@ -1,0 +1,436 @@
+{
+  "universe": "Dosen dan tenaga kependidikan",
+  "kunjungan": 131,
+  "sesi": [
+    {
+      "tanggal": "2026-01-30",
+      "peserta": 27,
+      "distribusi_imt": {
+        "Obesitas": 15,
+        "Normal": 7,
+        "Tidak diperiksa": 1,
+        "Berlebih": 4
+      },
+      "distribusi_lingkar_perut": {
+        "Tidak Normal": 15,
+        "Normal": 11,
+        "Tidak diperiksa": 1
+      },
+      "distribusi_tekanan_darah": {
+        "Normal": 6,
+        "Hipertensi Grade 1": 5,
+        "Prehipertensi": 13,
+        "Tidak diperiksa": 1,
+        "Hipertensi Grade 2": 2
+      },
+      "distribusi_asam_urat": {
+        "Tinggi": 18,
+        "Normal": 8,
+        "Tidak diperiksa": 1
+      },
+      "distribusi_kolesterol": {
+        "Tinggi": 17,
+        "Waspada": 8,
+        "Tidak diperiksa": 1,
+        "Normal": 1
+      },
+      "distribusi_gula_darah": {
+        "Normal": 24,
+        "Waspada": 2,
+        "Tidak diperiksa": 1
+      },
+      "dirujuk": 0
+    },
+    {
+      "tanggal": "2026-02-27",
+      "peserta": 24,
+      "distribusi_imt": {
+        "Normal": 5,
+        "Obesitas": 12,
+        "Berlebih": 3,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_lingkar_perut": {
+        "Normal": 7,
+        "Tidak Normal": 13,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_tekanan_darah": {
+        "Normal": 9,
+        "Hipertensi Grade 1": 5,
+        "Prehipertensi": 6,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_asam_urat": {
+        "Normal": 14,
+        "Tinggi": 6,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_kolesterol": {
+        "Tinggi": 9,
+        "Waspada": 9,
+        "Normal": 2,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_gula_darah": {
+        "Normal": 20,
+        "Tidak diperiksa": 4
+      },
+      "dirujuk": 0
+    },
+    {
+      "tanggal": "2026-05-29",
+      "peserta": 36,
+      "distribusi_imt": {
+        "Obesitas": 14,
+        "Normal": 10,
+        "Berlebih": 8,
+        "Tidak diperiksa": 4
+      },
+      "distribusi_lingkar_perut": {
+        "Tidak Normal": 17,
+        "Normal": 16,
+        "Tidak diperiksa": 3
+      },
+      "distribusi_tekanan_darah": {
+        "Normal": 15,
+        "Prehipertensi": 7,
+        "Hipertensi Grade 1": 6,
+        "Hipertensi Grade 2": 5,
+        "Tidak diperiksa": 3
+      },
+      "distribusi_asam_urat": {
+        "Normal": 15,
+        "Tinggi": 18,
+        "Tidak diperiksa": 3
+      },
+      "distribusi_kolesterol": {
+        "Waspada": 13,
+        "Tinggi": 15,
+        "Normal": 5,
+        "Tidak diperiksa": 3
+      },
+      "distribusi_gula_darah": {
+        "Normal": 28,
+        "Waspada": 5,
+        "Tidak diperiksa": 3
+      },
+      "dirujuk": 0
+    },
+    {
+      "tanggal": "2026-07-03",
+      "peserta": 21,
+      "distribusi_imt": {
+        "Normal": 3,
+        "Berlebih": 6,
+        "Obesitas": 12
+      },
+      "distribusi_lingkar_perut": {
+        "Normal": 7,
+        "Tidak Normal": 14
+      },
+      "distribusi_tekanan_darah": {
+        "Normal": 8,
+        "Hipertensi Grade 1": 8,
+        "Hipertensi Grade 2": 3,
+        "Prehipertensi": 2
+      },
+      "distribusi_asam_urat": {
+        "Normal": 9,
+        "Tinggi": 12
+      },
+      "distribusi_kolesterol": {
+        "Tinggi": 8,
+        "Waspada": 11,
+        "Normal": 2
+      },
+      "distribusi_gula_darah": {
+        "Normal": 16,
+        "Tinggi": 3,
+        "Waspada": 2
+      },
+      "dirujuk": 0
+    },
+    {
+      "tanggal": "2026-08-28",
+      "peserta": 23,
+      "distribusi_imt": {
+        "Obesitas": 15,
+        "Normal": 3,
+        "Berlebih": 3,
+        "Tidak diperiksa": 2
+      },
+      "distribusi_lingkar_perut": {
+        "Tidak Normal": 13,
+        "Normal": 7,
+        "Tidak diperiksa": 3
+      },
+      "distribusi_tekanan_darah": {
+        "Normal": 9,
+        "Hipertensi Grade 1": 5,
+        "Prehipertensi": 5,
+        "Tidak diperiksa": 2,
+        "Hipertensi Grade 2": 2
+      },
+      "distribusi_asam_urat": {
+        "Tinggi": 10,
+        "Normal": 11,
+        "Tidak diperiksa": 2
+      },
+      "distribusi_kolesterol": {
+        "Tinggi": 12,
+        "Normal": 4,
+        "Waspada": 5,
+        "Tidak diperiksa": 2
+      },
+      "distribusi_gula_darah": {
+        "Normal": 17,
+        "Tinggi": 2,
+        "Tidak diperiksa": 2,
+        "Waspada": 2
+      },
+      "dirujuk": 0
+    }
+  ],
+  "profil_risiko": [
+    {
+      "indikator": "Lingkar Perut",
+      "kunci": "lingkar_perut",
+      "total": 131,
+      "diperiksa": 120,
+      "pita": {
+        "Normal": 48,
+        "Waspada": 0,
+        "Berisiko": 72,
+        "Tidak diperiksa": 11
+      },
+      "porsi_berisiko": 0.6,
+      "kategori": [
+        {
+          "nilai": "Tidak Normal",
+          "pita": "Berisiko",
+          "n": 72
+        },
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 48
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 11
+        }
+      ]
+    },
+    {
+      "indikator": "Indeks Massa Tubuh",
+      "kunci": "imt",
+      "total": 131,
+      "diperiksa": 120,
+      "pita": {
+        "Normal": 28,
+        "Waspada": 24,
+        "Berisiko": 68,
+        "Tidak diperiksa": 11
+      },
+      "porsi_berisiko": 0.5667,
+      "kategori": [
+        {
+          "nilai": "Obesitas",
+          "pita": "Berisiko",
+          "n": 68
+        },
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 28
+        },
+        {
+          "nilai": "Berlebih",
+          "pita": "Waspada",
+          "n": 24
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 11
+        }
+      ]
+    },
+    {
+      "indikator": "Asam Urat",
+      "kunci": "asam_urat",
+      "total": 131,
+      "diperiksa": 121,
+      "pita": {
+        "Normal": 57,
+        "Waspada": 0,
+        "Berisiko": 64,
+        "Tidak diperiksa": 10
+      },
+      "porsi_berisiko": 0.5289,
+      "kategori": [
+        {
+          "nilai": "Tinggi",
+          "pita": "Berisiko",
+          "n": 64
+        },
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 57
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 10
+        }
+      ]
+    },
+    {
+      "indikator": "Kolesterol",
+      "kunci": "kolesterol",
+      "total": 131,
+      "diperiksa": 121,
+      "pita": {
+        "Normal": 14,
+        "Waspada": 46,
+        "Berisiko": 61,
+        "Tidak diperiksa": 10
+      },
+      "porsi_berisiko": 0.5041,
+      "kategori": [
+        {
+          "nilai": "Tinggi",
+          "pita": "Berisiko",
+          "n": 61
+        },
+        {
+          "nilai": "Waspada",
+          "pita": "Waspada",
+          "n": 46
+        },
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 14
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 10
+        }
+      ]
+    },
+    {
+      "indikator": "Tekanan Darah",
+      "kunci": "tekanan_darah",
+      "total": 131,
+      "diperiksa": 121,
+      "pita": {
+        "Normal": 47,
+        "Waspada": 33,
+        "Berisiko": 41,
+        "Tidak diperiksa": 10
+      },
+      "porsi_berisiko": 0.3388,
+      "kategori": [
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 47
+        },
+        {
+          "nilai": "Prehipertensi",
+          "pita": "Waspada",
+          "n": 33
+        },
+        {
+          "nilai": "Hipertensi Grade 1",
+          "pita": "Berisiko",
+          "n": 29
+        },
+        {
+          "nilai": "Hipertensi Grade 2",
+          "pita": "Berisiko",
+          "n": 12
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 10
+        }
+      ]
+    },
+    {
+      "indikator": "Gula Darah",
+      "kunci": "gula_darah",
+      "total": 131,
+      "diperiksa": 121,
+      "pita": {
+        "Normal": 105,
+        "Waspada": 11,
+        "Berisiko": 5,
+        "Tidak diperiksa": 10
+      },
+      "porsi_berisiko": 0.0413,
+      "kategori": [
+        {
+          "nilai": "Normal",
+          "pita": "Normal",
+          "n": 105
+        },
+        {
+          "nilai": "Waspada",
+          "pita": "Waspada",
+          "n": 11
+        },
+        {
+          "nilai": "Tidak diperiksa",
+          "pita": "Tidak diperiksa",
+          "n": 10
+        },
+        {
+          "nilai": "Tinggi",
+          "pita": "Berisiko",
+          "n": 5
+        }
+      ]
+    }
+  ],
+  "kunjungan_per_kriteria": [
+    {
+      "kriteria": "Tendik",
+      "n": 80
+    },
+    {
+      "kriteria": "Dosen",
+      "n": 51
+    }
+  ],
+  "peserta_terdaftar": 651,
+  "komposisi_peserta": [
+    {
+      "kriteria": "Mahasiswa",
+      "n": 457
+    },
+    {
+      "kriteria": "Tendik",
+      "n": 84
+    },
+    {
+      "kriteria": "Dosen",
+      "n": 72
+    },
+    {
+      "kriteria": "Lain-Lain",
+      "n": 38
+    }
+  ],
+  "dikecualikan": {
+    "Tanpa kriteria": 257,
+    "THL": 3
+  },
+  "catatan": "Agregat anonim. Nama, tanggal lahir, dan nilai pemeriksaan per orang tidak diekspor."
+}

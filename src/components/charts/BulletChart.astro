@@ -39,7 +39,7 @@ interface Props extends Omit<ChartChromeProps<BulletDatum>, "tableRows" | "table
 
 const {
   data,
-  width = 980,
+  width = 1060,
   rowHeight = 52,
   maxPercent = 200,
   targetLabel = "Target triwulan berjalan",
@@ -56,8 +56,17 @@ const {
   hideHeader,
 } = Astro.props;
 
-const margin = { top: 68, right: 176, bottom: 30, left: 300 };
+/* The right gutter carries two things that used to be drawn into the same
+   176px and overlapped ("90 mahasiswa" under "Perlu Akselerasi"). They now get
+   a column each: the value right-aligned against the plot, the status label
+   left-aligned in its own lane, with a gap between them that cannot close. */
+const valueColumn = 112;
+const statusColumn = 136;
+const columnGap = 16;
+const margin = { top: 68, right: valueColumn + columnGap + statusColumn, bottom: 30, left: 300 };
 const plotWidth = width - margin.left - margin.right;
+const valueX = margin.left + plotWidth + valueColumn;
+const statusX = valueX + columnGap;
 const groupNames = [...new Set(data.map((row) => row.group).filter(Boolean))] as string[];
 const grouped = groupNames.length > 0;
 let cursor = margin.top;
@@ -114,7 +123,7 @@ const tableRows = data.map((row) => ({
   ]}
   class={className}
   {hideHeader}
-  minPlotWidth={760}
+  minPlotWidth={880}
 >
   <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
     <title id={`${id}-svg-title`}>{title}</title>
@@ -162,7 +171,7 @@ const tableRows = data.map((row) => ({
           <path
             class:list={["actual", row.provisional && "is-provisional"]}
             d={roundedEndBarPath(margin.left, barY, barWidth, barHeight, 4)}
-            fill={status ? STATUS_COLORS[status] : "var(--chart-primary, #004a74)"}
+            fill={status ? STATUS_COLORS[status] : "var(--chart-primary, #01416b)"}
           />
           {row.provisional && (
             <path d={roundedEndBarPath(margin.left, barY, barWidth, barHeight, 4)} fill={`url(#${id}-provisional)`} aria-hidden="true" />
@@ -170,9 +179,9 @@ const tableRows = data.map((row) => ({
           <line class="annual-target" x1={annualX} x2={annualX} y1={barY - 3} y2={barY + barHeight + 3} />
           <line class="current-target" x1={targetX} x2={targetX} y1={barY - 5} y2={barY + barHeight + 5} />
           {row.rawRatio > maxPercent && <text class="overflow" x={margin.left + plotWidth + 7} y={barY + 15}>▸</text>}
-          <text class="raw-value" x={margin.left + plotWidth + 24} y={barY + 14}>{row.actualLabel ?? formatNumber(row.actual, 2)}</text>
+          <text class="raw-value" x={valueX} y={barY + 14} text-anchor="end">{row.actualLabel ?? formatNumber(row.actual, 2)}</text>
           {status && (
-            <text class:list={["status", `status-${status}`]} x={width - 2} y={barY + 14} text-anchor="end">
+            <text class:list={["status", `status-${status}`]} x={statusX} y={barY + 14}>
               {STATUS_SYMBOLS[status]} {statusLabel[status]}
             </text>
           )}
@@ -191,7 +200,7 @@ const tableRows = data.map((row) => ({
 
 <style>
   svg {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -214,7 +223,7 @@ const tableRows = data.map((row) => ({
   }
 
   .group-label {
-    fill: var(--brand-blue, #004a74);
+    fill: var(--brand-blue, #01416b);
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.05em;
@@ -234,11 +243,11 @@ const tableRows = data.map((row) => ({
   }
 
   .actual {
-    transition: d 420ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: d var(--duration-story, 450ms) var(--ease-story, cubic-bezier(0.4, 0, 0.2, 1));
   }
 
   .current-target {
-    stroke: var(--ink, #332c2b);
+    stroke: var(--ink, #2b2d2f);
     stroke-width: 2;
   }
 
@@ -257,7 +266,7 @@ const tableRows = data.map((row) => ({
   }
 
   .overflow {
-    fill: var(--brand-blue, #004a74);
+    fill: var(--brand-blue, #01416b);
     font-size: 16px;
   }
 

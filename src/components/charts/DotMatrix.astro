@@ -69,9 +69,13 @@ const positionedGroups = preparedGroups.map((group) => {
 });
 const rows = Math.max(1, Math.ceil(offset / columns));
 const matrixHeight = 42 + rows * (dotSize + 7);
-const legendColumns = Math.min(2, Math.max(1, groups.length));
-const legendRows = Math.ceil(groups.length / legendColumns);
-const height = matrixHeight + legendRows * 36 + 48;
+/* One legend entry per row. Two columns squeezed the name and its count into
+   half the stage and they collided as soon as the chart was not full width. */
+const legendStep = 40;
+const height = matrixHeight + groups.length * legendStep + 40;
+/* Below this the symbols and their legend stop being readable, so the frame
+   scrolls instead of scaling the whole matrix down to nothing on a phone. */
+const minPlotWidth = Math.round(Math.min(720, Math.max(420, usedColumns * xStep + 90)));
 const tableRows = groups.map((group) => ({
   Kelompok: group.label,
   Jumlah: group.count,
@@ -95,6 +99,7 @@ const tableRows = groups.map((group) => ({
   ]}
   class={className}
   {hideHeader}
+  {minPlotWidth}
 >
   <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
     <title id={`${id}-svg-title`}>{title}</title>
@@ -134,25 +139,20 @@ const tableRows = groups.map((group) => ({
     })}
 
     <g class="legend" transform={`translate(2, ${matrixHeight + 17})`}>
-      {positionedGroups.map((group, groupIndex) => {
-        const column = groupIndex % legendColumns;
-        const row = Math.floor(groupIndex / legendColumns);
-        const columnWidth = (width - 4) / legendColumns;
-        return (
-          <g transform={`translate(${column * columnWidth}, ${row * 36})`}>
-            <circle cx="9" cy="9" r="7" fill={`url(#${id}-dot-${groupIndex})`} />
-            <text x="23" y="7">{group.label}</text>
-            <text class="legend-value" x="23" y="23">{formatNumber(group.count)} {unitLabel}</text>
-          </g>
-        );
-      })}
+      {positionedGroups.map((group, groupIndex) => (
+        <g transform={`translate(0, ${groupIndex * legendStep})`}>
+          <circle cx="9" cy="9" r="7" fill={`url(#${id}-dot-${groupIndex})`} />
+          <text x="26" y="7">{group.label}</text>
+          <text class="legend-value" x="26" y="24">{formatNumber(group.count)} {unitLabel}</text>
+        </g>
+      ))}
     </g>
   </svg>
 </ChartFrame>
 
 <style>
   svg {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -169,16 +169,17 @@ const tableRows = groups.map((group) => ({
     font-weight: 750;
   }
 
+  /* Hover marks the group by ringing it, not by growing it: nothing on this
+     page lifts, shrinks or scales on hover. */
   .dot-group circle {
-    transform-box: fill-box;
-    transform-origin: center;
     vector-effect: non-scaling-stroke;
-    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: stroke var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1)), opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .dot-group:hover circle,
   .dot-group:focus circle {
-    transform: scale(1.12);
+    stroke: var(--ink, #2b2d2f);
+    stroke-width: 2;
   }
 
   .dot-group:focus-visible {

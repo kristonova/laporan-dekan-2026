@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter
 
@@ -79,6 +80,328 @@ def clean_publications(lecturers: pd.DataFrame) -> None:
         "department_clean", "mapping",
     ]
     publication[keep].rename(columns={"department_clean": "department"}).to_csv(CLEAN_DIR / "publications.csv", index=False)
+
+
+# --- TCK 2026 ---------------------------------------------------------------
+
+# Published status thresholds. The workbook only distinguishes "tercapai" from
+# "belum", so the four levels the report uses are derived from the ratio here and
+# documented on /data. `arah = turun` indicators invert the ratio: a smaller
+# actual is better.
+STATUS_THRESHOLDS = ((1.00, "tercapai"), (0.85, "mendekati"), (0.50, "tertinggal"))
+RUPIAH_TO_MILIAR = 1_000_000_000
+# Indicator 1c mixes units: targets are stated in billions, actuals in full
+# rupiah. Anything above this bound is a raw rupiah figure to rescale.
+MILIAR_SCALE_BOUND = 10_000
+
+
+def status_for(ratio: float | None) -> str:
+    if ratio is None:
+        return "meleset"
+    for bound, label in STATUS_THRESHOLDS:
+        if ratio >= bound:
+            return label
+    return "meleset"
+
+
+def ratio_for(actual: float | None, target: float | None, direction: str) -> float | None:
+    if actual is None or target is None:
+        return None
+    if direction == "turun":
+        if actual <= 0:
+            return 2.5
+        return round(target / actual, 4)
+    if target <= 0:
+        return None
+    return round(actual / target, 4)
+
+
+QUARTERS = ("tw1", "tw2", "tw3", "tw4")
+
+
+def is_number(value: object) -> bool:
+    return value is not None and not pd.isna(value)
+
+
+def rescale_creative_funding(row: dict) -> None:
+    """Indicator 1c states targets in billions but actuals in full rupiah."""
+    fields = [f"capaian_{q}" for q in QUARTERS] + [f"target_{q}" for q in QUARTERS]
+    fields += ["target_tahunan", "dike", "df", "dm", "dk", "fakultas"]
+    for field in fields:
+        value = row.get(field)
+        if is_number(value) and abs(value) > MILIAR_SCALE_BOUND:
+            row[field] = round(value / RUPIAH_TO_MILIAR, 4)
+
+
+def normalize_percentage(row: dict) -> tuple[bool, list[str]]:
+    """Separate real percentages from headcounts on `satuan = Persen` rows.
+
+    The workbook stores a percentage either as a fraction (0–1) or as the bare
+    numerator of that fraction; the denominator is never written down. Fractions
+    are scaled to percent, numerators are moved to a `_cacah` column and the
+    percentage is left empty rather than guessed. Indicators whose actuals are
+    all outside 0–1 (such as #32) carry no fraction at all and are left alone.
+    """
+    notes: list[str] = []
+    for quarter in QUARTERS:
+        field = f"target_{quarter}"
+        value = row.get(field)
+        if is_number(value) and 0 < value <= 1:
+            row[field] = round(value * 100, 4)
+
+    actuals = {quarter: row.get(f"capaian_{quarter}") for quarter in QUARTERS}
+    has_fraction = any(is_number(value) and 0 < value <= 1 for value in actuals.values())
+    if not has_fraction:
+        return False, notes
+
+    headcount_quarters: list[str] = []
+    for quarter, value in actuals.items():
+        if not is_number(value):
+            continue
+        if 0 < value <= 1:
+            row[f"capaian_{quarter}"] = round(value * 100, 4)
+        elif value > 1:
+            row[f"capaian_{quarter}_cacah"] = value
+            row[f"capaian_{quarter}"] = None
+            headcount_quarters.append(quarter.upper())
+
+    if headcount_quarters:
+        notes.append(
+            f"capaian {', '.join(headcount_quarters)} tercatat sebagai cacah orang tanpa penyebut; "
+            "persentase tidak dihitung"
+        )
+    return bool(headcount_quarters), notes
+
+
+def assessed_quarter(row: dict) -> tuple[str, float | None, float | None]:
+    """Latest quarter that has both an actual and a target to judge against."""
+    for quarter in ("tw3", "tw2", "tw1"):
+        actual = row.get(f"capaian_{quarter}")
+        target = row.get(f"target_{quarter}")
+        if is_number(actual) and is_number(target):
+            return quarter, actual, target
+    return "tw3", row.get("capaian_tw3"), row.get("target_tw3")
+
+
+def clean_tck() -> None:
+    """Recompute ratios and statuses, and surface the workbook's unit problems.
+
+    Nothing here patches a defect silently: rescaling, missing denominators, and
+    non-cumulative quarters each leave a note in `anomali` that /data renders.
+    """
+    tck = pd.read_csv(LOADED_DIR / "tck_2026_indikator.csv", dtype={"no": "string"})
+
+    rows: list[dict] = []
+    for _, source in tck.iterrows():
+        row = source.to_dict()
+        for quarter in QUARTERS:
+            row[f"capaian_{quarter}_cacah"] = None
+        direction = str(row.get("arah") or "naik").strip() or "naik"
+        anomalies: list[str] = []
+        unit_mismatch = False
+
+        if str(row["no"]) == "1c":
+            rescale_creative_funding(row)
+            anomalies.append("nilai rupiah penuh pada sumber diskalakan ke miliar")
+
+        if str(row.get("satuan") or "").strip().lower() == "persen":
+            unit_mismatch, notes = normalize_percentage(row)
+            anomalies.extend(notes)
+
+        row["target_tw4"] = row.get("target_tahunan")
+
+        quarter, actual, target = assessed_quarter(row)
+        row["kuartal_dinilai"] = quarter
+        row["capaian_dinilai"] = actual
+        row["target_dinilai"] = target
+        row["rasio_kuartal"] = ratio_for(actual, target, direction)
+        row["status_kuartal"] = status_for(row["rasio_kuartal"])
+        row["rasio_thd_target_tahunan"] = ratio_for(actual, row.get("target_tahunan"), direction)
+        row["status_thd_tahunan"] = status_for(row["rasio_thd_target_tahunan"])
+        if quarter != "tw3":
+            anomalies.append(f"penilaian memakai {quarter.upper()} karena TW3 tidak dapat dinilai")
+
+        # A "turun" indicator is supposed to fall quarter over quarter, so only
+        # the cumulative ones are checked for a backwards step.
+        if direction != "turun":
+            progression = [row.get(f"capaian_{quarter}") for quarter in ("tw1", "tw2", "tw3")]
+            progression = [value for value in progression if is_number(value)]
+            if any(after < before for before, after in zip(progression, progression[1:])):
+                anomalies.append("capaian triwulan tidak kumulatif")
+
+        row["unit_mismatch"] = unit_mismatch
+        row["anomali"] = "; ".join(anomalies)
+        rows.append(row)
+
+    pd.DataFrame(rows).to_csv(CLEAN_DIR / "tck_2026_indikator.csv", index=False)
+
+
+# --- Kerja sama -------------------------------------------------------------
+
+
+def clean_partnerships(province_lookup: dict) -> None:
+    """One row per cooperation document, with location and scope normalised."""
+    source = pd.read_csv(LOADED_DIR / "partnerships.csv").fillna("")
+    start = pd.to_datetime(source["mulai"], errors="coerce")
+    signed = pd.to_datetime(source["tanggal_tanda_tangan"], errors="coerce")
+    year = signed.dt.year.fillna(start.dt.year).fillna(source["tahun_sheet"]).astype(int)
+
+    raw_province = source["provinsi"].astype(str).str.strip()
+    mapped = raw_province.map(lambda value: province_lookup.get(value, {}))
+    country = source["negara"].astype(str).str.strip().replace("", "Tidak diketahui")
+
+    clean = pd.DataFrame({
+        "tahun": year,
+        "negara": country,
+        "lingkup": country.map(lambda value: "Domestik" if value == "Indonesia" else "Internasional"),
+        "jenis_mitra": source["jenis_mitra"].astype(str).str.strip().replace("", "Tidak terklasifikasi"),
+        "tipe_dokumen": source["tipe_dokumen"].astype(str).str.strip().replace("", "Tidak terklasifikasi"),
+        "provinsi_raw": raw_province,
+        "provinsi": mapped.map(lambda value: value.get("canonical", "") if isinstance(value, dict) else ""),
+        "bps_code": mapped.map(lambda value: value.get("bps_code", "") if isinstance(value, dict) else ""),
+        "kabupaten": source["kabupaten"].astype(str).str.strip(),
+        "prodi": source["prodi"].astype(str).str.strip(),
+        "bidang": source["bidang"].astype(str).str.strip(),
+    })
+    clean["location_status"] = "recorded"
+    clean.loc[clean["lingkup"] == "Internasional", "location_status"] = "foreign"
+    clean.loc[(clean["lingkup"] == "Domestik") & (clean["provinsi"] == ""), "location_status"] = "missing"
+    clean.to_csv(CLEAN_DIR / "partnerships.csv", index=False)
+
+
+# --- Tracer study -----------------------------------------------------------
+
+# Waiting time is reported in months; negative values mean the graduate was
+# already working before the graduation date.
+WAITING_BUCKETS = (
+    (0, "Sudah bekerja sebelum lulus"),
+    (3, "0–3 bulan"),
+    (6, "4–6 bulan"),
+    (12, "7–12 bulan"),
+    (float("inf"), "Lebih dari 12 bulan"),
+)
+
+
+def waiting_bucket(months: float) -> str:
+    for bound, label in WAITING_BUCKETS:
+        if months <= bound:
+            return label
+    return WAITING_BUCKETS[-1][1]
+
+
+def clean_tracer() -> None:
+    waiting = pd.read_csv(LOADED_DIR / "tracer_waiting.csv")
+    waiting["kategori"] = waiting["bulan"].map(waiting_bucket)
+    waiting["prodi"] = waiting["prodi"].astype(str).str.strip().str.title()
+    waiting[["prodi", "tahun", "bulan", "kategori"]].to_csv(CLEAN_DIR / "tracer_waiting.csv", index=False)
+
+    rules = pd.read_csv(MAPPINGS_DIR / "bidang_kerja.csv")
+    compiled = [(re.compile(pattern, re.I), sector) for pattern, sector in zip(rules["pola"], rules["sektor"])]
+
+    def classify(value: object) -> str:
+        text = str(value or "").strip().lower()
+        for pattern, sector in compiled:
+            if pattern.search(text):
+                return sector
+        return "Lainnya"
+
+    sectors = pd.read_csv(LOADED_DIR / "tracer_sectors.csv")
+    sectors["sektor"] = sectors["bidang_raw"].map(classify)
+    sectors["prodi"] = sectors["prodi"].astype(str).str.strip().str.title()
+    sectors[["prodi", "tahun", "sektor"]].to_csv(CLEAN_DIR / "tracer_sectors.csv", index=False)
+
+
+# --- Health Promoting University --------------------------------------------
+
+# The recap sheets use slightly different spellings across months; these keep the
+# published categories stable without inventing clinical judgements.
+POSBINDU_LABELS = {
+    "imt": {"underweight": "Kurang", "normal": "Normal", "overweight": "Berlebih", "obesity": "Obesitas"},
+    "tekanan_darah": {
+        "normal": "Normal", "prehipertensi": "Prehipertensi",
+        "hipertensi grade 1": "Hipertensi Grade 1", "hipertensi grade 2": "Hipertensi Grade 2",
+    },
+    "lingkar_perut": {"normal": "Normal", "tidak normal": "Tidak Normal"},
+    "asam_urat": {"normal": "Normal", "tinggi": "Tinggi"},
+    "kolesterol": {"normal": "Normal", "waspada": "Waspada", "tinggi": "Tinggi"},
+    "gula_darah": {"normal": "Normal", "waspada": "Waspada", "tinggi": "Tinggi"},
+}
+
+POSBINDU_MEASURES = ["imt", "tekanan_darah", "lingkar_perut", "asam_urat", "kolesterol", "gula_darah"]
+
+# Screening staff, so the two categories the report is about are spelled one way.
+POSBINDU_CRITERIA = {"dosen": "Dosen", "tendik": "Tendik", "thl": "THL"}
+
+
+def normalize_measure(column: str, value: object) -> str:
+    text = str(value or "").strip()
+    if not text or text in {"-", "nan"}:
+        return "Tidak diperiksa"
+    lookup = POSBINDU_LABELS.get(column, {})
+    return lookup.get(text.lower(), text.title())
+
+
+def risk_bands() -> dict[tuple[str, str], str]:
+    """Source category to risk band, from the reviewable mapping table.
+
+    The clinical judgement lives in pipeline/mappings/posbindu_risiko.csv so the
+    data owner can check it without reading code.
+    """
+    table = pd.read_csv(MAPPINGS_DIR / "posbindu_risiko.csv")
+    return {
+        (str(row.indikator).strip(), str(row.nilai_sumber).strip()): str(row.pita).strip()
+        for row in table.itertuples()
+    }
+
+
+def clean_posbindu() -> None:
+    visits = pd.read_csv(LOADED_DIR / "posbindu_visits.csv").fillna("")
+    bands = risk_bands()
+
+    clean = pd.DataFrame({"tanggal": visits["tanggal"]})
+    for column in POSBINDU_MEASURES:
+        clean[column] = visits[column].map(lambda value, column=column: normalize_measure(column, value))
+        # "Tidak diperiksa" stays its own band; it is never folded into Normal.
+        clean[f"risiko_{column}"] = clean[column].map(
+            lambda label, column=column: bands.get((column, label), "Tidak diperiksa")
+        )
+    clean["dirujuk"] = visits["rujukan"].astype(str).str.strip().str.lower().eq("rujuk")
+    clean["kriteria"] = (
+        visits["kriteria"].astype(str).str.strip()
+        .map(lambda value: POSBINDU_CRITERIA.get(value.lower(), value.title() if value else "Tanpa kriteria"))
+    )
+    clean.to_csv(CLEAN_DIR / "posbindu_visits.csv", index=False)
+
+    participants = pd.read_csv(LOADED_DIR / "posbindu_participants.csv").fillna("")
+    participants["kriteria"] = participants["kriteria"].astype(str).str.strip().replace("", "Tidak diketahui")
+    participants[["kriteria"]].to_csv(CLEAN_DIR / "posbindu_participants.csv", index=False)
+
+
+# --- Academic labels ---------------------------------------------------------
+
+# Programme and department names arrive shouted from the source spreadsheets,
+# and one of them carries a literal newline from a wrapped Excel cell. They are
+# printed as prose on the page, so they are tidied here rather than per scene —
+# that way the downloadable CSVs read the same as the charts.
+LABEL_CONNECTORS = {"dan", "atau", "di", "ke", "dari", "yang", "untuk", "pada", "dalam", "serta"}
+LABEL_ACRONYMS = {"S1", "S2", "S3", "IKE", "ELINS", "FMIPA", "UGM", "MIPA", "IUP"}
+
+
+def tidy_label(value: object) -> str:
+    """Collapse stray whitespace and recase a shouted label to Title Case."""
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    # Only all-caps values are recased; anything already mixed is left as written.
+    if not text or not text.isupper():
+        return text
+    words = []
+    for index, word in enumerate(text.split(" ")):
+        if word.strip(".") in LABEL_ACRONYMS:
+            words.append(word)
+            continue
+        lowered = word.lower()
+        words.append(lowered if index and lowered.strip(".") in LABEL_CONNECTORS
+                     else lowered[:1].upper() + lowered[1:])
+    return " ".join(words)
 
 
 def main() -> None:
@@ -158,8 +481,24 @@ def main() -> None:
         "media": media["media_name"].fillna("Belum terklasifikasi").replace("", "Belum terklasifikasi"),
     }).to_csv(CLEAN_DIR / "media.csv", index=False)
 
-    for name in ("study_programmes", "departments", "laboratories", "tck_2026_indikator"):
-        pd.read_csv(LOADED_DIR / f"{name}.csv", low_memory=False).to_csv(CLEAN_DIR / f"{name}.csv", index=False)
+    clean_tck()
+    clean_partnerships(province_lookup)
+    clean_tracer()
+    clean_posbindu()
+
+    # Academic tables arrive already aggregated; they only need to be carried
+    # forward so the aggregate stage reads everything from one directory.
+    passthrough = (
+        "study_programmes", "departments", "laboratories",
+        "admissions", "active_students", "graduates", "achievements",
+        "scholarships", "accreditation", "exchange",
+    )
+    for name in passthrough:
+        frame = pd.read_csv(LOADED_DIR / f"{name}.csv", low_memory=False)
+        for column in ("prodi", "departemen"):
+            if column in frame.columns:
+                frame[column] = frame[column].map(tidy_label)
+        frame.to_csv(CLEAN_DIR / f"{name}.csv", index=False)
 
     print("Cleaned sources written without person-level identifiers.")
 

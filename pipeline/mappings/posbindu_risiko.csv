@@ -1,0 +1,19 @@
+indikator,nilai_sumber,pita
+imt,Kurang,Waspada
+imt,Normal,Normal
+imt,Berlebih,Waspada
+imt,Obesitas,Berisiko
+lingkar_perut,Normal,Normal
+lingkar_perut,Tidak Normal,Berisiko
+tekanan_darah,Normal,Normal
+tekanan_darah,Prehipertensi,Waspada
+tekanan_darah,Hipertensi Grade 1,Berisiko
+tekanan_darah,Hipertensi Grade 2,Berisiko
+asam_urat,Normal,Normal
+asam_urat,Tinggi,Berisiko
+kolesterol,Normal,Normal
+kolesterol,Waspada,Waspada
+kolesterol,Tinggi,Berisiko
+gula_darah,Normal,Normal
+gula_darah,Waspada,Waspada
+gula_darah,Tinggi,Berisiko

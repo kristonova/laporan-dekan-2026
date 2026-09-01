@@ -10,7 +10,19 @@ from pathlib import Path
 
 import pandas as pd
 
-from utils import CLEAN_DIR, PUBLIC_DATA_DIR, TCK_DIR, number, records, split_pipe, write_json
+from utils import (
+    CLEAN_DIR,
+    MAPPINGS_DIR,
+    PUBLIC_DATA_DIR,
+    SNAPSHOT,
+    SNAPSHOT_LABEL,
+    SNAPSHOT_LENTERA,
+    SNAPSHOT_P2M,
+    number,
+    records,
+    split_pipe,
+    write_json,
+)
 
 
 ISO3 = {
@@ -32,25 +44,278 @@ def output(filename: str, rows: list[dict] | dict) -> None:
         frame.to_csv(csv_path, index=False)
 
 
+DEPARTMENT_LABELS = {
+    "dike": "Ilmu Komputer dan Elektronika",
+    "df": "Fisika",
+    "dm": "Matematika",
+    "dk": "Kimia",
+}
+
+
 def tck_outputs() -> list[dict]:
     tck = pd.read_csv(CLEAN_DIR / "tck_2026_indikator.csv", dtype={"no": "string"})
-    numeric_columns = [column for column in tck.columns if column.startswith("target_") or column.startswith("capaian_") or column.startswith("rasio_")]
+    numeric_columns = [
+        column for column in tck.columns
+        if column.startswith(("target_", "capaian_", "rasio_")) or column in DEPARTMENT_LABELS or column == "fakultas"
+    ]
     for column in numeric_columns:
         tck[column] = pd.to_numeric(tck[column], errors="coerce")
     joined = records(tck)
     target_columns = ["no", "pilar", "indikator", "satuan", "target_tw1", "target_tw2", "target_tw3", "target_tw4", "tag", "program_renstra", "arah"]
-    actual_columns = ["no", "capaian_tw1", "capaian_tw2", "capaian_tw3", "rasio_tw3", "rasio_thd_target_tahunan", "status_tw3", "status_thd_tahunan", "sumber_data"]
+    actual_columns = [
+        "no", "capaian_tw1", "capaian_tw2", "capaian_tw3", "capaian_tw3_cacah",
+        "kuartal_dinilai", "capaian_dinilai", "target_dinilai", "rasio_kuartal",
+        "rasio_thd_target_tahunan", "status_kuartal", "status_thd_tahunan",
+        "unit_mismatch", "anomali", "sumber_data",
+    ]
     output("tck_2026_joined.json", joined)
     output("tck_2026_targets.json", records(tck[target_columns]))
     output("tck_2026_actuals.json", records(tck[actual_columns]))
     (PUBLIC_DATA_DIR / "tck_2026_indikator.csv").write_text(tck.to_csv(index=False), encoding="utf-8")
-    budget = json.loads((TCK_DIR / "tck_2026_anggaran.json").read_text(encoding="utf-8"))
+
+    # Departmental split: only the indicators the faculty actually breaks down.
+    department_rows: list[dict] = []
+    for row in joined:
+        values = {key: number(row.get(key)) for key in DEPARTMENT_LABELS}
+        if sum(values.values()) <= 0:
+            continue
+        department_rows.append({
+            "no": row["no"],
+            "indikator": row["indikator"],
+            "pilar": row["pilar"],
+            "satuan": row["satuan"],
+            "total_departemen": round(sum(values.values()), 4),
+            "capaian_fakultas": number(row.get("fakultas")),
+            **{label: round(values[key], 4) for key, label in DEPARTMENT_LABELS.items()},
+        })
+    output("tck_2026_by_dept.json", department_rows)
+
+    budget = json.loads((MAPPINGS_DIR / "tck_2026_anggaran.json").read_text(encoding="utf-8"))
     write_json("tck_2026_anggaran.json", budget)
     return joined
 
 
+def snapshot_output() -> None:
+    """One place the UI reads every "data ditarik per ..." label from."""
+    write_json("snapshot.json", {
+        "tanggal": SNAPSHOT,
+        "label": SNAPSHOT_LABEL,
+        "tck": SNAPSHOT_LABEL,
+        "p2m": SNAPSHOT_P2M,
+        "lentera": SNAPSHOT_LENTERA,
+    })
+
+
+def partnership_outputs() -> None:
+    """Cooperation documents by year, partner, and Indonesian province."""
+    partnerships = pd.read_csv(CLEAN_DIR / "partnerships.csv").fillna("")
+
+    by_year = partnerships.groupby(["tahun", "lingkup", "tipe_dokumen"]).size().reset_index(name="n")
+    by_year["tahun"] = by_year["tahun"].astype(int)
+    output("partnerships_by_year.json", records(by_year.sort_values(["tahun", "lingkup", "tipe_dokumen"])))
+
+    countries = partnerships.groupby(["negara", "lingkup"]).size().reset_index(name="n")
+    countries["iso3"] = countries["negara"].map(lambda value: ISO3.get(value, ""))
+    kinds = partnerships.groupby("jenis_mitra").size().reset_index(name="n")
+    output("partnership_partners.json", {
+        "total": int(len(partnerships)),
+        "mitra_unik": int(partnerships["negara"].nunique()),
+        "negara": records(countries.sort_values(["n", "negara"], ascending=[False, True])),
+        "jenis_mitra": records(kinds.sort_values(["n", "jenis_mitra"], ascending=[False, True])),
+    })
+
+    points = partnerships[partnerships["location_status"] == "recorded"]
+    points = points.groupby(["tahun", "provinsi", "bps_code"]).size().reset_index(name="n")
+    points["tahun"] = points["tahun"].astype(int)
+    unmapped = partnerships[partnerships["location_status"] != "recorded"]
+    output("partnership_points.json", records(points.sort_values(["tahun", "provinsi"])))
+    write_json("partnership_coverage.json", {
+        "total": int(len(partnerships)),
+        "terpetakan": int(len(partnerships) - len(unmapped)),
+        "internasional": int((partnerships["lingkup"] == "Internasional").sum()),
+        "lokasi_kosong": int((partnerships["location_status"] == "missing").sum()),
+    })
+
+
+def academic_outputs() -> None:
+    """Admissions, enrolment, graduation, achievement, and support datasets."""
+    admissions = pd.read_csv(CLEAN_DIR / "admissions.csv")
+    admissions["tahun"] = admissions["tahun"].astype(int)
+    for column in ("peminat", "diterima", "registrasi"):
+        admissions[column] = pd.to_numeric(admissions[column], errors="coerce").fillna(0).astype(int)
+    admissions["keketatan"] = (admissions["diterima"] / admissions["peminat"].replace(0, pd.NA)).round(4)
+    output("admissions_by_year.json", records(admissions.sort_values(["tahun", "departemen", "prodi"])))
+
+    active = pd.read_csv(CLEAN_DIR / "active_students.csv")
+    active["angkatan"] = active["angkatan"].astype(int)
+    active["mahasiswa"] = pd.to_numeric(active["mahasiswa"], errors="coerce").fillna(0).astype(int)
+    output("active_students.json", records(active.sort_values(["prodi", "angkatan"])))
+
+    graduates = pd.read_csv(CLEAN_DIR / "graduates.csv")
+    graduates["tahun"] = graduates["tahun"].astype(int)
+    graduates["lulusan"] = pd.to_numeric(graduates["lulusan"], errors="coerce").fillna(0).astype(int)
+    per_year = graduates.groupby(["jenjang", "tahun", "tahun_ajaran"]).agg(
+        lulusan=("lulusan", "sum"),
+        total_tercatat=("total_lulusan", "max"),
+        ipk_rerata=("ipk_rerata", "max"),
+        cumlaude=("cumlaude", "max"),
+        lama_studi=("lama_studi", "first"),
+    ).reset_index()
+    output("graduates_profile.json", records(per_year.sort_values(["jenjang", "tahun"])))
+    output("graduates_by_programme.json", records(graduates[["jenjang", "tahun", "prodi", "lulusan"]].sort_values(["jenjang", "tahun", "prodi"])))
+
+    achievements = pd.read_csv(CLEAN_DIR / "achievements.csv")
+    achievements["tahun"] = achievements["tahun"].astype(int)
+    achievements["prestasi"] = pd.to_numeric(achievements["prestasi"], errors="coerce").fillna(0).astype(int)
+    output("student_achievements.json", records(achievements.sort_values(["tahun", "departemen", "tingkat"])))
+
+    scholarships = pd.read_csv(CLEAN_DIR / "scholarships.csv")
+    scholarships["penerima"] = pd.to_numeric(scholarships["penerima"], errors="coerce").fillna(0).astype(int)
+    by_programme = scholarships.groupby("prodi")["penerima"].sum().reset_index(name="penerima")
+    by_scheme = scholarships.groupby("beasiswa")["penerima"].sum().reset_index(name="penerima")
+    by_scheme = by_scheme[by_scheme["penerima"] > 0].sort_values(["penerima", "beasiswa"], ascending=[False, True])
+    write_json("scholarships.json", {
+        "total": int(scholarships["penerima"].sum()),
+        "skema": int(len(by_scheme)),
+        "per_prodi": records(by_programme.sort_values(["penerima", "prodi"], ascending=[False, True])),
+        "per_skema": records(by_scheme.head(15)),
+    })
+
+    accreditation = pd.read_csv(CLEAN_DIR / "accreditation.csv").fillna("")
+    national = accreditation[accreditation["lingkup"] == "Nasional"]
+    unggul = national[national["nilai"].str.strip().isin(["Unggul", "A"])]
+    write_json("accreditation.json", {
+        "prodi_nasional": int(len(national)),
+        "prodi_unggul": int(len(unggul)),
+        "prodi_internasional": int((accreditation["lingkup"] == "Internasional").sum()),
+        "per_lembaga": records(national.groupby("lembaga").size().reset_index(name="n").sort_values(["n", "lembaga"], ascending=[False, True])),
+        "internasional_per_jenjang": records(
+            accreditation[accreditation["lingkup"] == "Internasional"].groupby("jenjang_grup").size().reset_index(name="n")
+        ),
+        "daftar": records(accreditation[["lingkup", "jenjang_grup", "departemen", "prodi", "lembaga", "periode", "nilai"]]),
+    })
+
+    exchange = pd.read_csv(CLEAN_DIR / "exchange.csv").fillna("")
+    by_country = exchange.groupby("negara").size().reset_index(name="n").sort_values(["n", "negara"], ascending=[False, True])
+    write_json("exchange_students.json", {
+        "total": int(len(exchange)),
+        "negara": int(exchange["negara"].nunique()),
+        "universitas": int(exchange["universitas"].nunique()),
+        "per_negara": records(by_country),
+    })
+
+
+def tracer_outputs() -> None:
+    """Graduate waiting time and employment sector, aggregated per programme."""
+    waiting = pd.read_csv(CLEAN_DIR / "tracer_waiting.csv")
+    buckets = waiting.groupby(["prodi", "kategori"]).size().reset_index(name="n")
+    output("tracer_waiting_time.json", records(buckets.sort_values(["prodi", "kategori"])))
+    write_json("tracer_summary.json", {
+        "responden": int(len(waiting)),
+        "tahun": sorted(int(year) for year in waiting["tahun"].unique()),
+        "median_bulan": float(waiting["bulan"].median()),
+        "rerata_bulan": round(float(waiting["bulan"].mean()), 4),
+        "bekerja_sebelum_lulus": int((waiting["bulan"] <= 0).sum()),
+        "dalam_6_bulan": int((waiting["bulan"] <= 6).sum()),
+    })
+
+    sectors = pd.read_csv(CLEAN_DIR / "tracer_sectors.csv")
+    by_sector = sectors.groupby("sektor").size().reset_index(name="n").sort_values(["n", "sektor"], ascending=[False, True])
+    output("tracer_sectors.json", records(by_sector))
+
+
+# The six screening measures, in the order the report names them.
+HEALTH_MEASURES = {
+    "imt": "Indeks Massa Tubuh",
+    "lingkar_perut": "Lingkar Perut",
+    "tekanan_darah": "Tekanan Darah",
+    "asam_urat": "Asam Urat",
+    "kolesterol": "Kolesterol",
+    "gula_darah": "Gula Darah",
+}
+HEALTH_STAFF = ["Dosen", "Tendik"]
+HEALTH_BANDS = ["Normal", "Waspada", "Berisiko", "Tidak diperiksa"]
+
+
+def health_outputs() -> None:
+    """Posbindu screening results for teaching and support staff.
+
+    The report is about the staff the faculty is responsible for, so students
+    and uncategorised rows are filtered out here rather than in the page. What
+    is excluded is counted and published alongside, so the universe is legible.
+    """
+    visits = pd.read_csv(CLEAN_DIR / "posbindu_visits.csv").fillna("")
+    participants = pd.read_csv(CLEAN_DIR / "posbindu_participants.csv").fillna("")
+
+    staff = visits[visits["kriteria"].isin(HEALTH_STAFF)]
+    excluded = (
+        visits[~visits["kriteria"].isin(HEALTH_STAFF)]
+        .groupby("kriteria").size().sort_values(ascending=False)
+    )
+
+    sessions = []
+    for date, group in staff.groupby("tanggal"):
+        sessions.append({
+            "tanggal": date,
+            "peserta": int(len(group)),
+            # Named "distribusi_" so the privacy guard can tell a category count
+            # from a per-person measurement, which must never be exported.
+            **{f"distribusi_{column}": dict(Counter(group[column])) for column in HEALTH_MEASURES},
+            "dirujuk": int(group["dirujuk"].astype(str).str.lower().eq("true").sum()),
+        })
+    sessions.sort(key=lambda row: row["tanggal"])
+
+    # One row per measure, ordered so the most pressing sits at the top of the
+    # chart. "Tidak diperiksa" is excluded from the share: a measure nobody was
+    # screened for is not a measure everybody passed.
+    profile = []
+    for column, label in HEALTH_MEASURES.items():
+        counts = Counter(staff[f"risiko_{column}"])
+        screened = sum(counts[band] for band in HEALTH_BANDS if band != "Tidak diperiksa")
+        # The chart folds clinical categories into three bands; the source
+        # categories travel with it so the table can show what was folded.
+        categories = (
+            staff.groupby([column, f"risiko_{column}"]).size()
+            .reset_index(name="n").sort_values("n", ascending=False)
+        )
+        profile.append({
+            "indikator": label,
+            "kunci": column,
+            "total": int(len(staff)),
+            "diperiksa": int(screened),
+            "pita": {band: int(counts.get(band, 0)) for band in HEALTH_BANDS},
+            "porsi_berisiko": round(counts.get("Berisiko", 0) / screened, 4) if screened else 0.0,
+            "kategori": [
+                {"nilai": str(row[column]), "pita": str(row[f"risiko_{column}"]), "n": int(row["n"])}
+                for _, row in categories.iterrows()
+            ],
+        })
+    profile.sort(key=lambda row: row["porsi_berisiko"], reverse=True)
+
+    write_json("hpu_posbindu.json", {
+        "universe": "Dosen dan tenaga kependidikan",
+        "kunjungan": int(len(staff)),
+        "sesi": sessions,
+        "profil_risiko": profile,
+        "kunjungan_per_kriteria": records(
+            staff.groupby("kriteria").size().reset_index(name="n").sort_values(["n", "kriteria"], ascending=[False, True])
+        ),
+        "peserta_terdaftar": int(len(participants)),
+        "komposisi_peserta": records(
+            participants.groupby("kriteria").size().reset_index(name="n").sort_values(["n", "kriteria"], ascending=[False, True])
+        ),
+        "dikecualikan": {str(kriteria): int(n) for kriteria, n in excluded.items()},
+        "catatan": "Agregat anonim. Nama, tanggal lahir, dan nilai pemeriksaan per orang tidak diekspor.",
+    })
+
+
 def main() -> None:
+    snapshot_output()
     tck_outputs()
+    partnership_outputs()
+    academic_outputs()
+    tracer_outputs()
+    health_outputs()
 
     citations = pd.read_csv(CLEAN_DIR / "citations.csv")
     citations["year"] = pd.to_numeric(citations["year"], errors="coerce").astype("Int64")
@@ -104,7 +369,8 @@ def main() -> None:
             "n": int(total),
             "years": [{"year": year, "n": int(country_year[(country, year)])} for year in sorted({key_year for key_country, key_year in country_year if key_country == country})],
         }
-        for country, total in country_totals.most_common()
+        # Sorted by count then name so ties keep a stable order between runs.
+        for country, total in sorted(country_totals.items(), key=lambda item: (-item[1], item[0]))
     ]
     output("collab_countries.json", country_rows)
 
@@ -119,7 +385,7 @@ def main() -> None:
         n="size",
     ).reset_index()
     sinta_group[["total", "median"]] = sinta_group[["total", "median"]].round(2)
-    output("sinta_by_dept.json", records(sinta_group.sort_values("total", ascending=False)))
+    output("sinta_by_dept.json", records(sinta_group.sort_values(["total", "department"], ascending=[False, True])))
 
     research = pd.read_csv(CLEAN_DIR / "research.csv")
     research["year"] = pd.to_numeric(research["year"], errors="coerce").astype("Int64")

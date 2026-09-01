@@ -1,0 +1,317 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { finite, flowLegend, formatNumber, slugify, textLines } from "./_utils";
+
+/**
+ * One horizontal 100% stacked bar per indicator.
+ *
+ * Six screening measures answered as six separate charts would ask the reader
+ * to hold six scales in their head. Sharing one axis and one set of bands puts
+ * them on the same footing, so the ordering of the rows is itself the finding.
+ */
+interface RiskRow extends Record<string, unknown> {
+  label: string;
+  bands: Record<string, number>;
+  screened?: number;
+  /** Source categories folded into the bands, kept for the data table. */
+  categories?: { nilai: string; pita: string; n: number }[];
+  note?: string;
+}
+
+interface BandSpec {
+  key: string;
+  label: string;
+  color: string;
+  pattern?: "solid" | "diagonal" | "dots" | "cross";
+  /** Excluded from the denominator: nobody was measured, so nobody passed. */
+  unmeasured?: boolean;
+}
+
+interface Props extends Omit<ChartChromeProps<RiskRow>, "tableRows" | "tableColumns"> {
+  data: RiskRow[];
+  bands: BandSpec[];
+  /** Band whose share is called out at the end of each row. */
+  highlight?: string;
+  highlightSuffix?: string;
+  width?: number;
+  rowHeight?: number;
+  axisLabel?: string;
+}
+
+const {
+  data,
+  bands,
+  highlight = bands.find((band) => !band.unmeasured)?.key ?? bands[0]?.key,
+  highlightSuffix = "berisiko",
+  width = 980,
+  rowHeight = 62,
+  axisLabel = "Porsi peserta yang diperiksa",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 62, right: 148, bottom: 58, left: 216 };
+const plotWidth = width - margin.left - margin.right;
+const labelWrap = 24;
+
+const measured = bands.filter((band) => !band.unmeasured);
+const wrapped = data.map((row) => textLines(row.label, labelWrap, 2));
+
+const rows = data.map((row, index) => {
+  const counts = Object.fromEntries(bands.map((band) => [band.key, Math.max(0, finite(row.bands[band.key]))]));
+  const screened = row.screened ?? measured.reduce((sum, band) => sum + counts[band.key], 0);
+  const total = bands.reduce((sum, band) => sum + counts[band.key], 0);
+  let cursor = 0;
+  const segments = measured.map((band) => {
+    const share = screened === 0 ? 0 : counts[band.key] / screened;
+    const segment = { band, count: counts[band.key], share, start: cursor };
+    cursor += share;
+    return segment;
+  });
+  const unmeasured = bands.filter((band) => band.unmeasured).reduce((sum, band) => sum + counts[band.key], 0);
+  return {
+    ...row,
+    lines: wrapped[index],
+    y: margin.top + index * rowHeight,
+    counts,
+    screened,
+    total,
+    unmeasured,
+    segments,
+    highlightShare: screened === 0 ? 0 : counts[highlight] / screened,
+  };
+});
+
+const height = margin.top + rows.length * rowHeight + margin.bottom;
+const barHeight = 26;
+const gap = 2;
+const axisTicks = [0, 0.25, 0.5, 0.75, 1];
+const x = (share: number) => margin.left + share * plotWidth;
+
+const legendBands = measured;
+const legend = flowLegend(legendBands.map((band) => band.label), plotWidth, {
+  fontSize: 12,
+  keyWidth: 25,
+  gap: 26,
+  rowHeight: 24,
+});
+const legendTop = height - margin.bottom + 30;
+
+/* The chart folds clinical categories into shared bands. The table lists the
+   source categories behind each band, so the simplification is inspectable and
+   never the only record of what was measured (PRD section 5.6). */
+const hasCategories = rows.some((row) => (row.categories?.length ?? 0) > 0);
+const tableRows = hasCategories
+  ? rows.flatMap((row) =>
+      (row.categories ?? []).map((category) => ({
+        Indikator: row.label,
+        Kategori: category.nilai,
+        Pita: category.pita,
+        Kunjungan: formatNumber(category.n, 0),
+        "Porsi diperiksa": category.pita === "Tidak diperiksa" || row.screened === 0
+          ? "—"
+          : `${formatNumber((category.n / row.screened) * 100, 1)}%`,
+      })),
+    )
+  : rows.map((row) => ({
+      Indikator: row.label,
+      Diperiksa: formatNumber(row.screened, 0),
+      ...Object.fromEntries(bands.map((band) => [band.label, formatNumber(row.counts[band.key], 0)])),
+      "Porsi berisiko": `${formatNumber(row.highlightShare * 100, 1)}%`,
+    }));
+const tableColumns = hasCategories
+  ? [
+      { key: "Indikator", label: "Indikator" },
+      { key: "Kategori", label: "Kategori pada berkas sumber" },
+      { key: "Pita", label: "Pita risiko" },
+      { key: "Kunjungan", label: "Kunjungan", align: "end" as const },
+      { key: "Porsi diperiksa", label: "Porsi diperiksa", align: "end" as const },
+    ]
+  : [
+      { key: "Indikator", label: "Indikator" },
+      { key: "Diperiksa", label: "Diperiksa", align: "end" as const },
+      ...bands.map((band) => ({ key: band.label, label: band.label, align: "end" as const })),
+      { key: "Porsi berisiko", label: "Porsi berisiko", align: "end" as const },
+    ];
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={640}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Grafik batang bertumpuk 100 persen untuk {rows.length} indikator kesehatan. Setiap baris membagi peserta
+      yang diperiksa ke dalam {measured.length} pita risiko. Nilai lengkap tersedia pada tabel.
+    </desc>
+
+    <defs>
+      {bands.map((band, index) => (
+        <pattern id={`${id}-band-${index}`} width="9" height="9" patternUnits="userSpaceOnUse">
+          <rect width="9" height="9" fill={band.color} />
+          {band.pattern === "diagonal" && <path d="M -2 2 L 2 -2 M 0 9 L 9 0 M 7 11 L 11 7" stroke="#fff" stroke-width="1.4" opacity="0.5" />}
+          {band.pattern === "dots" && <circle cx="3" cy="3" r="1.2" fill="#fff" opacity="0.62" />}
+          {band.pattern === "cross" && <path d="M 1 4.5 H 8 M 4.5 1 V 8" stroke="#fff" stroke-width="1.1" opacity="0.5" />}
+        </pattern>
+      ))}
+    </defs>
+
+    <g class="axis" aria-hidden="true">
+      <text class="axis-label" x={margin.left} y="18">{axisLabel}</text>
+      {axisTicks.map((tick) => (
+        <g>
+          <line x1={x(tick)} x2={x(tick)} y1={margin.top - 16} y2={margin.top + rows.length * rowHeight - 12} />
+          <text x={x(tick)} y={margin.top - 24} text-anchor="middle">{Math.round(tick * 100)}%</text>
+        </g>
+      ))}
+    </g>
+
+    {rows.map((row) => {
+      const barY = row.y + 10;
+      const detail = row.segments
+        .map((segment) => `${segment.band.label} ${formatNumber(segment.count, 0)}`)
+        .join(", ");
+      const tooltip = `${row.label}: ${detail}. Diperiksa ${formatNumber(row.screened, 0)} dari ${formatNumber(row.total, 0)} kunjungan.`;
+      return (
+        <g class="risk-row" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <text class="row-label" x={margin.left - 18} y={row.y + (row.lines.length === 1 ? 28 : 21)} text-anchor="end">
+            {row.lines.map((line, lineIndex) => (
+              <tspan x={margin.left - 18} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>
+            ))}
+          </text>
+
+          <rect class="track" x={margin.left} y={barY} width={plotWidth} height={barHeight} />
+
+          {row.segments.map((segment) => {
+            const segmentWidth = Math.max(0, segment.share * plotWidth - gap);
+            return segment.share > 0 ? (
+              <rect
+                class="segment"
+                x={x(segment.start)}
+                y={barY}
+                width={segmentWidth}
+                height={barHeight}
+                fill={`url(#${id}-band-${bands.indexOf(segment.band)})`}
+              />
+            ) : null;
+          })}
+
+          <text class="row-value" x={margin.left + plotWidth + 16} y={barY + 18}>
+            {formatNumber(row.highlightShare * 100, 0)}% {highlightSuffix}
+          </text>
+
+          {row.unmeasured > 0 && (
+            <text class="row-note" x={margin.left - 18} y={row.y + (row.lines.length === 1 ? 44 : 52)} text-anchor="end">
+              {formatNumber(row.unmeasured, 0)} tidak diperiksa
+            </text>
+          )}
+        </g>
+      );
+    })}
+
+    <g class="legend" transform={`translate(${margin.left}, ${legendTop})`} aria-label="Legenda pita risiko">
+      {legendBands.map((band, index) => (
+        <g transform={`translate(${legend.positions[index].x}, ${legend.positions[index].y})`}>
+          <rect width="18" height="18" rx="2" fill={`url(#${id}-band-${bands.indexOf(band)})`} />
+          <text x="25" y="13">{band.label}</text>
+        </g>
+      ))}
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .axis line {
+    stroke: var(--rule-light, #e4e7e9);
+    stroke-width: 1;
+  }
+
+  .axis text,
+  .legend text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .axis .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .legend text {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .row-label {
+    fill: currentColor;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .row-note {
+    fill: var(--ink-muted, #656b70);
+    font-size: 10px;
+  }
+
+  .row-value {
+    fill: currentColor;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .track {
+    fill: var(--surface-2, #eef0f1);
+  }
+
+  .segment {
+    stroke: var(--surface, #fff);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
+  }
+
+  .risk-row:hover .segment,
+  .risk-row:focus .segment {
+    opacity: 0.78;
+  }
+
+  .risk-row:focus-visible {
+    outline: none;
+  }
+
+  .risk-row:focus-visible .track {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .segment { transition: none; }
+  }
+</style>

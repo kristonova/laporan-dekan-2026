@@ -1,7 +1,7 @@
 ---
 import ChartFrame from "./ChartFrame.astro";
 import type { ChartChromeProps } from "./_types";
-import { SERIES_COLORS, finite, formatNumber, scaleLinear, slugify, textLines } from "./_utils";
+import { SERIES_COLORS, finite, flowLegend, formatNumber, scaleLinear, slugify, textLines } from "./_utils";
 
 interface TopicNode extends Record<string, unknown> {
   label: string;
@@ -48,6 +48,10 @@ const plot = { left: 18, top: 28, right: width - 284, bottom: height - 78 };
 const plotWidth = plot.right - plot.left;
 const plotHeight = plot.bottom - plot.top;
 const center = { x: plot.left + plotWidth / 2, y: plot.top + plotHeight / 2 };
+/* The legend flows to the width each department name actually needs; five equal
+   columns put "Ilmu Komputer dan Elektronika" straight through its neighbour. */
+const legendGroups = groups.slice(0, 5);
+const legend = flowLegend(legendGroups, plotWidth, { fontSize: 12, keyWidth: 21, gap: 24, rowHeight: 22 });
 const values = visibleNodes.map((node) => finite(node.value));
 const minValue = Math.min(...values, 0);
 const maxValue = Math.max(...values, 1);
@@ -193,23 +197,20 @@ const omitted = Math.max(0, sortedNodes.length - visibleNodes.length);
       })}
     </g>
 
-    <g class="legend" transform={`translate(${plot.left}, ${height - 42})`} aria-label="Legenda kelompok">
-      {groups.slice(0, 5).map((group, index) => {
-        const itemWidth = plotWidth / Math.max(1, Math.min(groups.length, 5));
-        return (
-          <g transform={`translate(${index * itemWidth}, 0)`}>
-            <circle cx="8" cy="8" r="7" fill={`url(#${id}-group-${index})`} />
-            <text x="21" y="12">{group}</text>
-          </g>
-        );
-      })}
+    <g class="legend" transform={`translate(${plot.left}, ${height - 30 - (legend.rows - 1) * legend.rowHeight})`} aria-label="Legenda kelompok">
+      {legendGroups.map((group, index) => (
+        <g transform={`translate(${legend.positions[index].x}, ${legend.positions[index].y})`}>
+          <circle cx="8" cy="8" r="7" fill={`url(#${id}-group-${index})`} />
+          <text x="21" y="12">{group}</text>
+        </g>
+      ))}
     </g>
   </svg>
 </ChartFrame>
 
 <style>
   svg {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -224,7 +225,7 @@ const omitted = Math.max(0, sortedNodes.length - visibleNodes.length);
     stroke: var(--surface, #fff);
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
-    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), stroke-width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1)), stroke-width var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .topic-hit {

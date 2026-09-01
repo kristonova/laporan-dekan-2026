@@ -1,0 +1,58 @@
+[
+  {
+    "sektor": "Teknologi & Telekomunikasi",
+    "n": 95
+  },
+  {
+    "sektor": "Keuangan, Perbankan & Asuransi",
+    "n": 86
+  },
+  {
+    "sektor": "Pendidikan & Riset",
+    "n": 81
+  },
+  {
+    "sektor": "Konsumer, Pangan & Ritel",
+    "n": 68
+  },
+  {
+    "sektor": "Manufaktur & Kimia",
+    "n": 48
+  },
+  {
+    "sektor": "Energi & Pertambangan",
+    "n": 43
+  },
+  {
+    "sektor": "Konsultansi & Jasa Profesional",
+    "n": 32
+  },
+  {
+    "sektor": "Kesehatan & Farmasi",
+    "n": 27
+  },
+  {
+    "sektor": "Agrikultur & Lingkungan",
+    "n": 19
+  },
+  {
+    "sektor": "Infrastruktur, Konstruksi & Logistik",
+    "n": 18
+  },
+  {
+    "sektor": "Pemerintahan & Layanan Publik",
+    "n": 13
+  },
+  {
+    "sektor": "Pariwisata, Media & Kreatif",
+    "n": 9
+  },
+  {
+    "sektor": "Belum bekerja",
+    "n": 3
+  },
+  {
+    "sektor": "Lainnya",
+    "n": 1
+  }
+]

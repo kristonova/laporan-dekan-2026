@@ -1,0 +1,386 @@
+[
+  {
+    "tahun": 2021,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 2
+  },
+  {
+    "tahun": 2021,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 2
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 9
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 8
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Jawa Barat",
+    "bps_code": 32.0,
+    "n": 8
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Jawa Tengah",
+    "bps_code": 33.0,
+    "n": 2
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Jawa Timur",
+    "bps_code": 35.0,
+    "n": 3
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Lampung",
+    "bps_code": 18.0,
+    "n": 1
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Maluku Utara",
+    "bps_code": 82.0,
+    "n": 2
+  },
+  {
+    "tahun": 2022,
+    "provinsi": "Nusa Tenggara Timur",
+    "bps_code": 53.0,
+    "n": 2
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Banten",
+    "bps_code": 36.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Bengkulu",
+    "bps_code": 17.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 5
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Jawa Barat",
+    "bps_code": 32.0,
+    "n": 2
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Kalimantan Selatan",
+    "bps_code": 63.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Kepulauan Bangka Belitung",
+    "bps_code": 19.0,
+    "n": 2
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Kepulauan Riau",
+    "bps_code": 21.0,
+    "n": 3
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Lampung",
+    "bps_code": 18.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Maluku Utara",
+    "bps_code": 82.0,
+    "n": 2
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Nusa Tenggara Timur",
+    "bps_code": 53.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Riau",
+    "bps_code": 14.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sulawesi Selatan",
+    "bps_code": 73.0,
+    "n": 2
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sulawesi Tengah",
+    "bps_code": 72.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sulawesi Utara",
+    "bps_code": 71.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sumatera Barat",
+    "bps_code": 13.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sumatera Selatan",
+    "bps_code": 16.0,
+    "n": 1
+  },
+  {
+    "tahun": 2023,
+    "provinsi": "Sumatera Utara",
+    "bps_code": 12.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Banten",
+    "bps_code": 36.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Bengkulu",
+    "bps_code": 17.0,
+    "n": 4
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 11
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 6
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Jambi",
+    "bps_code": 15.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Jawa Barat",
+    "bps_code": 32.0,
+    "n": 5
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Jawa Tengah",
+    "bps_code": 33.0,
+    "n": 2
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Jawa Timur",
+    "bps_code": 35.0,
+    "n": 6
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Kalimantan Selatan",
+    "bps_code": 63.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Kepulauan Riau",
+    "bps_code": 21.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Papua",
+    "bps_code": 91.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Riau",
+    "bps_code": 14.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Sumatera Barat",
+    "bps_code": 13.0,
+    "n": 1
+  },
+  {
+    "tahun": 2024,
+    "provinsi": "Sumatera Utara",
+    "bps_code": 12.0,
+    "n": 2
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Banten",
+    "bps_code": 36.0,
+    "n": 8
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 11
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 4
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Jawa Barat",
+    "bps_code": 32.0,
+    "n": 5
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Jawa Tengah",
+    "bps_code": 33.0,
+    "n": 5
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Jawa Timur",
+    "bps_code": 35.0,
+    "n": 2
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Kalimantan Timur",
+    "bps_code": 64.0,
+    "n": 1
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Nusa Tenggara Barat",
+    "bps_code": 52.0,
+    "n": 2
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Nusa Tenggara Timur",
+    "bps_code": 53.0,
+    "n": 1
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Riau",
+    "bps_code": 14.0,
+    "n": 3
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Sulawesi Tenggara",
+    "bps_code": 74.0,
+    "n": 1
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Sumatera Barat",
+    "bps_code": 13.0,
+    "n": 1
+  },
+  {
+    "tahun": 2025,
+    "provinsi": "Sumatera Utara",
+    "bps_code": 12.0,
+    "n": 2
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "DKI Jakarta",
+    "bps_code": 31.0,
+    "n": 9
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Daerah Istimewa Yogyakarta",
+    "bps_code": 34.0,
+    "n": 4
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Jawa Barat",
+    "bps_code": 32.0,
+    "n": 5
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Jawa Tengah",
+    "bps_code": 33.0,
+    "n": 11
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Jawa Timur",
+    "bps_code": 35.0,
+    "n": 2
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Kalimantan Selatan",
+    "bps_code": 63.0,
+    "n": 1
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Kalimantan Timur",
+    "bps_code": 64.0,
+    "n": 2
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Nusa Tenggara Barat",
+    "bps_code": 52.0,
+    "n": 1
+  },
+  {
+    "tahun": 2026,
+    "provinsi": "Sulawesi Tengah",
+    "bps_code": 72.0,
+    "n": 1
+  }
+]

@@ -113,7 +113,7 @@ const resolvedCsvHref = csvHref ? withBase(csvHref) : undefined;
 
 <style>
   .chart-frame {
-    --chart-ink: var(--ink, #332c2b);
+    --chart-ink: var(--ink, #2b2d2f);
     --chart-muted: var(--ink-muted, #5e6469);
     --chart-rule: var(--rule, #d9dde0);
     --chart-surface: var(--surface, #ffffff);
@@ -167,7 +167,7 @@ const resolvedCsvHref = csvHref ? withBase(csvHref) : undefined;
   .chart-frame__table-scroll:focus-visible,
   summary:focus-visible,
   a:focus-visible {
-    outline: 3px solid var(--focus, #fed400);
+    outline: 3px solid var(--focus, #1c75bc);
     outline-offset: 3px;
   }
 
@@ -184,9 +184,9 @@ const resolvedCsvHref = csvHref ? withBase(csvHref) : undefined;
 
   .chart-frame__note {
     max-inline-size: 76ch;
-    margin: 0.8rem 0 0;
+    margin: 1.25rem 0 0;
     padding-inline-start: 0.8rem;
-    border-inline-start: 3px solid var(--attention, #fed400);
+    border-inline-start: 3px solid var(--attention, #fdd402);
     color: var(--chart-muted);
     font-size: 0.875rem;
     line-height: 1.5;
@@ -197,8 +197,8 @@ const resolvedCsvHref = csvHref ? withBase(csvHref) : undefined;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    margin-block-start: 1rem;
-    padding-block-start: 0.75rem;
+    margin-block-start: 1.5rem;
+    padding-block-start: 1rem;
     border-block-start: 1px solid var(--chart-rule);
     color: var(--chart-muted);
     font-size: 0.78rem;
@@ -221,7 +221,7 @@ const resolvedCsvHref = csvHref ? withBase(csvHref) : undefined;
 
   summary,
   a {
-    color: var(--link, #004a74);
+    color: var(--link, #01416b);
     font-weight: 700;
     text-underline-offset: 0.18em;
     cursor: pointer;

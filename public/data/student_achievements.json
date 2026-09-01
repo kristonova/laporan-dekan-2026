@@ -1,0 +1,242 @@
+[
+  {
+    "departemen": "Fisika",
+    "tingkat": "Internasional",
+    "tahun": 2022,
+    "prestasi": 15
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Nasional",
+    "tahun": 2022,
+    "prestasi": 41
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Internasional",
+    "tahun": 2022,
+    "prestasi": 20
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Nasional",
+    "tahun": 2022,
+    "prestasi": 47
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Internasional",
+    "tahun": 2022,
+    "prestasi": 1
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Nasional",
+    "tahun": 2022,
+    "prestasi": 58
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Internasional",
+    "tahun": 2022,
+    "prestasi": 11
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Nasional",
+    "tahun": 2022,
+    "prestasi": 133
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Internasional",
+    "tahun": 2023,
+    "prestasi": 4
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Nasional",
+    "tahun": 2023,
+    "prestasi": 22
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Internasional",
+    "tahun": 2023,
+    "prestasi": 12
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Nasional",
+    "tahun": 2023,
+    "prestasi": 47
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Internasional",
+    "tahun": 2023,
+    "prestasi": 1
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Nasional",
+    "tahun": 2023,
+    "prestasi": 52
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Internasional",
+    "tahun": 2023,
+    "prestasi": 4
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Nasional",
+    "tahun": 2023,
+    "prestasi": 59
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Internasional",
+    "tahun": 2024,
+    "prestasi": 16
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Nasional",
+    "tahun": 2024,
+    "prestasi": 25
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Internasional",
+    "tahun": 2024,
+    "prestasi": 30
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Nasional",
+    "tahun": 2024,
+    "prestasi": 94
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Internasional",
+    "tahun": 2024,
+    "prestasi": 15
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Nasional",
+    "tahun": 2024,
+    "prestasi": 38
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Internasional",
+    "tahun": 2024,
+    "prestasi": 9
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Nasional",
+    "tahun": 2024,
+    "prestasi": 108
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Internasional",
+    "tahun": 2025,
+    "prestasi": 5
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Nasional",
+    "tahun": 2025,
+    "prestasi": 21
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Internasional",
+    "tahun": 2025,
+    "prestasi": 29
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Nasional",
+    "tahun": 2025,
+    "prestasi": 67
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Internasional",
+    "tahun": 2025,
+    "prestasi": 7
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Nasional",
+    "tahun": 2025,
+    "prestasi": 33
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Internasional",
+    "tahun": 2025,
+    "prestasi": 18
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Nasional",
+    "tahun": 2025,
+    "prestasi": 93
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Internasional",
+    "tahun": 2026,
+    "prestasi": 6
+  },
+  {
+    "departemen": "Fisika",
+    "tingkat": "Nasional",
+    "tahun": 2026,
+    "prestasi": 50
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Internasional",
+    "tahun": 2026,
+    "prestasi": 52
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "tingkat": "Nasional",
+    "tahun": 2026,
+    "prestasi": 108
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Internasional",
+    "tahun": 2026,
+    "prestasi": 21
+  },
+  {
+    "departemen": "Kimia",
+    "tingkat": "Nasional",
+    "tahun": 2026,
+    "prestasi": 41
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Internasional",
+    "tahun": 2026,
+    "prestasi": 14
+  },
+  {
+    "departemen": "Matematika",
+    "tingkat": "Nasional",
+    "tahun": 2026,
+    "prestasi": 173
+  }
+]

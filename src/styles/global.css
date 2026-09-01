@@ -240,6 +240,22 @@ h6 {
   display: none !important;
 }
 
+/* Vertical rhythm.
+ *
+ * One named ladder for the space between blocks inside a scene, so the gap
+ * between a chart and the next chart is the same everywhere on the page and is
+ * changed in one place. Applied by StoryScene to its own content children.
+ *
+ *   --flow-chart  chart -> the next chart or sub-scene
+ *   --flow-block  a note/insight -> the next block
+ *   --flow-note   chart -> the note that belongs to it (tighter: they pair)
+ */
+:root {
+  --flow-chart: clamp(4rem, 7vw, 6.5rem);
+  --flow-block: clamp(2.5rem, 5vw, 4rem);
+  --flow-note: clamp(1.5rem, 3vw, 2.5rem);
+}
+
 /* Reusable layout primitives. */
 .container,
 .page-shell {

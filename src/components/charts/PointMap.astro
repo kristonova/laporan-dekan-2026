@@ -174,7 +174,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
               cx={projectX(point.lng)}
               cy={projectY(point.lat)}
               r={radius(pointValue)}
-              fill={point.color ?? "var(--brand-blue, #004a74)"}
+              fill={point.color ?? "var(--brand-blue, #01416b)"}
             />
           </g>
         );
@@ -212,7 +212,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
                       cx={projectX(point.lng)}
                       cy={projectY(point.lat)}
                       r={clamp(radius(finite(point.value, 1)), 5, 13)}
-                      fill={point.color ?? "var(--brand-blue, #004a74)"}
+                      fill={point.color ?? "var(--brand-blue, #01416b)"}
                     />
                   ))}
                 </svg>
@@ -232,7 +232,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
 
 <style>
   .point-map {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -248,23 +248,23 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
     min-inline-size: 44px;
     min-block-size: 44px;
     padding: 0.45rem 0.7rem;
-    border: 1px solid var(--brand-blue, #004a74);
+    border: 1px solid var(--brand-blue, #01416b);
     border-radius: 999px;
     background: var(--surface, #fff);
-    color: var(--brand-blue, #004a74);
+    color: var(--brand-blue, #01416b);
     font: inherit;
     font-weight: 750;
     cursor: pointer;
-    transition: color 300ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: color var(--duration-fast, 120ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1)), background-color var(--duration-fast, 120ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1)), border-color var(--duration-fast, 120ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .point-map__controls button[aria-pressed="true"] {
-    background: var(--brand-blue, #004a74);
+    background: var(--brand-blue, #01416b);
     color: #fff;
   }
 
   .point-map__controls button:focus-visible {
-    outline: 3px solid var(--attention, #fed400);
+    outline: 3px solid var(--focus, #1c75bc);
     outline-offset: 2px;
   }
 
@@ -275,7 +275,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
   }
 
   .point-map__counter output {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-size: 1.35rem;
     font-weight: 850;
   }
@@ -301,18 +301,16 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
     vector-effect: non-scaling-stroke;
   }
 
+  /* Points appearing as the years accumulate is a narrative state change, so it
+     uses the story duration — but as a fade: the identity allows no scale-in. */
   .map-point {
     opacity: 1;
-    transform: scale(1);
-    transform-box: fill-box;
-    transform-origin: center;
-    transition: opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: opacity var(--duration-story, 450ms) var(--ease-story, cubic-bezier(0.4, 0, 0.2, 1));
   }
 
   .map-point.is-map-hidden {
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.72);
   }
 
   .hit-area {
@@ -324,7 +322,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
     stroke: var(--surface, #fff);
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
-    transition: r 300ms cubic-bezier(0.4, 0, 0.2, 1), fill-opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: r var(--duration-story, 450ms) var(--ease-story, cubic-bezier(0.4, 0, 0.2, 1)), fill-opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .map-point:focus-visible {
@@ -339,7 +337,7 @@ const latestCount = validPoints.filter((point) => visibleAt(point, finalYear)).r
   }
 
   .map-labels line {
-    stroke: var(--ink, #332c2b);
+    stroke: var(--ink, #2b2d2f);
   }
 
   .map-labels text,

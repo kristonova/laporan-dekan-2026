@@ -11,8 +11,8 @@
     "start": "astro dev",
     "build": "astro check && astro build && node pipeline/build-service-worker.mjs",
     "preview": "astro preview",
-    "data": "python3 pipeline/00_load.py && python3 pipeline/01_clean.py && python3 pipeline/02_aggregate.py",
-    "validate:data": "python3 pipeline/03_validate.py",
+    "data": "node pipeline/run-python.mjs 00_load.py 01_clean.py 02_aggregate.py",
+    "validate:data": "node pipeline/run-python.mjs 03_validate.py",
     "check": "astro check",
     "verify": "npm run data && npm run validate:data && npm run build && node pipeline/check-build.mjs"
   },

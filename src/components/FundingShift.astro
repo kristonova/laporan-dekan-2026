@@ -3,10 +3,10 @@ interface Datum { year: number; amount: number; }
 interface Props { data: Datum[]; }
 const { data } = Astro.props;
 const sorted = [...data].sort((a,b) => a.year - b.year);
-const width = 760, height = 500;
-const margin = { top: 52, right: 32, bottom: 64, left: 74 };
+const width = 1040, height = 420;
+const margin = { top: 52, right: 40, bottom: 64, left: 76 };
 const plotW = width - margin.left - margin.right, plotH = height - margin.top - margin.bottom;
-const barW = Math.min(60, (plotW / Math.max(sorted.length, 1)) * .62);
+const barW = Math.min(78, (plotW / Math.max(sorted.length, 1)) * .58);
 const x = (index:number) => margin.left + (index + .5) * (plotW / sorted.length) - barW/2;
 const y = (value:number, max:number) => margin.top + plotH - (value/max)*plotH;
 const format = (value:number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(value);
@@ -41,21 +41,28 @@ const early = sorted.filter((row) => row.year <= 2021);
 <script>
   document.querySelectorAll<HTMLElement>("[data-funding-shift]").forEach((root) => {
     const steps = [...root.querySelectorAll<HTMLElement>("[data-funding-step]")];
-    if (!("IntersectionObserver" in window) || matchMedia("(max-width: 767px)").matches) return;
+    /* Reduced motion gets the end state outright (PRD 9.5): no sticky swap. */
+    if (!("IntersectionObserver" in window)) return;
+    if (matchMedia("(max-width: 767px)").matches) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];
       if (visible) root.dataset.stage = (visible.target as HTMLElement).dataset.fundingStep ?? "full";
-    }, { rootMargin: "-30% 0px -45%", threshold: [0,.25,.5,.75,1] });
+    }, { rootMargin: "-64% 0px -2%", threshold: [0,.25,.5,.75,1] });
     steps.forEach((step) => observer.observe(step));
   });
 </script>
 
 <style>
-  .funding-shift { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: clamp(32px, 6vw, 74px); align-items: start; }
-  .funding-shift__graphic { position: sticky; top: 104px; min-height: 560px; border: 1px solid var(--border-subtle); background: var(--surface-card); }
-  .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity 450ms var(--ease-standard); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--ugm-blue); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
+  /* One column. The axis still widens as the reader scrolls — that mechanic is
+     the point of the scene — but the chart is stuck to the top of the viewport
+     at full width and the steps pass underneath it, instead of the two sharing
+     a row and each getting half the space. */
+  .funding-shift { display: grid; gap: 0; }
+  .funding-shift__graphic { position: sticky; z-index: var(--z-sticky); top: calc(var(--header-height) + 12px); aspect-ratio: 1040 / 490; min-block-size: 20rem; max-block-size: 64vh; border: 1px solid var(--border-subtle); background: var(--surface-card); }
+  .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity var(--duration-story) var(--ease-story); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--ugm-blue); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
   .funding-shift[data-stage="early"] .funding-shift__stage--full { opacity: 0; pointer-events: none; }.funding-shift[data-stage="full"] .funding-shift__stage--early { opacity: 0; pointer-events: none; }
-  .funding-shift__steps { display: grid; gap: 40vh; padding-block: 8vh 35vh; }.funding-shift__steps article { padding: 28px; border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-gold); background: var(--surface-card); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
-  @media(max-width:767px){.funding-shift{grid-template-columns:1fr}.funding-shift__graphic{position:relative;top:auto;min-height:0;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
-  @media(prefers-reduced-motion:reduce){.funding-shift__stage{transition:none}}
+  .funding-shift__steps { display: grid; gap: 44vh; padding-block: 26vh 24vh; }.funding-shift__steps article { max-width: 62ch; padding: 28px; border: 1px solid var(--border-default); border-block-start: 4px solid var(--ugm-gold); background: var(--surface-card); box-shadow: var(--shadow-md); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
+  @media(max-width:767px){.funding-shift__graphic{position:relative;top:auto;aspect-ratio:auto;min-block-size:0;max-block-size:none;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
+  @media(prefers-reduced-motion:reduce){.funding-shift__stage{transition:none}.funding-shift__graphic{position:relative;top:auto;max-block-size:none}.funding-shift__steps{gap:var(--flow-block);padding-block:var(--flow-chart) 0}}
 </style>

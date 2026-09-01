@@ -1,0 +1,186 @@
+{
+  "total": 263,
+  "mitra_unik": 19,
+  "negara": [
+    {
+      "negara": "Indonesia",
+      "lingkup": "Domestik",
+      "n": 207,
+      "iso3": "IDN"
+    },
+    {
+      "negara": "Taiwan",
+      "lingkup": "Internasional",
+      "n": 15,
+      "iso3": "TWN"
+    },
+    {
+      "negara": "Japan",
+      "lingkup": "Internasional",
+      "n": 14,
+      "iso3": "JPN"
+    },
+    {
+      "negara": "Germany",
+      "lingkup": "Internasional",
+      "n": 4,
+      "iso3": "DEU"
+    },
+    {
+      "negara": "Netherlands",
+      "lingkup": "Internasional",
+      "n": 4,
+      "iso3": "NLD"
+    },
+    {
+      "negara": "Australia",
+      "lingkup": "Internasional",
+      "n": 3,
+      "iso3": "AUS"
+    },
+    {
+      "negara": "Czech Republic",
+      "lingkup": "Internasional",
+      "n": 2,
+      "iso3": ""
+    },
+    {
+      "negara": "Malaysia",
+      "lingkup": "Internasional",
+      "n": 2,
+      "iso3": "MYS"
+    },
+    {
+      "negara": "Thailand",
+      "lingkup": "Internasional",
+      "n": 2,
+      "iso3": "THA"
+    },
+    {
+      "negara": "Austria",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "AUT"
+    },
+    {
+      "negara": "Cambodia",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": ""
+    },
+    {
+      "negara": "Finland",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": ""
+    },
+    {
+      "negara": "India",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "IND"
+    },
+    {
+      "negara": "Pakistan",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "PAK"
+    },
+    {
+      "negara": "Philippines",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": ""
+    },
+    {
+      "negara": "Singapore",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "SGP"
+    },
+    {
+      "negara": "Sri Lanka",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": ""
+    },
+    {
+      "negara": "United Kingdom",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "GBR"
+    },
+    {
+      "negara": "United States",
+      "lingkup": "Internasional",
+      "n": 1,
+      "iso3": "USA"
+    }
+  ],
+  "jenis_mitra": [
+    {
+      "jenis_mitra": "Perguruan Tinggi Negeri (Institusi Pendidikan DN)",
+      "n": 57
+    },
+    {
+      "jenis_mitra": "Instansi Pemerintah",
+      "n": 46
+    },
+    {
+      "jenis_mitra": "Mitra Luar Negeri",
+      "n": 44
+    },
+    {
+      "jenis_mitra": "Perusahaan Swasta",
+      "n": 31
+    },
+    {
+      "jenis_mitra": "Institusi Swasta",
+      "n": 23
+    },
+    {
+      "jenis_mitra": "Industri Swasta",
+      "n": 21
+    },
+    {
+      "jenis_mitra": "Perguruan Tinggi Swasta",
+      "n": 14
+    },
+    {
+      "jenis_mitra": "Yayasan",
+      "n": 7
+    },
+    {
+      "jenis_mitra": "Pemerintah Pusat",
+      "n": 5
+    },
+    {
+      "jenis_mitra": "Perguruan Tinggi Negeri Badan Hukum",
+      "n": 5
+    },
+    {
+      "jenis_mitra": "Lembaga Pendidikan(SD,SMP,SMA)",
+      "n": 4
+    },
+    {
+      "jenis_mitra": "Tidak terklasifikasi",
+      "n": 2
+    },
+    {
+      "jenis_mitra": "BUMN",
+      "n": 1
+    },
+    {
+      "jenis_mitra": "Bank/Lembaga Keuangan Pemerintah",
+      "n": 1
+    },
+    {
+      "jenis_mitra": "Bank/Lembaga Keuangan Swasta",
+      "n": 1
+    },
+    {
+      "jenis_mitra": "Pemerintah Daerah",
+      "n": 1
+    }
+  ]
+}

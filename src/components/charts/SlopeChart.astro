@@ -1,7 +1,7 @@
 ---
 import ChartFrame from "./ChartFrame.astro";
 import type { ChartChromeProps } from "./_types";
-import { SERIES_COLORS, finite, formatNumber, scaleLinear, slugify, ticks } from "./_utils";
+import { SERIES_COLORS, finite, formatNumber, scaleLinear, slugify, spreadLabels, textLines, ticks } from "./_utils";
 
 interface SlopeDatum extends Record<string, unknown> {
   label: string;
@@ -28,8 +28,8 @@ const {
   data,
   startTitle,
   endTitle,
-  width = 900,
-  height = 500,
+  width = 1040,
+  height = 520,
   domain,
   valueFormatter = (value) => formatNumber(value, 1),
   yLabel,
@@ -44,7 +44,12 @@ const {
   hideHeader,
 } = Astro.props;
 
-const margin = { top: 72, right: 205, bottom: 42, left: 205 };
+/* Programme names run long ("Elektronika dan Instrumentasi"), so each label is
+   drawn on two lines — name, then value — and the gutters are sized for the
+   wrapped name rather than for one long run of text that would clip. */
+const margin = { top: 76, right: 250, bottom: 42, left: 250 };
+const labelGutter = 26;
+const labelWrap = 22;
 const plotHeight = height - margin.top - margin.bottom;
 const allValues = data.flatMap((row) => [finite(row.start), finite(row.end)]);
 const range = Math.max(...allValues) - Math.min(...allValues);
@@ -54,26 +59,11 @@ const y = (value: number) => margin.top + plotHeight - scaleLinear(value, minVal
 const leftX = margin.left;
 const rightX = width - margin.right;
 
-function distributeLabels(values: { index: number; y: number }[], minY: number, maxY: number, gap = 21): Map<number, number> {
-  const sorted = [...values].sort((a, b) => a.y - b.y).map((item) => ({ ...item }));
-  for (let index = 1; index < sorted.length; index += 1) {
-    sorted[index].y = Math.max(sorted[index].y, sorted[index - 1].y + gap);
-  }
-  if (sorted.length && sorted.at(-1)!.y > maxY) {
-    sorted[sorted.length - 1].y = maxY;
-    for (let index = sorted.length - 2; index >= 0; index -= 1) {
-      sorted[index].y = Math.min(sorted[index].y, sorted[index + 1].y - gap);
-    }
-  }
-  if (sorted.length && sorted[0].y < minY) {
-    const shift = minY - sorted[0].y;
-    sorted.forEach((item) => { item.y += shift; });
-  }
-  return new Map(sorted.map((item) => [item.index, item.y]));
-}
-
-const leftLabels = distributeLabels(data.map((row, index) => ({ index, y: y(row.start) })), margin.top, margin.top + plotHeight);
-const rightLabels = distributeLabels(data.map((row, index) => ({ index, y: y(row.end) })), margin.top, margin.top + plotHeight);
+/* Two-line labels need a taller stride than the old single-line 21px. */
+const wrapped = data.map((row) => textLines(row.label, labelWrap, 2));
+const labelStride = 15 + Math.max(...wrapped.map((lines) => lines.length)) * 14;
+const leftLabels = spreadLabels(data.map((row, index) => ({ index, y: y(row.start) })), margin.top, margin.top + plotHeight, labelStride);
+const rightLabels = spreadLabels(data.map((row, index) => ({ index, y: y(row.end) })), margin.top, margin.top + plotHeight, labelStride);
 const gridTicks = ticks(minValue, maxValue, 4);
 const tableRows = data.map((row) => ({
   Kelompok: row.label,
@@ -102,7 +92,7 @@ const tableRows = data.map((row) => ({
   ]}
   class={className}
   {hideHeader}
-  minPlotWidth={600}
+  minPlotWidth={760}
 >
   <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
     <title id={`${id}-svg-title`}>{title}</title>
@@ -123,6 +113,7 @@ const tableRows = data.map((row) => ({
       const leftLabelY = leftLabels.get(index) ?? startY;
       const rightLabelY = rightLabels.get(index) ?? endY;
       const color = row.color ?? SERIES_COLORS[index % SERIES_COLORS.length];
+      const nameLines = wrapped[index];
       const delta = row.end - row.start;
       const direction = delta > 0 ? "naik" : delta < 0 ? "turun" : "tetap";
       const tooltip = `${row.label}: ${row.startLabel ?? valueFormatter(row.start)} menjadi ${row.endLabel ?? valueFormatter(row.end)}; ${direction} ${valueFormatter(Math.abs(delta))}.${row.note ? ` ${row.note}` : ""}`;
@@ -131,15 +122,19 @@ const tableRows = data.map((row) => ({
           <line class="connector" x1={leftX} x2={rightX} y1={startY} y2={endY} stroke={color} />
           <circle cx={leftX} cy={startY} r="5" fill={color} />
           <circle cx={rightX} cy={endY} r="5" fill={color} />
-          {Math.abs(leftLabelY - startY) > 2 && <line class="leader" x1={leftX - 8} x2={leftX - 19} y1={startY} y2={leftLabelY} />}
-          {Math.abs(rightLabelY - endY) > 2 && <line class="leader" x1={rightX + 8} x2={rightX + 19} y1={endY} y2={rightLabelY} />}
-          <text class="left-label" x={leftX - 24} y={leftLabelY + 4} text-anchor="end">
-            <tspan class="series-name">{row.label}</tspan>
-            <tspan> · {row.startLabel ?? valueFormatter(row.start)}</tspan>
+          {Math.abs(leftLabelY - startY) > 2 && <line class="leader" x1={leftX - 8} x2={leftX - labelGutter + 6} y1={startY} y2={leftLabelY} />}
+          {Math.abs(rightLabelY - endY) > 2 && <line class="leader" x1={rightX + 8} x2={rightX + labelGutter - 6} y1={endY} y2={rightLabelY} />}
+          <text class="left-label" x={leftX - labelGutter} y={leftLabelY + 4 - nameLines.length * 7.25} text-anchor="end">
+            {nameLines.map((line, lineIndex) => (
+              <tspan class="series-name" x={leftX - labelGutter} dy={lineIndex === 0 ? 0 : 14}>{line}</tspan>
+            ))}
+            <tspan class="series-value" x={leftX - labelGutter} dy="15">{row.startLabel ?? valueFormatter(row.start)}</tspan>
           </text>
-          <text class="right-label" x={rightX + 24} y={rightLabelY + 4}>
-            <tspan class="series-name">{row.label}</tspan>
-            <tspan> · {row.endLabel ?? valueFormatter(row.end)}</tspan>
+          <text class="right-label" x={rightX + labelGutter} y={rightLabelY + 4 - nameLines.length * 7.25}>
+            {nameLines.map((line, lineIndex) => (
+              <tspan class="series-name" x={rightX + labelGutter} dy={lineIndex === 0 ? 0 : 14}>{line}</tspan>
+            ))}
+            <tspan class="series-value" x={rightX + labelGutter} dy="15">{row.endLabel ?? valueFormatter(row.end)}</tspan>
           </text>
         </g>
       );
@@ -149,7 +144,7 @@ const tableRows = data.map((row) => ({
 
 <style>
   svg {
-    color: var(--ink, #332c2b);
+    color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
   }
@@ -174,7 +169,7 @@ const tableRows = data.map((row) => ({
     stroke-width: 2;
     stroke-linecap: round;
     vector-effect: non-scaling-stroke;
-    transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
   }
 
   .slope circle {
@@ -190,6 +185,11 @@ const tableRows = data.map((row) => ({
 
   .series-name {
     font-weight: 800;
+  }
+
+  .series-value {
+    fill: var(--ink-muted, #656b70);
+    font-weight: 600;
   }
 
   .leader {

@@ -13,7 +13,9 @@ const { label = "Catatan Analisis", tone = "attention" } = Astro.props;
 
 <style>
   .insight {
-    margin-block-start: clamp(28px, 4vw, 48px);
+    /* Spacing is owned by the scene rhythm ladder (--flow-note); this is only
+       the fallback for the few places an Insight sits outside a StoryScene. */
+    margin-block-start: var(--flow-note);
     padding: 24px 28px;
     border-inline-start: 4px solid var(--insight-color);
     background: var(--insight-surface);

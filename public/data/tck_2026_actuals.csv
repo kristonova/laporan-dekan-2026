@@ -1,43 +1,43 @@
-no,capaian_tw1,capaian_tw2,capaian_tw3,rasio_tw3,rasio_thd_target_tahunan,status_tw3,status_thd_tahunan,sumber_data
-1a,348.0,348.0,353.0,4.0575,2.4514,tercapai,tercapai,LENTERA [FS.26.1a]
-1b,43.0,43.0,43.0,0.5513,0.3308,tertinggal,meleset,LENTERA [FS.26.1b]
-1c,2.9,2.9,3.75,0.1136,0.0682,meleset,meleset,LENTERA [FS.26.1c]
-2a,7.0,7.0,7.0,1.0,1.0,tercapai,tercapai,AKREDITASI PRODI [FS.26.2a]
-2b,8.0,8.0,8.0,1.0,1.0,tercapai,tercapai,AKREDITASI PRODI [FS.26.2b]
-3,15.0,15.0,18.0,1.2,1.125,tercapai,tercapai,AKREDITASI PRODI [FS.26.3]
-4a,64.0,64.0,118.0,0.7763,0.4683,tertinggal,meleset,ADMISSION [FS.26]
-4b,49.0,60.0,83.0,0.4798,0.2882,meleset,meleset,ADMISSION [FS.26]
-5a,111.0,111.0,133.0,0.4784,0.2879,meleset,meleset,TRACER STUDY [FS.26.5a]
-5b,45.92,45.78,54.81,0.9135,0.5536,mendekati,tertinggal,PORTAL SIMASTER MAHASISWA [FS.26.5b]
-6,69.0,76.0,80.0,0.3704,0.2222,meleset,meleset,TRACER STUDY [FS.26.6]
-7,22.0,22.0,22.0,0.4151,0.25,meleset,meleset,MOOC [FS.26]
-8a,534.0,534.0,538.0,1.7582,1.0549,tercapai,tercapai,PORTAL SIMASTER MAHASISWA [FS.26.8a]
-8b1,11.55,19.88,46.93,1.2684,0.7693,tercapai,tertinggal,STUDENT SIMASTER
-8b2,24.85,33.43,44.21,0.9022,0.5458,mendekati,tertinggal,STUDENT SIMASTER
-8b3,31.97,35.25,35.25,1.0682,0.6528,tercapai,tertinggal,STUDENT SIMASTER
-9,125.0,125.0,303.0,1.01,0.606,tercapai,tertinggal,PORTAL SIMASTER MAHASISWA [FS.25.10-26.9]
-10,36.0,36.0,36.0,1.44,0.878,tercapai,mendekati,STUDENT SIMASTER
-11,51.0,60.0,63.0,0.5833,0.35,tertinggal,meleset,STAFF ATAU PORTAL SIMASTER MAHASISWA [FS.25.12-26.11]
-12,15.0,15.0,15.0,0.5,0.3,tertinggal,meleset,KANAL PENGETAHUAN
-13,534.0,686.0,820.0,1.8851,1.131,tercapai,tercapai,SIMASTER KINERJA P2M
-14,146.0,190.0,225.0,3.75,2.25,tercapai,tercapai,SIMASTER KINERJA P2M
-15,1610.0,3255.0,3923.0,1.3077,0.7846,tercapai,tertinggal,SCIVAL
-16,89.0,178.0,252.0,1.05,0.63,tercapai,tertinggal,SCOPUS
-17,12.0,12.0,20.0,0.6667,0.4,tertinggal,meleset,SIMASTER KINERJA P2M
-18,16.0,17.0,23.0,0.7667,0.46,tertinggal,meleset,SCIVAL
-19a,33.0,33.0,48.0,0.4,0.24,meleset,meleset,KOMPILASI DATA SIMASTER
-19b,163.0,301.0,356.0,0.5933,0.356,tertinggal,meleset,Website Fakultas
-20,25.0,261.0,378.0,1.05,0.63,tercapai,tertinggal,STAFF SIMASTER PENGABDIAN
-21a,175.0,175.0,175.0,1.6204,0.9777,tercapai,mendekati,SISTER
-21b,186.0,186.0,188.0,3.1333,1.88,tercapai,tercapai,SISTER
-22,167.0,170.0,172.0,3.1852,1.9111,tercapai,tercapai,SISTER
-23,91.0,91.0,220.0,2.2449,1.358,tercapai,tercapai,SISTER
-24,160.0,160.0,160.0,1.0063,1.0,tercapai,tercapai,STAFF SIMASTER [FS.26.24]
-25,11.0,11.0,116.0,1.2083,0.725,tercapai,tertinggal,SISTER
-26,25.0,25.0,38.0,1.7273,1.0556,tercapai,tercapai,STUDENT SIMASTER
-27,16.0,16.0,16.0,0.8,0.8889,tercapai,tercapai,STAFF SIMASTER [FS.26.27]
-28,111.0,111.0,213.0,2.2188,1.3313,tercapai,tercapai,STAFF SIMASTER [FS.25.27]
-29,111.0,111.0,213.0,0.9861,0.5917,mendekati,tertinggal,STAFF SIMASTER [FS.25.27]
-30,54.0,54.0,54.0,0.9818,0.9474,mendekati,mendekati,STAFF SIMASTER [FS.25.29]
-31,23.0,23.0,23.0,1.2105,1.15,tercapai,tercapai,Kompilasi Data
-32,13.1,25.55,0.0,0.0,0.0,meleset,meleset,FINANCE SILAS [FS.25]
+no,capaian_tw1,capaian_tw2,capaian_tw3,capaian_tw3_cacah,kuartal_dinilai,capaian_dinilai,target_dinilai,rasio_kuartal,rasio_thd_target_tahunan,status_kuartal,status_thd_tahunan,unit_mismatch,anomali,sumber_data
+1a,2824.0,353.0,353.0,,tw3,353.0,87.0,4.0575,2.4514,tercapai,tercapai,False,capaian triwulan tidak kumulatif,LENTERA [FS.26.1a]
+1b,18.0,55.0,55.0,,tw3,55.0,78.0,0.7051,0.4231,tertinggal,meleset,False,,LENTERA [FS.26.1b]
+1c,27.711,38.3642,38.3642,,tw3,38.3642,33.0,1.1626,0.6975,tercapai,tertinggal,False,nilai rupiah penuh pada sumber diskalakan ke miliar,LENTERA [FS.26.1c]
+2a,7.0,7.0,7.0,,tw3,7.0,7.0,1.0,1.0,tercapai,tercapai,False,,AKREDITASI PRODI [FS.26.2a]
+2b,8.0,8.0,8.0,,tw3,8.0,8.0,1.0,1.0,tercapai,tercapai,False,,AKREDITASI PRODI [FS.26.2b]
+3,15.0,15.0,15.0,,tw3,15.0,15.0,1.0,0.9375,tercapai,mendekati,False,,AKREDITASI PRODI [FS.26.3]
+4a,49.0,90.0,90.0,,tw3,90.0,152.0,0.5921,0.3571,tertinggal,meleset,False,,ADMISSION [FS.26]
+4b,0.0,108.0,108.0,,tw3,108.0,173.0,0.6243,0.375,tertinggal,meleset,False,,ADMISSION [FS.26]
+5a,31.0,116.0,116.0,,tw3,116.0,278.0,0.4173,0.2511,meleset,meleset,False,,TRACER STUDY [FS.26.5a]
+5b,40.398,45.2736,,455.0,tw2,45.2736,30.0,1.5091,0.4573,tercapai,meleset,True,capaian TW3 tercatat sebagai cacah orang tanpa penyebut; persentase tidak dihitung; penilaian memakai TW2 karena TW3 tidak dapat dinilai,PORTAL SIMASTER MAHASISWA [FS.26.5b]
+6,27.0,100.0,100.0,,tw3,100.0,216.0,0.463,0.2778,meleset,meleset,False,,TRACER STUDY [FS.26.6]
+7,73.0,73.0,73.0,,tw3,73.0,53.0,1.3774,0.8295,tercapai,tertinggal,False,,MOOC [FS.26]
+8a,230.0,603.0,603.0,,tw3,603.0,306.0,1.9706,1.1824,tercapai,tercapai,False,,PORTAL SIMASTER MAHASISWA [FS.26.8a]
+8b1,,23.7342,,150.0,tw2,23.7342,19.0,1.2492,0.3891,tercapai,meleset,True,"capaian TW1, TW3 tercatat sebagai cacah orang tanpa penyebut; persentase tidak dihitung; penilaian memakai TW2 karena TW3 tidak dapat dinilai",STUDENT SIMASTER
+8b2,,30.8108,,57.0,tw2,30.8108,25.0,1.2324,0.3804,tercapai,meleset,True,"capaian TW1, TW3 tercatat sebagai cacah orang tanpa penyebut; persentase tidak dihitung; penilaian memakai TW2 karena TW3 tidak dapat dinilai",STUDENT SIMASTER
+8b3,,33.9806,,35.0,tw2,33.9806,33.0,1.0297,0.6293,tercapai,tertinggal,True,"capaian TW1, TW3 tercatat sebagai cacah orang tanpa penyebut; persentase tidak dihitung; penilaian memakai TW2 karena TW3 tidak dapat dinilai",STUDENT SIMASTER
+9,55.0,168.0,168.0,,tw3,168.0,300.0,0.56,0.336,tertinggal,meleset,False,,PORTAL SIMASTER MAHASISWA [FS.25.10-26.9]
+10,44.0,44.0,44.0,,tw3,44.0,25.0,1.76,1.0732,tercapai,tercapai,False,,STUDENT SIMASTER
+11,28.0,120.0,120.0,,tw3,120.0,108.0,1.1111,0.6667,tercapai,tertinggal,False,,STAFF ATAU PORTAL SIMASTER MAHASISWA [FS.25.12-26.11]
+12,15.0,49.0,49.0,,tw3,49.0,30.0,1.6333,0.98,tercapai,mendekati,False,,KANAL PENGETAHUAN
+13,477.0,624.0,624.0,,tw3,624.0,435.0,1.4345,0.8607,tercapai,mendekati,False,,SIMASTER KINERJA P2M
+14,57.0,169.0,169.0,,tw3,169.0,60.0,2.8167,1.69,tercapai,tercapai,False,,SIMASTER KINERJA P2M
+15,2002.0,1929.0,1929.0,,tw3,1929.0,3000.0,0.643,0.3858,tertinggal,meleset,False,capaian triwulan tidak kumulatif,SCIVAL
+16,102.0,241.0,241.0,,tw3,241.0,240.0,1.0042,0.6025,tercapai,tertinggal,False,,SCOPUS
+17,7.0,94.0,94.0,,tw3,94.0,30.0,3.1333,1.88,tercapai,tercapai,False,,SIMASTER KINERJA P2M
+18,60.0,60.0,60.0,,tw3,60.0,30.0,2.0,1.2,tercapai,tercapai,False,,SCIVAL
+19a,61.0,92.0,92.0,,tw3,92.0,120.0,0.7667,0.46,tertinggal,meleset,False,,KOMPILASI DATA SIMASTER
+19b,159.0,413.0,413.0,,tw3,413.0,600.0,0.6883,0.413,tertinggal,meleset,False,,Website Fakultas
+20,74.0,318.0,318.0,,tw3,318.0,360.0,0.8833,0.53,mendekati,tertinggal,False,,STAFF SIMASTER PENGABDIAN
+21a,192.0,192.0,192.0,,tw3,192.0,108.0,1.7778,1.0726,tercapai,tercapai,False,,SISTER
+21b,191.0,191.0,191.0,,tw3,191.0,60.0,3.1833,1.91,tercapai,tercapai,False,,SISTER
+22,162.0,176.0,176.0,,tw3,176.0,54.0,3.2593,1.9556,tercapai,tercapai,False,,SISTER
+23,77.0,125.0,125.0,,tw3,125.0,98.0,1.2755,0.7716,tercapai,tertinggal,False,,SISTER
+24,160.0,160.0,160.0,,tw3,160.0,159.0,1.0063,1.0,tercapai,tercapai,False,,STAFF SIMASTER [FS.26.24]
+25,31.0,54.0,54.0,,tw3,54.0,96.0,0.5625,0.3375,tertinggal,meleset,False,,SISTER
+26,14.0,24.0,24.0,,tw3,24.0,22.0,1.0909,0.6667,tercapai,tertinggal,False,,STUDENT SIMASTER
+27,18.0,18.0,16.0,,tw3,16.0,20.0,1.25,1.125,tercapai,tercapai,False,,STAFF SIMASTER [FS.26.27]
+28,65.0,111.0,171.0,,tw3,171.0,96.0,1.7812,1.0688,tercapai,tercapai,False,,STAFF SIMASTER [FS.25.27]
+29,65.0,111.0,171.0,,tw3,171.0,216.0,0.7917,0.475,tertinggal,meleset,False,,STAFF SIMASTER [FS.25.27]
+30,54.0,54.0,54.0,,tw3,54.0,55.0,0.9818,0.9474,mendekati,mendekati,False,,STAFF SIMASTER [FS.25.29]
+31,21.0,23.0,23.0,,tw3,23.0,19.0,1.2105,1.15,tercapai,tercapai,False,,Kompilasi Data
+32,0.0,-12.0,-12.0,,tw3,-12.0,5.0,-2.4,-1.2,meleset,meleset,False,capaian triwulan tidak kumulatif,FINANCE SILAS [FS.25]

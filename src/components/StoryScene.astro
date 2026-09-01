@@ -54,7 +54,16 @@ const {
   .story-scene--compact { padding-block: clamp(72px, 8vw, 108px); }
   .story-scene__inner { width: min(100%, 1100px); margin-inline: auto; }
   .story-scene--wide .story-scene__inner { width: min(100%, var(--content-max)); }
-  .story-scene__header { max-width: 840px; margin-block-end: clamp(42px, 6vw, 76px); }
+  .story-scene__header { max-width: 840px; margin-block-end: var(--flow-chart); }
+
+  /* Vertical rhythm inside a scene. Every block is separated by the same
+     measure; a note sits closer to the chart it explains, because they read as
+     one unit, and the block after a note re-opens the gap. */
+  .story-scene__content > :global(* + *) { margin-block-start: var(--flow-chart); }
+  .story-scene__content > :global(.insight),
+  .story-scene__content > :global(.data-gap) { margin-block-start: var(--flow-note); }
+  .story-scene__content > :global(.insight + *),
+  .story-scene__content > :global(.data-gap + *) { margin-block-start: var(--flow-block); }
   .story-scene__meta {
     display: flex;
     align-items: center;
@@ -87,6 +96,5 @@ const {
   .story-scene--navy .story-scene__deck { color: rgba(255,255,255,.76); }
   @media (max-width: 700px) {
     .story-scene { padding-block: 72px; }
-    .story-scene__header { margin-block-end: 38px; }
   }
 </style>

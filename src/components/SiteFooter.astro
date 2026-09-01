@@ -1,6 +1,8 @@
 ---
 import { withBase } from "../lib/paths";
+import snapshotRaw from "../data/derived/snapshot.json";
 
+const snapshot = snapshotRaw as { label: string };
 const homeUrl = withBase("/");
 const dataUrl = withBase("/data");
 const presentationUrl = withBase("/presentasi");
@@ -23,7 +25,7 @@ const logoUrl = withBase("/brand/logo-horizontal-white.png");
       <p class="site-footer__eyebrow">Sumber utama</p>
       <span>TCK 2026 · SIMASTER</span>
       <span>Data historis FMIPA 2019–2025</span>
-      <span>Sinkronisasi 19 Agustus 2026</span>
+      <span>Sinkronisasi {snapshot.label}</span>
     </div>
   </div>
   <div class="site-footer__meta">

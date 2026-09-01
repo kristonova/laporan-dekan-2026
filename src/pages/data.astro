@@ -1,9 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { withBase } from "../lib/paths";
+import snapshotRaw from "../data/derived/snapshot.json";
+import tckRaw from "../data/derived/tck_2026_joined.json";
+import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
+import tracerSummaryRaw from "../data/derived/tracer_summary.json";
+import hpuRaw from "../data/derived/hpu_posbindu.json";
+
+const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string };
+const tck = tckRaw as any[];
+const flagged = tck.filter((row) => row.anomali);
+const partnershipCoverage = partnershipCoverageRaw as { total: number; terpetakan: number; internasional: number; lokasi_kosong: number };
+const tracerSummary = tracerSummaryRaw as { responden: number; tahun: number[] };
+const hpu = hpuRaw as { kunjungan: number; peserta_terdaftar: number; sesi: unknown[] };
+const number = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
 
 const datasets = [
-  { file: "tck_2026_joined.json", label: "Indikator TCK 2026", coverage: "42 indikator · target TW1–TW4 · capaian TW1–TW3", source: "SIMASTER", scenes: "1.2, 2.6, 3.5, 4.3–4.5, 5.1–5.2, 6.1" },
+  { file: "tck_2026_joined.json", label: "Indikator TCK 2026", coverage: "42 indikator · target TW1–TW4 · capaian TW1–TW3", source: "TCK 2026 (XLSX resmi)", scenes: "1.2, 2.6, 3.6, 4.3–4.5, 5.1–5.2, 6.1" },
   { file: "citations_by_year.json", label: "Sitasi per tahun", coverage: "1987–2025 · 70.905 seluruh arsip", source: "CSV historis FMIPA", scenes: "0.0, 2.1" },
   { file: "publications_by_year_dept.json", label: "Publikasi per departemen", coverage: "2020–2025", source: "SciVal / Scopus", scenes: "2.2" },
   { file: "topics.json", label: "Klaster topik", coverage: "528 klaster SciVal", source: "SciVal", scenes: "2.3" },
@@ -17,22 +30,46 @@ const datasets = [
   { file: "sdg_matrix.json", label: "Matriks SDG", coverage: "17 tujuan", source: "Data riset + SciVal", scenes: "3.3" },
   { file: "journals.json", label: "Jurnal terbitan FMIPA", coverage: "462 rekaman · 461 terklasifikasi", source: "Data jurnal internal", scenes: "3.4" },
   { file: "value_model.json", label: "Model nilai FMIPA", coverage: "Agregat 2021–2025", source: "Turunan lintas tabel", scenes: "1.3" },
+  { file: "snapshot.json", label: "Tanggal penarikan data", coverage: "Label tanggal tunggal untuk seluruh halaman", source: "Konstanta pipeline", scenes: "seluruh halaman" },
+  { file: "tck_2026_by_dept.json", label: "TCK per departemen", coverage: "30 indikator dengan rincian DIKE/DF/DM/DK", source: "TCK 2026 (XLSX resmi)", scenes: "1.2" },
+  { file: "partnerships_by_year.json", label: "Kerja sama per tahun", coverage: "2021–2026 · domestik dan internasional", source: "LENTERA UGM", scenes: "3.5" },
+  { file: "partnership_partners.json", label: "Profil mitra kerja sama", coverage: "Negara dan jenis mitra", source: "LENTERA UGM", scenes: "3.5" },
+  { file: "partnership_points.json", label: "Sebaran provinsi mitra", coverage: "Agregat provinsi per tahun", source: "LENTERA UGM", scenes: "3.5" },
+  { file: "admissions_by_year.json", label: "Penerimaan mahasiswa baru", coverage: "2022–2026 · peminat, diterima, registrasi", source: "Data akademik FMIPA", scenes: "4.6" },
+  { file: "active_students.json", label: "Mahasiswa sarjana aktif", coverage: "Per prodi dan angkatan 2017–2025", source: "Data akademik FMIPA", scenes: "1.1" },
+  { file: "graduates_profile.json", label: "Profil lulusan", coverage: "Sarjana, Magister, Doktor · IPK dan lama studi", source: "Data akademik FMIPA", scenes: "4.7" },
+  { file: "student_achievements.json", label: "Prestasi mahasiswa", coverage: "2022–2026 · departemen × tingkat", source: "Data kemahasiswaan FMIPA", scenes: "4.7" },
+  { file: "scholarships.json", label: "Penerima beasiswa", coverage: "Agregat per prodi dan skema", source: "Data akademik FMIPA", scenes: "4.6" },
+  { file: "accreditation.json", label: "Status akreditasi prodi", coverage: "18 prodi nasional · 15 sertifikat internasional", source: "Data akademik FMIPA", scenes: "1.1" },
+  { file: "tracer_sectors.json", label: "Sektor karier lulusan", coverage: "Agregat sektor dari tracer study", source: "Tracer study FMIPA", scenes: "4.1" },
+  { file: "tracer_waiting_time.json", label: "Masa tunggu kerja", coverage: "Distribusi kategori per prodi", source: "Tracer study FMIPA", scenes: "4.2" },
+  { file: "exchange_students.json", label: "Mobilitas mahasiswa keluar", coverage: "64 mahasiswa · 33 universitas tujuan", source: "Data mobilitas FMIPA", scenes: "4.4" },
+  { file: "graduates_by_programme.json", label: "Lulusan per program studi", coverage: "Rincian jenjang × prodi × tahun", source: "Data akademik FMIPA", scenes: "4.7" },
+  { file: "partnership_coverage.json", label: "Cakupan data kerja sama", coverage: "Ringkasan keterpetaan lokasi mitra", source: "LENTERA UGM", scenes: "3.5, 6.1" },
+  { file: "tracer_summary.json", label: "Ringkasan tracer study", coverage: "Median, rerata, dan serapan enam bulan", source: "Tracer study FMIPA", scenes: "4.1, 4.2" },
+  { file: "hpu_posbindu.json", label: "Health Promoting University", coverage: "Agregat anonim dosen dan tendik, 5 sesi Posbindu 2026", source: "Posbindu Melati FMIPA", scenes: "5.3" },
 ];
 
 const gaps = [
-  { priority: "P0", item: "Ekspor CSV/Excel resmi TCK 2026", reason: "Pembanding transkripsi dari tangkapan layar", owner: "Bagian Perencanaan FMIPA" },
-  { priority: "P0", item: "Klarifikasi indikator #32", reason: "Nilai hijau bangunan turun 25,55 → 0", owner: "Bagian Perencanaan / Direktorat Aset" },
-  { priority: "P0", item: "Jumlah lulusan per prodi dan jenjang", reason: "TCK hanya memuat persentase kelulusan", owner: "Bagian Akademik FMIPA" },
-  { priority: "P1", item: "Tracer study rinci", reason: "Sektor, wilayah, dan masa tunggu lulusan", owner: "DPKM / CDC UGM" },
-  { priority: "P1", item: "Data K3, kekerasan, dan kesehatan", reason: "Tidak lagi tercakup pada TCK 2026", owner: "Satgas PPKS / HSE" },
+  { priority: "P0", item: "Penyebut indikator persentase #5b dan #8b1–8b3", reason: "Kolom capaian TW3 memuat cacah mahasiswa tanpa penyebut, sehingga persentase TW3 tidak dapat dihitung", owner: "Bagian Perencanaan FMIPA" },
+  { priority: "P0", item: "Klarifikasi indikator #32", reason: "Indeks kenaikan nilai hijau bangunan tercatat negatif pada berkas sumber", owner: "Bagian Perencanaan / Direktorat Aset" },
+  { priority: "P1", item: "Data K3L dan penanganan kekerasan seksual", reason: "Program berjalan bersama Satgas PPKS dan Tim K3L, tetapi belum tersedia sebagai data terstruktur", owner: "Satgas PPKS / Tim K3L FMIPA" },
+  { priority: "P1", item: "Alamat provinsi mitra kerja sama", reason: "Sebagian dokumen LENTERA belum memuat kabupaten/provinsi mitra", owner: "Unit Kerja Sama FMIPA" },
+  { priority: "P2", item: "Tracer study per angkatan dan wilayah kerja", reason: "Data yang tersedia mencakup angkatan 2024–2025 tanpa dimensi wilayah", owner: "DPKM / CDC UGM" },
   { priority: "P2", item: "Paparan media 2021–2022", reason: "Data yang ada baru mulai 2023", owner: "Humas FMIPA" },
 ];
 
+const conflictRow = (no: string) => {
+  const row = tck.find((item) => String(item.no) === no);
+  return row ? number(row.capaian_dinilai, row.satuan === "Miliar Rupiah" ? 2 : 0) : "—";
+};
 const conflicts = [
-  { metric: "Guru Besar", tck: "54", historical: "42", explanation: "SIMASTER memuat jendela/SK terbaru; ekspor kepegawaian adalah snapshot berbeda." },
-  { metric: "Dosen berkualifikasi S3", tck: "160", historical: "138", explanation: "TCK memakai populasi SIMASTER; snapshot historis mendeteksi gelar doktor pada 138 dari 203 rekaman dosen." },
-  { metric: "Sitasi", tck: "3.923", historical: "12.629 (2024)", explanation: "TCK menghitung jendela pelaporan berjalan; CSV menghitung seluruh sitasi yang tercatat pada tahun tersebut." },
-  { metric: "Publikasi terindeks", tck: "252", historical: "481 (2025)", explanation: "Periode pelaporan dan basis indeks berbeda." },
+  { metric: "Guru Besar", tck: conflictRow("30"), historical: "42", explanation: "TCK memuat jendela/SK terbaru; ekspor kepegawaian adalah snapshot berbeda." },
+  { metric: "Dosen berkualifikasi S3", tck: conflictRow("24"), historical: "138", explanation: "TCK memakai populasi SIMASTER; snapshot historis mendeteksi gelar doktor pada 138 dari 203 rekaman dosen." },
+  { metric: "Sitasi", tck: conflictRow("15"), historical: "12.629 (2024)", explanation: "TCK menghitung jendela pelaporan berjalan; CSV menghitung seluruh sitasi yang tercatat pada tahun tersebut." },
+  { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "481 (2025)", explanation: "Periode pelaporan dan basis indeks berbeda." },
+  { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: "15 dari 18 prodi", explanation: "Kedua sumber sepakat; data akademik menambahkan tiga prodi yang belum berpredikat Unggul." },
+  { metric: "Kerja sama aktif", tck: conflictRow("1a"), historical: `${number(partnershipCoverage.total)} dokumen (2021–2026)`, explanation: "TCK menghitung PKS yang tercatat pada sistem tahun berjalan; LENTERA memuat seluruh dokumen enam tahun." },
 ];
 const homeUrl = withBase("/");
 const tckCsvUrl = withBase("/data/tck_2026_indikator.csv");
@@ -62,6 +99,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       <a href="#definisi">Definisi metrik</a>
       <a href="#konflik">Harmonisasi data</a>
       <a href="#kualitas">Validasi data</a>
+      <a href="#anomali">Catatan anomali</a>
       <a href="#gap">Agenda penguatan data</a>
     </nav>
 
@@ -75,16 +113,24 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <article>
           <p class="source-split__label">Bagian I · Capaian Kinerja 2026</p>
           <h3>TCK 2026 — SIMASTER UGM</h3>
-          <strong>42 indikator</strong>
-          <p>Target kumulatif TW1–TW4 dan capaian berjalan TW1–TW3, sinkronisasi data per 19 Agustus 2026 pukul 20.00 WIB.</p>
-          <a href={tckCsvUrl} download>Unduh CSV Transkripsi</a>
+          <strong>{tck.length} indikator</strong>
+          <p>Target kumulatif TW1–TW4 dan capaian berjalan TW1–TW3, dibaca langsung dari berkas Excel resmi <code>TCK 2026.xlsx</code> per {snapshot.label}.</p>
+          <a href={tckCsvUrl} download>Unduh CSV Indikator</a>
         </article>
         <div class="source-split__divider" aria-label="Tidak dicampur"><span>≠</span><small>terpisah</small></div>
         <article>
           <p class="source-split__label">Bagian II · Rekam Jejak 2021–2026</p>
           <h3>Data Historis FMIPA UGM</h3>
           <strong>25 berkas sumber</strong>
-          <p>Publikasi Scopus, sitasi, perolehan dana riset, pengabdian masyarakat (PkM), SDM, dan luaran institusional.</p>
+          <p>Publikasi Scopus, sitasi, perolehan dana riset, pengabdian masyarakat (PkM), SDM, dan luaran institusional, ditarik per {snapshot.p2m}.</p>
+          <a href="#dataset">Lihat dataset turunan</a>
+        </article>
+        <div class="source-split__divider" aria-label="Ditambahkan"><span>+</span><small>baru</small></div>
+        <article>
+          <p class="source-split__label">Bagian II · Sumber Baru 2026</p>
+          <h3>Kerja Sama, Akademik, dan Kesehatan</h3>
+          <strong>{number(partnershipCoverage.total)} dokumen kerja sama</strong>
+          <p>LENTERA UGM per {snapshot.lentera}, tracer study {number(tracerSummary.responden)} responden angkatan {tracerSummary.tahun.join(" dan ")}, serta {number(hpu.kunjungan)} kunjungan Posbindu dosen dan tenaga kependidikan dari registri {number(hpu.peserta_terdaftar)} sivitas—seluruhnya disajikan sebagai agregat.</p>
           <a href="#dataset">Lihat dataset turunan</a>
         </article>
       </div>
@@ -127,6 +173,12 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target TW4 mencerminkan target tahunan fakultas secara utuh.</dd></div>
         <div><dt>Status Tercapai</dt><dd>Kondisi saat realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator.</dd></div>
         <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah.</dd></div>
+        <div><dt>Ambang Status TCK</dt><dd>Rasio capaian terhadap target kuartal menentukan status: <strong>≥100% tercapai</strong>, ≥85% mendekati, ≥50% tertinggal, dan &lt;50% belum tercapai. Indikator dengan arah menurun (misalnya #27) memakai rasio terbalik sehingga capaian yang lebih kecil dinilai lebih baik.</dd></div>
+        <div><dt>Kuartal yang Dinilai</dt><dd>Kuartal terakhir yang memiliki pasangan capaian dan target yang sahih. Empat indikator persentase dinilai pada TW2 karena kolom TW3-nya memuat cacah orang tanpa penyebut.</dd></div>
+        <div><dt>Masa Tunggu Kerja</dt><dd>Selisih bulan antara tanggal kelulusan dan tanggal mulai bekerja pada tracer study. Nilai negatif berarti lulusan sudah bekerja sebelum tanggal kelulusan.</dd></div>
+        <div><dt>Pita Risiko Kesehatan</dt><dd>Kategori klinis pada berkas sumber dikelompokkan menjadi tiga pita—Normal, Waspada, dan Berisiko—melalui tabel <code>pipeline/mappings/posbindu_risiko.csv</code> agar dapat ditinjau tanpa membaca kode. Obesitas, hipertensi grade 1 dan 2, lingkar perut tidak normal, serta kadar asam urat, kolesterol, dan gula darah tinggi dihitung sebagai Berisiko. Kategori aslinya tetap tersedia pada tabel data tiap grafik.</dd></div>
+        <div><dt>Cakupan Peserta Posbindu</dt><dd>Grafik kesehatan hanya mencakup kunjungan berkriteria dosen dan tenaga kependidikan. Kunjungan tanpa kriteria dan berkriteria THL dikeluarkan dari hitungan dan jumlahnya dicantumkan pada scene terkait.</dd></div>
+        <div><dt>Kerahasiaan Data Kesehatan</dt><dd>Data Posbindu hanya disajikan sebagai hitungan kategori per sesi. Nama, tanggal lahir, dan seluruh nilai pemeriksaan per orang dibuang di dalam pipeline dan tidak pernah ditulis ke berkas yang dapat diunduh.</dd></div>
       </dl>
     </section>
 
@@ -155,8 +207,25 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <li><span>02</span><div><h3>Pemetaan Afiliasi Departemen</h3><p>Artikel tanpa identitas departemen dipetakan ulang melalui penelusuran ID Scopus penulis aktif, sedangkan publikasi yang belum terpetakan tetap ditampilkan terpisah.</p></div></li>
         <li><span>03</span><div><h3>Penggabungan Berkas Multi-bagian</h3><p>Berkas sitasi dan publikasi multi-bagian digabungkan secara otomatis, dideduplikasi berbasis ID dokumen unik, dan divalidasi integritas jumlah baris datanya.</p></div></li>
         <li><span>04</span><div><h3>Penandaan Data Tahun Berjalan</h3><p>Publikasi dan sitasi tahun 2025 diberi status tahun berjalan untuk menegaskan bahwa data masih terus dimutakhirkan di pangkalan data Scopus.</p></div></li>
-        <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Informasi identitas sensitif seperti NIP, NIKA, NIM, serta data pribadi perorangan disaring sebelum data agregat dipublikasikan.</p></div></li>
+        <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Informasi identitas sensitif seperti NIP, NIKA, NIM, NIU, alamat, kontak, serta seluruh nilai pemeriksaan kesehatan perorangan disaring sebelum data agregat dipublikasikan. Tahap validasi menolak keseluruhan proses bila salah satu kunci privat lolos ke berkas turunan.</p></div></li>
+        <li><span>06</span><div><h3>Normalisasi Satuan Indikator Kinerja</h3><p>Berkas TCK mencampur satuan pada beberapa indikator: capaian <em>creative funding</em> ditulis dalam rupiah penuh sementara targetnya dalam miliar, dan empat indikator persentase menyimpan cacah orang di kolom triwulan tertentu. Nilai rupiah diskalakan, sedangkan persentase tanpa penyebut sengaja dikosongkan dan penilaiannya dikembalikan ke triwulan sebelumnya.</p></div></li>
+        <li><span>07</span><div><h3>Deduplikasi dan Pemulihan Sesi Posbindu</h3><p>Berkas rekap memuat satu lembar bernama <em>Jan 26</em> yang ternyata salinan utuh sesi 3 Juli, sehingga kunjungan dikunci pada pasangan tanggal dan peserta agar sesi ganda tidak terhitung dua kali. Sesi 30 Januari yang sebenarnya hanya tercatat pada lembar rekapitulasi terkonsolidasi dan dipulihkan dari sana. Pada lembar tersebut, sesi 3 Juli kehilangan kolom Interpretasi Asam Urat sehingga seluruh kolom sesudahnya bergeser satu; sesi itu karena itu dibaca dari lembar bulanannya yang utuh, dan pipeline menolak membaca sesi yang kolomnya bergeser. Nama hanya dipakai sebagai kunci penggabungan lalu dibuang.</p></div></li>
       </ol>
+    </section>
+
+    <section class="data-section" id="anomali">
+      <div class="data-section__intro">
+        <p class="eyebrow">Keterbukaan Anomali</p>
+        <h2>Catatan Kualitas Data pada Berkas Sumber</h2>
+        <p>Penyimpangan yang ditemukan saat membaca berkas resmi tidak diperbaiki secara diam-diam. Setiap indikator berikut membawa catatan yang ikut ditampilkan pada visualisasi laporan.</p>
+      </div>
+      <div class="table-wrap" tabindex="0">
+        <table>
+          <caption>{flagged.length} dari {tck.length} indikator TCK 2026 membawa catatan kualitas data</caption>
+          <thead><tr><th>No.</th><th>Indikator</th><th>Kuartal dinilai</th><th>Catatan</th></tr></thead>
+          <tbody>{flagged.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{String(row.kuartal_dinilai).toUpperCase()}</td><td>{row.anomali}</td></tr>)}</tbody>
+        </table>
+      </div>
     </section>
 
     <section class="data-section data-section--paper" id="gap">
@@ -190,7 +259,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
   .data-hero__inner { position: relative; z-index: 1; width: min(100%, var(--content-max)); margin-inline: auto; }
   .data-hero__eyebrow, .data-section .eyebrow, .method-cta .eyebrow { margin: 0 0 18px; color: var(--ugm-gold); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
   .data-hero h1 { color: #fff; font-family: var(--font-display); font-size: clamp(52px, 8vw, 100px); line-height: .95; }
-  .data-hero p:not(.data-hero__eyebrow) { max-width: 700px; margin: 26px 0 0; color: rgba(255,255,255,.76); font-size: clamp(18px, 2vw, 23px); }
+  .data-hero p:not(.data-hero__eyebrow) { max-width: 700px; margin: 26px 0 0; color: var(--text-on-dark-secondary); font-size: clamp(18px, 2vw, 23px); }
   .data-hero a { display: inline-block; margin-block-start: 34px; color: #fff; font-weight: 700; }
   .data-hero__motif { position: absolute; inset: -30% -10% auto auto; width: min(65vw, 820px); aspect-ratio: 1; opacity: .1; filter: brightness(0) invert(1); background-position: center; background-size: contain; background-repeat: no-repeat; }
   .data-nav { position: sticky; z-index: 20; top: 72px; padding: 12px var(--page-gutter); border-bottom: 1px solid var(--border-subtle); background: var(--surface-page); display: flex; justify-content: center; gap: 20px; overflow-x: auto; }
@@ -202,8 +271,8 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
   .data-section__intro { max-width: 760px; margin-inline: auto; }
   .data-section__intro h2 { color: inherit; font-family: var(--font-display); font-size: clamp(38px, 5vw, 64px); line-height: 1.03; }
   .data-section__intro > p:last-child { margin: 22px 0 0; color: var(--text-secondary); font-size: 19px; line-height: 1.55; }
-  .data-section--navy .data-section__intro > p:last-child { color: rgba(255,255,255,.72); }
-  .source-split { margin-block-start: 56px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 26px; align-items: stretch; }
+  .data-section--navy .data-section__intro > p:last-child { color: var(--text-on-dark-secondary); }
+  .source-split { margin-block-start: var(--flow-block); display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 26px; align-items: stretch; }
   .source-split article { min-height: 330px; padding: clamp(28px, 4vw, 44px); border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-blue); background: var(--surface-card); }
   .source-split__label { margin: 0 0 18px; color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .source-split h3 { color: var(--text-primary); font-size: 25px; }
@@ -211,15 +280,15 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
   .source-split article > p:not(.source-split__label) { margin: 14px 0 26px; color: var(--text-secondary); }
   .source-split__divider { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--status-missed); }
   .source-split__divider span { font-size: 40px; }.source-split__divider small { writing-mode: vertical-rl; margin-block-start: 8px; color: var(--text-muted); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
-  .dataset-list { margin-block-start: 52px; border-block-start: 1px solid var(--border-default); }
+  .dataset-list { margin-block-start: var(--flow-block); border-block-start: 1px solid var(--border-default); }
   .dataset-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr .75fr auto; gap: 20px; align-items: center; padding-block: 22px; border-block-end: 1px solid var(--border-default); }
   .dataset-row h3 { color: var(--text-primary); font-family: var(--font-ui); font-size: 16px; }.dataset-row code { color: var(--text-muted); font-size: 11px; }.dataset-row p { color: var(--text-secondary); font-size: 13px; }.dataset-row p span { display: block; margin-block-end: 4px; color: var(--text-muted); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }.dataset-row > a { min-height: 44px; padding: 10px 12px; border: 1px solid var(--ugm-blue); border-radius: 4px; font-size: 12px; font-weight: 700; text-decoration: none; }
-  .definition-grid { margin-block-start: 52px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; border-block-start: 1px solid var(--border-subtle); }
+  .definition-grid { margin-block-start: var(--flow-block); display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; border-block-start: 1px solid var(--border-subtle); }
   .definition-grid > div { padding-block: 26px; border-block-end: 1px solid var(--border-subtle); }.definition-grid dt { color: var(--ugm-blue); font-size: 18px; font-weight: 700; }.definition-grid dd { margin: 9px 0 0; color: var(--text-secondary); font-size: 14px; }
-  .table-wrap { margin-block-start: 48px; overflow-x: auto; }.table-wrap table { min-width: 760px; }.data-section--navy table { color: #fff; }.data-section--navy th { color: var(--ugm-gold); }.data-section--navy th,.data-section--navy td { border-color: rgba(255,255,255,.2); }.table-wrap td,.table-wrap th { padding-block: 16px; font-size: 14px; }
-  .quality-list { margin-block-start: 52px; padding: 0; list-style: none; border-block-start: 1px solid var(--border-subtle); }.quality-list li { display: grid; grid-template-columns: 70px 1fr; gap: 24px; padding-block: 28px; border-block-end: 1px solid var(--border-subtle); }.quality-list > li > span { color: var(--ugm-gold); -webkit-text-stroke: 1px var(--ugm-blue); font-size: 32px; font-weight: 700; }.quality-list h3 { color: var(--text-primary); font-family: var(--font-ui); font-size: 19px; }.quality-list p { max-width: 76ch; margin: 8px 0 0; color: var(--text-secondary); }
+  .table-wrap { margin-block-start: var(--flow-block); overflow-x: auto; }.table-wrap table { min-width: 760px; }.data-section--navy table { color: #fff; }.data-section--navy th { color: var(--ugm-gold); }.data-section--navy th,.data-section--navy td { border-color: rgba(255,255,255,.2); }.table-wrap td,.table-wrap th { padding-block: 16px; font-size: 14px; }
+  .quality-list { margin-block-start: var(--flow-block); padding: 0; list-style: none; border-block-start: 1px solid var(--border-subtle); }.quality-list li { display: grid; grid-template-columns: 70px 1fr; gap: 24px; padding-block: 28px; border-block-end: 1px solid var(--border-subtle); }.quality-list > li > span { color: var(--ugm-gold); -webkit-text-stroke: 1px var(--ugm-blue); font-size: 32px; font-weight: 700; }.quality-list h3 { color: var(--text-primary); font-family: var(--font-ui); font-size: 19px; }.quality-list p { max-width: 76ch; margin: 8px 0 0; color: var(--text-secondary); }
   .priority { display: inline-block; min-width: 42px; padding: 4px 7px; border: 1px solid currentColor; border-radius: 4px; font-size: 11px; font-weight: 700; text-align: center; }.priority--p0 { color: var(--status-missed); }.priority--p1 { color: var(--status-lagging); }.priority--p2 { color: var(--status-approaching); }
-  .method-cta { padding: clamp(76px, 9vw, 124px) var(--page-gutter); background: var(--ugm-blue); color: #fff; }.method-cta > * { width: min(100%, 1000px); margin-inline: auto; }.method-cta h2 { color: #fff; font-size: clamp(38px, 5vw, 64px); }.method-cta ol { margin-block: 44px 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgba(255,255,255,.24); }.method-cta li { min-height: 150px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }.method-cta li + li { border-inline-start: 1px solid rgba(255,255,255,.24); }.method-cta li strong { color: var(--ugm-gold); font-size: 28px; }.method-cta > p { color: rgba(255,255,255,.76); }.method-cta > a { display: block; margin-block-start: 28px; color: #fff; font-weight: 700; }
+  .method-cta { padding: clamp(76px, 9vw, 124px) var(--page-gutter); background: var(--ugm-blue); color: #fff; }.method-cta > * { width: min(100%, 1000px); margin-inline: auto; }.method-cta h2 { color: #fff; font-size: clamp(38px, 5vw, 64px); }.method-cta ol { margin-block: 44px 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgba(255,255,255,.24); }.method-cta li { min-height: 150px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }.method-cta li + li { border-inline-start: 1px solid rgba(255,255,255,.24); }.method-cta li strong { color: var(--ugm-gold); font-size: 28px; }.method-cta > p { color: var(--text-on-dark-secondary); }.method-cta > a { display: block; margin-block-start: 28px; color: #fff; font-weight: 700; }
   @media(max-width:900px){.dataset-row{grid-template-columns:1fr 1fr}.dataset-row>div{grid-column:1/-1}.dataset-row>a{justify-self:start}.method-cta ol{grid-template-columns:repeat(2,1fr)}.method-cta li:nth-child(3){border-inline-start:0;border-block-start:1px solid rgba(255,255,255,.24)}.method-cta li:nth-child(4){border-block-start:1px solid rgba(255,255,255,.24)}}
   @media(max-width:700px){.data-nav{justify-content:flex-start;top:64px}.source-split{grid-template-columns:1fr}.source-split__divider small{writing-mode:horizontal-tb}.definition-grid{grid-template-columns:1fr}.dataset-row{grid-template-columns:1fr}.method-cta ol{grid-template-columns:1fr}.method-cta li+li{border-inline-start:0;border-block-start:1px solid rgba(255,255,255,.24)}}
 </style>

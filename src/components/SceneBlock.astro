@@ -1,0 +1,65 @@
+---
+/**
+ * A sub-scene inside a StoryScene.
+ *
+ * PRD section 5.1 asks for one question and one chart per scene. Where a scene
+ * genuinely needs several charts to answer its question, each one gets its own
+ * heading here instead of being crowded next to a sibling: a Title Case title,
+ * the 82x3px UGM accent rule, and one optional sentence of lede.
+ *
+ * The chart inside should be rendered with `hideHeader` so its title is not
+ * printed twice.
+ */
+interface Props {
+  title: string;
+  lede?: string;
+  id?: string;
+}
+
+const { title, lede, id } = Astro.props;
+const headingId = id ? `${id}-title` : undefined;
+---
+
+<section class="scene-block" {id} aria-labelledby={headingId}>
+  <header class="scene-block__header">
+    <h3 id={headingId}>{title}</h3>
+    <hr class="scene-block__rule" aria-hidden="true" />
+    {lede && <p class="scene-block__lede">{lede}</p>}
+  </header>
+  <div class="scene-block__body"><slot /></div>
+</section>
+
+<style>
+  .scene-block__header { max-width: 62ch; margin-block-end: var(--flow-block); }
+
+  .scene-block h3 {
+    max-width: none;
+    margin: 0;
+    color: var(--text-heading);
+    font-family: var(--font-ui);
+    font-size: var(--type-md);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-normal);
+    line-height: var(--leading-snug);
+    text-wrap: balance;
+  }
+
+  /* The 82x3px accent rule from the official templates. */
+  .scene-block__rule {
+    inline-size: var(--rule-width);
+    block-size: var(--rule-height);
+    margin: var(--space-3) 0 0;
+    border: 0;
+    background: var(--ugm-gold);
+  }
+
+  .scene-block__lede {
+    margin: var(--space-4) 0 0;
+    color: var(--text-secondary);
+    font-size: var(--type-sm);
+    line-height: var(--leading-body);
+  }
+
+  :global(.story-scene--navy) .scene-block h3 { color: var(--text-on-dark); }
+  :global(.story-scene--navy) .scene-block__lede { color: var(--text-on-dark-secondary); }
+</style>

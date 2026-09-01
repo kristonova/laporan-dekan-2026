@@ -1,9 +1,15 @@
 /*
  * Lima Tahun FMIPA — design tokens
  *
- * Product source of truth: PRD v1.1, section 9 and Appendix C.
- * The PRD deliberately uses #004A74 / #FED400; those values take precedence
- * over the slightly different RGB conversion in the reusable UGM kit.
+ * Brand source of truth: the UGM Design System (`UGM Design System/tokens/`),
+ * itself derived from Panduan Identitas Visual UGM and the official 2026
+ * presentation templates. Where the PRD and the Design System disagree — the
+ * PRD wrote #004A74 / #FED400 from the printed brief — the Design System wins,
+ * because every official file ships #01416B / #FDD402.
+ *
+ * The PRD still governs everything the Design System does not cover: the
+ * validated department series palette (PRD section 9.2), the dark surface
+ * (section 9.6), and the narrative motion pair below.
  *
  * Dark mode is opt-in via data-theme="dark" or .theme-dark. It is never
  * inferred from the operating-system preference (PRD section 9.6).
@@ -14,52 +20,69 @@
 :root {
   color-scheme: light;
 
-  /* UGM brand — exact PRD values. Yellow is an accent, never a data series. */
-  --ugm-blue: #004a74;
-  --ugm-blue-hover: #003b5d;
+  /* UGM brand — Design System values. Yellow is an accent, never a data series. */
+  --ugm-blue: #01416b;
+  --ugm-blue-hover: #00375b;
   --ugm-blue-strong: var(--ugm-blue-hover);
-  --ugm-blue-pressed: #002e49;
-  --ugm-gold: #fed400;
+  --ugm-blue-pressed: #0e426b;
+  --ugm-blue-slate: #1d4f80;
+  --ugm-gold: #fdd402;
   --ugm-yellow: var(--ugm-gold);
-  --ugm-gold-hover: #e6c000;
-  --ugm-black: #332c2b;
-  --ugm-complement-light: #fafafa;
-  --ugm-complement-dark: #4a4a4a;
+  --ugm-gold-hover: #e2be00;
+  --ugm-gold-dark: var(--ugm-gold-hover);
+  --ugm-black: #2b2d2f;
+  --ugm-complement-light: #f8f9fa;
+  --ugm-complement-dark: #55585b;
+  /* No dark surface exists in the Design System; this is the PRD cold-open navy. */
   --ugm-blue-deep: #0b1f2e;
   --ugm-blue-sky: #1c75bc;
-  --ugm-blue-tint: #eaf2f7;
-  --ugm-gold-tint: #fff8d6;
+  --ugm-blue-050: #eaf0f5;
+  --ugm-blue-100: #cbdae6;
+  --ugm-blue-200: #9db8cc;
+  --ugm-blue-400: #4d7a9e;
+  --ugm-blue-tint: var(--ugm-blue-050);
+  --ugm-gold-tint: #fff8db;
+
+  /* Neutrals — Design System slate ramp plus Paper. */
+  --slate-900: #2b2d2f;
+  --slate-700: #55585b;
+  --slate-500: #7e8285;
+  --slate-300: #c6c9cb;
+  --slate-200: #e3e5e7;
+  --slate-100: #eef0f1;
+  --paper: #f8f9fa;
 
   /* Semantic surfaces and ink. */
-  --surface-1: #fcfcfb;
+  --surface-1: #ffffff;
   --surface-page: var(--surface-1);
-  --surface-2: #f4f5f4;
-  --surface-subtle: var(--ugm-complement-light);
+  --surface-2: var(--slate-100);
+  --surface-subtle: var(--paper);
   --surface-card: #ffffff;
   --surface-inverse: var(--ugm-blue-deep);
   --surface-brand: var(--ugm-blue);
   --surface-accent: var(--ugm-gold);
   --surface-tint: var(--ugm-blue-tint);
   --surface-tint-warm: var(--ugm-gold-tint);
-  --surface-scrim: rgb(11 31 46 / 64%);
+  --surface-scrim: rgb(1 65 107 / 48%);
 
-  --text-primary: #0b0b0b;
+  --text-primary: var(--slate-900);
   --text-heading: var(--ugm-blue);
-  --text-secondary: #52514e;
-  /* PRD token: reserve for large/decorative labels; it is too faint for body copy. */
-  --text-muted: #8a8a85;
+  --text-secondary: var(--slate-700);
+  /* Reserve for large/decorative labels; it is too faint for body copy. */
+  --text-muted: var(--slate-500);
   --text-on-dark: #ffffff;
-  --text-on-dark-secondary: #d7dde1;
-  --text-on-accent: var(--ugm-black);
+  --text-on-dark-secondary: rgb(255 255 255 / 72%);
+  /* Navy on yellow, always — never white on yellow (Design System, Colour). */
+  --text-on-accent: var(--ugm-blue);
   --text-link: var(--ugm-blue);
-  --text-link-hover: var(--ugm-blue-hover);
+  --text-link-hover: var(--ugm-blue-sky);
 
-  --border-subtle: #dfe3e4;
-  --border-default: #b9c0c3;
+  --border-subtle: var(--slate-200);
+  --border-default: var(--slate-300);
   --border-strong: var(--ugm-blue);
-  --border-on-dark: rgb(255 255 255 / 32%);
-  --grid-line: #d9dedd;
-  --grid-line-strong: #b8c1c3;
+  --border-on-dark: rgb(255 255 255 / 28%);
+  --grid-line: var(--slate-200);
+  --grid-line-strong: var(--slate-300);
 
   /* Department series — order is permanent: Fisika, IKE, Kimia, Matematika. */
   --dept-fisika: #2a78d6;
@@ -82,23 +105,25 @@
 
   /* TCK status is categorical, never reused as a department/data-series palette. */
   --status-achieved: #2e7d52;
-  --status-approaching: #806000;
+  --status-approaching: #a97400;
+  /* No Design System equivalent for a fourth level; kept in the same muted family. */
   --status-lagging: #b44a00;
   --status-missed: #a32020;
-  --status-info: #1c75bc;
-  --status-achieved-surface: #e7f2eb;
-  --status-approaching-surface: #fff6cf;
-  --status-lagging-surface: #fff0e4;
+  --status-info: var(--ugm-blue-sky);
+  --status-achieved-surface: #e8f2ec;
+  --status-approaching-surface: var(--ugm-gold-tint);
+  --status-lagging-surface: #fbefe6;
   --status-missed-surface: #faeaea;
-  --status-info-surface: #e8f1f8;
+  --status-info-surface: var(--ugm-blue-050);
   --status-tercapai: var(--status-achieved);
   --status-mendekati: var(--status-approaching);
   --status-tertinggal: var(--status-lagging);
   --status-meleset: var(--status-missed);
 
-  /* Type: exact PRD ladder (12 / 14 / 16 / 20 / 28 / 40 / 64 / 96). */
+  /* Type: Design System web ladder (64 / 48 / 36 / 30 / 24 / 20 / 16 / 14 / 12 / 11).
+     --type-hero is the PRD hero number, which the ladder does not cover. */
   --font-display: "Gama Serif", Garamond, "Adobe Caslon Pro", Georgia, serif;
-  --font-sans: "Gama Sans", "Open Sans", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Gama Sans", "PT Sans", "Open Sans", "Segoe UI", system-ui, sans-serif;
   --font-serif: var(--font-display);
   --font-body: var(--font-sans);
   --font-ui: var(--font-sans);
@@ -106,22 +131,28 @@
   --weight-light: 300;
   --weight-regular: 400;
   --weight-bold: 700;
+  --type-2xs: 0.6875rem;
   --type-xs: 0.75rem;
   --type-sm: 0.875rem;
   --type-body: 1rem;
-  --type-lead: 1.25rem;
-  --type-h3: 1.75rem;
-  --type-h2: 2.5rem;
+  --type-md: 1.25rem;
+  --type-lead: var(--type-md);
+  --type-lg: 1.5rem;
+  --type-xl: 1.875rem;
+  --type-h3: var(--type-xl);
+  --type-2xl: 2.25rem;
+  --type-3xl: 3rem;
+  --type-h2: var(--type-3xl);
   --type-display: 4rem;
   --type-hero: 6rem;
   --type-hero-fluid: clamp(3.5rem, 8vw, var(--type-hero));
-  --type-display-fluid: clamp(2.5rem, 5vw, var(--type-display));
-  --leading-tight: 1.08;
-  --leading-heading: 1.16;
-  --leading-snug: 1.3;
-  --leading-body: 1.58;
-  --leading-reading: 1.68;
-  --tracking-tight: -0.02em;
+  --type-display-fluid: clamp(var(--type-3xl), 5vw, var(--type-display));
+  --leading-tight: 1.12;
+  --leading-heading: var(--leading-tight);
+  --leading-snug: 1.25;
+  --leading-body: 1.5;
+  --leading-reading: 1.65;
+  --tracking-tight: -0.01em;
   --tracking-normal: 0;
   --tracking-wide: 0.14em;
   --tracking-wider: 0.2em;
@@ -173,15 +204,25 @@
 
   /* Navy-tinted, restrained elevation. */
   --shadow-none: none;
-  --shadow-sm: 0 1px 2px rgb(0 74 116 / 8%);
-  --shadow-md: 0 2px 8px rgb(0 74 116 / 10%);
-  --shadow-lg: 0 8px 24px rgb(0 74 116 / 12%);
+  --shadow-sm: 0 1px 2px rgb(1 65 107 / 8%);
+  --shadow-md: 0 2px 8px rgb(1 65 107 / 10%);
+  --shadow-lg: 0 8px 24px rgb(1 65 107 / 12%);
+  --shadow-inset: inset 0 -1px 0 var(--border-subtle);
 
-  /* Story state changes: PRD range 300–600ms. */
-  --duration-fast: 300ms;
-  --duration-base: 450ms;
-  --duration-slow: 600ms;
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Motion, register one — interface. Design System: short and unshowy. Colour
+     changes, hovers, focus, disclosure. Fades and colour only; no bounce. */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Motion, register two — narrative. Reserved for the meaningful state changes
+     the story depends on (axis widening, bar morph, map accumulation): PRD 9.5
+     asks for 300–600ms there, and nothing else may borrow it. */
+  --duration-story: 450ms;
+  --ease-story: cubic-bezier(0.4, 0, 0.2, 1);
+
   --transition-color: color var(--duration-fast) var(--ease-standard),
     background-color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard);
@@ -189,8 +230,8 @@
     transform var(--duration-base) var(--ease-standard);
 
   /* Focus and layering. */
-  --focus-color: #1c75bc;
-  --focus-ring: 0 0 0 3px rgb(28 117 188 / 48%);
+  --focus-color: var(--ugm-blue-sky);
+  --focus-ring: 0 0 0 3px rgb(28 117 188 / 45%);
   /* Compatibility aliases consumed by the low-level SVG chart primitives. */
   --ink: var(--text-primary);
   --ink-muted: var(--text-secondary);
@@ -209,21 +250,24 @@
   --z-skip-link: 100;
 }
 
-:where([data-theme="dark"], .theme-dark) {
+/* Not :where() — that scores zero specificity, so every value below would lose
+   to the :root block above it and the theme toggle would do nothing. */
+:root[data-theme="dark"],
+.theme-dark {
   color-scheme: dark;
   --surface-1: #0b1f2e;
   --surface-page: var(--surface-1);
   --surface-2: #112d40;
   --surface-subtle: #112d40;
   --surface-card: #153448;
-  --surface-inverse: #fcfcfb;
+  --surface-inverse: #ffffff;
   --surface-brand: #0b1f2e;
   --surface-tint: #16384e;
   --surface-tint-warm: #463d16;
   --surface-scrim: rgb(0 0 0 / 72%);
   --text-primary: #ffffff;
   --text-heading: #ffffff;
-  --text-secondary: #c3c2b7;
+  --text-secondary: #c9d2d8;
   --text-muted: #a9b4bc;
   --text-link: #8fc8ef;
   --text-link-hover: #ffffff;
@@ -251,15 +295,22 @@
   --status-lagging-surface: #4b2d1c;
   --status-missed-surface: #482328;
   --status-info-surface: #16384e;
+  --slate-900: #ffffff;
+  --slate-700: #c9d2d8;
+  --slate-500: #a9b4bc;
+  --slate-300: #637582;
+  --slate-200: #405565;
+  --slate-100: #112d40;
+  --paper: #112d40;
   --focus-color: #73b7e4;
   --focus-ring: 0 0 0 3px rgb(115 183 228 / 64%);
   --ink: #ffffff;
-  --ink-muted: #c3c2b7;
+  --ink-muted: #c9d2d8;
   --surface: #153448;
   --rule: #637582;
   --rule-light: #405565;
   --brand-blue: #3987e5;
-  --attention: #fed400;
+  --attention: var(--ugm-gold);
   --focus: #73b7e4;
   --link: #8fc8ef;
   --chart-primary: #3987e5;
@@ -270,5 +321,6 @@
     --duration-fast: 0.01ms;
     --duration-base: 0.01ms;
     --duration-slow: 0.01ms;
+    --duration-story: 0.01ms;
   }
 }

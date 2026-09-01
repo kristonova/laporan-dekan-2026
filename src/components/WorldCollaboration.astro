@@ -83,19 +83,27 @@ const worldGeoJsonUrl = withBase("/data/world-countries.geojson");
   </div>
   <div class="world-network__trend">
     <p>Kolaborasi Internasional</p>
-    <div><strong>18,4%</strong><span>2021</span></div>
+    <div class="world-network__reading"><strong>18,4%</strong><span>2021</span></div>
     <i aria-hidden="true">→</i>
-    <div><strong>27,7%</strong><span>2025</span></div>
+    <div class="world-network__reading"><strong>27,7%</strong><span>2025</span></div>
   </div>
 </div>
 
 <style>
-  .world-network { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 32px; align-items: stretch; }
+  /* One column: the map takes the full measure and the trend reads as a band
+     beneath it, left to right, rather than as a side panel squeezing the map. */
+  .world-network { display: grid; gap: 0; }
   .world-network__map { position: relative; isolation: isolate; min-width: 0; border: 1px solid var(--border-subtle); background: var(--surface-card); }
   .world-network__map svg { display: block; width: 100%; height: auto; }
   .world-network__count { position: absolute; z-index: 2; inset: 22px auto auto 24px; display: flex; flex-direction: column; }.world-network__count strong { color: var(--ugm-blue); font-size: 42px; font-weight: 300; line-height: 1; }.world-network__count span { margin-block-start: 5px; color: var(--text-muted); font-size: 12px; }
   .world-network__grid line { stroke: var(--grid-line); stroke-width: 1; vector-effect: non-scaling-stroke; }.world-network__land path { fill: var(--surface-2); stroke: var(--border-default); stroke-width: .8; vector-effect: non-scaling-stroke; }.world-network__land path.is-partner { fill: color-mix(in srgb, var(--ugm-blue-sky) 18%, var(--surface-2)); }.world-network__arcs path { fill: none; stroke: var(--ugm-blue-sky); stroke-width: var(--arc-weight); stroke-linecap: round; opacity: .62; }.world-network__origin { fill: var(--ugm-gold); stroke: var(--ugm-blue-deep); stroke-width: 3; }.world-network__point circle { fill: var(--ugm-blue); stroke: #fff; stroke-width: 2; }.world-network__point text { fill: var(--text-primary); font: 700 12px var(--font-ui); paint-order: stroke; stroke: var(--surface-card); stroke-width: 4; stroke-linejoin: round; }
   .world-network__meta { min-height: 42px; padding: 10px 14px; border-block-start: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--text-muted); font-size: 11px; }.world-network__meta > span:last-child { display: flex; gap: 14px; }.world-network__meta a { color: var(--ugm-blue); font-weight: 700; }
-  .world-network__trend { padding: 30px; border-top: 4px solid var(--ugm-gold); background: var(--ugm-blue-deep); color: #fff; display: flex; flex-direction: column; justify-content: center; }.world-network__trend > p { margin: 0 0 28px; color: rgba(255,255,255,.7); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }.world-network__trend div { display: flex; justify-content: space-between; align-items: baseline; }.world-network__trend strong { color: var(--ugm-gold); font-size: 38px; font-weight: 300; }.world-network__trend span { color: rgba(255,255,255,.65); font-size: 12px; }.world-network__trend i { margin-block: 13px; color: rgba(255,255,255,.55); font-size: 24px; font-style: normal; transform: rotate(90deg); align-self: flex-start; }
-  @media(max-width:800px){.world-network{grid-template-columns:1fr}.world-network__trend{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}.world-network__trend>p{grid-column:1/-1}.world-network__trend i{transform:none;align-self:center;justify-self:center}.world-network__trend div{flex-direction:column}.world-network__map{overflow-x:auto}.world-network__map svg{min-width:680px}.world-network__meta{min-width:680px}}
+  .world-network__trend { padding: 26px 30px; border-block-start: 4px solid var(--ugm-gold); background: var(--ugm-blue-deep); color: var(--text-on-dark); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
+  .world-network__trend > p { flex: 1 1 100%; margin: 0; color: var(--text-on-dark-secondary); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .world-network__reading { display: flex; align-items: baseline; gap: 10px; }
+  .world-network__trend strong { color: var(--ugm-gold); font-size: 38px; font-weight: 300; line-height: 1; }
+  .world-network__trend span { color: var(--text-on-dark-secondary); font-size: 12px; }
+  .world-network__trend i { color: rgba(255,255,255,.55); font-size: 24px; font-style: normal; }
+  @media(max-width:800px){.world-network__map{overflow-x:auto}.world-network__map svg{min-width:680px}.world-network__meta{min-width:680px}}
+  @media(max-width:520px){.world-network__trend{gap:10px 18px}.world-network__trend strong{font-size:30px}}
 </style>

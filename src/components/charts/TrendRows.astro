@@ -1,0 +1,288 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { formatNumber, scaleLinear, slugify, textLines } from "./_utils";
+
+/**
+ * One full-width trajectory per category, stacked down the page.
+ *
+ * Eight series in a single plot become a knot, and a slope chart of first and
+ * last values hides what happened in between. Giving each category its own row
+ * keeps every year visible while the shared vertical scale keeps the rows
+ * comparable — a row that sits low really is low, not just differently scaled.
+ */
+interface TrendRow extends Record<string, unknown> {
+  label: string;
+  values: (number | null)[];
+  note?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<TrendRow>, "tableRows" | "tableColumns"> {
+  data: TrendRow[];
+  /** X labels, one per point. */
+  periods: (string | number)[];
+  width?: number;
+  rowHeight?: number;
+  /** "row" scales each row to its own range; "shared" puts them on one scale. */
+  scale?: "row" | "shared";
+  yMax?: number;
+  valueFormatter?: (value: number) => string;
+  axisLabel?: string;
+  /** Extra columns appended to the data table, keyed per row and period. */
+  detail?: { label: string; values: (number | null)[][] }[];
+}
+
+const {
+  data,
+  periods,
+  width = 980,
+  rowHeight = 92,
+  scale = "row",
+  yMax,
+  valueFormatter = (value: number) => formatNumber(value, 1),
+  axisLabel,
+  detail = [],
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 54, right: 170, bottom: 34, left: 210 };
+const plotWidth = width - margin.left - margin.right;
+const trackHeight = rowHeight - 30;
+const labelWrap = 22;
+
+/* Each row is scaled to its own range by default, which is what makes the shape
+   of a five-year path readable: on one shared scale the low-ratio rows flatten
+   into a dead line and the movement disappears. Level is not lost — every row
+   prints its own first and last value, and the rows are ordered by the latest
+   one, so where a row sits in the list still says how high it is. */
+const allValues = data.flatMap((row) => row.values.filter((value): value is number => value !== null));
+const sharedMin = Math.min(...allValues);
+const sharedMax = Math.max(...allValues);
+
+function domainFor(values: (number | null)[]): [number, number] {
+  const present = values.filter((value): value is number => value !== null);
+  const low = scale === "shared" ? sharedMin : Math.min(...present);
+  const high = scale === "shared" ? sharedMax : Math.max(...present);
+  const pad = Math.max(0.4, (high - low) * 0.22);
+  return [Math.max(0, low - pad), yMax ?? high + pad];
+}
+
+const px = (index: number) =>
+  periods.length <= 1
+    ? margin.left + plotWidth / 2
+    : margin.left + (index / (periods.length - 1)) * plotWidth;
+
+const rows = data.map((row, index) => {
+  const top = margin.top + index * rowHeight;
+  const [rowMin, rowMax] = domainFor(row.values);
+  const py = (value: number) => top + trackHeight - scaleLinear(value, rowMin, rowMax, 0, trackHeight);
+  const points = row.values
+    .map((value, pointIndex) => ({ value, index: pointIndex }))
+    .filter((point): point is { value: number; index: number } => point.value !== null)
+    .map((point) => ({ ...point, x: px(point.index), y: py(point.value) }));
+  const first = points[0];
+  const last = points.at(-1);
+  const delta = first && last ? last.value - first.value : 0;
+  return {
+    ...row,
+    lines: textLines(row.label, labelWrap, 2),
+    top,
+    points,
+    path: points.map((point, order) => `${order === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" "),
+    first,
+    last,
+    delta,
+    /* Direction is carried by a glyph and by the numbers, never by colour alone. */
+    marker: delta > 0.05 ? "▲" : delta < -0.05 ? "▼" : "▬",
+  };
+});
+
+const height = margin.top + rows.length * rowHeight + margin.bottom;
+
+const tableRows = data.map((row, rowIndex) => ({
+  Kategori: row.label,
+  ...Object.fromEntries(periods.map((period, index) => [String(period), row.values[index] === null ? "—" : valueFormatter(row.values[index] as number)])),
+  ...Object.fromEntries(
+    detail.map((column) => [
+      column.label,
+      (column.values[rowIndex] ?? []).map((value) => (value === null ? "—" : formatNumber(value, 0))).join(" · "),
+    ]),
+  ),
+}));
+const tableColumns = [
+  { key: "Kategori", label: "Kategori" },
+  ...periods.map((period) => ({ key: String(period), label: String(period), align: "end" as const })),
+  ...detail.map((column) => ({ key: column.label, label: column.label })),
+];
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={680}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      {rows.length} lintasan, satu per kategori, masing-masing melintasi {periods.length} periode pada skala
+      vertikal yang sama. Nilai lengkap tersedia pada tabel.
+    </desc>
+
+    <g class="axis" aria-hidden="true">
+      {axisLabel && <text class="axis-label" x={margin.left} y="16">{axisLabel}</text>}
+      {periods.map((period, index) => (
+        <g>
+          <line x1={px(index)} x2={px(index)} y1={margin.top - 14} y2={margin.top + rows.length * rowHeight - 18} />
+          <text x={px(index)} y={margin.top - 22} text-anchor="middle">{period}</text>
+        </g>
+      ))}
+    </g>
+
+    <g class="scale-note" aria-hidden="true">
+      <text x={margin.left + plotWidth} y="16" text-anchor="end">
+        {scale === "shared"
+          ? `skala bersama ${valueFormatter(sharedMin)}–${valueFormatter(sharedMax)}`
+          : "tiap baris berskala sendiri · bandingkan bentuk, bukan tinggi"}
+      </text>
+    </g>
+
+    {rows.map((row) => {
+      const readings = row.points.map((point) => `${periods[point.index]} ${valueFormatter(point.value)}`).join(", ");
+      const tooltip = `${row.label}: ${readings}.`;
+      return (
+        <g class="trend-row" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <text class="row-label" x={margin.left - 20} y={row.top + (row.lines.length === 1 ? 24 : 17)} text-anchor="end">
+            {row.lines.map((line, lineIndex) => (
+              <tspan x={margin.left - 20} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>
+            ))}
+          </text>
+
+          <line class="baseline" x1={margin.left} x2={margin.left + plotWidth} y1={row.top + trackHeight} y2={row.top + trackHeight} />
+          <path class="trend" d={row.path} fill="none" />
+
+          {row.points.map((point) => (
+            <circle class="point" cx={point.x} cy={point.y} r="4.5" />
+          ))}
+          {row.last && <circle class="point is-last" cx={row.last.x} cy={row.last.y} r="6" />}
+
+          <text class="row-value" x={margin.left + plotWidth + 18} y={row.top + trackHeight / 2 + 5}>
+            <tspan class="row-from">{row.first ? valueFormatter(row.first.value) : "—"}</tspan>
+            <tspan class="row-arrow"> → </tspan>
+            <tspan class="row-to">{row.last ? valueFormatter(row.last.value) : "—"}</tspan>
+            <tspan class="row-marker"> {row.marker}</tspan>
+          </text>
+        </g>
+      );
+    })}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .axis line {
+    stroke: var(--rule-light, #e4e7e9);
+    stroke-width: 1;
+  }
+
+  .axis text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .axis .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .scale-note text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .baseline {
+    stroke: var(--rule-light, #e4e7e9);
+    stroke-width: 1;
+  }
+
+  .trend {
+    stroke: var(--chart-primary, #01416b);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .point {
+    fill: var(--chart-primary, #01416b);
+    stroke: var(--surface, #fff);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .point.is-last {
+    stroke-width: 2;
+  }
+
+  .row-label {
+    fill: currentColor;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .row-value {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .row-from {
+    fill: var(--ink-muted, #656b70);
+    font-weight: 600;
+  }
+
+  .row-arrow {
+    fill: var(--ink-muted, #656b70);
+  }
+
+  .row-marker {
+    fill: var(--ink-muted, #656b70);
+    font-size: 10px;
+  }
+
+  .trend-row:hover .trend,
+  .trend-row:focus .trend {
+    stroke-width: 3.5;
+  }
+
+  .trend-row:focus-visible {
+    outline: none;
+  }
+
+  .trend-row:focus-visible .baseline {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+</style>

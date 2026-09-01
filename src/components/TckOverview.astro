@@ -8,11 +8,16 @@ interface Row {
   satuan: string;
   target_tw3: number;
   target_tw4: number;
-  capaian_tw3: number;
-  rasio_tw3: number;
+  capaian_tw3: number | null;
+  kuartal_dinilai: "tw1" | "tw2" | "tw3";
+  capaian_dinilai: number;
+  target_dinilai: number;
+  rasio_kuartal: number;
   rasio_thd_target_tahunan: number;
-  status_tw3: "tercapai" | "mendekati" | "tertinggal" | "meleset";
+  status_kuartal: "tercapai" | "mendekati" | "tertinggal" | "meleset";
   status_thd_tahunan: string;
+  unit_mismatch?: boolean;
+  anomali?: string;
   tag?: string;
   arah?: "naik" | "turun";
 }
@@ -20,26 +25,30 @@ interface Props {
   rows: Row[];
   budgetPercent?: number;
   csvHref?: string;
+  snapshotLabel: string;
 }
-const { rows, budgetPercent = 25.84, csvHref = withBase("/data/tck_2026_indikator.csv") } = Astro.props;
+const { rows, budgetPercent = 25.84, csvHref = withBase("/data/tck_2026_indikator.csv"), snapshotLabel } = Astro.props;
 const resolvedCsvHref = withBase(csvHref);
 const pillarOrder = ["Reputasi", "Kontribusi", "Employability", "Kesejahteraan"];
 const tags = ["IKU", "QS", "THE", "SDGs", "GREEN METRIC"];
 const statusIcon = { tercapai: "✓", mendekati: "≈", tertinggal: "!", meleset: "×" };
 const format = (value: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(value);
 const visualRatio = (row: Row, annual = false) => {
-  const target = annual ? row.target_tw4 : row.target_tw3;
-  if (row.arah === "turun") return row.capaian_tw3 <= 0 ? 250 : (target / row.capaian_tw3) * 100;
-  return target <= 0 ? 0 : (row.capaian_tw3 / target) * 100;
+  const target = annual ? row.target_tw4 : row.target_dinilai;
+  const actual = row.capaian_dinilai;
+  if (row.arah === "turun") return actual <= 0 ? 250 : (target / actual) * 100;
+  return target <= 0 ? 0 : (actual / target) * 100;
 };
 const markerRatio = (row: Row) => {
   if (row.arah === "turun") return row.target_tw4 <= 0 ? 100 : (row.target_tw3 / row.target_tw4) * 100;
   return row.target_tw3 <= 0 ? 100 : (row.target_tw4 / row.target_tw3) * 100;
 };
 const pctPosition = (ratio: number) => Math.min(100, Math.max(0, ratio / 2));
-const achieved = rows.filter((row) => row.status_tw3 === "tercapai").length;
+const achieved = rows.filter((row) => row.status_kuartal === "tercapai").length;
 const annual = rows.filter((row) => row.status_thd_tahunan === "tercapai").length;
-const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.status_tw3 === "meleset").length;
+const behind = rows.filter((row) => row.status_kuartal === "tertinggal" || row.status_kuartal === "meleset").length;
+const flagged = rows.filter((row) => row.anomali);
+const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW", "TW");
 ---
 
 <div class="tck" data-tck-overview>
@@ -51,7 +60,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
   </div>
 
   <div class="tck__context">
-    <p><strong>Triwulan III Masih Berjalan:</strong> Posisi data ditarik per 19 Agustus 2026 (periode TW3 berakhir 30 September).</p>
+    <p><strong>Triwulan III Masih Berjalan:</strong> Posisi data ditarik per {snapshotLabel} (periode TW3 berakhir 30 September).</p>
     <p><strong>Realisasi Anggaran:</strong> {format(budgetPercent)}% terserap. Sesuai siklus keuangan universitas, penyerapan anggaran terkonsentrasi pada Triwulan IV.</p>
   </div>
 
@@ -70,7 +79,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
         <section class="tck__group" data-tck-group={pillar} aria-labelledby={`tck-${pillar.toLowerCase()}-title`}>
           <header>
             <h3 id={`tck-${pillar.toLowerCase()}-title`}>{pillar}</h3>
-            <span>{pillarRows.filter((row) => row.status_tw3 === "tercapai").length}/{pillarRows.length} tercapai</span>
+            <span>{pillarRows.filter((row) => row.status_kuartal === "tercapai").length}/{pillarRows.length} tercapai</span>
           </header>
           <ol>
             {pillarRows.map((row) => {
@@ -79,7 +88,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
               const marker = markerRatio(row);
               const rowTags = row.tag?.split("·").map((tag) => tag.trim()).filter(Boolean) ?? [];
               return (
-                <li class={`tck-row tck-row--${row.status_tw3}`} data-tags={rowTags.join("|")}>
+                <li class={`tck-row tck-row--${row.status_kuartal}`} data-tags={rowTags.join("|")}>
                   <div class="tck-row__label">
                     <span class="tck-row__number">{row.no}</span>
                     <span>{row.indikator}</span>
@@ -93,9 +102,10 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
                       {ratio > 200 && <span class="tck-row__overflow" aria-label="Melampaui 200 persen">›</span>}
                     </div>
                     <div class="tck-row__value">
-                      <span class="tck-row__status" aria-hidden="true">{statusIcon[row.status_tw3]}</span>
-                      <strong>{format(row.capaian_tw3)}</strong>
-                      <small>{row.satuan} · {format(ratio)}% TW3 · {format(annualRatio)}% tahunan</small>
+                      <span class="tck-row__status" aria-hidden="true">{statusIcon[row.status_kuartal]}</span>
+                      <strong>{format(row.capaian_dinilai)}</strong>
+                      <small>{row.satuan} · {format(ratio)}% {quarterLabel(row)} · {format(annualRatio)}% tahunan</small>
+                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dinilai pada {quarterLabel(row)}: capaian TW3 tercatat tanpa penyebut persentase.</small>}
                     </div>
                   </div>
                 </li>
@@ -120,16 +130,28 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
     <summary>Tampilkan tabel lengkap 42 indikator</summary>
     <div tabindex="0">
       <table>
-        <caption>Posisi indikator TCK 2026 per 19 Agustus 2026</caption>
-        <thead><tr><th>No.</th><th>Indikator</th><th>Pilar</th><th>Target TW3</th><th>Capaian TW3</th><th>Target tahunan</th><th>Status</th></tr></thead>
+        <caption>Posisi indikator TCK 2026 per {snapshotLabel}</caption>
+        <thead><tr><th>No.</th><th>Indikator</th><th>Pilar</th><th>Kuartal dinilai</th><th>Target</th><th>Capaian</th><th>Target tahunan</th><th>Status</th></tr></thead>
         <tbody>
-          {rows.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{row.pilar}</td><td>{format(row.target_tw3)}</td><td>{format(row.capaian_tw3)}</td><td>{format(row.target_tw4)}</td><td>{row.status_tw3}</td></tr>)}
+          {rows.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{row.pilar}</td><td>{quarterLabel(row)}</td><td>{format(row.target_dinilai)}</td><td>{format(row.capaian_dinilai)}</td><td>{format(row.target_tw4)}</td><td>{row.status_kuartal}</td></tr>)}
         </tbody>
       </table>
     </div>
   </details>
+  {flagged.length > 0 && (
+    <details class="tck__table tck__anomali">
+      <summary>Catatan kualitas data pada {flagged.length} indikator</summary>
+      <div tabindex="0">
+        <table>
+          <caption>Penyimpangan yang ditemukan pada berkas sumber TCK 2026</caption>
+          <thead><tr><th>No.</th><th>Indikator</th><th>Catatan</th></tr></thead>
+          <tbody>{flagged.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{row.anomali}</td></tr>)}</tbody>
+        </table>
+      </div>
+    </details>
+  )}
   <footer class="tck__footer">
-    <span>Sumber: SIMASTER UGM · Sinkronisasi 19 Agustus 2026, 20.00 WIB</span>
+    <span>Sumber: SIMASTER UGM · Sinkronisasi {snapshotLabel}</span>
     <a href={resolvedCsvHref} download>Unduh CSV</a>
   </footer>
 </div>
@@ -180,7 +202,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
   .tck-row__label { position: relative; padding-inline-start: 42px; display: flex; flex-direction: column; color: var(--text-secondary); font-size: 13px; line-height: 1.35; }
   .tck-row__number { position: absolute; inset-inline-start: 0; inset-block-start: 0; color: var(--text-primary); font-weight: 700; }
   .tck-row__label small { margin-block-start: 5px; color: var(--text-muted); font-size: 10px; letter-spacing: .08em; }
-  .tck-row__bullet { display: grid; grid-template-columns: minmax(160px, 1fr) 172px; gap: 16px; align-items: center; }
+  .tck-row__bullet { display: grid; grid-template-columns: minmax(160px, 1fr) 210px; gap: 16px; align-items: center; }
   .tck-row__scale { height: 14px; position: relative; background: repeating-linear-gradient(135deg, var(--surface-2) 0 5px, var(--border-subtle) 5px 6px); }
   .tck-row__scale::after { content: ""; position: absolute; inset: 0 50% 0 auto; border-inline-start: 1px solid var(--grid-line); }
   .tck-row__bar { position: absolute; inset: 2px auto 2px 0; width: var(--bar); max-width: 100%; background: var(--row-color); border-radius: 0 4px 4px 0; }
@@ -188,8 +210,9 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
   .tck-row__tw3 { inset-inline-start: 50%; background: var(--text-primary); }
   .tck-row__annual { inset-inline-start: var(--annual); border-inline-start: 2px dashed var(--text-muted); }
   .tck-row__overflow { position: absolute; inset-inline-end: -12px; inset-block-start: -10px; color: var(--row-color); font-size: 24px; font-weight: 700; }
-  .tck-row__value { display: grid; grid-template-columns: 22px 1fr; align-items: center; gap: 0 5px; }
-  .tck-row__status { grid-row: 1 / span 2; width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; color: var(--row-color); font-size: 11px; font-weight: 700; }
+  .tck-row__value { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; gap: 0 7px; }
+  .tck-row__value > :not(.tck-row__status) { grid-column: 2; }
+  .tck-row__status { grid-column: 1; grid-row: 1 / span 3; width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid currentColor; border-radius: 50%; color: var(--row-color); font-size: 11px; font-weight: 700; }
   .tck-row__value strong { color: var(--text-primary); font-size: 14px; }
   .tck-row__value small { color: var(--text-muted); font-size: 10px; line-height: 1.25; }
   .tck-row--tercapai { --row-color: var(--status-achieved); }
@@ -204,6 +227,7 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
   .tck__table summary { padding-block: 14px; color: var(--text-primary); font-size: 13px; font-weight: 700; }
   .tck__table > div { max-height: 70vh; overflow: auto; }
   .tck__table table { min-width: 900px; font-size: 12px; }
+  .tck-row__note { display: block; margin-block-start: 4px; color: var(--status-lagging); font-size: 10px; line-height: 1.35; }
   .tck__footer { margin-block-start: 16px; display: flex; justify-content: space-between; gap: 20px; color: var(--text-muted); font-size: 12px; }
   .tck__footer a { font-weight: 700; }
   @media (max-width: 820px) {
@@ -213,14 +237,13 @@ const behind = rows.filter((row) => row.status_tw3 === "tertinggal" || row.statu
     .tck__context { flex-direction: column; }
     .tck__axis { display: none; }
     .tck-row { grid-template-columns: 1fr; gap: 10px; padding-block: 16px; }
-    .tck-row__bullet { grid-template-columns: 1fr 150px; }
+    .tck-row__bullet { grid-template-columns: 1fr 190px; }
   }
   @media (max-width: 520px) {
     .tck__summary { grid-template-columns: 1fr; }
     .tck__summary > div + div { border-inline-start: 0; border-block-start: 1px solid var(--border-subtle); }
     .tck-row__bullet { grid-template-columns: 1fr; }
-    .tck-row__value { grid-template-columns: 22px auto 1fr; }
-    .tck-row__value small { margin-inline-start: 4px; }
+    .tck-row__value { grid-template-columns: 22px minmax(0, 1fr); }
     .tck__footer { flex-direction: column; }
   }
 </style>

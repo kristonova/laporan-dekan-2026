@@ -1,0 +1,100 @@
+{
+  "total": 684,
+  "skema": 67,
+  "per_prodi": [
+    {
+      "prodi": "Kimia",
+      "penerima": 207
+    },
+    {
+      "prodi": "Geofisika",
+      "penerima": 97
+    },
+    {
+      "prodi": "Matemat",
+      "penerima": 87
+    },
+    {
+      "prodi": "Fisika",
+      "penerima": 84
+    },
+    {
+      "prodi": "Elins",
+      "penerima": 74
+    },
+    {
+      "prodi": "IlKomp",
+      "penerima": 69
+    },
+    {
+      "prodi": "Statistika",
+      "penerima": 54
+    },
+    {
+      "prodi": "Aktuaria",
+      "penerima": 12
+    }
+  ],
+  "per_skema": [
+    {
+      "beasiswa": "Kartu Indonesia Pintar Kuliah (KIP-K) Tahun 2022",
+      "penerima": 141
+    },
+    {
+      "beasiswa": "Kartu Indonesia Pintar Kuliah (KIP-K) Tahun 2021",
+      "penerima": 140
+    },
+    {
+      "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2024",
+      "penerima": 108
+    },
+    {
+      "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2023",
+      "penerima": 96
+    },
+    {
+      "beasiswa": "Beasiswa Anak Pegawai UGM Semester Gasal 2024/2025",
+      "penerima": 28
+    },
+    {
+      "beasiswa": "Beasiswa Anak Pegawai UGM Semester Genap 2024/2025",
+      "penerima": 24
+    },
+    {
+      "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2025",
+      "penerima": 13
+    },
+    {
+      "beasiswa": "BEASISWA PENDIDIKAN “BAYAN PEDULI” PROGRAM 2023",
+      "penerima": 10
+    },
+    {
+      "beasiswa": "Dato Low Tuck Kwong Purnomo Yusgiantoro 2024",
+      "penerima": 8
+    },
+    {
+      "beasiswa": "BPI 2023 Puslapdik Sarjana",
+      "penerima": 7
+    },
+    {
+      "beasiswa": "Dato Low Tuck Kwong Kategori Aktivis 2024",
+      "penerima": 7
+    },
+    {
+      "beasiswa": "BEASISWA PENDIDIKAN “BAYAN PEDULI” PROGRAM 2024",
+      "penerima": 6
+    },
+    {
+      "beasiswa": "Program Bantuan Riset Bagi Talenta Riset dan Inovasi (BARISTA) 2024 BRIN",
+      "penerima": 6
+    },
+    {
+      "beasiswa": "Tanoto Teladan 2022",
+      "penerima": 6
+    },
+    {
+      "beasiswa": "Tanoto Teladan 2025",
+      "penerima": 4
+    }
+  ]
+}

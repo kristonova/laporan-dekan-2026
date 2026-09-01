@@ -1,0 +1,47 @@
+{
+  "total": 64,
+  "negara": 10,
+  "universitas": 33,
+  "per_negara": [
+    {
+      "negara": "Japan",
+      "n": 32
+    },
+    {
+      "negara": "",
+      "n": 6
+    },
+    {
+      "negara": "Singapore",
+      "n": 6
+    },
+    {
+      "negara": "UK",
+      "n": 6
+    },
+    {
+      "negara": "Taiwan",
+      "n": 4
+    },
+    {
+      "negara": "German",
+      "n": 3
+    },
+    {
+      "negara": "Netherlands",
+      "n": 3
+    },
+    {
+      "negara": "Swedia",
+      "n": 2
+    },
+    {
+      "negara": "China",
+      "n": 1
+    },
+    {
+      "negara": "Denmark",
+      "n": 1
+    }
+  ]
+}
