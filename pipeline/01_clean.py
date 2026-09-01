@@ -404,6 +404,190 @@ def tidy_label(value: object) -> str:
     return " ".join(words)
 
 
+# --- Daftar mahasiswa --------------------------------------------------------
+
+# Programmes prefixed "ND" in the roster are non-degree: inbound exchange and
+# MBKM participants who never enter a degree cohort. They are kept, but tagged,
+# because mixing them into the S1 counts is what makes this file disagree with
+# the registration figures in PROFIL MABA.
+NON_DEGREE_PREFIX = "ND "
+# Department names are spelled exactly as `admissions.csv` spells them, so a
+# programme keeps one colour and one label across every scene of the report.
+PROGRAMME_DEPARTMENT = {
+    "fisika": "Dep. Fisika",
+    "geofisika": "Dep. Fisika",
+    "elektronika dan instrumentasi": "Dep IKE",
+    "ilmu komputer": "Dep IKE",
+    "kimia": "Dep Kimia",
+    "matematika": "Dep Matematika",
+    "statistika": "Dep Matematika",
+    "ilmu aktuaria": "Dep Matematika",
+}
+# The source distinguishes ten final statuses. Five groups are enough to read a
+# cohort's outcome, and grouping them here keeps the suppression threshold from
+# erasing the rare ones entirely.
+STATUS_GROUPS = {
+    "LULUS": "Lulus",
+    "AKTIF": "Masih aktif",
+    "REGISTRASI": "Masih aktif",
+    "KAMPUS MERDEKA": "Masih aktif",
+    "CUTI DENGAN IJIN": "Masih aktif",
+    "MENGUNDURKAN DIRI": "Mengundurkan diri",
+    "NON AKTIF": "Tidak aktif",
+    "HILANG": "Tidak aktif",
+    "SELESAI PENDIDIKAN NON GE": "Selesai non-gelar",
+    "MENINGGAL DUNIA": "Lainnya",
+}
+# Six provinces carry the bulk of the intake; the split is what the "is FMIPA
+# becoming national or staying local?" scene is about.
+JAVA_PROVINCES = {
+    "Jawa Tengah", "Daerah Istimewa Yogyakarta", "DKI Jakarta",
+    "Jawa Barat", "Jawa Timur", "Banten",
+}
+UNKNOWN_PROVINCE = "Tidak teridentifikasi"
+
+
+def programme_parts(value: object) -> tuple[str, str, str]:
+    """Split a roster programme cell into level, tidy programme, and department."""
+    raw = re.sub(r"\s+", " ", str(value or "")).strip()
+    if not raw:
+        return "", "", "Belum terpetakan"
+    non_degree = raw.upper().startswith(NON_DEGREE_PREFIX)
+    bare = raw.split(" ", 1)[1] if (non_degree or raw.upper().startswith("S1 ")) else raw
+    department = PROGRAMME_DEPARTMENT.get(bare.strip().lower(), "Belum terpetakan")
+    return ("Non-gelar" if non_degree else "Sarjana"), tidy_label(bare), department
+
+
+# School names are shouted in the source too, but `tidy_label` would turn SMAN
+# into "Sman". The school-type prefixes are the part readers scan for, so they
+# stay upper-case while the place name is recased.
+SCHOOL_ACRONYMS = {
+    "SMA", "SMAN", "SMAS", "SMK", "SMKN", "SMKS", "SMU", "SMTA",
+    "MA", "MAN", "MAS", "MTS", "SMP", "SMPN", "SD", "SDN",
+    "IT", "IPA", "IPS", "PPMI", "PGRI", "NU", "BPK", "UGM",
+}
+
+
+def tidy_school(value: object) -> str:
+    """Recase a shouted school name, preserving the school-type acronym."""
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return ""
+    text = re.sub(r"\s+", " ", str(value)).strip()
+    if not text:
+        return ""
+    # A handful of rows carry the source's own catch-all instead of a school.
+    # It is not a school, so it is dropped rather than charted as the seventh
+    # largest feeder; the count of unrecorded schools is published separately.
+    if re.fullmatch(r"[A-Za-z/ ]*lain[- ]?lain", text, re.I):
+        return ""
+    words = []
+    for word in text.split(" "):
+        parts = []
+        for part in word.split("/"):
+            if part.strip(".,").upper() in SCHOOL_ACRONYMS:
+                parts.append(part.upper())
+            elif part.isupper():
+                parts.append(part[:1] + part[1:].lower())
+            else:
+                parts.append(part)
+        words.append("/".join(parts))
+    return " ".join(words)
+
+
+def clean_students(province_lookup: dict) -> None:
+    """Group the roster's free-text columns into the categories the report shows.
+
+    Nothing here re-identifies anyone: the loader already dropped every personal
+    column, so this stage only rewrites category labels.
+    """
+    roster = pd.read_csv(LOADED_DIR / "student_roster.csv", low_memory=False)
+
+    pathway_rules = pd.read_csv(MAPPINGS_DIR / "jalur_masuk.csv")
+    pathway_map = {str(raw).strip().lower(): group for raw, group
+                   in zip(pathway_rules["raw"], pathway_rules["kelompok"])}
+
+    occupation_rules = pd.read_csv(MAPPINGS_DIR / "pekerjaan_wali.csv")
+    occupation_patterns = [(re.compile(pattern, re.I), group) for pattern, group
+                           in zip(occupation_rules["pola"], occupation_rules["kelompok"])]
+    # The lookup shipped for partnerships is exact-case; the roster shouts some
+    # of the same names, so it is re-keyed case-insensitively here.
+    province_by_name = {str(raw).strip().lower(): value for raw, value in province_lookup.items()}
+
+    def pathway(value: object) -> str:
+        key = str(value or "").strip().lower()
+        if not key or key == "nan":
+            return "Tidak tercatat"
+        group = pathway_map.get(key)
+        if group is None:
+            raise ValueError(f"Jalur masuk belum dipetakan: {value!r}")
+        return group
+
+    def occupation(value: object) -> str:
+        text = str(value or "").strip().lower()
+        if not text or text == "nan":
+            return "Tidak dilaporkan"
+        for pattern, group in occupation_patterns:
+            if pattern.search(text):
+                return group
+        return "Tidak dilaporkan"
+
+    def label(value: object, fallback: str = "") -> str:
+        """Tidy a category cell. `float("nan") or ""` yields "nan", so NaN is
+        tested for explicitly rather than relying on truthiness."""
+        if value is None or (isinstance(value, float) and pd.isna(value)):
+            return fallback
+        return tidy_label(value) or fallback
+
+    def province(value: object) -> tuple[str, str]:
+        key = str(value or "").strip().lower()
+        if not key or key == "nan":
+            return UNKNOWN_PROVINCE, ""
+        entry = province_by_name.get(key)
+        if entry is None:
+            raise ValueError(f"Provinsi belum dipetakan: {value!r}")
+        return entry["canonical"], entry["bps_code"]
+
+    levels, programmes, departments = zip(*roster["program_studi"].map(programme_parts))
+    ktp_names, ktp_codes = zip(*roster["propinsi_ktp"].map(province))
+    school_names, _school_codes = zip(*roster["propinsi_sekolah"].map(province))
+
+    gender = roster["jenis_kelamin"].map(
+        lambda value: {"L": "Laki-laki", "P": "Perempuan"}.get(str(value or "").strip().upper(), "")
+    )
+    # "Tidak ada data" and "Lainnya" both mean "not recorded" in the source; they
+    # are folded together so the chart has one honest residual category.
+    religion = roster["agama"].map(lambda value: label(value, "Tidak dilaporkan"))
+    religion = religion.where(
+        ~religion.str.lower().isin(["tidak ada data", "lainnya"]), "Tidak dilaporkan"
+    )
+
+    clean = pd.DataFrame({
+        "angkatan": pd.to_numeric(roster["angkatan"], errors="coerce").astype("Int64"),
+        "jenjang": levels,
+        "prodi": programmes,
+        "departemen": departments,
+        "jalur": roster["jalur_masuk"].map(pathway),
+        "jalur_raw": roster["jalur_masuk"].fillna("").astype(str).str.strip(),
+        "kelas": roster["sub_angkatan"].map(lambda value: label(value, "Tidak tercatat")),
+        "gender": gender,
+        "agama": religion,
+        "provinsi": ktp_names,
+        "provinsi_kode": ktp_codes,
+        "kabupaten": roster["kabupaten_ktp"].map(label),
+        "provinsi_sekolah": school_names,
+        "sekolah": roster["sekolah_asal"].map(tidy_school),
+        "pekerjaan_wali": roster["pekerjaan_wali"].map(occupation),
+        "daerah_3t": roster["asal_3t"].notna(),
+        "ipk": pd.to_numeric(roster["ipk"], errors="coerce"),
+        "sks": pd.to_numeric(roster["sks_kumulatif"], errors="coerce"),
+        "status": roster["status_akhir"].map(
+            lambda value: STATUS_GROUPS.get(str(value or "").strip().upper(), "Lainnya")
+        ),
+    })
+    clean["di_jawa"] = clean["provinsi"].isin(JAVA_PROVINCES)
+    clean.to_csv(CLEAN_DIR / "students.csv", index=False)
+
+
 def main() -> None:
     ensure_directories()
     province_map = pd.read_csv(MAPPINGS_DIR / "provinsi_bps.csv", dtype=str).fillna("")
@@ -483,6 +667,7 @@ def main() -> None:
 
     clean_tck()
     clean_partnerships(province_lookup)
+    clean_students(province_lookup)
     clean_tracer()
     clean_posbindu()
 

@@ -91,6 +91,10 @@
   --dept-matematika: #4a3aa7;
   --dept-unmapped: #73716c;
 
+  /* Pillar 5 accent. Deliberately outside the department ramp: the student
+     profile pillar is not a department, and it must not borrow one's colour. */
+  --pillar-teal: #0f7d8c;
+
   /* Sequential scale, light to dark. */
   --seq-100: #cde2fb;
   --seq-250: #86b6ef;
@@ -282,6 +286,14 @@
   /* Ordered marks only in dark mode; split free-position plots into small multiples. */
   --dept-matematika: #9085e9;
   --dept-unmapped: #b7bdc1;
+  --pillar-teal: #35b3c4;
+  /* The sequential ramp inverts on dark so "more" stays the brighter end;
+     the light ramp's darkest step would disappear into the card behind it. */
+  --seq-100: #10304a;
+  --seq-250: #1c5cab;
+  --seq-400: #3987e5;
+  --seq-550: #86b6ef;
+  --seq-700: #cde2fb;
   --div-positive: #59a9dc;
   --div-mid: #383835;
   --div-negative: #ef7373;

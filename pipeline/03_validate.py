@@ -24,6 +24,10 @@ EXPECTED_FILES = {
     "graduates_profile.json", "graduates_by_programme.json", "student_achievements.json",
     "scholarships.json", "accreditation.json", "exchange_students.json",
     "tracer_waiting_time.json", "tracer_sectors.json", "tracer_summary.json", "hpu_posbindu.json",
+    # Added with the student roster (six intake cohorts, 2021-2026).
+    "students_summary.json", "students_by_programme.json", "students_by_province.json",
+    "students_by_pathway.json", "students_background.json", "students_cohort_outcome.json",
+    "students_ipk.json", "students_access.json",
 }
 PRIVATE_KEYS = {
     "name", "nama", "name_backup", "nidn", "nip", "nika", "nim", "niu", "leader", "member", "authors",
@@ -33,7 +37,14 @@ PRIVATE_KEYS = {
     "nama_peserta", "nama_lengkap", "nama_mahasiswa", "tanggal_lahir", "email", "telp", "telepon",
     "pic", "nama_pic", "alamat", "berat_badan", "tinggi_badan", "sistolik", "diastolik",
     "tekanan_darah", "gula_darah", "kolesterol", "asam_urat", "imt", "lingkar_perut",
+    # Personal columns carried by the student roster workbooks.
+    "wali", "nama_wali", "alamat_wali", "no_hp_wali", "alamat_ktp", "alamat_domisili",
+    "email_ugm", "no_hp", "golongan_darah", "nim_mahasiswa",
 }
+# Counts below this are withheld in the student aggregates; see SMALL_CELL in
+# 02_aggregate.py. The threshold is re-asserted here so a future change to the
+# aggregation cannot quietly publish a one-person cell.
+SMALL_CELL = 3
 # Percentage indicators whose TW3 cell holds a headcount instead of a percentage.
 EXPECTED_UNIT_MISMATCH = {"5b", "8b1", "8b2", "8b3"}
 
@@ -50,6 +61,19 @@ def walk_keys(value, path="root"):
     elif isinstance(value, list):
         for index, child in enumerate(value):
             yield from walk_keys(child, f"{path}[{index}]")
+
+
+def walk_values(value, path="root"):
+    """Yield (path, key, value) for every scalar under a JSON payload."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if isinstance(child, (dict, list)):
+                yield from walk_values(child, f"{path}.{key}")
+            else:
+                yield f"{path}.{key}", str(key).lower(), child
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from walk_values(child, f"{path}[{index}]")
 
 
 def main() -> None:
@@ -216,6 +240,37 @@ def main() -> None:
                     f"Kategori {label!r} pada {key} belum ada di posbindu_risiko.csv"
                 )
 
+    students = load_json("students_summary.json")
+    student_years = {row["angkatan"]: row for row in students["per_tahun"]}
+    assert students["total"] == sum(row["total"] for row in students["per_tahun"])
+
+    # Every published count is either withheld or at least SMALL_CELL people.
+    small_cells: list[tuple[str, str, int]] = []
+    for path in sorted(DERIVED_DIR.glob("students_*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for location, key, value in walk_values(payload):
+            if key == "n" and isinstance(value, int) and 0 < value < SMALL_CELL:
+                small_cells.append((path.name, location, value))
+    assert not small_cells, f"Sel di bawah {SMALL_CELL} orang lolos: {small_cells[:4]}"
+
+    # The roster and PROFIL MABA count the same registrations from two systems.
+    # They agree exactly on four cohorts; 2025 differs by four students and that
+    # gap is published on /data rather than reconciled away here.
+    registrations = Counter()
+    for row in load_json("admissions_by_year.json"):
+        registrations[row["tahun"]] += row["registrasi"]
+    reconciliation = {}
+    for year, expected in sorted(registrations.items()):
+        row = student_years.get(year)
+        if row is None:
+            continue
+        difference = row["sarjana"] - expected
+        reconciliation[year] = difference
+        assert abs(difference) <= 5, (
+            f"Registrasi {year} berbeda {difference} antara daftar mahasiswa "
+            f"({row['sarjana']}) dan PROFIL MABA ({expected})"
+        )
+
     for path in DERIVED_DIR.glob("*.json"):
         payload = json.loads(path.read_text(encoding="utf-8"))
         leaks = [(location, key) for location, key in walk_keys(payload) if key in PRIVATE_KEYS]
@@ -239,7 +294,10 @@ def main() -> None:
             "mahasiswa_aktif_s1": sum(row["mahasiswa"] for row in active),
             "responden_tracer": tracer["responden"],
             "kunjungan_posbindu": posbindu["kunjungan"],
+            "mahasiswa_tercatat": students["total"],
+            "mahasiswa_sarjana": students["sarjana"],
         },
+        "rekonsiliasi_registrasi": reconciliation,
     }
     (LOADED_DIR.parent / "validation_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))

@@ -1,0 +1,409 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { finite, formatNumber, scaleLinear, slugify } from "./_utils";
+import indonesiaProvincesRaw from "../../data/geo/indonesia-provinces.json";
+import { withBase } from "../../lib/paths";
+
+type Position = [number, number];
+type PolygonCoordinates = Position[][];
+interface ProvinceFeature {
+  type: "Feature";
+  properties: { code: string; name: string; level: string };
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: PolygonCoordinates | PolygonCoordinates[];
+  };
+}
+
+export interface ProvinceValue extends Record<string, unknown> {
+  /** BPS province code, matching `indonesia-provinces.json`. */
+  code: string;
+  name: string;
+  /** `null` means either no record or a count withheld for being too small. */
+  value: number | null;
+  withheld?: boolean;
+}
+
+interface Props extends Omit<ChartChromeProps<ProvinceValue>, "tableRows" | "tableColumns"> {
+  data: ProvinceValue[];
+  /** One panel per cohort, drawn as small multiples below the main map. */
+  panels?: { label: string; data: ProvinceValue[] }[];
+  width?: number;
+  height?: number;
+  bounds?: { minLat: number; maxLat: number; minLng: number; maxLng: number };
+  valueLabel?: string;
+  /** Number of colour classes. Five is the practical ceiling for a printed map. */
+  bins?: number;
+  labelCount?: number;
+  note?: string;
+}
+
+const {
+  data,
+  panels = [],
+  width = 960,
+  height = 430,
+  bounds = { minLat: -11, maxLat: 6.5, minLng: 94.5, maxLng: 141.5 },
+  valueLabel = "mahasiswa",
+  bins = 5,
+  labelCount = 5,
+  note,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 14, right: 24, bottom: 30, left: 24 };
+const projectX = (lng: number) => scaleLinear(lng, bounds.minLng, bounds.maxLng, margin.left, width - margin.right);
+const projectY = (lat: number) => scaleLinear(lat, bounds.maxLat, bounds.minLat, margin.top, height - margin.bottom);
+
+const provinceFeatures = (indonesiaProvincesRaw as unknown as { features: ProvinceFeature[] }).features;
+const indonesiaGeoJsonUrl = withBase("/data/indonesia-provinces.geojson");
+
+const ringPath = (ring: Position[]) => ring.length
+  ? `${ring.map(([lng, lat], index) => `${index === 0 ? "M" : "L"}${projectX(lng).toFixed(2)} ${projectY(lat).toFixed(2)}`).join(" ")} Z`
+  : "";
+const provincePath = (feature: ProvinceFeature) => {
+  const polygons = feature.geometry.type === "Polygon"
+    ? [feature.geometry.coordinates as PolygonCoordinates]
+    : feature.geometry.coordinates as PolygonCoordinates[];
+  return polygons.flatMap((polygon) => polygon.map(ringPath)).join(" ");
+};
+/* Paths do not change between the main map and the panels, so they are built
+   once rather than once per panel — this map is drawn seven times on one page. */
+const paths = new Map(provinceFeatures.map((feature) => [feature.properties.code, provincePath(feature)]));
+
+/* Bin thresholds come from quantiles of the values actually present, so a
+   distribution as skewed as this one (one province holds a quarter of the
+   intake) still separates the small provinces from each other. */
+const present = data.filter((row) => row.value !== null && Number.isFinite(Number(row.value)));
+const sorted = present.map((row) => finite(row.value)).sort((a, b) => a - b);
+const classCount = Math.max(2, Math.min(bins, sorted.length || 2));
+const thresholds = Array.from({ length: classCount - 1 }, (_, index) => {
+  const position = ((index + 1) / classCount) * (sorted.length - 1);
+  const low = Math.floor(position);
+  const high = Math.ceil(position);
+  return sorted[low] + (sorted[high] - sorted[low]) * (position - low);
+});
+const rampSteps = ["100", "250", "400", "550", "700"];
+const rampFallback = ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"];
+/* Five tokens for up to five classes; fewer classes take the darker end so the
+   top class always reads as "most". */
+const rampOffset = rampSteps.length - classCount;
+const binColor = (index: number) => {
+  const step = rampOffset + index;
+  return `var(--seq-${rampSteps[step]}, ${rampFallback[step]})`;
+};
+const binOf = (value: number) => {
+  let index = 0;
+  while (index < thresholds.length && value > thresholds[index]) index += 1;
+  return index;
+};
+
+const byCode = (rows: ProvinceValue[]) => new Map(rows.map((row) => [String(row.code), row]));
+const mainByCode = byCode(data);
+const total = present.reduce((sum, row) => sum + finite(row.value), 0);
+const withheldCount = data.filter((row) => row.withheld).length;
+const maxValue = sorted.at(-1) ?? 0;
+
+const fillFor = (row: ProvinceValue | undefined) =>
+  row && row.value !== null ? binColor(binOf(finite(row.value))) : `url(#${id}-nodata)`;
+const describe = (feature: ProvinceFeature, row: ProvinceValue | undefined) => {
+  if (!row) return `${feature.properties.name}: tidak ada mahasiswa tercatat`;
+  if (row.value === null) {
+    return `${feature.properties.name}: ${row.withheld ? `kurang dari 3 ${valueLabel}, angka disamarkan` : "tidak tercatat"}`;
+  }
+  return `${feature.properties.name}: ${formatNumber(finite(row.value))} ${valueLabel}`;
+};
+
+/* Legend ranges are written from the thresholds so the reader never has to
+   guess where one class ends and the next begins. */
+const legendItems = Array.from({ length: classCount }, (_, index) => {
+  const low = index === 0 ? sorted[0] ?? 0 : Math.floor(thresholds[index - 1]) + 1;
+  const high = index === classCount - 1 ? maxValue : Math.floor(thresholds[index]);
+  return {
+    color: binColor(index),
+    label: low >= high ? formatNumber(low) : `${formatNumber(low)}–${formatNumber(high)}`,
+  };
+});
+
+const topProvinces = [...present]
+  .sort((a, b) => finite(b.value) - finite(a.value))
+  .slice(0, labelCount);
+
+const tableRows: ProvinceValue[] = [...data]
+  .sort((a, b) => finite(b.value) - finite(a.value) || a.name.localeCompare(b.name, "id"))
+  .map((row) => ({
+    ...row,
+    tampil: row.value === null ? (row.withheld ? "disamarkan (<3)" : "tidak tercatat") : formatNumber(finite(row.value)),
+  }));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  tableRows={tableRows}
+  tableColumns={[
+    { key: "name", label: "Provinsi" },
+    { key: "code", label: "Kode BPS" },
+    { key: "tampil", label: `Jumlah ${valueLabel}`, align: "end" },
+  ]}
+  class={className}
+  {hideHeader}
+  {note}
+>
+  <div class="choropleth">
+    <p class="choropleth__counter">
+      <output>{formatNumber(total)} {valueLabel}</output>
+      <span>tersebar di {formatNumber(present.length)} provinsi</span>
+    </p>
+
+    <svg class="choropleth__main" viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+      <title id={`${id}-svg-title`}>{title}</title>
+      <desc id={`${id}-svg-desc`}>
+        Peta koroplet 38 provinsi Indonesia. Warna yang lebih pekat berarti lebih banyak {valueLabel};
+        provinsi berarsir tidak memiliki catatan atau angkanya disamarkan karena kurang dari tiga orang.
+        Seluruh angka tersedia pada tabel di bawah peta.
+      </desc>
+      <defs>
+        <pattern id={`${id}-nodata`} width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="var(--surface-subtle, #f0f3f4)" />
+          <line x1="0" y1="0" x2="0" y2="6" stroke="var(--rule-strong, #aeb8be)" stroke-width="1.5" />
+        </pattern>
+      </defs>
+      <g class="provinces">
+        {provinceFeatures.map((feature) => {
+          const row = mainByCode.get(feature.properties.code);
+          return (
+            <path
+              d={paths.get(feature.properties.code)}
+              fill={fillFor(row)}
+              fill-rule="evenodd"
+              tabindex="0"
+              role="img"
+              aria-label={describe(feature, row)}
+            >
+              <title>{describe(feature, row)}</title>
+            </path>
+          );
+        })}
+      </g>
+      <g class="choropleth__labels" aria-hidden="true">
+        {topProvinces.map((row) => {
+          const feature = provinceFeatures.find((item) => item.properties.code === String(row.code));
+          if (!feature) return null;
+          /* Anchor each label on its own polygon's bounding-box centre: the
+             report has no centroid table keyed by BPS code, and a bounding-box
+             centre is close enough for a label that also names the province. */
+          const positions = (feature.geometry.type === "Polygon"
+            ? [feature.geometry.coordinates as PolygonCoordinates]
+            : feature.geometry.coordinates as PolygonCoordinates[]
+          ).flat(2) as Position[];
+          const lngs = positions.map(([lng]) => lng);
+          const lats = positions.map(([, lat]) => lat);
+          const x = projectX((Math.min(...lngs) + Math.max(...lngs)) / 2);
+          const y = projectY((Math.min(...lats) + Math.max(...lats)) / 2);
+          return (
+            <text x={x} y={y} text-anchor="middle">
+              <tspan class="choropleth__halo">{formatNumber(finite(row.value))}</tspan>
+              <tspan class="choropleth__value" x={x} y={y}>{formatNumber(finite(row.value))}</tspan>
+            </text>
+          );
+        })}
+      </g>
+    </svg>
+
+    <div class="choropleth__legend" role="img" aria-label={`Skala warna: ${legendItems.map((item) => item.label).join(", ")} ${valueLabel}`}>
+      <span class="choropleth__legend-title">{valueLabel}</span>
+      <ul>
+        {legendItems.map((item) => (
+          <li><i style={`background:${item.color}`} aria-hidden="true"></i>{item.label}</li>
+        ))}
+        <li><i class="choropleth__legend-nodata" aria-hidden="true"></i>tidak ada / disamarkan</li>
+      </ul>
+    </div>
+
+    {panels.length > 1 && (
+      <div class="choropleth__panels" aria-label="Peta per angkatan">
+        {panels.map((panel) => {
+          const lookup = byCode(panel.data);
+          const panelTotal = panel.data.reduce((sum, row) => sum + finite(row.value), 0);
+          const panelProvinces = panel.data.filter((row) => row.value !== null || row.withheld).length;
+          return (
+            <figure class="choropleth__panel">
+              <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${panel.label}: ${formatNumber(panelTotal)} ${valueLabel} di ${formatNumber(panelProvinces)} provinsi`}>
+                <g class="provinces">
+                  {provinceFeatures.map((feature) => (
+                    <path d={paths.get(feature.properties.code)} fill={fillFor(lookup.get(feature.properties.code))} fill-rule="evenodd" />
+                  ))}
+                </g>
+              </svg>
+              <figcaption><strong>{panel.label}</strong> · {formatNumber(panelProvinces)} provinsi</figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    )}
+
+    <p class="choropleth__attribution">
+      {withheldCount > 0 && <>Sebanyak {formatNumber(withheldCount)} sel provinsi memuat kurang dari tiga orang dan angkanya disamarkan. </>}
+      Batas provinsi: Peta Nusa / Laravel Nusa, Kepmendagri 2025, lisensi MIT ·
+      <a href={indonesiaGeoJsonUrl} download>Unduh GeoJSON</a>
+    </p>
+  </div>
+</ChartFrame>
+
+<style>
+  .choropleth {
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .choropleth__counter {
+    margin: 0 0 0.35rem;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.85rem;
+  }
+
+  .choropleth__counter output {
+    margin-inline-end: 0.4rem;
+    color: var(--ink, #2b2d2f);
+    font-size: 1.35rem;
+    font-weight: 850;
+  }
+
+  .choropleth__main {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .provinces path {
+    stroke: var(--surface, #fff);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+  }
+
+  .choropleth__main .provinces path:hover,
+  .choropleth__main .provinces path:focus-visible {
+    stroke: var(--ink, #2b2d2f);
+    stroke-width: 1.6;
+    outline: none;
+  }
+
+  /* The value sits on whichever bin colour happens to be underneath, so it is
+     drawn twice: once as a thick same-colour-as-surface halo, once as ink. */
+  .choropleth__halo {
+    fill: none;
+    stroke: var(--surface, #fff);
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+    paint-order: stroke;
+  }
+
+  .choropleth__labels text {
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .choropleth__halo,
+  .choropleth__value {
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .choropleth__value { fill: var(--ink, #2b2d2f); }
+
+  .choropleth__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.9rem;
+    margin-block-start: 0.35rem;
+    font-size: 0.8rem;
+  }
+
+  .choropleth__legend-title {
+    color: var(--ink-muted, #60676c);
+    font-weight: 700;
+    text-transform: lowercase;
+  }
+
+  .choropleth__legend ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .choropleth__legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .choropleth__legend i {
+    inline-size: 18px;
+    block-size: 12px;
+    border: 1px solid var(--rule-strong, #aeb8be);
+  }
+
+  .choropleth__legend-nodata {
+    background: repeating-linear-gradient(
+      45deg,
+      var(--surface-subtle, #f0f3f4) 0 2px,
+      var(--rule-strong, #aeb8be) 2px 3px
+    );
+  }
+
+  .choropleth__panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-block-start: 1rem;
+  }
+
+  .choropleth__panel { margin: 0; }
+
+  .choropleth__panel svg {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .choropleth__panel .provinces path { stroke-width: 0.4; }
+
+  .choropleth__panel figcaption {
+    margin-block-start: 0.15rem;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.75rem;
+  }
+
+  .choropleth__panel figcaption strong { color: var(--ink, #2b2d2f); }
+
+  .choropleth__attribution {
+    margin: 0.7rem 0 0;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.72rem;
+  }
+
+  @media (max-width: 720px) {
+    .choropleth__panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .choropleth__labels { display: none; }
+  }
+</style>

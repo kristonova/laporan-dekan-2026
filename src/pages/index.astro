@@ -17,12 +17,14 @@ import FundingShift from "../components/FundingShift.astro";
 import SceneBlock from "../components/SceneBlock.astro";
 import {
   BulletChart,
+  ChoroplethMap,
   DotMatrix,
   HorizontalBarChart,
   LineAreaChart,
   PointMap,
   RiskProfile,
   SDGGrid,
+  SlopeChart,
   StackedBarChart,
   TrendRows,
   TopicBubbles,
@@ -64,6 +66,14 @@ import tracerSectorsRaw from "../data/derived/tracer_sectors.json";
 import tracerWaitingRaw from "../data/derived/tracer_waiting_time.json";
 import tracerSummaryRaw from "../data/derived/tracer_summary.json";
 import hpuRaw from "../data/derived/hpu_posbindu.json";
+import studentSummaryRaw from "../data/derived/students_summary.json";
+import studentProgrammeRaw from "../data/derived/students_by_programme.json";
+import studentProvinceRaw from "../data/derived/students_by_province.json";
+import studentPathwayRaw from "../data/derived/students_by_pathway.json";
+import studentBackgroundRaw from "../data/derived/students_background.json";
+import studentOutcomeRaw from "../data/derived/students_cohort_outcome.json";
+import studentIpkRaw from "../data/derived/students_ipk.json";
+import studentAccessRaw from "../data/derived/students_access.json";
 
 const citations: any[] = (citationsRaw as any[]).filter((row) => row.year >= 2019 && row.year <= 2025);
 const citationTotal = (citationsRaw as any[]).reduce((sum, row) => sum + row.citations, 0);
@@ -423,6 +433,219 @@ const issueCard = (row: any, title: string) => ({
 const reputationIssues = ["11", "18"].map((no) => issueCard(getTckRow(no), no === "11" ? "Publikasi Mahasiswa Doktor" : "Mitra Riset Internasional"));
 const contributionIssues = behindRows.filter((row) => row.pilar === "Kontribusi").slice(0, 3).map((row) => issueCard(row, row.indikator.length > 46 ? `${row.indikator.slice(0, 44)}…` : row.indikator));
 
+/* --- Pilar 5: profil mahasiswa ------------------------------------------ */
+/* Every count below is already aggregated and small-cell suppressed by the
+   pipeline; a null `n` means "fewer than three people", never zero. */
+const students = studentSummaryRaw as any;
+const studentAccess = studentAccessRaw as any;
+const studentBackground = studentBackgroundRaw as any;
+const studentIpk = studentIpkRaw as any;
+const studentYears = students.tahun as number[];
+const studentYearRows = students.per_tahun as any[];
+const studentFirst = studentYearRows[0];
+const studentLast = studentYearRows[studentYearRows.length - 1];
+
+/* Programme mix per cohort. Non-degree programmes are folded into one series so
+   the eight degree programmes stay readable. */
+const studentProgrammeRows = studentProgrammeRaw as any[];
+const degreeProgrammes = [...new Set(studentProgrammeRows.filter((row) => row.jenjang === "Sarjana").map((row) => row.prodi as string))].sort();
+const programmeSeriesColor: Record<string, string> = {
+  Kimia: DEPT.kimia,
+  "Ilmu Komputer": DEPT.ike,
+  "Elektronika dan Instrumentasi": ACCENT.orange,
+  Fisika: DEPT.fisika,
+  Geofisika: SEQ[250],
+  Matematika: DEPT.matematika,
+  Statistika: ACCENT.navy,
+  "Ilmu Aktuaria": ACCENT.teal,
+};
+const programmeSeries = [
+  ...degreeProgrammes.map((prodi) => ({ key: prodi, label: prodi, color: programmeSeriesColor[prodi] ?? ACCENT.slate })),
+  { key: "Non-gelar", label: "Non-gelar (pertukaran & MBKM)", color: ACCENT.mist },
+];
+const programmeMix = studentYears.map((year) => {
+  const row: Record<string, number | string> = { year };
+  degreeProgrammes.forEach((prodi) => {
+    row[prodi] = studentProgrammeRows
+      .filter((item) => item.angkatan === year && item.jenjang === "Sarjana" && item.prodi === prodi)
+      .reduce((sum, item) => sum + (item.n ?? 0), 0);
+  });
+  row["Non-gelar"] = studentProgrammeRows
+    .filter((item) => item.angkatan === year && item.jenjang !== "Sarjana")
+    .reduce((sum, item) => sum + (item.n ?? 0), 0);
+  return row;
+});
+
+/* Gender share per degree programme, across all six cohorts. */
+const genderByProgramme = degreeProgrammes.map((prodi) => {
+  const rows = studentProgrammeRows.filter((item) => item.jenjang === "Sarjana" && item.prodi === prodi);
+  const perempuan = rows.reduce((sum, item) => sum + item.perempuan, 0);
+  const laki = rows.reduce((sum, item) => sum + item.laki, 0);
+  return { prodi, perempuan, laki, share: (perempuan / Math.max(1, perempuan + laki)) * 100 };
+}).sort((a, b) => b.share - a.share);
+const genderTop = genderByProgramme[0];
+const genderLow = genderByProgramme[genderByProgramme.length - 1];
+const genderSeries = [
+  { key: "perempuan", label: "Perempuan", color: ACCENT.teal },
+  { key: "laki", label: "Laki-laki", color: ACCENT.navy },
+];
+const genderTrend = studentYearRows.map((row) => ({ year: row.angkatan, porsi: row.porsi_perempuan }));
+
+/* Province of origin. The map joins on the BPS code, so rows without one —
+   "Luar Negeri" and the unrecorded addresses — are reported beside the map
+   rather than dropped silently. */
+const studentProvinceRows = studentProvinceRaw as any[];
+const isProvinceCode = (code: unknown) => /^\d+$/.test(String(code ?? ""));
+/* The six-year totals come from the pipeline already, suppressed on their own
+   count. Summing the per-cohort rows here would drop every withheld cell and
+   quietly understate a province. */
+const provinceMap = (studentAccess.provinsi_total as any[])
+  .filter((row) => isProvinceCode(row.provinsi_kode))
+  .map((row) => ({
+    code: row.provinsi_kode,
+    name: row.provinsi,
+    value: row.n,
+    withheld: Boolean(row.disamarkan),
+  }));
+const provincePanels = studentYears.map((year) => ({
+  label: String(year),
+  data: studentProvinceRows
+    .filter((row) => row.angkatan === year && isProvinceCode(row.provinsi_kode))
+    .map((row) => ({ code: row.provinsi_kode, name: row.provinsi, value: row.n, withheld: Boolean(row.disamarkan) })),
+}));
+const reachRows = [
+  { label: "Provinsi terwakili", values: studentAccess.per_tahun.map((row: any) => row.provinsi_terwakili) },
+  { label: "Mahasiswa dari luar Jawa", values: studentAccess.per_tahun.map((row: any) => row.luar_jawa) },
+  { label: "Porsi luar Jawa (%)", values: studentAccess.per_tahun.map((row: any) => row.porsi_luar_jawa) },
+  { label: "Mahasiswa asal daerah 3T", values: studentAccess.per_tahun.map((row: any) => row.daerah_3t) },
+] as any;
+const districtBars = (studentAccess.kabupaten_teratas as any[]).slice(0, 10)
+  .map((row) => ({ label: row.kabupaten, value: row.n, color: SEQ[550] }));
+
+/* Entry pathway. The national selection was renamed mid-period, so the pipeline
+   folds SNMPTN into SNBP and SBMPTN into SNBT before counting. */
+const studentPathwayRows = studentPathwayRaw as any[];
+const pathwayNames = [...new Set(studentPathwayRows.map((row) => row.jalur as string))];
+const pathwayOrder = ["Seleksi Nasional Prestasi", "Seleksi Nasional Tes", "Mandiri UGM", "IUP", "Mahasiswa Asing & Mobilitas", "Afirmasi & RPL"]
+  .filter((name) => pathwayNames.includes(name));
+const pathwayColor: Record<string, string> = {
+  "Seleksi Nasional Prestasi": SEQ[250],
+  "Seleksi Nasional Tes": SEQ[400],
+  "Mandiri UGM": SEQ[700],
+  IUP: ACCENT.orange,
+  "Mahasiswa Asing & Mobilitas": ACCENT.teal,
+  "Afirmasi & RPL": ACCENT.amber,
+};
+const pathwaySeries = pathwayOrder.map((name) => ({ key: name, label: name, color: pathwayColor[name] ?? ACCENT.slate }));
+const pathwayMix = studentYears.map((year) => {
+  const row: Record<string, number | string> = { year };
+  pathwayOrder.forEach((name) => {
+    row[name] = studentPathwayRows.find((item) => item.angkatan === year && item.jalur === name)?.n ?? 0;
+  });
+  return row;
+});
+const pathwayTotals = pathwayOrder.map((name) => ({
+  name,
+  total: studentPathwayRows.filter((row) => row.jalur === name).reduce((sum, row) => sum + (row.n ?? 0), 0),
+})).sort((a, b) => b.total - a.total);
+const pathwayTop = pathwayTotals[0];
+const trackSeries = [
+  { key: "reguler", label: "Reguler", color: SEQ[550] },
+  { key: "iup", label: "IUP", color: ACCENT.orange },
+  { key: "nonGelar", label: "Non-gelar", color: ACCENT.mist },
+];
+const trackMix = studentYearRows.map((row) => ({
+  year: row.angkatan,
+  reguler: row.sarjana - row.iup,
+  iup: row.iup,
+  nonGelar: row.non_gelar,
+}));
+
+/* Guardian occupation and faith. Both are self-reported free text in the source
+   and normalised through pipeline/mappings/pekerjaan_wali.csv. */
+const guardianBars = (studentBackground.pekerjaan_wali_total as any[])
+  .filter((row) => row.n !== null)
+  .map((row) => ({
+    label: row.pekerjaan_wali,
+    value: row.n,
+    color: row.pekerjaan_wali === "Tidak dilaporkan" ? ACCENT.mist : SEQ[550],
+  }));
+const guardianTopRow = (studentBackground.pekerjaan_wali_total as any[])
+  .find((row) => row.n !== null && row.pekerjaan_wali !== "Tidak dilaporkan");
+const guardianGroups = [...new Set((studentBackground.pekerjaan_wali as any[]).map((row) => row.pekerjaan_wali as string))]
+  .filter((group) => group !== "Tidak dilaporkan");
+const guardianRows = guardianGroups.map((group) => ({
+  label: group,
+  values: studentYears.map((year) =>
+    (studentBackground.pekerjaan_wali as any[]).find((row) => row.angkatan === year && row.pekerjaan_wali === group)?.n ?? null),
+})).sort((a, b) => (b.values.at(-1) ?? 0) - (a.values.at(-1) ?? 0)) as any;
+
+const religionNames = [...new Set((studentBackground.agama as any[]).map((row) => row.agama as string))].sort();
+const religionColor: Record<string, string> = {
+  Islam: SEQ[550],
+  Kristen: ACCENT.teal,
+  Katolik: ACCENT.navy,
+  Budha: ACCENT.orange,
+  Hindu: ACCENT.amber,
+  Khonghucu: ACCENT.crimson,
+  "Tidak dilaporkan": ACCENT.mist,
+};
+const religionSeries = religionNames.map((name) => ({ key: name, label: name, color: religionColor[name] ?? ACCENT.slate }));
+const religionMix = studentYears.map((year) => {
+  const row: Record<string, number | string> = { year };
+  religionNames.forEach((name) => {
+    row[name] = (studentBackground.agama as any[]).find((item) => item.angkatan === year && item.agama === name)?.n ?? 0;
+  });
+  return row;
+});
+const schoolBars = (studentBackground.sekolah_teratas as any[]).slice(0, 12)
+  .map((row) => ({ label: row.sekolah, value: row.n, color: SEQ[400] }));
+/* Counted rather than written out, so the sentence cannot drift from the chart
+   the next time the roster is refreshed. */
+const schoolsInYogyakarta = schoolBars.filter((row) => /Yogyakarta$/.test(String(row.label).trim())).length;
+
+/* Cohort outcome. Only the 2021 intake has run its full nominal length, so the
+   later bars are read as a snapshot in progress, not as a finished result. */
+const studentOutcomeRows = studentOutcomeRaw as any[];
+const outcomeOrder = ["Lulus", "Masih aktif", "Selesai non-gelar", "Mengundurkan diri", "Tidak aktif", "Lainnya"]
+  .filter((status) => studentOutcomeRows.some((row) => row.status === status));
+const outcomeColor: Record<string, string> = {
+  Lulus: ACCENT.teal,
+  "Masih aktif": SEQ[400],
+  "Selesai non-gelar": SEQ[250],
+  "Mengundurkan diri": ACCENT.amber,
+  "Tidak aktif": ACCENT.crimson,
+  Lainnya: ACCENT.slate,
+};
+const outcomeSeries = outcomeOrder.map((status) => ({ key: status, label: status, color: outcomeColor[status] ?? ACCENT.slate }));
+const outcomeMix = studentYears.map((year) => {
+  const row: Record<string, number | string> = { year };
+  outcomeOrder.forEach((status) => {
+    row[status] = studentOutcomeRows.find((item) => item.angkatan === year && item.status === status)?.n ?? 0;
+  });
+  return row;
+});
+const cohortFirst = (status: string) =>
+  studentOutcomeRows.find((row) => row.angkatan === studentYears[0] && row.status === status)?.n ?? 0;
+/* Withdrawal counts are not comparable across cohorts — a 2026 intake has had
+   months to withdraw, a 2021 intake five years — so the peak is named rather
+   than a trend claimed. */
+const withdrawalRates = studentYearRows.map((row) => ({
+  year: row.angkatan,
+  n: studentOutcomeRows.find((item) => item.angkatan === row.angkatan && item.status === "Mengundurkan diri")?.n ?? 0,
+  share: ((studentOutcomeRows.find((item) => item.angkatan === row.angkatan && item.status === "Mengundurkan diri")?.n ?? 0) / row.total) * 100,
+}));
+const withdrawalPeak = [...withdrawalRates].sort((a, b) => b.share - a.share)[0];
+
+const ipkYears = studentIpk.tahun as number[];
+const ipkStart = ipkYears[0];
+const ipkEnd = ipkYears[ipkYears.length - 1];
+const ipkSlope = degreeProgrammes.map((prodi) => {
+  const start = (studentIpk.per_prodi as any[]).find((row) => row.angkatan === ipkStart && row.prodi === prodi);
+  const end = (studentIpk.per_prodi as any[]).find((row) => row.angkatan === ipkEnd && row.prodi === prodi);
+  return start && end ? { label: prodi, start: start.median, end: end.median } : null;
+}).filter(Boolean) as any;
+
 const sceneValues: SceneValues = {
   lecturers: institutionRaw.lecturers,
   academicStaff: institutionRaw.academic_staff,
@@ -467,6 +690,34 @@ const sceneValues: SceneValues = {
   posbinduStaff: hpu.kunjungan_per_kriteria.find((row: any) => row.kriteria === "Tendik")?.n ?? 0,
   posbinduTopRisk: riskTop?.indikator ?? "—",
   posbinduTopRiskShare: Math.round((riskTop?.porsi_berisiko ?? 0) * 100),
+  studentsTotal: students.total,
+  studentsUndergraduate: students.sarjana,
+  studentsProgrammes: students.prodi_n,
+  studentsFirstYear: students.tahun_awal,
+  studentsLastYear: students.tahun_akhir,
+  studentsNonDegreeFirst: studentFirst.non_gelar,
+  studentsNonDegreeLast: studentLast.non_gelar,
+  studentsWomenShareFirst: students.porsi_perempuan_awal,
+  studentsWomenShareLast: students.porsi_perempuan_akhir,
+  studentsWomenTopProgramme: genderTop.prodi,
+  studentsWomenTopShare: genderTop.share,
+  studentsWomenLowProgramme: genderLow.prodi,
+  studentsWomenLowShare: genderLow.share,
+  studentsProvincesFirst: students.provinsi_awal,
+  studentsProvincesLast: students.provinsi_akhir,
+  studentsOutsideJavaPeak: students.porsi_luar_jawa_puncak,
+  studentsOutsideJavaPeakYear: students.tahun_luar_jawa_puncak,
+  studentsOutsideJavaLast: students.porsi_luar_jawa_akhir,
+  studentsTopPathway: pathwayTop.name,
+  studentsTopPathwayShare: (pathwayTop.total / students.total) * 100,
+  studentsIup: Math.round(studentYearRows.reduce((sum, row) => sum + row.iup, 0) / studentYearRows.length),
+  studentsGuardianTop: guardianTopRow?.pekerjaan_wali ?? "—",
+  studentsGuardianTopShare: ((guardianTopRow?.n ?? 0) / students.total) * 100,
+  studentsGuardianUnreported: studentBackground.wali_tidak_dilaporkan,
+  studentsSchoolDiyShare: studentBackground.sekolah_porsi_diy,
+  studentsSchoolUnique: studentBackground.sekolah_unik,
+  studentsCohortGraduated: cohortFirst("Lulus"),
+  studentsCohortWithdrew: cohortFirst("Mengundurkan diri"),
   format,
 };
 const deck = (key: keyof typeof scenes) => deckOf(key, sceneValues);
@@ -476,6 +727,10 @@ const pillarSummary = [
   { number: "2", title: "Kontribusi terhadap Bangsa", status: "Tantangan Terbesar", achieved: pillarStats.Kontribusi.achieved, total: pillarStats.Kontribusi.total, takeaway: "Produktivitas riset dan kemitraan tumbuh; percepatan hilirisasi dan pemberitaan ber-SDGs menjadi fokus utama.", href: "#kontribusi", color: "orange" },
   { number: "3", title: "Employability & Lulusan", status: "Fondasi Data Terbentuk", achieved: pillarStats.Employability.achieved, total: pillarStats.Employability.total, takeaway: "Tracer study kini terintegrasi; partisipasi MBKM dan kesiapan karier melampaui target.", href: "#employability", color: "green" },
   { number: "4", title: "Tata Kelola & Kesejahteraan", status: "Tingkat Ketercapaian Tertinggi", achieved: pillarStats.Kesejahteraan.achieved, total: pillarStats.Kesejahteraan.total, takeaway: "Karier dosen dan fasilitas inklusif berkembang pesat; program kesehatan sivitas berjalan rutin.", href: "#kesejahteraan", color: "violet" },
+  /* Not scored by the performance contract: this pillar describes who the
+     faculty teaches, so its card carries a headcount instead of an indicator
+     ratio. */
+  { number: "5", title: "Mahasiswa & Akses Pendidikan", status: "Basis Data Baru", metric: format(students.total), metricLabel: `mahasiswa · ${format(studentYears.length)} angkatan`, takeaway: "Jangkauan provinsi meluas, tetapi porsi mahasiswa perempuan dan konsentrasi sekolah asal perlu diawasi.", href: "#mahasiswa", color: "teal" },
 ] as any;
 ---
 
@@ -675,9 +930,102 @@ const pillarSummary = [
       <DataGap title="Keselamatan Kerja (K3L) dan Ruang Aman Kampus" description="Pemantauan K3L serta pencegahan dan penanganan kekerasan seksual diselenggarakan bersama Satgas PPKS dan Tim K3L Fakultas, namun belum tersedia dalam bentuk data terstruktur yang dapat diagregasi." owner="Satgas PPKS & Tim K3L FMIPA" tone="hold" />
     </StoryScene>
 
+    <PillarHeader id="mahasiswa" number="5" title="Mahasiswa & Akses Pendidikan" evidence="Data Terverifikasi" color="teal" summary="Enam angkatan penuh membentuk potret siapa yang dididik FMIPA: asal daerah, komposisi gender, jalur masuk, latar keluarga, dan perjalanan satu angkatan sejak hari pertama hingga kelulusan." />
+
+    <StoryScene id="siapa-mahasiswa" number="6.1" pillar="Mahasiswa & Akses" question={scenes["6.1"].question} deck={deck("6.1")} wide>
+      <SceneBlock title="Komposisi Mahasiswa per Program Studi dan Angkatan" lede="Proporsi dihitung terhadap seluruh mahasiswa yang tercatat pada angkatan tersebut, termasuk peserta non-gelar.">
+        <StackedBarChart data={programmeMix} xKey="year" series={programmeSeries} normalized title="Komposisi Mahasiswa per Program Studi dan Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <SceneBlock title="Jalur Studi: Reguler, IUP, dan Non-gelar" lede="Satuannya mahasiswa per angkatan, bukan proporsi, agar penyusutan peserta non-gelar terbaca sebagai jumlah.">
+        <StackedBarChart data={trackMix} xKey="year" series={trackSeries} title="Jalur Studi: Reguler, IUP, dan Non-gelar" hideHeader yLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="info"><p>Enam angkatan mencakup <strong>{format(students.total)} mahasiswa</strong>, {format(students.sarjana)} di antaranya program sarjana. Komposisi antarprodi bergerak pelan, tetapi peserta non-gelar—pertukaran masuk dan MBKM—menyusut dari {format(studentFirst.non_gelar)} orang pada {students.tahun_awal} menjadi {format(studentLast.non_gelar)} pada {students.tahun_akhir}, sementara kuota IUP justru bertahan pada kisaran {format(sceneValues.studentsIup)} mahasiswa per angkatan.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="asal-mahasiswa" number="6.2" pillar="Mahasiswa & Akses" question={scenes["6.2"].question} deck={deck("6.2")} tone="paper" wide>
+      <SceneBlock title="Sebaran Provinsi Asal Mahasiswa" lede="Warna menunjukkan jumlah mahasiswa berdasarkan provinsi pada kartu tanda penduduk, diakumulasi untuk enam angkatan. Peta kecil di bawahnya memisahkan tiap angkatan.">
+        <ChoroplethMap data={provinceMap} panels={provincePanels} title="Sebaran Provinsi Asal Mahasiswa" hideHeader valueLabel="mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} note={`Sebanyak ${format(studentAccess.luar_negeri)} mahasiswa beralamat di luar negeri dan ${format(studentAccess.provinsi_tanpa_data)} tidak memiliki catatan provinsi; keduanya tidak dapat diletakkan pada peta dan tidak dihitung sebagai "luar Jawa".`} />
+      </SceneBlock>
+      <SceneBlock title="Jangkauan Nasional per Angkatan" lede={`Empat ukuran pada ${format(studentYears.length)} titik angkatan. Tiap baris diskalakan pada rentangnya sendiri, jadi yang dibandingkan antarbaris adalah bentuknya—bukan tingginya.`}>
+        <TrendRows data={reachRows} periods={studentYears} title="Jangkauan Nasional per Angkatan" hideHeader axisLabel="Nilai per angkatan" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} valueFormatter={(value:number) => format(value, 1)} />
+      </SceneBlock>
+      <SceneBlock title="Kabupaten dan Kota Asal Terbanyak" lede={`Sepuluh teratas dari ${format(studentAccess.kabupaten_unik)} kabupaten/kota yang tercatat sepanjang enam angkatan.`}>
+        <HorizontalBarChart data={districtBars} title="Kabupaten dan Kota Asal Terbanyak" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="positive"><p>Jangkauan penerimaan meluas dari <strong>{format(students.provinsi_awal)} provinsi</strong> pada angkatan {students.tahun_awal} menjadi {format(students.provinsi_akhir)} pada {students.tahun_akhir}. Namun porsi mahasiswa dari luar Jawa tidak bergerak searah: memuncak pada {format(students.porsi_luar_jawa_puncak, 1)}% di angkatan {students.tahun_luar_jawa_puncak}, lalu turun kembali ke {format(students.porsi_luar_jawa_akhir, 1)}%. Lebih banyak provinsi terwakili, tetapi tidak dengan lebih banyak orang—dan {format(studentAccess.daerah_3t_total)} mahasiswa berasal dari kabupaten/kota kategori 3T.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="gender-disiplin" number="6.3" pillar="Mahasiswa & Akses" question={scenes["6.3"].question} deck={deck("6.3")} wide>
+      <SceneBlock title="Porsi Mahasiswa Perempuan per Angkatan" lede="Penyebutnya adalah mahasiswa yang jenis kelaminnya tercatat, bukan seluruh angkatan.">
+        <LineAreaChart data={genderTrend} xKey="year" series={[{ key: "porsi", label: "Porsi perempuan (%)", color: ACCENT.teal }]} title="Porsi Mahasiswa Perempuan per Angkatan" hideHeader yLabel="Persen mahasiswa perempuan" yDomain={[40, 55]} showMarkers source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value, 1)} />
+      </SceneBlock>
+      <SceneBlock title="Komposisi Gender per Program Studi" lede="Enam angkatan digabung agar tiap program studi memiliki basis yang cukup besar. Baris diurutkan dari porsi perempuan tertinggi.">
+        <StackedBarChart data={genderByProgramme} xKey="prodi" series={genderSeries} normalized title="Komposisi Gender per Program Studi" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="attention" label="Catatan Analisis"><p>Pada tingkat fakultas komposisinya nyaris seimbang, tetapi angkanya sedang bergerak menjauh: porsi perempuan turun dari {format(students.porsi_perempuan_awal, 1)}% pada angkatan {students.tahun_awal} menjadi <strong>{format(students.porsi_perempuan_akhir, 1)}% pada {students.tahun_akhir}</strong>, titik terendah sepanjang enam angkatan. Angka fakultas juga menyembunyikan jurang antardisiplin yang jauh lebih lebar: {genderTop.prodi} {format(genderTop.share, 1)}% perempuan, sedangkan {genderLow.prodi} hanya {format(genderLow.share, 1)}%—selisih {format(genderTop.share - genderLow.share, 1)} poin persentase antara dua program studi pada fakultas yang sama.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="pintu-masuk" number="6.4" pillar="Mahasiswa & Akses" question={scenes["6.4"].question} deck={deck("6.4")} tone="paper" wide>
+      <SceneBlock title="Komposisi Jalur Masuk per Angkatan" lede="Nama jalur nasional berubah pada 2023: SNMPTN menjadi SNBP dan SBMPTN menjadi SNBT. Keduanya digabung ke satu kelompok agar garis waktu enam tahun dapat dibandingkan.">
+        <StackedBarChart data={pathwayMix} xKey="year" series={pathwaySeries} normalized title="Komposisi Jalur Masuk per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_pathway.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="info"><p><strong>{pathwayTop.name}</strong> menjadi pintu masuk terbesar sepanjang periode: {format(pathwayTop.total)} mahasiswa atau {format((pathwayTop.total / students.total) * 100, 1)}% dari seluruh yang tercatat. Dua jalur seleksi nasional bersama-sama menyumbang {format(((pathwayTotals.find((row) => row.name === "Seleksi Nasional Prestasi")?.total ?? 0) + (pathwayTotals.find((row) => row.name === "Seleksi Nasional Tes")?.total ?? 0)) / students.total * 100, 1)}%, sementara jalur afirmasi dan rekognisi pembelajaran lampau masih di bawah sepuluh mahasiswa per angkatan.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="latar-keluarga" number="6.5" pillar="Mahasiswa & Akses" question={scenes["6.5"].question} deck={deck("6.5")} wide>
+      <SceneBlock title="Pekerjaan Wali Mahasiswa" lede="Teks bebas pada berkas sumber dinormalisasi dari 175 varian menjadi sebelas kelompok melalui pipeline/mappings/pekerjaan_wali.csv.">
+        <HorizontalBarChart data={guardianBars} title="Pekerjaan Wali Mahasiswa" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <SceneBlock title="Pergeseran Latar Pekerjaan Wali per Angkatan" lede="Kelompok 'tidak dilaporkan' dikeluarkan dari baris ini karena besarnya akan menenggelamkan sisanya. Tiap baris diskalakan pada rentangnya sendiri.">
+        <TrendRows data={guardianRows} periods={studentYears} title="Pergeseran Latar Pekerjaan Wali per Angkatan" hideHeader axisLabel="Mahasiswa per angkatan" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <DataGap
+        label="Gap Data"
+        title="Latar sosial-ekonomi keluarga belum dapat diukur"
+        description={`Sebanyak ${format(studentBackground.wali_tidak_dilaporkan)} dari ${format(students.total)} rekaman mengisi pekerjaan wali dengan "lain-lain", tanda hubung, atau dikosongkan. Kolom Beasiswa/Kerjasama pada keenam berkas kosong seluruhnya, sehingga status penerima bantuan tidak dapat ditautkan ke tiap mahasiswa. Sebaran ini karena itu dibaca sebagai potret kasar latar pekerjaan, bukan sebagai ukuran kemampuan ekonomi keluarga.`}
+        owner="Bagian Akademik dan Kemahasiswaan FMIPA"
+        knownValue={`${format(students.total - studentBackground.wali_tidak_dilaporkan)} rekaman dengan pekerjaan wali yang dapat dikelompokkan`}
+      />
+    </StoryScene>
+
+    <StoryScene id="sekolah-keberagaman" number="6.6" pillar="Mahasiswa & Akses" question={scenes["6.6"].question} deck={deck("6.6")} tone="paper" wide>
+      <SceneBlock title="Sekolah Asal Terbanyak" lede={`Dua belas teratas dari ${format(studentBackground.sekolah_unik)} sekolah yang tercatat pada angkatan ${studentBackground.sekolah_tahun[0]}–${studentBackground.sekolah_tahun[studentBackground.sekolah_tahun.length - 1]}. Sekolah dengan kurang dari tiga mahasiswa tidak ditampilkan.`}>
+        <HorizontalBarChart data={schoolBars} title="Sekolah Asal Terbanyak" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2023–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <SceneBlock title="Komposisi Agama per Angkatan" lede="Proporsi dihitung terhadap seluruh mahasiswa pada angkatan tersebut.">
+        <StackedBarChart data={religionMix} xKey="year" series={religionSeries} normalized title="Komposisi Agama per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="attention" label="Catatan Analisis"><p>Sekolah asal mahasiswa sangat beragam—{format(studentBackground.sekolah_unik)} sekolah berbeda hanya dalam empat angkatan—tetapi puncaknya terkonsentrasi kuat: <strong>{format(studentBackground.sekolah_porsi_diy, 1)}%</strong> mahasiswa yang tercatat sekolahnya berasal dari SMA/MA di Daerah Istimewa Yogyakarta, dan {format(schoolsInYogyakarta)} dari {format(schoolBars.length)} sekolah pengumpan terbesar berada di Kota Yogyakarta.</p></Insight>
+      <DataGap
+        label="Gap Data"
+        title="Sekolah asal angkatan 2021 dan 2022 tidak tercatat"
+        description="Kolom Sekolah Asal, Kabupaten Sekolah, dan Propinsi Sekolah kosong seluruhnya pada berkas angkatan 2021 dan 2022, dan baru terisi sebagian pada 2023 (61%) dan 2024 (71%) sebelum mendekati lengkap pada 2025 dan 2026. Grafik ini karena itu hanya mencakup empat angkatan terakhir dan tidak dapat dipakai untuk melihat tren enam tahun."
+        owner="Bagian Akademik FMIPA / DAA UGM"
+        knownValue={`${format(studentBackground.sekolah_tercatat)} mahasiswa dengan sekolah asal tercatat pada angkatan 2023–2026`}
+      />
+    </StoryScene>
+
+    <StoryScene id="perjalanan-angkatan" number="6.7" pillar="Mahasiswa & Akses" question={scenes["6.7"].question} deck={deck("6.7")} wide>
+      <SceneBlock title="Status Akhir Mahasiswa per Angkatan" lede="Hanya angkatan 2021 yang telah melewati masa studi nominal empat tahun. Angkatan yang lebih muda dibaca sebagai potret berjalan, bukan sebagai hasil akhir.">
+        <StackedBarChart data={outcomeMix} xKey="year" series={outcomeSeries} normalized title="Status Akhir Mahasiswa per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <SceneBlock title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} lede="Yang dibandingkan adalah dua angkatan dengan jumlah semester yang sangat berbeda, sehingga garis yang menurun menunjukkan tahap studi—bukan penurunan mutu.">
+        <SlopeChart data={ipkSlope} startTitle={`Angkatan ${ipkStart}`} endTitle={`Angkatan ${ipkEnd}`} title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} hideHeader yLabel="Median IPK" domain={[2.6, 3.8]} source="Daftar mahasiswa FMIPA UGM 2021–2025" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value, 2)} />
+      </SceneBlock>
+      <Insight tone="positive"><p>Lima tahun setelah masuk, <strong>{format(cohortFirst("Lulus"))} dari {format(studentFirst.total)} mahasiswa</strong> angkatan {students.tahun_awal} telah lulus, {format(cohortFirst("Masih aktif"))} masih aktif, dan {format(cohortFirst("Mengundurkan diri"))} mengundurkan diri. Angka pengunduran diri tidak dapat dibandingkan langsung antarangkatan karena lama paparannya berbeda: angkatan {students.tahun_awal} telah melalui lima tahun, angkatan {students.tahun_akhir} baru beberapa bulan. Porsi tertinggi tercatat pada angkatan <strong>{withdrawalPeak.year}</strong> ({format(withdrawalPeak.n)} mahasiswa atau {format(withdrawalPeak.share, 1)}%), bukan pada angkatan tertua.</p></Insight>
+      <DataGap
+        label="Gap Data"
+        title="IPK angkatan 2026 belum tersedia"
+        description="Kolom IPK dan SKS Kumulatif kosong seluruhnya untuk angkatan 2026 karena mereka baru memulai semester pertama pada saat data ditarik. Distribusi IPK karena itu hanya mencakup lima angkatan, dan median antarangkatan tidak setara karena jumlah semester yang telah ditempuh berbeda."
+        owner="Bagian Akademik FMIPA"
+        knownValue={`${format((studentIpk.per_tahun as any[]).reduce((sum, row) => sum + row.tercatat, 0))} mahasiswa dengan IPK tercatat pada angkatan ${ipkStart}–${ipkEnd}`}
+        tone="hold"
+      />
+    </StoryScene>
+
     <ChapterIntro id="yang-diserahkan" number={chapters.handover.number} title={chapters.handover.title} description={chapters.handover.description} />
 
-    <StoryScene id="belum-selesai" number="6.1" question={scenes["6.1"].question} deck={deck("6.1")} wide>
+    <StoryScene id="belum-selesai" number="7.1" question={scenes["7.1"].question} deck={deck("7.1")} wide>
       <IssueCards issues={[
         { value: `${format(tckBehind)} / ${format(tck.length)}`, title: "Indikator Kinerja", description: "Perlu akselerasi pemenuhan target menuju akhir tahun.", status: "Akuntabilitas" },
         { value: format(tckFlagged), title: "Catatan Kualitas Data", description: "Indikator dengan satuan campur atau capaian tak kumulatif pada berkas sumber.", status: "Tata Kelola Data" },
@@ -686,7 +1034,7 @@ const pillarSummary = [
       ]} columns={4} />
     </StoryScene>
 
-    <StoryScene id="titik-awal" number="6.2" question={scenes["6.2"].question} deck={deck("6.2")} tone="paper" wide>
+    <StoryScene id="titik-awal" number="7.2" question={scenes["7.2"].question} deck={deck("7.2")} tone="paper" wide>
       <PillarSummary pillars={pillarSummary} />
       <div class="handover-cta">
         <div><p class="eyebrow">Transparansi Data Terbuka</p><h3>Pijakan data yang teruji dan dapat dipertanggungjawabkan.</h3><p>Halaman Data &amp; Metodologi menyajikan dataset turunan lengkap, kamus indikator, penjelasan selisih angka antarsumber, serta agenda penguatan data ke depan.</p></div>

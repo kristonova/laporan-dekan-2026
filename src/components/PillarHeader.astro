@@ -4,7 +4,7 @@ interface Props {
   number: string;
   title: string;
   evidence: string;
-  color: "blue" | "orange" | "green" | "violet";
+  color: "blue" | "orange" | "green" | "violet" | "teal";
   summary: string;
 }
 const { id, number, title, evidence, color, summary } = Astro.props;
@@ -42,5 +42,6 @@ const { id, number, title, evidence, color, summary } = Astro.props;
   .pillar-header--orange { --pillar-color: var(--dept-ike); }
   .pillar-header--green { --pillar-color: var(--dept-kimia); }
   .pillar-header--violet { --pillar-color: var(--dept-matematika); }
+  .pillar-header--teal { --pillar-color: var(--pillar-teal); }
   @media (max-width: 620px) { .pillar-header__inner { grid-template-columns: 1fr; } }
 </style>

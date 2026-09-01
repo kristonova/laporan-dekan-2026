@@ -6,6 +6,9 @@ import tckRaw from "../data/derived/tck_2026_joined.json";
 import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
 import tracerSummaryRaw from "../data/derived/tracer_summary.json";
 import hpuRaw from "../data/derived/hpu_posbindu.json";
+import studentSummaryRaw from "../data/derived/students_summary.json";
+import studentAccessRaw from "../data/derived/students_access.json";
+import studentBackgroundRaw from "../data/derived/students_background.json";
 
 const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string };
 const tck = tckRaw as any[];
@@ -13,10 +16,13 @@ const flagged = tck.filter((row) => row.anomali);
 const partnershipCoverage = partnershipCoverageRaw as { total: number; terpetakan: number; internasional: number; lokasi_kosong: number };
 const tracerSummary = tracerSummaryRaw as { responden: number; tahun: number[] };
 const hpu = hpuRaw as { kunjungan: number; peserta_terdaftar: number; sesi: unknown[] };
+const students = studentSummaryRaw as any;
+const studentAccess = studentAccessRaw as any;
+const studentBackground = studentBackgroundRaw as any;
 const number = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
 
 const datasets = [
-  { file: "tck_2026_joined.json", label: "Indikator TCK 2026", coverage: "42 indikator · target TW1–TW4 · capaian TW1–TW3", source: "TCK 2026 (XLSX resmi)", scenes: "1.2, 2.6, 3.6, 4.3–4.5, 5.1–5.2, 6.1" },
+  { file: "tck_2026_joined.json", label: "Indikator TCK 2026", coverage: "42 indikator · target TW1–TW4 · capaian TW1–TW3", source: "TCK 2026 (XLSX resmi)", scenes: "1.2, 2.6, 3.6, 4.3–4.5, 5.1–5.2, 7.1" },
   { file: "citations_by_year.json", label: "Sitasi per tahun", coverage: "1987–2025 · 70.905 seluruh arsip", source: "CSV historis FMIPA", scenes: "0.0, 2.1" },
   { file: "publications_by_year_dept.json", label: "Publikasi per departemen", coverage: "2020–2025", source: "SciVal / Scopus", scenes: "2.2" },
   { file: "topics.json", label: "Klaster topik", coverage: "528 klaster SciVal", source: "SciVal", scenes: "2.3" },
@@ -45,9 +51,17 @@ const datasets = [
   { file: "tracer_waiting_time.json", label: "Masa tunggu kerja", coverage: "Distribusi kategori per prodi", source: "Tracer study FMIPA", scenes: "4.2" },
   { file: "exchange_students.json", label: "Mobilitas mahasiswa keluar", coverage: "64 mahasiswa · 33 universitas tujuan", source: "Data mobilitas FMIPA", scenes: "4.4" },
   { file: "graduates_by_programme.json", label: "Lulusan per program studi", coverage: "Rincian jenjang × prodi × tahun", source: "Data akademik FMIPA", scenes: "4.7" },
-  { file: "partnership_coverage.json", label: "Cakupan data kerja sama", coverage: "Ringkasan keterpetaan lokasi mitra", source: "LENTERA UGM", scenes: "3.5, 6.1" },
+  { file: "partnership_coverage.json", label: "Cakupan data kerja sama", coverage: "Ringkasan keterpetaan lokasi mitra", source: "LENTERA UGM", scenes: "3.5, 7.1" },
   { file: "tracer_summary.json", label: "Ringkasan tracer study", coverage: "Median, rerata, dan serapan enam bulan", source: "Tracer study FMIPA", scenes: "4.1, 4.2" },
   { file: "hpu_posbindu.json", label: "Health Promoting University", coverage: "Agregat anonim dosen dan tendik, 5 sesi Posbindu 2026", source: "Posbindu Melati FMIPA", scenes: "5.3" },
+  { file: "students_summary.json", label: "Ringkasan profil mahasiswa", coverage: `${number(students.total)} mahasiswa · angkatan ${students.tahun_awal}–${students.tahun_akhir}`, source: "Daftar mahasiswa FMIPA UGM", scenes: "6.1–6.7" },
+  { file: "students_by_programme.json", label: "Mahasiswa per program studi", coverage: "Angkatan × jenjang × departemen × prodi, dengan pilahan gender", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.1, 6.3" },
+  { file: "students_by_province.json", label: "Provinsi asal mahasiswa", coverage: `Angkatan × provinsi ber-kode BPS · ${number(studentAccess.kabupaten_unik)} kabupaten/kota tercatat`, source: "Daftar mahasiswa FMIPA UGM", scenes: "6.2" },
+  { file: "students_by_pathway.json", label: "Jalur masuk mahasiswa", coverage: "Angkatan × jalur, rezim SNMPTN/SBMPTN disatukan dengan SNBP/SNBT", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.4" },
+  { file: "students_background.json", label: "Latar keluarga dan sekolah asal", coverage: `Pekerjaan wali (11 kelompok), agama, dan ${number(studentBackground.sekolah_unik)} sekolah asal 2023–2026`, source: "Daftar mahasiswa FMIPA UGM", scenes: "6.5, 6.6" },
+  { file: "students_cohort_outcome.json", label: "Status akhir per angkatan", coverage: "Lulus, aktif, mengundurkan diri, dan tidak aktif per angkatan", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.7" },
+  { file: "students_ipk.json", label: "Distribusi IPK per angkatan", coverage: "Rerata, median, kuartil per angkatan 2021–2025; median per prodi", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.7" },
+  { file: "students_access.json", label: "Jangkauan dan pemerataan akses", coverage: "Jawa vs luar Jawa, provinsi terwakili, dan mahasiswa asal daerah 3T", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.2" },
 ];
 
 const gaps = [
@@ -57,6 +71,8 @@ const gaps = [
   { priority: "P1", item: "Alamat provinsi mitra kerja sama", reason: "Sebagian dokumen LENTERA belum memuat kabupaten/provinsi mitra", owner: "Unit Kerja Sama FMIPA" },
   { priority: "P2", item: "Tracer study per angkatan dan wilayah kerja", reason: "Data yang tersedia mencakup angkatan 2024–2025 tanpa dimensi wilayah", owner: "DPKM / CDC UGM" },
   { priority: "P2", item: "Paparan media 2021–2022", reason: "Data yang ada baru mulai 2023", owner: "Humas FMIPA" },
+  { priority: "P1", item: "Sekolah asal mahasiswa angkatan 2021–2022", reason: "Kolom Sekolah Asal, Kabupaten Sekolah, dan Propinsi Sekolah kosong seluruhnya pada dua berkas tertua, lalu terisi 61% (2023) dan 71% (2024)", owner: "Bagian Akademik FMIPA / DAA UGM" },
+  { priority: "P2", item: "Status beasiswa per mahasiswa", reason: "Kolom Beasiswa/Kerjasama pada keenam berkas daftar mahasiswa kosong 100%, sehingga penerima bantuan tidak dapat ditautkan ke profil angkatan", owner: "Bagian Kemahasiswaan FMIPA" },
 ];
 
 const conflictRow = (no: string) => {
@@ -69,6 +85,7 @@ const conflicts = [
   { metric: "Sitasi", tck: conflictRow("15"), historical: "12.629 (2024)", explanation: "TCK menghitung jendela pelaporan berjalan; CSV menghitung seluruh sitasi yang tercatat pada tahun tersebut." },
   { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "481 (2025)", explanation: "Periode pelaporan dan basis indeks berbeda." },
   { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: "15 dari 18 prodi", explanation: "Kedua sumber sepakat; data akademik menambahkan tiga prodi yang belum berpredikat Unggul." },
+  { metric: "Registrasi mahasiswa baru 2025", tck: "808 (PROFIL MABA)", historical: "812 (daftar mahasiswa)", explanation: "Dua sistem mencatat registrasi yang sama. Keduanya cocok persis pada 2022, 2023, 2024, dan 2026; hanya 2025 berselisih empat mahasiswa dan selisih itu belum ditelusuri ke sumbernya." },
   { metric: "Kerja sama aktif", tck: conflictRow("1a"), historical: `${number(partnershipCoverage.total)} dokumen (2021–2026)`, explanation: "TCK menghitung PKS yang tercatat pada sistem tahun berjalan; LENTERA memuat seluruh dokumen enam tahun." },
 ];
 const homeUrl = withBase("/");
@@ -210,6 +227,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Informasi identitas sensitif seperti NIP, NIKA, NIM, NIU, alamat, kontak, serta seluruh nilai pemeriksaan kesehatan perorangan disaring sebelum data agregat dipublikasikan. Tahap validasi menolak keseluruhan proses bila salah satu kunci privat lolos ke berkas turunan.</p></div></li>
         <li><span>06</span><div><h3>Normalisasi Satuan Indikator Kinerja</h3><p>Berkas TCK mencampur satuan pada beberapa indikator: capaian <em>creative funding</em> ditulis dalam rupiah penuh sementara targetnya dalam miliar, dan empat indikator persentase menyimpan cacah orang di kolom triwulan tertentu. Nilai rupiah diskalakan, sedangkan persentase tanpa penyebut sengaja dikosongkan dan penilaiannya dikembalikan ke triwulan sebelumnya.</p></div></li>
         <li><span>07</span><div><h3>Deduplikasi dan Pemulihan Sesi Posbindu</h3><p>Berkas rekap memuat satu lembar bernama <em>Jan 26</em> yang ternyata salinan utuh sesi 3 Juli, sehingga kunjungan dikunci pada pasangan tanggal dan peserta agar sesi ganda tidak terhitung dua kali. Sesi 30 Januari yang sebenarnya hanya tercatat pada lembar rekapitulasi terkonsolidasi dan dipulihkan dari sana. Pada lembar tersebut, sesi 3 Juli kehilangan kolom Interpretasi Asam Urat sehingga seluruh kolom sesudahnya bergeser satu; sesi itu karena itu dibaca dari lembar bulanannya yang utuh, dan pipeline menolak membaca sesi yang kolomnya bergeser. Nama hanya dipakai sebagai kunci penggabungan lalu dibuang.</p></div></li>
+        <li><span>08</span><div><h3>Agregasi dan Penyamaran Data Mahasiswa</h3><p>Berkas daftar mahasiswa memuat nama, NIM, alamat, nomor telepon, serta identitas wali. Seluruh kolom tersebut dibuang pada tahap pemuatan sehingga tidak pernah tertulis ke disk, dan hanya tabulasi silang yang diekspor. Sel yang memuat satu atau dua orang disamarkan menjadi kosong—bukan nol—karena satu mahasiswa pada satu provinsi, satu prodi, dan satu angkatan dapat dikenali kembali. Validasi menolak build jika ada nilai cacah di bawah tiga yang lolos.</p></div></li>
       </ol>
     </section>
 

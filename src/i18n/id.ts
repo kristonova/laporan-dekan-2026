@@ -20,7 +20,7 @@ export const chapters = {
     number: "Bagian II",
     title: "Rekam Jejak Transformasi Lima Tahun",
     description:
-      "Data kinerja menjadi bermakna saat ditinjau sebagai ikhtiar berkelanjutan. Melalui empat pilar utama, tergambar lompatan capaian, dinamika pertumbuhan, serta ruang evaluasi ke depan.",
+      "Data kinerja menjadi bermakna saat ditinjau sebagai ikhtiar berkelanjutan. Melalui lima pilar utama, tergambar lompatan capaian, dinamika pertumbuhan, profil mahasiswa yang dididik, serta ruang evaluasi ke depan.",
   },
   handover: {
     number: "Bagian III",
@@ -78,6 +78,34 @@ export interface SceneValues {
   posbinduLecturers: number;
   posbinduStaff: number;
   posbinduTopRisk: string;
+  studentsTotal: number;
+  studentsUndergraduate: number;
+  studentsProgrammes: number;
+  studentsFirstYear: number;
+  studentsLastYear: number;
+  studentsNonDegreeFirst: number;
+  studentsNonDegreeLast: number;
+  studentsWomenShareFirst: number;
+  studentsWomenShareLast: number;
+  studentsWomenTopProgramme: string;
+  studentsWomenTopShare: number;
+  studentsWomenLowProgramme: string;
+  studentsWomenLowShare: number;
+  studentsProvincesFirst: number;
+  studentsProvincesLast: number;
+  studentsOutsideJavaPeak: number;
+  studentsOutsideJavaPeakYear: number;
+  studentsOutsideJavaLast: number;
+  studentsTopPathway: string;
+  studentsTopPathwayShare: number;
+  studentsIup: number;
+  studentsGuardianTop: string;
+  studentsGuardianTopShare: number;
+  studentsGuardianUnreported: number;
+  studentsSchoolDiyShare: number;
+  studentsSchoolUnique: number;
+  studentsCohortGraduated: number;
+  studentsCohortWithdrew: number;
   posbinduTopRiskShare: number;
   format: (value: number, digits?: number) => string;
 }
@@ -208,13 +236,48 @@ export const scenes = {
       `Program Health Promoting University memeriksa ${v.format(v.posbinduLecturers)} kunjungan dosen dan ${v.format(v.posbinduStaff)} kunjungan tenaga kependidikan pada ${v.format(v.posbinduSessions)} sesi Posbindu sepanjang 2026. ${v.posbinduTopRisk} menjadi temuan terbanyak: ${v.format(v.posbinduTopRiskShare)}% peserta yang diperiksa berada pada ambang berisiko.`,
   },
   "6.1": {
+    question: "Siapa yang Belajar di FMIPA?",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.studentsTotal)} mahasiswa tercatat pada enam angkatan ${v.studentsFirstYear}\u2013${v.studentsLastYear}, ${v.format(v.studentsUndergraduate)} di antaranya menempuh ${v.format(v.studentsProgrammes)} program studi sarjana. Peserta non-gelar\u2014pertukaran masuk dan MBKM\u2014menyusut dari ${v.format(v.studentsNonDegreeFirst)} menjadi ${v.format(v.studentsNonDegreeLast)} orang.`,
+  },
+  "6.2": {
+    question: "Dari Mana Mahasiswa FMIPA Berasal?",
+    deck: (v) =>
+      `Jangkauan penerimaan meluas dari ${v.format(v.studentsProvincesFirst)} menjadi ${v.format(v.studentsProvincesLast)} provinsi. Porsi mahasiswa dari luar Jawa memuncak pada ${v.format(v.studentsOutsideJavaPeak, 1)}% di angkatan ${v.studentsOutsideJavaPeakYear}, lalu kembali turun ke ${v.format(v.studentsOutsideJavaLast, 1)}% pada angkatan ${v.studentsLastYear}.`,
+  },
+  "6.3": {
+    question: "Bagaimana Komposisi Perempuan dan Laki-laki?",
+    deck: (v) =>
+      `Porsi mahasiswa perempuan turun dari ${v.format(v.studentsWomenShareFirst, 1)}% pada angkatan ${v.studentsFirstYear} menjadi ${v.format(v.studentsWomenShareLast, 1)}% pada angkatan ${v.studentsLastYear}\u2014titik terendah enam tahun. Jurang terlebar justru antardisiplin: ${v.studentsWomenTopProgramme} ${v.format(v.studentsWomenTopShare, 1)}% perempuan, sedangkan ${v.studentsWomenLowProgramme} hanya ${v.format(v.studentsWomenLowShare, 1)}%.`,
+  },
+  "6.4": {
+    question: "Melalui Pintu Mana Mahasiswa Masuk?",
+    deck: (v) =>
+      `${v.studentsTopPathway} menjadi pintu masuk terbesar dengan ${v.format(v.studentsTopPathwayShare, 1)}% dari seluruh mahasiswa tercatat. Jalur internasional IUP bertahan pada kisaran ${v.format(v.studentsIup)} mahasiswa per angkatan, sementara mobilitas masuk non-gelar menyusut tajam.`,
+  },
+  "6.5": {
+    question: "Dari Latar Keluarga Seperti Apa?",
+    deck: (v) =>
+      `Pekerjaan wali terbanyak adalah ${v.studentsGuardianTop} (${v.format(v.studentsGuardianTopShare, 1)}%), diikuti karyawan swasta dan pegawai negeri sipil. Sebanyak ${v.format(v.studentsGuardianUnreported)} rekaman tidak menyebutkan pekerjaan, sehingga potret ini dibaca sebagai sebaran kasar\u2014bukan ukuran kesejahteraan.`,
+  },
+  "6.6": {
+    question: "Dari Sekolah Mana dan Seberapa Beragam?",
+    deck: (v) =>
+      `Mahasiswa angkatan 2023\u20132026 berasal dari ${v.format(v.studentsSchoolUnique)} sekolah berbeda, namun ${v.format(v.studentsSchoolDiyShare, 1)}% di antaranya bersekolah di Daerah Istimewa Yogyakarta. Keberagaman keyakinan tercatat pada enam agama.`,
+  },
+  "6.7": {
+    question: "Bagaimana Perjalanan Satu Angkatan?",
+    deck: (v) =>
+      `Lima tahun setelah masuk, ${v.format(v.studentsCohortGraduated)} mahasiswa angkatan ${v.studentsFirstYear} telah lulus dan ${v.format(v.studentsCohortWithdrew)} mengundurkan diri. Median IPK menurun pada angkatan yang lebih muda karena semester yang ditempuh masih sedikit, bukan karena mutu yang merosot.`,
+  },
+  "7.1": {
     question: "Evaluasi dan Agenda Akselerasi Kinerja",
     deck: (v) =>
       `Pemetaan terhadap ${v.format(v.tckBehind)} indikator yang memerlukan akselerasi, penguatan integrasi sistem data lulusan dan keselamatan, serta strategi antisipasi keberlanjutan pendanaan riset ke depan.`,
   },
-  "6.2": {
+  "7.2": {
     question: "Pijakan Data untuk Periode Kepemimpinan Berikutnya",
-    deck: "Seluruh data capaian empat pilar kini terdokumentasi secara transparan sebagai basis data awal yang siap ditindaklanjuti dan dikembangkan oleh pimpinan fakultas selanjutnya.",
+    deck: "Seluruh data capaian lima pilar kini terdokumentasi secara transparan sebagai basis data awal yang siap ditindaklanjuti dan dikembangkan oleh pimpinan fakultas selanjutnya.",
   },
 } satisfies Record<string, Scene>;
 

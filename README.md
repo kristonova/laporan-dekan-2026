@@ -42,7 +42,7 @@ PUBLIC_SITE_URL=https://contoh.github.io PUBLIC_BASE_PATH=/laporan-dekan-2026 np
 
 ## Struktur utama
 
-- `src/pages/index.astro` — 3 babak, 4 pilar, dan 29 scene termasuk scene pelengkap 4.3′.
+- `src/pages/index.astro` — 3 babak, 5 pilar, dan 36 scene termasuk scene pelengkap 4.3′.
 - `src/pages/data.astro` — inventaris sumber, definisi, kualitas, konflik angka, dan unduhan data tersanitasi.
 - `src/pages/presentasi.astro` — satu scene per layar; panah kiri/kanan atau klik untuk berpindah, `P` untuk catatan, `F` untuk layar penuh.
 - `src/components/charts/` — grafik SVG/HTML yang dapat dipakai ulang, lengkap dengan tabel alternatif.
@@ -69,9 +69,10 @@ Berkas Excel dibaca langsung, jadi tidak ada langkah konversi manual. Sumber yan
 | `RINCIAN TCK/` | `target_capaian_kinerja/tck_2026/` | Rujukan cek silang manual, tidak diekspor |
 | Workbook LENTERA | `data ugm/kerjasama/` | Dokumen kerja sama 2021–2026 |
 | Tabel akademik | `data ugm/akademik/` | Maba, mahasiswa aktif, lulusan, prestasi, beasiswa, akreditasi, exchange, tracer study |
+| Daftar mahasiswa per angkatan (6 berkas) | `data ugm/akademik/daftar mahasiswa/` | Profil mahasiswa: asal provinsi, gender, jalur masuk, latar wali, sekolah asal, status akhir |
 | Rekap Posbindu | `data ugm/health promotion university posbindu/` | Agregat Health Promoting University |
 
-Pipeline memisahkan TCK 2026 dari data historis, menggabungkan berkas multi-part, mendeduplikasi `Id`, melakukan remap departemen publikasi melalui Scopus ID, dan hanya mengekspor agregat tanpa data tingkat individu. Validasi memeriksa 42 indikator TCK, angka jangkar PRD, arah indikator, satuan indikator persentase, jumlah dokumen kerja sama, dan kunci privat.
+Pipeline memisahkan TCK 2026 dari data historis, menggabungkan berkas multi-part, mendeduplikasi `Id`, melakukan remap departemen publikasi melalui Scopus ID, dan hanya mengekspor agregat tanpa data tingkat individu. Validasi memeriksa 42 indikator TCK, angka jangkar PRD, arah indikator, satuan indikator persentase, jumlah dokumen kerja sama, kunci privat, ambang sel kecil pada agregat mahasiswa, serta rekonsiliasi registrasi antara daftar mahasiswa dan PROFIL MABA.
 
 Tanggal penarikan data ditulis satu kali sebagai konstanta `SNAPSHOT` di `pipeline/utils.py`, diekspor ke `snapshot.json`, dan dipakai seluruh halaman—tidak ada tanggal yang ditulis manual di komponen.
 
@@ -87,6 +88,12 @@ Tanggal penarikan data ditulis satu kali sebagai konstanta `SNAPSHOT` di `pipeli
 - Batas peta berasal dari [AlfianAliM/Indonesia-GeoJSON](https://github.com/AlfianAliM/Indonesia-GeoJSON) (Peta Nusa / Laravel Nusa, MIT), lalu disederhanakan secara topologis untuk tampilan web. Berkas unduhan dan atribusinya tersedia di `public/data/`.
 - Peta kolaborasi internasional memakai GeoJSON batas negara [Natural Earth Vector 1:110m](https://github.com/nvkelso/natural-earth-vector) (public domain). Properti dipangkas dan presisi koordinat dibulatkan untuk web tanpa mengubah sumber posisi titik kolaborasi.
 - Keselamatan/PPKS/HSE, penyebut indikator persentase, dan anomali indikator bangunan hijau tetap ditampilkan sebagai gap, bukan diisi dengan asumsi. Tracer study dan masa tunggu kerja kini tersedia dan menggantikan placeholder sebelumnya.
+- Berkas daftar mahasiswa memuat nama, NIM, alamat, nomor telepon, dan identitas wali. Kolom-kolom itu dibuang pada tahap `00_load.py` sehingga tidak pernah tertulis ke disk; hanya tabulasi silang yang diekspor. Sel yang memuat satu atau dua orang disamarkan menjadi `null`—bukan nol—dengan penanda `disamarkan`, karena satu mahasiswa pada satu provinsi, prodi, dan angkatan dapat dikenali kembali pada situs publik. `03_validate.py` menggagalkan build jika ada cacah di bawah tiga yang lolos.
+- Jumlah mahasiswa sarjana per angkatan pada daftar mahasiswa cocok persis dengan kolom `registrasi` PROFIL MABA untuk 2022, 2023, 2024, dan 2026; hanya 2025 berselisih empat mahasiswa. Selisih itu ditampilkan pada tabel konflik `/data`, tidak didamaikan diam-diam.
+- Nama jalur seleksi nasional berubah pada 2023. SNMPTN disatukan dengan SNBP dan SBMPTN dengan SNBT melalui `pipeline/mappings/jalur_masuk.csv`, agar garis waktu enam angkatan dapat dibandingkan.
+- Pekerjaan wali dinormalisasi dari 175 varian teks bebas menjadi 11 kelompok melalui `pipeline/mappings/pekerjaan_wali.csv`. Karena 885 rekaman mengisinya dengan "lain-lain", tanda hubung, atau kosong, sebaran ini disajikan sebagai latar pekerjaan—bukan ukuran kemampuan ekonomi.
+- Porsi "luar Jawa" hanya dihitung terhadap mahasiswa dengan provinsi Indonesia yang tercatat. Mahasiswa beralamat luar negeri dan yang provinsinya kosong dilaporkan terpisah, bukan dihitung sebagai luar Jawa.
+- Sekolah asal tidak tercatat sama sekali pada angkatan 2021 dan 2022, sehingga scene 6.6 hanya mencakup 2023–2026 dan menyebutkan batas itu secara eksplisit.
 - Semua grafik penting dapat dipahami tanpa interaksi dan memiliki tabel data alternatif untuk aksesibilitas.
 
 ## Offline dan deployment

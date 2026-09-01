@@ -1,0 +1,23 @@
+angkatan,status,n,disamarkan
+2021,Lainnya,,True
+2021,Lulus,566.0,False
+2021,Masih aktif,218.0,False
+2021,Mengundurkan diri,46.0,False
+2021,Tidak aktif,47.0,False
+2022,Lulus,321.0,False
+2022,Masih aktif,391.0,False
+2022,Mengundurkan diri,41.0,False
+2022,Tidak aktif,44.0,False
+2023,Lainnya,,True
+2023,Masih aktif,672.0,False
+2023,Mengundurkan diri,54.0,False
+2023,Tidak aktif,105.0,False
+2024,Masih aktif,678.0,False
+2024,Mengundurkan diri,18.0,False
+2024,Tidak aktif,30.0,False
+2025,Masih aktif,795.0,False
+2025,Mengundurkan diri,22.0,False
+2025,Selesai non-gelar,28.0,False
+2025,Tidak aktif,,True
+2026,Masih aktif,861.0,False
+2026,Mengundurkan diri,4.0,False

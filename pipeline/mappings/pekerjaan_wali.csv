@@ -1,0 +1,12 @@
+pola,kelompok
+"^-+$|^\.$|^lain.?lain$|^tidak ada$","Tidak dilaporkan"
+"pensiun|purnawirawan","Pensiunan"
+"tidak bekerja|tidak sedang bekerja|meninggal|wafat|almarhum|rumah tangga|pelajar|^mahasiswa$","Tidak bekerja"
+"dosen|guru|pengajar|^pendidik|tpa","Pendidik & akademisi"
+"tni|polri|kepolisian|tentara","TNI/Polri"
+"bumn|bumd","Pegawai BUMN/BUMD"
+"pegawai negeri|\bpns\b|aparatur sipil|perangkat desa|kepala desa|pegawai kecamatan|pemda","Pegawai negeri sipil"
+"wiraswasta|wirausaha|pengusaha|pedagang|berdagang|berjualan|perdagangan|warung|toko|retail|biro jasa","Wiraswasta & pedagang"
+"dokter|hakim|pengacara|akuntan|pilot|notaris|apoteker|engineer|konsultan|tenaga kesehatan|seniman|pendeta|manager","Profesional & tenaga ahli"
+"karyawan|pegawai swasta|pekerja swasta|^swasta|staf|staff|^pegawai$|pkwt|honorer|industri|konstruksi|sales|teknisi","Karyawan swasta"
+"petani|pekebun|nelayan|pelaut|buruh|kuli|tukang|montir|mekanik|supir|sopir|driver|ojek|serabutan|freelance|pekerja harian|pekerja tidak tetap|pramubakti|pengrajin","Petani, nelayan & pekerja lepas"

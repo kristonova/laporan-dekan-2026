@@ -1,0 +1,366 @@
+{
+  "provinsi_total": [
+    {
+      "provinsi": "Jawa Tengah",
+      "provinsi_kode": "33",
+      "n": 1407,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Daerah Istimewa Yogyakarta",
+      "provinsi_kode": "34",
+      "n": 923,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "DKI Jakarta",
+      "provinsi_kode": "31",
+      "n": 588,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Jawa Barat",
+      "provinsi_kode": "32",
+      "n": 501,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Jawa Timur",
+      "provinsi_kode": "35",
+      "n": 453,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Banten",
+      "provinsi_kode": "36",
+      "n": 146,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sumatera Utara",
+      "provinsi_kode": "12",
+      "n": 122,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Tidak teridentifikasi",
+      "provinsi_kode": "UNKNOWN",
+      "n": 102,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Riau",
+      "provinsi_kode": "14",
+      "n": 93,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sumatera Barat",
+      "provinsi_kode": "13",
+      "n": 81,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kalimantan Timur",
+      "provinsi_kode": "64",
+      "n": 63,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Lampung",
+      "provinsi_kode": "18",
+      "n": 57,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kepulauan Riau",
+      "provinsi_kode": "21",
+      "n": 49,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Luar Negeri",
+      "provinsi_kode": "LN",
+      "n": 49,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Bali",
+      "provinsi_kode": "51",
+      "n": 41,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Nusa Tenggara Barat",
+      "provinsi_kode": "52",
+      "n": 36,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sulawesi Selatan",
+      "provinsi_kode": "73",
+      "n": 30,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sumatera Selatan",
+      "provinsi_kode": "16",
+      "n": 30,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kalimantan Barat",
+      "provinsi_kode": "61",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Jambi",
+      "provinsi_kode": "15",
+      "n": 18,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Aceh",
+      "provinsi_kode": "11",
+      "n": 16,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kalimantan Selatan",
+      "provinsi_kode": "63",
+      "n": 16,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Bengkulu",
+      "provinsi_kode": "17",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kepulauan Bangka Belitung",
+      "provinsi_kode": "19",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Papua",
+      "provinsi_kode": "91",
+      "n": 9,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Papua Tengah",
+      "provinsi_kode": "94",
+      "n": 9,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sulawesi Tengah",
+      "provinsi_kode": "72",
+      "n": 9,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kalimantan Tengah",
+      "provinsi_kode": "62",
+      "n": 8,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sulawesi Tenggara",
+      "provinsi_kode": "74",
+      "n": 8,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Kalimantan Utara",
+      "provinsi_kode": "65",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Nusa Tenggara Timur",
+      "provinsi_kode": "53",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Papua Barat",
+      "provinsi_kode": "92",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Sulawesi Utara",
+      "provinsi_kode": "71",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Maluku",
+      "provinsi_kode": "81",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "provinsi": "Maluku Utara",
+      "provinsi_kode": "82",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "provinsi": "Papua Pegunungan",
+      "provinsi_kode": "95",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "provinsi": "Papua Selatan",
+      "provinsi_kode": "93",
+      "n": null,
+      "disamarkan": true
+    }
+  ],
+  "per_tahun": [
+    {
+      "angkatan": 2021,
+      "total": 878,
+      "domestik": 839,
+      "di_jawa": 728,
+      "luar_jawa": 111,
+      "porsi_luar_jawa": 13.2,
+      "provinsi_terwakili": 26,
+      "daerah_3t": 14,
+      "luar_negeri": 2,
+      "tanpa_provinsi": 37
+    },
+    {
+      "angkatan": 2022,
+      "total": 797,
+      "domestik": 754,
+      "di_jawa": 655,
+      "luar_jawa": 99,
+      "porsi_luar_jawa": 13.1,
+      "provinsi_terwakili": 27,
+      "daerah_3t": 8,
+      "luar_negeri": 2,
+      "tanpa_provinsi": 41
+    },
+    {
+      "angkatan": 2023,
+      "total": 833,
+      "domestik": 809,
+      "di_jawa": 661,
+      "luar_jawa": 148,
+      "porsi_luar_jawa": 18.3,
+      "provinsi_terwakili": 29,
+      "daerah_3t": 22,
+      "luar_negeri": 20,
+      "tanpa_provinsi": 4
+    },
+    {
+      "angkatan": 2024,
+      "total": 726,
+      "domestik": 713,
+      "di_jawa": 567,
+      "luar_jawa": 146,
+      "porsi_luar_jawa": 20.5,
+      "provinsi_terwakili": 29,
+      "daerah_3t": 12,
+      "luar_negeri": 5,
+      "tanpa_provinsi": 8
+    },
+    {
+      "angkatan": 2025,
+      "total": 846,
+      "domestik": 829,
+      "di_jawa": 690,
+      "luar_jawa": 139,
+      "porsi_luar_jawa": 16.8,
+      "provinsi_terwakili": 29,
+      "daerah_3t": 14,
+      "luar_negeri": 13,
+      "tanpa_provinsi": 4
+    },
+    {
+      "angkatan": 2026,
+      "total": 865,
+      "domestik": 850,
+      "di_jawa": 717,
+      "luar_jawa": 133,
+      "porsi_luar_jawa": 15.6,
+      "provinsi_terwakili": 31,
+      "daerah_3t": 10,
+      "luar_negeri": 7,
+      "tanpa_provinsi": 8
+    }
+  ],
+  "kabupaten_teratas": [
+    {
+      "kabupaten": "Kota Yogyakarta",
+      "n": 352
+    },
+    {
+      "kabupaten": "Kab. Sleman",
+      "n": 325
+    },
+    {
+      "kabupaten": "Kota Jakarta Selatan",
+      "n": 203
+    },
+    {
+      "kabupaten": "Kab. Bantul",
+      "n": 170
+    },
+    {
+      "kabupaten": "Kota Jakarta Timur",
+      "n": 165
+    },
+    {
+      "kabupaten": "Kab. Klaten",
+      "n": 122
+    },
+    {
+      "kabupaten": "Kota Semarang",
+      "n": 122
+    },
+    {
+      "kabupaten": "Kota Bekasi",
+      "n": 108
+    },
+    {
+      "kabupaten": "Kab. Banyumas",
+      "n": 94
+    },
+    {
+      "kabupaten": "Kota Jakarta Pusat",
+      "n": 94
+    },
+    {
+      "kabupaten": "Kota Jakarta Barat",
+      "n": 79
+    },
+    {
+      "kabupaten": "Kab. Kebumen",
+      "n": 77
+    },
+    {
+      "kabupaten": "Kota Medan",
+      "n": 76
+    },
+    {
+      "kabupaten": "Kab. Cilacap",
+      "n": 75
+    },
+    {
+      "kabupaten": "Kab. Magelang",
+      "n": 69
+    }
+  ],
+  "kabupaten_unik": 279,
+  "provinsi_tanpa_data": 102,
+  "luar_negeri": 49,
+  "daerah_3t_total": 80
+}

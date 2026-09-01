@@ -1,0 +1,1421 @@
+{
+  "pekerjaan_wali": [
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 157,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 107,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 38,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 66,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 77,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Profesional & tenaga ahli",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 19,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 41,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 139,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 207,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 170,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 28,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 101,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 29,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 60,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 49,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Profesional & tenaga ahli",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 14,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 14,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 124,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 206,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 202,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 23,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 98,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 25,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 59,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 46,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Profesional & tenaga ahli",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 25,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 141,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 199,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 159,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 28,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 97,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 16,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 29,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 37,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 18,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 10,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 129,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 203,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 187,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 108,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 20,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 48,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 58,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 21,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 158,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 221,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 219,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 24,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 125,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Pensiunan",
+      "n": 51,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 34,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 10,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 194,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 192,
+      "disamarkan": false
+    }
+  ],
+  "pekerjaan_wali_total": [
+    {
+      "pekerjaan_wali": "Wiraswasta & pedagang",
+      "n": 1228,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Karyawan swasta",
+      "n": 1094,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Tidak dilaporkan",
+      "n": 885,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Pegawai negeri sipil",
+      "n": 636,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Pensiunan",
+      "n": 313,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
+      "n": 301,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Pegawai BUMN/BUMD",
+      "n": 147,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Pendidik & akademisi",
+      "n": 141,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "TNI/Polri",
+      "n": 107,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Tidak bekerja",
+      "n": 84,
+      "disamarkan": false
+    },
+    {
+      "pekerjaan_wali": "Profesional & tenaga ahli",
+      "n": 9,
+      "disamarkan": false
+    }
+  ],
+  "agama": [
+    {
+      "angkatan": 2021,
+      "agama": "Budha",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Hindu",
+      "n": 12,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Islam",
+      "n": 704,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Katolik",
+      "n": 42,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Khonghucu",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Kristen",
+      "n": 67,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2021,
+      "agama": "Tidak dilaporkan",
+      "n": 41,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Budha",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Hindu",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Islam",
+      "n": 646,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Katolik",
+      "n": 52,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Kristen",
+      "n": 59,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2022,
+      "agama": "Tidak dilaporkan",
+      "n": 30,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Budha",
+      "n": 19,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Hindu",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Islam",
+      "n": 686,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Katolik",
+      "n": 39,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Kristen",
+      "n": 80,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "agama": "Tidak dilaporkan",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Budha",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Hindu",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Islam",
+      "n": 599,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Katolik",
+      "n": 45,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Kristen",
+      "n": 63,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "agama": "Tidak dilaporkan",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Budha",
+      "n": 7,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Hindu",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Islam",
+      "n": 719,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Katolik",
+      "n": 44,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Kristen",
+      "n": 67,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "agama": "Tidak dilaporkan",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Budha",
+      "n": 9,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Hindu",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Islam",
+      "n": 734,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Katolik",
+      "n": 36,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Kristen",
+      "n": 68,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "agama": "Tidak dilaporkan",
+      "n": 7,
+      "disamarkan": false
+    }
+  ],
+  "sekolah_tahun": [
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "sekolah_tercatat": 2652,
+  "sekolah_unik": 1099,
+  "sekolah_teratas": [
+    {
+      "sekolah": "SMAN 3 Yogyakarta",
+      "n": 45
+    },
+    {
+      "sekolah": "SMAN 1 Yogyakarta",
+      "n": 43
+    },
+    {
+      "sekolah": "SMAN 8 Yogyakarta",
+      "n": 37
+    },
+    {
+      "sekolah": "SMAN 5 Yogyakarta",
+      "n": 32
+    },
+    {
+      "sekolah": "SMAN 6 Yogyakarta",
+      "n": 32
+    },
+    {
+      "sekolah": "SMAN 7 Yogyakarta",
+      "n": 30
+    },
+    {
+      "sekolah": "SMAN 1 Godean",
+      "n": 24
+    },
+    {
+      "sekolah": "SMAN 2 Yogyakarta",
+      "n": 24
+    },
+    {
+      "sekolah": "MAN 1 Yogyakarta",
+      "n": 23
+    },
+    {
+      "sekolah": "SMAN 1 Purworejo",
+      "n": 23
+    },
+    {
+      "sekolah": "SMAN 9 Yogyakarta",
+      "n": 21
+    },
+    {
+      "sekolah": "SMAS Muhammadiyah 1 Yogyakarta",
+      "n": 19
+    },
+    {
+      "sekolah": "SMAN 1 Sleman",
+      "n": 17
+    },
+    {
+      "sekolah": "SMA Negeri 1 Cilacap",
+      "n": 16
+    },
+    {
+      "sekolah": "SMA Negeri 1 Pekalongan",
+      "n": 16
+    }
+  ],
+  "sekolah_porsi_diy": 24.0,
+  "sekolah_provinsi": [
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Bali",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Banten",
+      "n": 18,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Bengkulu",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "DKI Jakarta",
+      "n": 43,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Daerah Istimewa Yogyakarta",
+      "n": 103,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Jambi",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Jawa Barat",
+      "n": 65,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Jawa Tengah",
+      "n": 133,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Jawa Timur",
+      "n": 49,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Kalimantan Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Kalimantan Timur",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Kalimantan Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Kepulauan Riau",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Lampung",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Nusa Tenggara Barat",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Nusa Tenggara Timur",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Papua",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Papua Tengah",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Riau",
+      "n": 8,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sulawesi Barat",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sulawesi Selatan",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sulawesi Tengah",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sulawesi Tenggara",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sulawesi Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sumatera Barat",
+      "n": 10,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sumatera Selatan",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Sumatera Utara",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2023,
+      "provinsi_sekolah": "Tidak teridentifikasi",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Aceh",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Bali",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Banten",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Bengkulu",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "DKI Jakarta",
+      "n": 40,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Daerah Istimewa Yogyakarta",
+      "n": 117,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Jambi",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Jawa Barat",
+      "n": 61,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Jawa Tengah",
+      "n": 132,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Jawa Timur",
+      "n": 41,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Kalimantan Barat",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Kalimantan Timur",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Kepulauan Bangka Belitung",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Kepulauan Riau",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Lampung",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Nusa Tenggara Barat",
+      "n": 5,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Papua Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Papua Tengah",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Riau",
+      "n": 14,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sulawesi Barat",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sulawesi Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sulawesi Tengah",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sulawesi Tenggara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sulawesi Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sumatera Barat",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sumatera Selatan",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Sumatera Utara",
+      "n": 22,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2024,
+      "provinsi_sekolah": "Tidak teridentifikasi",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Aceh",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Bali",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Banten",
+      "n": 32,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Bengkulu",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "DKI Jakarta",
+      "n": 52,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Daerah Istimewa Yogyakarta",
+      "n": 218,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Jambi",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Jawa Barat",
+      "n": 83,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Jawa Tengah",
+      "n": 224,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Jawa Timur",
+      "n": 72,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kalimantan Barat",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kalimantan Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kalimantan Timur",
+      "n": 7,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kalimantan Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kepulauan Bangka Belitung",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Kepulauan Riau",
+      "n": 7,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Lampung",
+      "n": 9,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Luar Negeri",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Maluku",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Maluku Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Nusa Tenggara Barat",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Nusa Tenggara Timur",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Riau",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Sulawesi Selatan",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Sulawesi Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Sumatera Barat",
+      "n": 16,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Sumatera Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Sumatera Utara",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2025,
+      "provinsi_sekolah": "Tidak teridentifikasi",
+      "n": 24,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Aceh",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Bali",
+      "n": 6,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Banten",
+      "n": 35,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "DKI Jakarta",
+      "n": 63,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Daerah Istimewa Yogyakarta",
+      "n": 198,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Jambi",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Jawa Barat",
+      "n": 114,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Jawa Tengah",
+      "n": 228,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Jawa Timur",
+      "n": 78,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kalimantan Barat",
+      "n": 3,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kalimantan Selatan",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kalimantan Tengah",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kalimantan Timur",
+      "n": 8,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kalimantan Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kepulauan Bangka Belitung",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Kepulauan Riau",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Lampung",
+      "n": 11,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Nusa Tenggara Barat",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Nusa Tenggara Timur",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Papua",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Papua Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Riau",
+      "n": 13,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sulawesi Selatan",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sulawesi Tenggara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sulawesi Utara",
+      "n": null,
+      "disamarkan": true
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sumatera Barat",
+      "n": 19,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sumatera Selatan",
+      "n": 4,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Sumatera Utara",
+      "n": 15,
+      "disamarkan": false
+    },
+    {
+      "angkatan": 2026,
+      "provinsi_sekolah": "Tidak teridentifikasi",
+      "n": 17,
+      "disamarkan": false
+    }
+  ],
+  "wali_tidak_dilaporkan": 885
+}

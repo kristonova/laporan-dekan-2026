@@ -1,0 +1,134 @@
+[
+  {
+    "angkatan": 2021,
+    "status": "Lainnya",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2021,
+    "status": "Lulus",
+    "n": 566,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "status": "Masih aktif",
+    "n": 218,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "status": "Mengundurkan diri",
+    "n": 46,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "status": "Tidak aktif",
+    "n": 47,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "status": "Lulus",
+    "n": 321,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "status": "Masih aktif",
+    "n": 391,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "status": "Mengundurkan diri",
+    "n": 41,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "status": "Tidak aktif",
+    "n": 44,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "status": "Lainnya",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2023,
+    "status": "Masih aktif",
+    "n": 672,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "status": "Mengundurkan diri",
+    "n": 54,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "status": "Tidak aktif",
+    "n": 105,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "status": "Masih aktif",
+    "n": 678,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "status": "Mengundurkan diri",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "status": "Tidak aktif",
+    "n": 30,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "status": "Masih aktif",
+    "n": 795,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "status": "Mengundurkan diri",
+    "n": 22,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "status": "Selesai non-gelar",
+    "n": 28,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "status": "Tidak aktif",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2026,
+    "status": "Masih aktif",
+    "n": 861,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "status": "Mengundurkan diri",
+    "n": 4,
+    "disamarkan": false
+  }
+]

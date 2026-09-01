@@ -205,6 +205,193 @@ def academic_outputs() -> None:
     })
 
 
+# --- Profil mahasiswa --------------------------------------------------------
+
+# Counts of one or two people are withheld. A single student in one province of
+# one cohort of one programme is identifiable to anyone who knows them, and this
+# site is public. The row still ships, so a reader can see the category exists —
+# only the number is replaced by null and the row marked.
+SMALL_CELL = 3
+
+
+def suppress(frame: pd.DataFrame, column: str = "n") -> pd.DataFrame:
+    """Null out counts below SMALL_CELL and flag the rows that were withheld."""
+    result = frame.copy()
+    withheld = result[column].between(1, SMALL_CELL - 1)
+    result["disamarkan"] = withheld
+    result[column] = result[column].where(~withheld).astype("Int64")
+    return result
+
+
+def gendered_counts(frame: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
+    """Group by keys and add the gender split alongside the total."""
+    grouped = frame.groupby(keys, dropna=False).agg(
+        n=("angkatan", "size"),
+        perempuan=("gender", lambda values: int((values == "Perempuan").sum())),
+        laki=("gender", lambda values: int((values == "Laki-laki").sum())),
+    ).reset_index()
+    # Gender is blank for the 2021-2022 non-degree intake, so the two named
+    # counts do not always add up to n. The gap is reported, never imputed.
+    grouped["tanpa_gender"] = grouped["n"] - grouped["perempuan"] - grouped["laki"]
+    return grouped
+
+
+def student_profile_outputs() -> None:
+    """Cohort demographics: origin, gender, pathway, family background, outcome."""
+    students = pd.read_csv(CLEAN_DIR / "students.csv", keep_default_na=False, na_values=[""])
+    students["angkatan"] = students["angkatan"].astype(int)
+    degree = students[students["jenjang"] == "Sarjana"]
+    years = sorted(students["angkatan"].unique().tolist())
+
+    # Only the 38 BPS provinces carry a numeric code. "Luar Negeri" and the rows
+    # with no province at all are excluded from the Java / outside-Java split and
+    # counted separately, so a missing address never reads as "from outside Java".
+    students["provinsi_domestik"] = students["provinsi_kode"].fillna("").str.fullmatch(r"\d+")
+
+    # --- per cohort headline ------------------------------------------------
+    per_year = students.groupby("angkatan").agg(
+        total=("angkatan", "size"),
+        perempuan=("gender", lambda values: int((values == "Perempuan").sum())),
+        laki=("gender", lambda values: int((values == "Laki-laki").sum())),
+        di_jawa=("di_jawa", "sum"),
+        daerah_3t=("daerah_3t", "sum"),
+        domestik=("provinsi_domestik", "sum"),
+        luar_negeri=("provinsi", lambda values: int((values == "Luar Negeri").sum())),
+    ).reset_index()
+    domestic = students[students["provinsi_domestik"]]
+    per_year["provinsi_terwakili"] = (
+        domestic.groupby("angkatan")["provinsi_kode"].nunique()
+        .reindex(per_year["angkatan"]).fillna(0).astype(int).values
+    )
+    per_year["sarjana"] = degree.groupby("angkatan").size().reindex(per_year["angkatan"]).fillna(0).astype(int).values
+    per_year["non_gelar"] = per_year["total"] - per_year["sarjana"]
+    per_year["iup"] = students[students["jalur"] == "IUP"].groupby("angkatan").size().reindex(per_year["angkatan"]).fillna(0).astype(int).values
+    per_year["tergender"] = per_year["perempuan"] + per_year["laki"]
+    per_year["porsi_perempuan"] = (per_year["perempuan"] / per_year["tergender"] * 100).round(1)
+    per_year["luar_jawa"] = per_year["domestik"] - per_year["di_jawa"]
+    per_year["tanpa_provinsi"] = per_year["total"] - per_year["domestik"] - per_year["luar_negeri"]
+    per_year["porsi_luar_jawa"] = (per_year["luar_jawa"] / per_year["domestik"] * 100).round(1)
+    for column in ("di_jawa", "luar_jawa", "daerah_3t", "domestik", "tanpa_provinsi"):
+        per_year[column] = per_year[column].astype(int)
+
+    first, last = per_year.iloc[0], per_year.iloc[-1]
+    top_pathway = students["jalur"].value_counts().idxmax()
+    write_json("students_summary.json", {
+        "total": int(len(students)),
+        "sarjana": int(len(degree)),
+        "tahun": years,
+        "tahun_awal": int(years[0]),
+        "tahun_akhir": int(years[-1]),
+        "prodi_n": int(degree["prodi"].nunique()),
+        "jalur_terbesar": top_pathway,
+        "jalur_terbesar_n": int((students["jalur"] == top_pathway).sum()),
+        "porsi_perempuan_awal": float(first["porsi_perempuan"]),
+        "porsi_perempuan_akhir": float(last["porsi_perempuan"]),
+        "provinsi_awal": int(first["provinsi_terwakili"]),
+        "provinsi_akhir": int(last["provinsi_terwakili"]),
+        "porsi_luar_jawa_awal": float(first["porsi_luar_jawa"]),
+        "porsi_luar_jawa_akhir": float(last["porsi_luar_jawa"]),
+        "porsi_luar_jawa_puncak": float(per_year["porsi_luar_jawa"].max()),
+        "tahun_luar_jawa_puncak": int(per_year.loc[per_year["porsi_luar_jawa"].idxmax(), "angkatan"]),
+        "daerah_3t": int(per_year["daerah_3t"].sum()),
+        "per_tahun": records(per_year),
+    })
+
+    # --- programme ----------------------------------------------------------
+    by_programme = gendered_counts(students, ["angkatan", "jenjang", "departemen", "prodi"])
+    output("students_by_programme.json", records(
+        suppress(by_programme).sort_values(["angkatan", "jenjang", "departemen", "prodi"])
+    ))
+
+    # --- province -----------------------------------------------------------
+    # The placeholder code is filled before grouping, not after: rows with a
+    # missing address and rows the source marked "Lain-lain" carry the same
+    # label and must land in one row, not two identical-looking ones.
+    students["provinsi_kode"] = students["provinsi_kode"].fillna("UNKNOWN")
+    by_province = students.groupby(["angkatan", "provinsi", "provinsi_kode"], dropna=False).size().reset_index(name="n")
+    output("students_by_province.json", records(
+        suppress(by_province).sort_values(["angkatan", "provinsi"])
+    ))
+
+    # Six-year totals are suppressed on their own count, not summed from the
+    # per-cohort rows: adding up published cells would silently drop every
+    # cohort cell that was withheld and understate the province.
+    province_total = students.groupby(["provinsi", "provinsi_kode"], dropna=False).size().reset_index(name="n")
+    province_total = suppress(province_total).sort_values(["n", "provinsi"], ascending=[False, True])
+
+    # --- pathway ------------------------------------------------------------
+    by_pathway = students.groupby(["angkatan", "jalur"]).size().reset_index(name="n")
+    output("students_by_pathway.json", records(suppress(by_pathway).sort_values(["angkatan", "jalur"])))
+
+    # --- family, faith, and school background -------------------------------
+    occupation = students.groupby(["angkatan", "pekerjaan_wali"]).size().reset_index(name="n")
+    religion = students.groupby(["angkatan", "agama"]).size().reset_index(name="n")
+    # School of origin was not recorded at all for the 2021 and 2022 cohorts.
+    with_school = students[students["sekolah"].notna() & (students["angkatan"] >= 2023)]
+    schools = with_school.groupby("sekolah").size().reset_index(name="n")
+    schools = schools[schools["n"] >= SMALL_CELL].sort_values(["n", "sekolah"], ascending=[False, True])
+    school_province = with_school.groupby(["angkatan", "provinsi_sekolah"]).size().reset_index(name="n")
+    school_years = sorted(with_school["angkatan"].unique().tolist())
+    diy_share = 0.0
+    if len(with_school):
+        diy_share = with_school["provinsi_sekolah"].eq("Daerah Istimewa Yogyakarta").sum() / len(with_school) * 100
+    write_json("students_background.json", {
+        "pekerjaan_wali": records(suppress(occupation).sort_values(["angkatan", "pekerjaan_wali"])),
+        "pekerjaan_wali_total": records(
+            suppress(students.groupby("pekerjaan_wali").size().reset_index(name="n"))
+            .sort_values(["n", "pekerjaan_wali"], ascending=[False, True])
+        ),
+        "agama": records(suppress(religion).sort_values(["angkatan", "agama"])),
+        "sekolah_tahun": school_years,
+        "sekolah_tercatat": int(len(with_school)),
+        "sekolah_unik": int(with_school["sekolah"].nunique()),
+        "sekolah_teratas": records(schools.head(15)),
+        "sekolah_porsi_diy": round(float(diy_share), 1),
+        "sekolah_provinsi": records(suppress(school_province).sort_values(["angkatan", "provinsi_sekolah"])),
+        "wali_tidak_dilaporkan": int((students["pekerjaan_wali"] == "Tidak dilaporkan").sum()),
+    })
+
+    # --- cohort outcome and grades ------------------------------------------
+    outcome = students.groupby(["angkatan", "status"]).size().reset_index(name="n")
+    output("students_cohort_outcome.json", records(suppress(outcome).sort_values(["angkatan", "status"])))
+
+    graded = degree.dropna(subset=["ipk"])
+    ipk_year = graded.groupby("angkatan")["ipk"].agg(
+        tercatat="size", rerata="mean", median="median",
+        p25=lambda values: values.quantile(0.25), p75=lambda values: values.quantile(0.75),
+    ).reset_index()
+    ipk_programme = graded.groupby(["angkatan", "prodi"])["ipk"].agg(
+        tercatat="size", median="median"
+    ).reset_index()
+    # A median over one or two students is as identifying as the values it hides.
+    ipk_programme = ipk_programme[ipk_programme["tercatat"] >= SMALL_CELL]
+    for frame, columns in ((ipk_year, ["rerata", "median", "p25", "p75"]), (ipk_programme, ["median"])):
+        for column in columns:
+            frame[column] = frame[column].round(2)
+    write_json("students_ipk.json", {
+        "tahun": sorted(graded["angkatan"].unique().tolist()),
+        "tahun_tanpa_ipk": [year for year in years if year not in set(graded["angkatan"])],
+        "per_tahun": records(ipk_year),
+        "per_prodi": records(ipk_programme.sort_values(["angkatan", "prodi"])),
+    })
+
+    # --- access -------------------------------------------------------------
+    districts = students.groupby("kabupaten").size().reset_index(name="n")
+    districts = districts[districts["n"] >= SMALL_CELL].sort_values(["n", "kabupaten"], ascending=[False, True])
+    write_json("students_access.json", {
+        "provinsi_total": records(province_total),
+        "per_tahun": records(per_year[[
+            "angkatan", "total", "domestik", "di_jawa", "luar_jawa", "porsi_luar_jawa",
+            "provinsi_terwakili", "daerah_3t", "luar_negeri", "tanpa_provinsi",
+        ]]),
+        "kabupaten_teratas": records(districts.head(15)),
+        "kabupaten_unik": int(students["kabupaten"].nunique()),
+        "provinsi_tanpa_data": int((students["provinsi"] == "Tidak teridentifikasi").sum()),
+        "luar_negeri": int((students["provinsi"] == "Luar Negeri").sum()),
+        "daerah_3t_total": int(students["daerah_3t"].sum()),
+    })
+
+
 def tracer_outputs() -> None:
     """Graduate waiting time and employment sector, aggregated per programme."""
     waiting = pd.read_csv(CLEAN_DIR / "tracer_waiting.csv")
@@ -314,6 +501,7 @@ def main() -> None:
     tck_outputs()
     partnership_outputs()
     academic_outputs()
+    student_profile_outputs()
     tracer_outputs()
     health_outputs()
 

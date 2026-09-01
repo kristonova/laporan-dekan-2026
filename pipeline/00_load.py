@@ -15,6 +15,7 @@ from utils import (
     MAPPINGS_DIR,
     PARTNERSHIP_DIR,
     TCK_2026_DIR,
+    cell,
     deduplicate,
     ensure_directories,
     excel_date,
@@ -202,6 +203,78 @@ def load_active_students() -> pd.DataFrame:
             })
     return pd.DataFrame(rows)
 
+
+
+# One workbook per intake cohort. Every sheet repeats the same 34 columns with a
+# title row, a blank row, and then the header, so the header is located by label
+# rather than by position — a column reordered upstream must fail loudly here
+# instead of silently shifting the data.
+ROSTER_DIR = ACADEMIC_DIR / "daftar mahasiswa"
+ROSTER_HEADER_ROW = 2
+# Source column -> exported name. Everything absent from this map is dropped at
+# load time and never reaches disk. That is deliberate: the workbooks carry
+# names, student numbers, phone numbers, home addresses, and guardian details,
+# while this report only ever publishes counts. Dropping the columns here means
+# no later stage can leak what it never received.
+ROSTER_COLUMNS = {
+    "Angkatan": "angkatan",
+    "Program Studi": "program_studi",
+    "Jalur Masuk": "jalur_masuk",
+    "Sub Angkatan": "sub_angkatan",
+    "Kurikulum": "kurikulum",
+    "Jenis Kelamin": "jenis_kelamin",
+    "Agama": "agama",
+    "Sekolah Asal": "sekolah_asal",
+    "Kabupaten Sekolah": "kabupaten_sekolah",
+    "Propinsi Sekolah": "propinsi_sekolah",
+    "Kabupaten KTP": "kabupaten_ktp",
+    "Propinsi KTP": "propinsi_ktp",
+    "Pekerjaan Wali": "pekerjaan_wali",
+    "Asal 3T": "asal_3t",
+    "IPK": "ipk",
+    "SKS Kumulatif": "sks_kumulatif",
+    "Status Akhir": "status_akhir",
+}
+# Read but never exported: it only marks which rows are real students.
+ROSTER_ROW_KEY = "NIM"
+
+
+def load_student_roster() -> tuple[pd.DataFrame, list[str]]:
+    """Per-cohort student rosters, stripped of every personal column at load.
+
+    Returns the frame plus the file names that produced it, because this is the
+    one loader that reads a whole directory instead of a single workbook.
+    """
+    paths = sorted(ROSTER_DIR.glob("Daftar mahasiswa *.xlsx"))
+    if not paths:
+        raise FileNotFoundError(f"Tidak ada berkas daftar mahasiswa di {ROSTER_DIR}")
+
+    frames: list[pd.DataFrame] = []
+    for path in paths:
+        grid = read_workbook(path, "Daftar Mahasiswa")
+        header = grid.iloc[ROSTER_HEADER_ROW]
+        positions = {text_cell(header, index): index for index in range(grid.shape[1])}
+        missing = [label for label in (*ROSTER_COLUMNS, ROSTER_ROW_KEY) if label not in positions]
+        if missing:
+            raise ValueError(f"{path.name}: kolom hilang {missing}")
+
+        body = grid.iloc[ROSTER_HEADER_ROW + 1:]
+        rows = [
+            {name: cell(row, positions[label]) for label, name in ROSTER_COLUMNS.items()}
+            for _, row in body.iterrows()
+            if text_cell(row, positions[ROSTER_ROW_KEY])
+        ]
+        # Columns are pinned and typed as object: the 2021 and 2022 cohorts have
+        # no school-of-origin data at all, and an all-NA column would otherwise
+        # change dtype during the concat below.
+        frame = pd.DataFrame(rows, columns=list(ROSTER_COLUMNS.values()), dtype=object)
+        frame["berkas"] = path.stem
+        frames.append(frame)
+
+    roster = pd.concat(frames, ignore_index=True)
+    leaked = sorted(set(roster.columns) - set(ROSTER_COLUMNS.values()) - {"berkas"})
+    assert not leaked, f"Kolom tak terduga lolos dari daftar mahasiswa: {leaked}"
+    return roster, [path.name for path in paths]
 
 # sheet name, header row index, and the per-cohort summary columns that only
 # appear on the first row of each academic-year block.
@@ -584,6 +657,9 @@ def main() -> None:
     for name, (loader, source) in academic_loaders.items():
         record(name, loader(), [source])
 
+    roster, roster_files = load_student_roster()
+    record("student_roster", roster, roster_files)
+
     waiting, sectors, tracer_summary = load_tracer()
     record("tracer_waiting", waiting, ["25,26.Waktu tunggu.xls"])
     record("tracer_sectors", sectors, ["27,29.bidang kerja.xls"])
@@ -597,6 +673,7 @@ def main() -> None:
     print(
         f"Loaded {len(DATASETS)} historical datasets, {len(tck)} TCK indicators, "
         f"{len(partnerships)} cooperation documents, {len(academic_loaders)} academic tables, "
+        f"{len(roster)} student records across {len(roster_files)} cohorts, "
         f"and {len(visits)} anonymised Posbindu visits."
     )
 

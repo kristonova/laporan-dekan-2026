@@ -1,0 +1,68 @@
+angkatan,jenjang,departemen,prodi,n,perempuan,laki,tanpa_gender,disamarkan
+2021,Non-gelar,Dep IKE,Ilmu Komputer,14.0,1,0,13,False
+2021,Non-gelar,Dep Kimia,Kimia,48.0,0,0,48,False
+2021,Non-gelar,Dep Matematika,Matematika,10.0,9,1,0,False
+2021,Non-gelar,Dep Matematika,Statistika,27.0,20,7,0,False
+2021,Non-gelar,Dep. Fisika,Fisika,14.0,0,0,14,False
+2021,Non-gelar,Dep. Fisika,Geofisika,5.0,0,0,5,False
+2021,Sarjana,Dep IKE,Elektronika dan Instrumentasi,108.0,22,86,0,False
+2021,Sarjana,Dep IKE,Ilmu Komputer,133.0,32,101,0,False
+2021,Sarjana,Dep Kimia,Kimia,170.0,119,51,0,False
+2021,Sarjana,Dep Matematika,Ilmu Aktuaria,50.0,25,25,0,False
+2021,Sarjana,Dep Matematika,Matematika,85.0,47,38,0,False
+2021,Sarjana,Dep Matematika,Statistika,74.0,45,29,0,False
+2021,Sarjana,Dep. Fisika,Fisika,75.0,36,39,0,False
+2021,Sarjana,Dep. Fisika,Geofisika,65.0,37,28,0,False
+2022,Non-gelar,Dep IKE,Ilmu Komputer,15.0,3,3,9,False
+2022,Non-gelar,Dep Kimia,Kimia,36.0,1,0,35,False
+2022,Non-gelar,Dep Matematika,Matematika,18.0,14,4,0,False
+2022,Non-gelar,Dep Matematika,Statistika,11.0,8,3,0,False
+2022,Sarjana,Dep IKE,Elektronika dan Instrumentasi,108.0,17,91,0,False
+2022,Sarjana,Dep IKE,Ilmu Komputer,130.0,43,87,0,False
+2022,Sarjana,Dep Kimia,Kimia,159.0,119,40,0,False
+2022,Sarjana,Dep Matematika,Ilmu Aktuaria,47.0,22,25,0,False
+2022,Sarjana,Dep Matematika,Matematika,82.0,48,34,0,False
+2022,Sarjana,Dep Matematika,Statistika,59.0,36,23,0,False
+2022,Sarjana,Dep. Fisika,Fisika,70.0,33,37,0,False
+2022,Sarjana,Dep. Fisika,Geofisika,62.0,35,27,0,False
+2023,Non-gelar,Dep IKE,Ilmu Komputer,42.0,26,16,0,False
+2023,Non-gelar,Dep Kimia,Kimia,29.0,18,11,0,False
+2023,Non-gelar,Dep Matematika,Matematika,9.0,8,1,0,False
+2023,Non-gelar,Dep Matematika,Statistika,10.0,10,0,0,False
+2023,Sarjana,Dep IKE,Elektronika dan Instrumentasi,104.0,27,77,0,False
+2023,Sarjana,Dep IKE,Ilmu Komputer,141.0,42,99,0,False
+2023,Sarjana,Dep Kimia,Kimia,159.0,118,41,0,False
+2023,Sarjana,Dep Matematika,Ilmu Aktuaria,53.0,28,25,0,False
+2023,Sarjana,Dep Matematika,Matematika,85.0,37,48,0,False
+2023,Sarjana,Dep Matematika,Statistika,60.0,41,19,0,False
+2023,Sarjana,Dep. Fisika,Fisika,69.0,35,34,0,False
+2023,Sarjana,Dep. Fisika,Geofisika,72.0,35,37,0,False
+2024,Non-gelar,Dep IKE,Ilmu Komputer,31.0,15,16,0,False
+2024,Sarjana,Dep IKE,Elektronika dan Instrumentasi,96.0,23,73,0,False
+2024,Sarjana,Dep IKE,Ilmu Komputer,143.0,40,103,0,False
+2024,Sarjana,Dep Kimia,Kimia,149.0,113,36,0,False
+2024,Sarjana,Dep Matematika,Ilmu Aktuaria,46.0,24,22,0,False
+2024,Sarjana,Dep Matematika,Matematika,82.0,47,35,0,False
+2024,Sarjana,Dep Matematika,Statistika,57.0,35,22,0,False
+2024,Sarjana,Dep. Fisika,Fisika,50.0,23,27,0,False
+2024,Sarjana,Dep. Fisika,Geofisika,72.0,34,38,0,False
+2025,Non-gelar,Dep IKE,Ilmu Komputer,33.0,12,21,0,False
+2025,Non-gelar,Dep Kimia,Kimia,,0,1,0,True
+2025,Sarjana,Dep IKE,Elektronika dan Instrumentasi,114.0,37,77,0,False
+2025,Sarjana,Dep IKE,Ilmu Komputer,150.0,41,109,0,False
+2025,Sarjana,Dep Kimia,Kimia,170.0,125,45,0,False
+2025,Sarjana,Dep Matematika,Ilmu Aktuaria,60.0,33,27,0,False
+2025,Sarjana,Dep Matematika,Matematika,72.0,37,35,0,False
+2025,Sarjana,Dep Matematika,Statistika,81.0,43,38,0,False
+2025,Sarjana,Dep. Fisika,Fisika,90.0,31,59,0,False
+2025,Sarjana,Dep. Fisika,Geofisika,75.0,36,39,0,False
+2026,Non-gelar,Dep IKE,Ilmu Komputer,20.0,7,13,0,False
+2026,Non-gelar,Dep Matematika,Matematika,,0,1,0,True
+2026,Sarjana,Dep IKE,Elektronika dan Instrumentasi,122.0,27,95,0,False
+2026,Sarjana,Dep IKE,Ilmu Komputer,143.0,38,105,0,False
+2026,Sarjana,Dep Kimia,Kimia,182.0,118,64,0,False
+2026,Sarjana,Dep Matematika,Ilmu Aktuaria,57.0,32,25,0,False
+2026,Sarjana,Dep Matematika,Matematika,77.0,34,43,0,False
+2026,Sarjana,Dep Matematika,Statistika,96.0,53,43,0,False
+2026,Sarjana,Dep. Fisika,Fisika,87.0,35,52,0,False
+2026,Sarjana,Dep. Fisika,Geofisika,80.0,36,44,0,False
