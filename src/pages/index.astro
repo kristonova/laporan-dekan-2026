@@ -285,7 +285,7 @@ const graduateGapYears = graduates
   .filter((row) => graduateLevels.some((level) => !row[level.toLowerCase()]))
   .map((row) => row.year);
 const graduateGapNote = graduateGapYears.length > 0
-  ? `Lulusan Magister dan Doktor tahun akademik ${graduates.find((row) => row.year === graduateGapYears[0])?.year ?? ""} belum tercatat pada berkas sumber; batang tahun tersebut ditutup arsiran dan tidak dapat dibandingkan langsung dengan tahun sebelumnya.`
+  ? `Data lulusan Magister dan Doktor tahun akademik ${graduates.find((row) => row.year === graduateGapYears[0])?.year ?? ""} masih dalam proses konsolidasi; visualisasi tahun tersebut diberi arsiran khusus dan belum dibandingkan langsung dengan tahun sebelumnya.`
   : undefined;
 
 const achievementYears = [...new Set((achievementsRaw as any[]).map((row) => row.tahun))].sort((a, b) => a - b);
@@ -723,14 +723,14 @@ const sceneValues: SceneValues = {
 const deck = (key: keyof typeof scenes) => deckOf(key, sceneValues);
 
 const pillarSummary = [
-  { number: "1", title: "Reputasi Akademik", status: "Capaian Sangat Solid", achieved: pillarStats.Reputasi.achieved, total: pillarStats.Reputasi.total, takeaway: "Dampak riset dan sitasi melesat; pemerataan produktivitas dan kemitraan global terus diperkuat.", href: "#reputasi", color: "blue" },
-  { number: "2", title: "Kontribusi terhadap Bangsa", status: "Tantangan Terbesar", achieved: pillarStats.Kontribusi.achieved, total: pillarStats.Kontribusi.total, takeaway: "Produktivitas riset dan kemitraan tumbuh; percepatan hilirisasi dan pemberitaan ber-SDGs menjadi fokus utama.", href: "#kontribusi", color: "orange" },
-  { number: "3", title: "Employability & Lulusan", status: "Fondasi Data Terbentuk", achieved: pillarStats.Employability.achieved, total: pillarStats.Employability.total, takeaway: "Tracer study kini terintegrasi; partisipasi MBKM dan kesiapan karier melampaui target.", href: "#employability", color: "green" },
-  { number: "4", title: "Tata Kelola & Kesejahteraan", status: "Tingkat Ketercapaian Tertinggi", achieved: pillarStats.Kesejahteraan.achieved, total: pillarStats.Kesejahteraan.total, takeaway: "Karier dosen dan fasilitas inklusif berkembang pesat; program kesehatan sivitas berjalan rutin.", href: "#kesejahteraan", color: "violet" },
+  { number: "1", title: "Reputasi Akademik", status: "Capaian Sangat Baik", achieved: pillarStats.Reputasi.achieved, total: pillarStats.Reputasi.total, takeaway: "Lompatan sitasi dan publikasi global meningkat tajam; penguatan produktivitas antardepartemen dan jejaring internasional terus diperluas.", href: "#reputasi", color: "blue" },
+  { number: "2", title: "Kontribusi terhadap Bangsa", status: "Fokus Akselerasi", achieved: pillarStats.Kontribusi.achieved, total: pillarStats.Kontribusi.total, takeaway: "Pendanaan riset dan kerja sama tumbuh signifikan; percepatan hilirisasi inovasi dan diseminasi SDGs menjadi prioritas utama.", href: "#kontribusi", color: "orange" },
+  { number: "3", title: "Employability & Lulusan", status: "Capaian Positif", achieved: pillarStats.Employability.achieved, total: pillarStats.Employability.total, takeaway: "Pelacakan lulusan terintegrasi dengan baik; partisipasi MBKM dan kesiapan karier mahasiswa melampaui target.", href: "#employability", color: "green" },
+  { number: "4", title: "Tata Kelola & Kesejahteraan", status: "Tingkat Ketercapaian Terbaik", achieved: pillarStats.Kesejahteraan.achieved, total: pillarStats.Kesejahteraan.total, takeaway: "Karier fungsional dosen dan fasilitas kampus inklusif berkembang pesat; pemeriksaan kesehatan sivitas berjalan berkala.", href: "#kesejahteraan", color: "violet" },
   /* Not scored by the performance contract: this pillar describes who the
      faculty teaches, so its card carries a headcount instead of an indicator
      ratio. */
-  { number: "5", title: "Mahasiswa & Akses Pendidikan", status: "Basis Data Baru", metric: format(students.total), metricLabel: `mahasiswa · ${format(studentYears.length)} angkatan`, takeaway: "Jangkauan provinsi meluas, tetapi porsi mahasiswa perempuan dan konsentrasi sekolah asal perlu diawasi.", href: "#mahasiswa", color: "teal" },
+  { number: "5", title: "Mahasiswa & Akses Pendidikan", status: "Gambaran Komprehensif", metric: format(students.total), metricLabel: `mahasiswa · ${format(studentYears.length)} angkatan`, takeaway: "Asal daerah mahasiswa menjangkau 35 provinsi di nusantara, dengan dinamika keberagaman gender dan sekolah asal.", href: "#mahasiswa", color: "teal" },
 ] as any;
 ---
 
@@ -745,18 +745,18 @@ const pillarSummary = [
         <InstitutionPortrait lecturers={institutionRaw.lecturers} academicStaff={institutionRaw.academic_staff} departmentsCount={institutionRaw.departments} studyProgrammes={institutionRaw.study_programmes} laboratories={institutionRaw.laboratories} {departmentCounts} />
         <table slot="table"><caption>Komposisi dan Struktur Organisasi FMIPA UGM</caption><tbody><tr><th scope="row">Dosen</th><td>{institutionRaw.lecturers}</td></tr><tr><th scope="row">Tenaga kependidikan</th><td>{institutionRaw.academic_staff}</td></tr><tr><th scope="row">Departemen akademik</th><td>{institutionRaw.departments}</td></tr><tr><th scope="row">Program studi</th><td>{institutionRaw.study_programmes}</td></tr><tr><th scope="row">Laboratorium</th><td>{institutionRaw.laboratories}</td></tr><tr><th scope="row">Mahasiswa sarjana aktif</th><td>{activeStudentTotal}</td></tr></tbody></table>
       </ChartFrame>
-      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana</strong> aktif terdaftar dari sembilan angkatan. Dari {format(accreditation.prodi_nasional)} program studi terakreditasi nasional, <strong>{format(accreditation.prodi_unggul)} berpredikat Unggul/A</strong> dan {format(accreditation.prodi_internasional)} telah mengantongi akreditasi internasional.</p></Insight>
+      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana</strong> aktif terdaftar dalam sembilan angkatan. Dari {format(accreditation.prodi_nasional)} program studi terakreditasi nasional, <strong>{format(accreditation.prodi_unggul)} program studi berpredikat Unggul/A</strong> dan {format(accreditation.prodi_internasional)} telah terakreditasi internasional.</p></Insight>
     </StoryScene>
 
     <StoryScene id="target-2026" number="1.2" question={scenes["1.2"].question} deck={deck("1.2")} tone="paper" wide>
-      <SceneBlock title="Posisi 42 Indikator terhadap Target Kuartal" lede="Status dihitung terhadap target triwulan yang dapat dinilai, bukan target tahunan.">
+      <SceneBlock title="Posisi 42 Indikator terhadap Target Kuartal" lede="Status capaian dievaluasi berdasarkan target triwulan berjalan.">
         <TckOverview rows={tck as any} budgetPercent={(budgetRaw as any).realisasi_persen} snapshotLabel={snapshot.label} />
       </SceneBlock>
-      <SceneBlock title="Porsi Kontribusi Departemen pada Sepuluh Indikator Terbesar" lede="Yang dibandingkan adalah porsi, bukan jumlah mutlak, karena satuan tiap indikator berbeda.">
+      <SceneBlock title="Porsi Kontribusi Departemen pada Sepuluh Indikator Terbesar" lede="Grafik menampilkan proporsi kontribusi relatif departemen untuk menyetarakan satuan indikator yang beragam.">
         <StackedBarChart data={tckByDept} xKey="indikator" series={deptSeries} normalized title="Porsi Kontribusi Departemen pada Sepuluh Indikator Terbesar" hideHeader yLabel="Porsi capaian" source="TCK 2026 · rincian per departemen" extracted={snapshot.label} csvHref={dataUrl("tck_2026_by_dept.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="info"><p>Tiga puluh dari {format(tck.length)} indikator memuat rincian per departemen. Grafik menampilkan porsi—bukan jumlah mutlak—karena satuan tiap indikator berbeda. Indikator bersatuan rupiah dikecualikan: pada berkas sumber, seluruh nilai <em>creative funding</em> tercatat di satu kolom departemen sehingga porsinya tidak dapat dibaca sebagai kontribusi nyata.</p></Insight>
-      <Insight tone="critical" label="Sorotan Kinerja"><p>Angka pada laporan ini berasal dari berkas resmi TCK 2026, bukan transkripsi tangkapan layar. Sebanyak <strong>{format(tckFlagged)} indikator</strong> membawa catatan kualitas data—termasuk empat indikator persentase yang kolom Triwulan III-nya memuat cacah mahasiswa tanpa penyebut, sehingga penilaiannya sengaja dikembalikan ke Triwulan II.</p></Insight>
+      <Insight tone="info"><p>Sebanyak 30 dari {format(tck.length)} indikator menyajikan rincian per departemen. Grafik di atas membandingkan proporsi kontribusi departemen karena satuan tiap indikator berbeda. Indikator bersatuan nominal rupiah dikecualikan karena pencatatan <em>creative funding</em> pada data sumber terpusat pada satu departemen pengelola dan tidak mencerminkan pembagian riil.</p></Insight>
+      <Insight tone="critical" label="Sorotan Kinerja"><p>Data dalam laporan ini bersumber dari dokumen resmi TCK 2026 yang terverifikasi. Sebanyak <strong>{format(tckFlagged)} indikator</strong> memiliki catatan teknis—termasuk empat indikator persentase yang pada Triwulan III tercatat berupa jumlah orang tanpa angka pembagi (penyebut), sehingga status evaluasinya merujuk pada capaian Triwulan II yang lengkap dan valid.</p></Insight>
     </StoryScene>
 
     <StoryScene id="model-nilai" number="1.3" question={scenes["1.3"].question} deck={deck("1.3")} wide>
@@ -770,16 +770,16 @@ const pillarSummary = [
       <p class="chapter-bridge">Transformasi nyata yang terukur dalam data dan fakta.</p>
     </ChapterIntro>
 
-    <PillarHeader id="reputasi" number="1" title="Reputasi Akademik" evidence="Data Terverifikasi" color="blue" summary="Dampak dan jangkauan pengetahuan FMIPA bertumbuh pesat. Pilar ini meninjau produktivitas publikasi, intensitas sitasi, kolaborasi internasional, serta komposisi kepakaran dosen." />
+    <PillarHeader id="reputasi" number="1" title="Reputasi Akademik" evidence="Data Terverifikasi" color="blue" summary="Dampak keilmuan dan rekognisi FMIPA berkembang pesat. Pilar ini memaparkan produktivitas publikasi, lompatan sitasi, kolaborasi riset internasional, serta jenjang kepakaran dosen." />
 
     <StoryScene id="jangkauan-riset" number="2.1" pillar="Reputasi Akademik" question={scenes["2.1"].question} deck={deck("2.1")}>
       <LineAreaChart data={citations} xKey="year" series={[{ key: "citations", label: "Sitasi", color: UGM_BLUE }]} title={scenes["2.1"].question} hideHeader area yLabel="Sitasi per tahun" provisionalX={2025} provisionalLabel="Indeksasi berjalan" source="CSV sitasi FMIPA" extracted={snapshot.p2m} csvHref={dataUrl("citations_by_year.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="info"><p>Data sitasi tahun 2025 bersifat sementara seiring proses pemutakhiran berkala di Scopus dan akan terus bertambah.</p></Insight>
+      <Insight tone="info"><p>Data sitasi tahun 2025 masih bersifat dinamis seiring proses pemutakhiran berkala di pangkalan data Scopus.</p></Insight>
     </StoryScene>
 
     <StoryScene id="publikasi-departemen" number="2.2" pillar="Reputasi Akademik" question={scenes["2.2"].question} deck={deck("2.2")} tone="paper" wide>
       <StackedBarChart data={publications} xKey="year" series={publicationSeries} title={scenes["2.2"].question} hideHeader yLabel="Publikasi" provisionalX={2025} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.p2m} csvHref={dataUrl("publications_by_year_dept.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="attention"><p>Sebanyak <strong>94,2% artikel (2020–2025)</strong> berhasil dipetakan ke masing-masing departemen melalui identifikasi ID Scopus penulis, sementara 157 publikasi lainnya tetap dicatat sebagai kategori penelusuran.</p></Insight>
+      <Insight tone="attention"><p>Sebanyak <strong>94,2% artikel ilmiah (2020–2025)</strong> berhasil dipetakan ke masing-masing departemen berdasarkan ID Scopus penulis, sedangkan 157 artikel lainnya masih dalam proses penelusuran afiliasi lanjutan.</p></Insight>
     </StoryScene>
 
     <StoryScene id="topik-riset" number="2.3" pillar="Reputasi Akademik" question={scenes["2.3"].question} deck={deck("2.3")} wide>
@@ -795,7 +795,7 @@ const pillarSummary = [
 
     <StoryScene id="orang-riset" number="2.5" pillar="Reputasi Akademik" question={scenes["2.5"].question} deck={deck("2.5")}>
       <DotMatrix groups={lecturerGroups} title={scenes["2.5"].question} hideHeader columns={20} unitValue={1} unitLabel="dosen" source="Data kepegawaian FMIPA" extracted="snapshot 2025" csvHref={dataUrl("lecturers_positions.csv")} />
-      <Insight tone="info"><p>Data kepegawaian internal mencatat <strong>{format(professorCount)} Guru Besar</strong> aktif, sedangkan sistem SIMASTER mencatat {format(getTckRow("30").capaian_dinilai)} orang berdasarkan SK pengangkatan terbaru; kedua data terdokumentasi sesuai basis penarikan masing-masing.</p></Insight>
+      <Insight tone="info"><p>Pangkalan data kepegawaian internal mencatat <strong>{format(professorCount)} Guru Besar</strong> aktif, sedangkan sistem SIMASTER mencatat {format(getTckRow("30").capaian_dinilai)} Guru Besar berdasarkan SK penetapan terbaru. Perbedaan ini mencerminkan perbedaan waktu pemutakhiran data pada kedua sistem.</p></Insight>
     </StoryScene>
 
     <StoryScene id="reputasi-belum" number="2.6" pillar="Reputasi Akademik" question={scenes["2.6"].question} deck={deck("2.6")} tone="paper">
@@ -803,7 +803,7 @@ const pillarSummary = [
       <IssueCards columns={2} issues={reputationIssues} />
     </StoryScene>
 
-    <PillarHeader id="kontribusi" number="2" title="Kontribusi terhadap Bangsa" evidence="Data Terverifikasi" color="orange" summary="Pertumbuhan riset bermakna ketika mengalir ke masyarakat—melalui hilirisasi inovasi, pengabdian di pelosok nusantara, kontribusi terhadap SDGs, serta kemitraan strategis." />
+    <PillarHeader id="kontribusi" number="2" title="Kontribusi terhadap Bangsa" evidence="Data Terverifikasi" color="orange" summary="Kebermanfaatan riset diwujudkan melalui hilirisasi inovasi kepada masyarakat dan industri, program pengabdian di berbagai pelosok nusantara, dukungan terhadap agenda SDGs, serta jejaring kemitraan strategis." />
 
     <StoryScene id="dana-riset" number="3.1" pillar="Kontribusi terhadap Bangsa" question={scenes["3.1"].question} deck={deck("3.1")} wide>
       <ChartFrame source="Data riset FMIPA UGM" updated="2019–2025" downloadHref={dataUrl("funding_by_year.csv")} downloadName="funding_by_year.csv" note="Tahun 2025 merupakan tahun berjalan. Nilai dana riset mencerminkan total perolehan proposal riset multi-sumber.">
@@ -814,7 +814,7 @@ const pillarSummary = [
 
     <StoryScene id="jangkauan" number="3.2" pillar="Kontribusi terhadap Bangsa" question={scenes["3.2"].question} deck={deck("3.2")} tone="paper" wide>
       <PointMap points={outreachPoints} title={scenes["3.2"].question} hideHeader accumulate showSmallMultiples pointLabel="kegiatan terpetakan" source="Surat Tugas, SIMPEL, dan hibah FMIPA" extracted="2021–2025" csvHref={dataUrl("outreach_points.csv")} />
-      <Insight tone="attention"><p>Sebaran kegiatan Pengabdian kepada Masyarakat (PkM) dihimpun dari dokumen penugasan resmi. Sepanjang 2021–2025, sebanyak <strong>{format(outreachMapped)} dari {format(outreachTotal)} kegiatan</strong> terpetakan sebarannya di berbagai provinsi di seluruh Indonesia.</p></Insight>
+      <Insight tone="attention"><p>Sebaran kegiatan Pengabdian kepada Masyarakat (PkM) dihimpun dari surat tugas resmi dan sistem pelaporan institusi. Sepanjang periode 2021–2025, sebanyak <strong>{format(outreachMapped)} dari {format(outreachTotal)} kegiatan</strong> telah berhasil dipetakan lokasinya di berbagai provinsi di Indonesia.</p></Insight>
     </StoryScene>
 
     <StoryScene id="sdg" number="3.3" pillar="Kontribusi terhadap Bangsa" question={scenes["3.3"].question} deck={deck("3.3")}>
@@ -823,11 +823,11 @@ const pillarSummary = [
 
     <StoryScene id="diseminasi" number="3.4" pillar="Kontribusi terhadap Bangsa" question={scenes["3.4"].question} deck={deck("3.4")} tone="paper">
       <HorizontalBarChart data={journals} title={scenes["3.4"].question} hideHeader sort="descending" axisLabel="Artikel" source="Data jurnal internal FMIPA" csvHref={dataUrl("journals.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="attention"><p>Dokumentasi liputan media massa dihimpun secara sistematis sejak 2023 dengan total 115 publikasi berita positif mengenai inovasi sivitas FMIPA.</p></Insight>
+      <Insight tone="attention"><p>Dokumentasi pemberitaan media massa dihimpun secara terstruktur sejak 2023, mencatat 115 publikasi berita positif terkait inovasi dan kontribusi sivitas akademika FMIPA.</p></Insight>
     </StoryScene>
 
     <StoryScene id="kemitraan" number="3.5" pillar="Kontribusi terhadap Bangsa" question={scenes["3.5"].question} deck={deck("3.5")} wide>
-      <SceneBlock title="Dokumen Kerja Sama yang Ditandatangani per Tahun" lede="Satuannya dokumen kerja sama, bukan mitra unik; satu mitra dapat menandatangani lebih dari satu dokumen.">
+      <SceneBlock title="Dokumen Kerja Sama yang Disepakati per Tahun" lede="Data dihitung berdasarkan jumlah dokumen naskah kerja sama (satu institusi mitra dapat memiliki lebih dari satu dokumen kerja sama).">
         <StackedBarChart data={partnerships} xKey="year" series={partnershipSeries} title="Dokumen Kerja Sama yang Ditandatangani per Tahun" hideHeader yLabel="Dokumen kerja sama" source="LENTERA UGM" extracted={snapshot.lentera} csvHref={dataUrl("partnerships_by_year.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <SceneBlock title="Mitra Luar Negeri Teratas">
@@ -839,44 +839,44 @@ const pillarSummary = [
       <SceneBlock title="Sebaran Provinsi Mitra Dalam Negeri">
         <PointMap points={partnershipPoints} title="Sebaran Provinsi Mitra Dalam Negeri" hideHeader accumulate showSmallMultiples pointLabel="dokumen kerja sama" source="LENTERA UGM · batas Peta Nusa" extracted={snapshot.lentera} csvHref={dataUrl("partnership_points.csv")} />
       </SceneBlock>
-      <Insight tone="positive"><p>Kemitraan tumbuh dari {format(partnerships[0]?.domestik + partnerships[0]?.internasional)} dokumen pada {partnerships[0]?.year} menjadi <strong>{format(partnerships[partnerships.length - 1]?.domestik + partnerships[partnerships.length - 1]?.internasional)} dokumen pada {partnerships[partnerships.length - 1]?.year}</strong>. Dari {format(partnershipCoverage.total)} dokumen, {format(partnershipCoverage.terpetakan)} tercatat lokasi provinsinya, {format(partnershipCoverage.internasional)} merupakan mitra luar negeri, dan {format(partnershipCoverage.lokasi_kosong)} belum memiliki data alamat.</p></Insight>
+      <Insight tone="positive"><p>Jumlah kerja sama meningkat dari {format(partnerships[0]?.domestik + partnerships[0]?.internasional)} dokumen pada {partnerships[0]?.year} menjadi <strong>{format(partnerships[partnerships.length - 1]?.domestik + partnerships[partnerships.length - 1]?.internasional)} dokumen pada {partnerships[partnerships.length - 1]?.year}</strong>. Dari total {format(partnershipCoverage.total)} dokumen kemitraan, sebanyak {format(partnershipCoverage.terpetakan)} dokumen telah terpetakan provinsi mitranya, {format(partnershipCoverage.internasional)} dokumen merupakan kemitraan luar negeri, dan {format(partnershipCoverage.lokasi_kosong)} dokumen dalam proses pemutakhiran data alamat.</p></Insight>
     </StoryScene>
 
     <StoryScene id="kontribusi-belum" number="3.6" pillar="Kontribusi terhadap Bangsa" question={scenes["3.6"].question} deck={deck("3.6")}>
       <IssueCards issues={contributionIssues} />
-      <Insight tone="critical"><p>Kapasitas riset FMIPA sangat produktif dan perolehan <em>creative funding</em> telah menembus Rp{format(getTckRow("1c").capaian_dinilai, 2)} miliar—melampaui target Triwulan III sebesar Rp{format(getTckRow("1c").target_dinilai, 2)} miliar. Fokus strategis berikutnya adalah mempercepat hilirisasi luaran tridharma ke mitra eksternal serta memperluas pemberitaan kegiatan ber-SDGs.</p></Insight>
+      <Insight tone="critical"><p>Aktivitas riset FMIPA menunjukkan produktivitas yang sangat tinggi dan perolehan <em>creative funding</em> telah mencapai Rp{format(getTckRow("1c").capaian_dinilai, 2)} miliar—melampaui target Triwulan III sebesar Rp{format(getTckRow("1c").target_dinilai, 2)} miliar. Fokus strategis selanjutnya adalah mempercepat hilirisasi luaran tridharma kepada mitra industri/masyarakat serta memperluas publikasi kegiatan berbasis SDGs.</p></Insight>
     </StoryScene>
 
-    <PillarHeader id="employability" number="3" title="Employability & Lulusan" evidence="Data Terverifikasi" color="green" summary="Kesiapan kompetensi lulusan kini terukur langsung dari tracer study: sebaran sektor karier, masa tunggu kerja, selektivitas penerimaan, serta prestasi kompetisi mahasiswa." />
+    <PillarHeader id="employability" number="3" title="Employability & Lulusan" evidence="Data Terverifikasi" color="green" summary="Kesiapan dan daya saing lulusan tergambar nyata dari survei penelusuran lulusan (tracer study): keragaman sektor karier, singkatnya masa tunggu kerja, dinamika seleksi masuk, hingga deretan prestasi mahasiswa di tingkat nasional dan internasional." />
 
     <StoryScene id="tujuan-lulusan" number="4.1" pillar="Employability" question={scenes["4.1"].question} deck={deck("4.1")} tone="paper" wide>
       <HorizontalBarChart data={tracerSectors} title={scenes["4.1"].question} hideHeader sort="descending" axisLabel="Responden lulusan" source={`Tracer study FMIPA UGM · angkatan ${tracerSummary.tahun.join(" dan ")}`} extracted="unduhan 29 Juli 2025" csvHref={dataUrl("tracer_sectors.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="positive"><p>Sektor <strong>{tracerTopSector}</strong> menyerap lulusan terbanyak, diikuti sektor keuangan-perbankan dan pendidikan-riset. Sebaran ini menunjukkan lulusan sains dasar terserap luas melintasi industri, tidak terkonsentrasi pada satu bidang.</p></Insight>
+      <Insight tone="positive"><p>Sektor <strong>{tracerTopSector}</strong> menjadi bidang karier terbanyak yang ditekuni lulusan, disusul sektor keuangan/perbankan serta pendidikan dan riset. Sebaran ini membuktikan bahwa lulusan sains dan matematika memiliki fleksibilitas tinggi dan terserap luas di berbagai lini industri.</p></Insight>
     </StoryScene>
 
     <StoryScene id="masa-tunggu" number="4.2" pillar="Employability" question={scenes["4.2"].question} deck={deck("4.2")} wide>
       <StackedBarChart data={waiting} xKey="prodi" series={waitingSeries} normalized title={scenes["4.2"].question} hideHeader yLabel="Proporsi responden" source="Tracer study FMIPA UGM" extracted="unduhan 29 Juli 2025" csvHref={dataUrl("tracer_waiting_time.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="positive"><p>Median masa tunggu kerja lulusan adalah <strong>{format(tracerSummary.median_bulan, 1)} bulan</strong>, dengan rata-rata {format(tracerSummary.rerata_bulan, 2)} bulan. Sebanyak {format(tracerSummary.bekerja_sebelum_lulus)} responden telah bekerja sebelum tanggal kelulusan; nilai negatif pada data sumber menandakan kondisi tersebut.</p></Insight>
+      <Insight tone="positive"><p>Median masa tunggu kerja lulusan berada di angka <strong>{format(tracerSummary.median_bulan, 1)} bulan</strong> (rerata {format(tracerSummary.rerata_bulan, 2)} bulan). Sebanyak {format(tracerSummary.bekerja_sebelum_lulus)} responden bahkan telah diterima bekerja sebelum resmi diwisuda.</p></Insight>
     </StoryScene>
 
     <StoryScene id="bekal-mahasiswa" number="4.3" pillar="Employability" question={scenes["4.3"].question} deck={deck("4.3")} tone="paper" wide>
       <BulletChart data={studentReadiness} title={scenes["4.3"].question} hideHeader maxPercent={200} source="TCK 2026 FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
-      <Insight tone="positive"><p>Partisipasi mahasiswa dalam program MBKM mencapai {format(getTckRow("8a").capaian_dinilai)} orang—melampaui target tahunan sebesar {format(getTckRow("8a").target_tw4)} mahasiswa.</p></Insight>
+      <Insight tone="positive"><p>Partisipasi mahasiswa dalam program MBKM mencapai {format(getTckRow("8a").capaian_dinilai)} orang, berhasil melampaui target tahunan sebesar {format(getTckRow("8a").target_tw4)} mahasiswa.</p></Insight>
     </StoryScene>
 
     <StoryScene id="mahasiswa-asing" number="4.4" pillar="Employability" question={scenes["4.4"].question} deck={deck("4.4")} wide>
       <SceneBlock title="Mahasiswa Asing yang Masuk ke FMIPA">
         <BulletChart data={internationalStudents} title="Mahasiswa Asing yang Masuk ke FMIPA" hideHeader maxPercent={140} source="TCK 2026 #4a–4b" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
       </SceneBlock>
-      <SceneBlock title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" lede="Angka menghitung rekaman mobilitas, bukan mahasiswa unik.">
+      <SceneBlock title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" lede="Data menghitung total keikutsertaan program mobilitas internasional mahasiswa.">
         <HorizontalBarChart data={exchangeBars} title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" hideHeader sort="descending" axisLabel="Mahasiswa" source="Data mobilitas mahasiswa FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("exchange_students.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="info"><p>Arus internasionalisasi berjalan dua arah: {format(getTckRow("4a").capaian_dinilai + getTckRow("4b").capaian_dinilai)} mahasiswa asing tercatat masuk, sementara <strong>{format(exchange.total)} mahasiswa FMIPA</strong> mengikuti program pertukaran, dual degree, dan riset singkat di {format(exchange.universitas)} perguruan tinggi pada {format(exchange.negara - 1)} negara.</p></Insight>
+      <Insight tone="info"><p>Program internasionalisasi berlangsung dua arah: sebanyak {format(getTckRow("4a").capaian_dinilai + getTckRow("4b").capaian_dinilai)} mahasiswa asing menempuh studi di FMIPA, sementara <strong>{format(exchange.total)} mahasiswa FMIPA</strong> mengikuti program pertukaran, <em>dual degree</em>, maupun riset singkat di {format(exchange.universitas)} perguruan tinggi di {format(exchange.negara - 1)} negara.</p></Insight>
     </StoryScene>
 
     <StoryScene id="kelulusan" number="4.5" pillar="Employability" question={scenes["4.5"].question} deck={deck("4.5")} tone="paper">
       <BulletChart data={graduation} title={scenes["4.5"].question} hideHeader maxPercent={200} source="TCK 2026 #8b1–8b3" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
-      <Insight tone="attention" label="Catatan Metodologi"><p>Kolom capaian Triwulan III pada berkas sumber memuat <strong>cacah mahasiswa</strong>, bukan persentase, dan penyebutnya tidak tercantum. Persentase tidak direka; penilaian ketiga jenjang dikembalikan ke Triwulan II sebagai angka terakhir yang sahih.</p></Insight>
+      <Insight tone="attention" label="Catatan Metodologi"><p>Pada dokumen sumber, capaian Triwulan III tercatat berupa jumlah orang tanpa menyertakan total populasi mahasiswa (penyebut). Agar analisis tetap akurat dan objektif, evaluasi tingkat kelulusan tepat waktu merujuk pada persentase Triwulan II yang lengkap dan sahih.</p></Insight>
     </StoryScene>
 
     <StoryScene id="riset-mahasiswa" number="4.3′" pillar="Employability" question={scenes["4.3p"].question} deck={deck("4.3p")}>
@@ -884,16 +884,16 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="selektivitas" number="4.6" pillar="Employability" question={scenes["4.6"].question} deck={deck("4.6")} tone="paper" wide>
-      <SceneBlock title={`Corong Seleksi Sarjana ${admissionLast}`} lede="Dua persentase pada corong ini memakai penyebut yang berbeda: daya terima dihitung terhadap jumlah peminat, sedangkan registrasi dihitung terhadap jumlah yang diterima.">
+      <SceneBlock title={`Corong Seleksi Sarjana ${admissionLast}`} lede="Persentase daya terima dihitung dari total peminat, sedangkan persentase registrasi dihitung dari calon mahasiswa yang dinyatakan diterima.">
         <HorizontalBarChart data={admissionFunnel} title={`Corong Seleksi Sarjana ${admissionLast}`} hideHeader sort="none" axisLabel="Calon mahasiswa" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title="Keketatan Seleksi per Tahun" lede="Keketatan dibaca sebagai jumlah peminat per satu kursi yang diterima. Garis yang menurun berarti seleksi makin longgar.">
+      <SceneBlock title="Keketatan Seleksi per Tahun" lede="Rasio keketatan menggambarkan perbandingan jumlah peminat dengan satu kursi daya tampung yang tersedia.">
         <LineAreaChart data={tightness} xKey="year" series={[{ key: "rasio", label: "Peminat per kursi", color: ACCENT.navy }]} title="Keketatan Seleksi per Tahun" hideHeader yLabel="Peminat per satu kursi" showMarkers source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} valueFormatter={(value:number) => format(value, 1)} />
       </SceneBlock>
-      <SceneBlock title="Lintasan Keketatan per Program Studi" lede={`Satu baris per program studi dengan ${format(admissionYears.length)} titik tahun. Tiap baris diskalakan pada rentangnya sendiri agar bentuk perjalanannya terbaca, jadi yang dibandingkan antarbaris adalah bentuknya—bukan tingginya. Tingkat keketatan tetap terbaca dari angka di kanan dan dari urutan barisnya.`}>
+      <SceneBlock title="Lintasan Keketatan per Program Studi" lede={`Grafik menampilkan tren keketatan seleksi masing-masing program studi selama ${format(admissionYears.length)} tahun terakhir. Skala disesuaikan pada rentang masing-masing agar dinamika perubahan di tiap prodi terlihat jelas.`}>
         <TrendRows data={selectivityRows} periods={admissionYears} title="Lintasan Keketatan per Program Studi" hideHeader axisLabel="Peminat per satu kursi" valueFormatter={(value:number) => format(value, 1)} detail={[{ label: "Peminat", values: selectivityRows.map((row) => row.applicants) }, { label: "Diterima", values: selectivityRows.map((row) => row.seats) }]} source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} />
       </SceneBlock>
-      <Insight tone="attention" label="Catatan Analisis"><p>Rasio ini bergerak karena dua sebab sekaligus, dan keduanya perlu disebut. <strong>{selectivitySteepest?.label}</strong> melonggar paling dalam, dari 1 : {format(selectivitySteepest?.values[0] ?? 0, 1)} menjadi 1 : {format(selectivitySteepest?.values.at(-1) ?? 0, 1)}—peminatnya menyusut dari {format(selectivitySteepest?.applicants[0] ?? 0)} menjadi {format(selectivitySteepest?.applicants.at(-1) ?? 0)}, sementara daya tampungnya justru bertambah dari {format(selectivitySteepest?.seats[0] ?? 0)} menjadi {format(selectivitySteepest?.seats.at(-1) ?? 0)} kursi. Penyusutan minat terbesar sendiri terjadi pada <strong>{selectivityShrinking?.label}</strong>, dari {format(selectivityShrinking?.applicants[0] ?? 0)} menjadi {format(selectivityShrinking?.applicants.at(-1) ?? 0)} pelamar. Ke arah sebaliknya, <strong>{selectivityRising?.label}</strong> menguat dari 1 : {format(selectivityRising?.values[0] ?? 0, 1)} menjadi 1 : {format(selectivityRising?.values.at(-1) ?? 0, 1)} dengan peminat naik dari {format(selectivityRising?.applicants[0] ?? 0)} menjadi {format(selectivityRising?.applicants.at(-1) ?? 0)}. Sebanyak {format(scholarships.total)} mahasiswa memperoleh dukungan beasiswa dari {format(scholarships.skema)} skema berbeda.</p></Insight>
+      <Insight tone="attention" label="Catatan Analisis"><p>Perubahan rasio keketatan dipengaruhi oleh dinamika jumlah peminat sekaligus penyesuaian daya tampung. Pada <strong>{selectivitySteepest?.label}</strong>, rasio keketatan bergeser dari 1 : {format(selectivitySteepest?.values[0] ?? 0, 1)} menjadi 1 : {format(selectivitySteepest?.values.at(-1) ?? 0, 1)}, seiring penurunan pendaftar dari {format(selectivitySteepest?.applicants[0] ?? 0)} menjadi {format(selectivitySteepest?.applicants.at(-1) ?? 0)} orang serta penambahan kuota penerimaan dari {format(selectivitySteepest?.seats[0] ?? 0)} menjadi {format(selectivitySteepest?.seats.at(-1) ?? 0)} kursi. Penurunan jumlah pendaftar terbesar tercatat pada <strong>{selectivityShrinking?.label}</strong>, dari {format(selectivityShrinking?.applicants[0] ?? 0)} menjadi {format(selectivityShrinking?.applicants.at(-1) ?? 0)} orang. Sebaliknya, keketatan pada <strong>{selectivityRising?.label}</strong> meningkat dari 1 : {format(selectivityRising?.values[0] ?? 0, 1)} menjadi 1 : {format(selectivityRising?.values.at(-1) ?? 0, 1)} dengan kenaikan pendaftar dari {format(selectivityRising?.applicants[0] ?? 0)} menjadi {format(selectivityRising?.applicants.at(-1) ?? 0)} orang. Selain itu, sebanyak {format(scholarships.total)} mahasiswa aktif menerima bantuan beasiswa melalui {format(scholarships.skema)} skema pendanaan.</p></Insight>
     </StoryScene>
 
     <StoryScene id="profil-lulusan" number="4.7" pillar="Employability" question={scenes["4.7"].question} deck={deck("4.7")} wide>
@@ -903,120 +903,120 @@ const pillarSummary = [
       <SceneBlock title="Prestasi Mahasiswa menurut Tingkat Kompetisi">
         <StackedBarChart data={achievements} xKey="year" series={achievementSeries} title="Prestasi Mahasiswa menurut Tingkat Kompetisi" hideHeader yLabel="Prestasi" source="Data kemahasiswaan FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("student_achievements.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="positive"><p>Departemen {achievementByDept[0]?.dept} menyumbang prestasi terbanyak ({format(achievementByDept[0]?.n)} capaian sejak 2022), diikuti {achievementByDept[1]?.dept} ({format(achievementByDept[1]?.n)}). Proporsi prestasi tingkat internasional meningkat menjadi <strong>{format((achievements[achievements.length - 1].internasional / (achievements[achievements.length - 1].nasional + achievements[achievements.length - 1].internasional)) * 100, 1)}%</strong> pada {achievements[achievements.length - 1].year}.</p></Insight>
+      <Insight tone="positive"><p>Departemen {achievementByDept[0]?.dept} menyumbang prestasi terbanyak ({format(achievementByDept[0]?.n)} capaian sejak 2022), disusul {achievementByDept[1]?.dept} ({format(achievementByDept[1]?.n)}). Proporsi prestasi tingkat internasional meningkat signifikan menjadi <strong>{format((achievements[achievements.length - 1].internasional / (achievements[achievements.length - 1].nasional + achievements[achievements.length - 1].internasional)) * 100, 1)}%</strong> pada {achievements[achievements.length - 1].year}.</p></Insight>
     </StoryScene>
 
-    <PillarHeader id="kesejahteraan" number="4" title="Tata Kelola & Kesejahteraan" evidence="Data Terverifikasi" color="violet" summary="Peningkatan jenjang karier dosen, rekognisi internasional, fasilitas ramah disabilitas, serta program kesehatan sivitas menunjukkan fondasi tata kelola yang kuat." />
+    <PillarHeader id="kesejahteraan" number="4" title="Tata Kelola & Kesejahteraan" evidence="Data Terverifikasi" color="violet" summary="Pengembangan jenjang karier dosen, rekognisi keilmuan internasional, pemenuhan sarana kampus inklusif, serta pemantauan kesehatan sivitas secara teratur memperkuat fondasi tata kelola fakultas yang sehat dan berkelanjutan." />
 
     <StoryScene id="karier" number="5.1" pillar="Kesejahteraan" question={scenes["5.1"].question} deck={deck("5.1")} tone="paper" wide>
       <BulletChart data={career} title={scenes["5.1"].question} hideHeader maxPercent={200} source="TCK 2026 FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
-      <Insight tone="attention"><p>Rekognisi internasional dosen mencapai {format(getTckRow("23").capaian_dinilai)} orang dari target Triwulan III sebesar {format(getTckRow("23").target_dinilai)}. Sementara itu, sertifikasi kompetensi/profesi baru terpenuhi {format(getTckRow("25").capaian_dinilai)} dari {format(getTckRow("25").target_dinilai)} dan menjadi prioritas akselerasi pada triwulan berikutnya.</p></Insight>
+      <Insight tone="attention"><p>Capaian rekognisi internasional dosen telah diraih oleh {format(getTckRow("23").capaian_dinilai)} orang dari target Triwulan III ({format(getTckRow("23").target_dinilai)} orang). Sementara itu, program sertifikasi kompetensi dan profesi dosen tercatat {format(getTckRow("25").capaian_dinilai)} orang dari target {format(getTckRow("25").target_dinilai)} orang, yang terus diakselerasi penyelesaiannya pada triwulan penutup.</p></Insight>
     </StoryScene>
 
     <StoryScene id="inklusif" number="5.2" pillar="Kesejahteraan" question={scenes["5.2"].question} deck={deck("5.2")}>
       <DotMatrix groups={[{ label: "Fasilitas tersedia", count: getTckRow("31").capaian_dinilai, color: DEPT.matematika, description: `Target tahunan: ${format(getTckRow("31").target_tw4)} unit` }]} columns={10} unitValue={1} unitLabel="unit" title={scenes["5.2"].question} hideHeader source="TCK 2026 #31" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
-      <Insight tone="critical" label="Verifikasi Data"><p>Pengukuran indeks implementasi gedung ramah lingkungan (green building) tercatat <strong>{format(getTckRow("32").capaian_dinilai)}%</strong> pada berkas sumber—angka negatif yang masih dalam proses sinkronisasi dan audit bersama Direktorat Aset UGM.</p></Insight>
+      <Insight tone="critical" label="Verifikasi Data"><p>Indikator penerapan gedung ramah lingkungan (green building) tercatat sebesar <strong>{format(getTckRow("32").capaian_dinilai)}%</strong> pada dokumen sumber. Nilai ini saat ini sedang dalam proses rekonsiliasi dan verifikasi teknis bersama Direktorat Aset UGM.</p></Insight>
     </StoryScene>
 
     <StoryScene id="kesehatan" number="5.3" pillar="Kesejahteraan" question={scenes["5.3"].question} deck={deck("5.3")} tone="paper" wide>
-      <SceneBlock title="Profil Risiko Kesehatan Dosen dan Tenaga Kependidikan" lede={`Enam parameter pemeriksaan pada satu sumbu, diurutkan dari yang paling banyak berada di ambang berisiko. Porsi dihitung terhadap peserta yang benar-benar diperiksa pada parameter tersebut, bukan terhadap seluruh kunjungan.`}>
+      <SceneBlock title="Profil Risiko Kesehatan Dosen dan Tenaga Kependidikan" lede="Enam indikator pemeriksaan kesehatan diurutkan berdasarkan proporsi peserta yang berada pada kategori berisiko. Persentase dihitung dari peserta yang menjalani pemeriksaan pada masing-masing indikator.">
         <RiskProfile data={riskProfile} bands={riskBands} title="Profil Risiko Kesehatan Dosen dan Tenaga Kependidikan" hideHeader highlight="Berisiko" highlightSuffix="berisiko" axisLabel="Porsi peserta yang diperiksa" source="Posbindu Melati FMIPA · Health Promoting University" extracted={snapshot.label} csvHref={dataUrl("hpu_posbindu.json")} />
       </SceneBlock>
-      <SceneBlock title="Komposisi Kunjungan Dosen dan Tenaga Kependidikan" lede={`Satu simbol mewakili satu kunjungan pemeriksaan sepanjang ${format(hpu.sesi.length)} sesi Posbindu 2026.`}>
+      <SceneBlock title="Komposisi Kunjungan Dosen dan Tenaga Kependidikan" lede={`Setiap titik menggambarkan satu kehadiran pemeriksaan dalam ${format(hpu.sesi.length)} sesi layanan Posbindu sepanjang 2026.`}>
         <DotMatrix groups={posbinduGroups} columns={26} unitValue={1} unitLabel="kunjungan" title="Komposisi Kunjungan Dosen dan Tenaga Kependidikan" hideHeader source="Posbindu Melati FMIPA" extracted={snapshot.label} csvHref={dataUrl("hpu_posbindu.json")} />
       </SceneBlock>
-      <Insight tone="attention" label="Cakupan Data"><p>Grafik ini mencakup <strong>{format(hpu.kunjungan)} kunjungan dosen dan tenaga kependidikan</strong> pada {format(hpu.sesi.length)} sesi, mulai {sessionLabel(posbinduFirst?.tanggal)} hingga {sessionLabel(posbinduLatest?.tanggal)}. Sesi Januari bersumber dari lembar rekapitulasi terkonsolidasi—satu-satunya berkas yang mencatatnya. Sebanyak {posbinduExcluded} tidak masuk hitungan karena berada di luar kriteria dosen dan tendik.</p></Insight>
-      <Insight tone="info" label="Perlindungan Data"><p>Seluruh angka disajikan sebagai agregat anonim: nama, tanggal lahir, dan nilai pemeriksaan per orang tidak pernah diekspor dari pipeline. Pengelompokan kategori klinis menjadi tiga pita risiko didokumentasikan pada halaman Data &amp; Metodologi, dan rincian kategori aslinya tersedia melalui tombol Lihat Tabel Data.</p></Insight>
-      <DataGap title="Keselamatan Kerja (K3L) dan Ruang Aman Kampus" description="Pemantauan K3L serta pencegahan dan penanganan kekerasan seksual diselenggarakan bersama Satgas PPKS dan Tim K3L Fakultas, namun belum tersedia dalam bentuk data terstruktur yang dapat diagregasi." owner="Satgas PPKS & Tim K3L FMIPA" tone="hold" />
+      <Insight tone="attention" label="Cakupan Data"><p>Data merangkum <strong>{format(hpu.kunjungan)} pemeriksaan dosen dan tenaga kependidikan</strong> dalam {format(hpu.sesi.length)} sesi Posbindu, mulai {sessionLabel(posbinduFirst?.tanggal)} hingga {sessionLabel(posbinduLatest?.tanggal)}. Sesi Januari mengacu pada lembar rekapitulasi terpadu. Sebanyak {posbinduExcluded} dicatat terpisah karena di luar kategori dosen dan tendik tetap.</p></Insight>
+      <Insight tone="info" label="Perlindungan Data"><p>Seluruh data kesehatan disajikan dalam bentuk agregat anonim demi melindungi privasi individu. Informasi pribadi (seperti nama, tanggal lahir, dan rekam medis perorangan) tidak pernah diekspor ke publik. Standar pengelompokan tingkat risiko dijelaskan secara rinci pada halaman Data &amp; Metodologi, dan rincian data dapat diakses melalui tombol Lihat Tabel Data.</p></Insight>
+      <DataGap title="Keselamatan Kerja (K3L) dan Ruang Aman Kampus" description="Program Keselamatan, Kesehatan Kerja, dan Lingkungan (K3L) serta pencegahan dan penanganan kekerasan seksual terlaksana aktif bersama Satgas PPKS dan Tim K3L Fakultas, dan saat ini sedang disiapkan integrasi sistem pelaporannya agar dapat tersaji dalam pangkalan data terstruktur." owner="Satgas PPKS & Tim K3L FMIPA" tone="hold" />
     </StoryScene>
 
     <PillarHeader id="mahasiswa" number="5" title="Mahasiswa & Akses Pendidikan" evidence="Data Terverifikasi" color="teal" summary="Enam angkatan penuh membentuk potret siapa yang dididik FMIPA: asal daerah, komposisi gender, jalur masuk, latar keluarga, dan perjalanan satu angkatan sejak hari pertama hingga kelulusan." />
 
     <StoryScene id="siapa-mahasiswa" number="6.1" pillar="Mahasiswa & Akses" question={scenes["6.1"].question} deck={deck("6.1")} wide>
-      <SceneBlock title="Komposisi Mahasiswa per Program Studi dan Angkatan" lede="Proporsi dihitung terhadap seluruh mahasiswa yang tercatat pada angkatan tersebut, termasuk peserta non-gelar.">
+      <SceneBlock title="Komposisi Mahasiswa per Program Studi dan Angkatan" lede="Proporsi dihitung dari total mahasiswa yang terdaftar pada masing-masing angkatan, termasuk peserta program non-gelar.">
         <StackedBarChart data={programmeMix} xKey="year" series={programmeSeries} normalized title="Komposisi Mahasiswa per Program Studi dan Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title="Jalur Studi: Reguler, IUP, dan Non-gelar" lede="Satuannya mahasiswa per angkatan, bukan proporsi, agar penyusutan peserta non-gelar terbaca sebagai jumlah.">
+      <SceneBlock title="Jalur Studi: Reguler, IUP, dan Non-gelar" lede="Grafik menampilkan jumlah mahasiswa per angkatan untuk melihat tren program Reguler, IUP, dan non-gelar secara riil.">
         <StackedBarChart data={trackMix} xKey="year" series={trackSeries} title="Jalur Studi: Reguler, IUP, dan Non-gelar" hideHeader yLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="info"><p>Enam angkatan mencakup <strong>{format(students.total)} mahasiswa</strong>, {format(students.sarjana)} di antaranya program sarjana. Komposisi antarprodi bergerak pelan, tetapi peserta non-gelar—pertukaran masuk dan MBKM—menyusut dari {format(studentFirst.non_gelar)} orang pada {students.tahun_awal} menjadi {format(studentLast.non_gelar)} pada {students.tahun_akhir}, sementara kuota IUP justru bertahan pada kisaran {format(sceneValues.studentsIup)} mahasiswa per angkatan.</p></Insight>
+      <Insight tone="info"><p>Dalam enam angkatan tercatat <strong>{format(students.total)} mahasiswa</strong>, dengan {format(students.sarjana)} orang di jenjang sarjana reguler dan internasional. Distribusi antarprogram studi relatif stabil, sementara keikutsertaan program non-gelar (pertukaran mahasiswa dan MBKM) tercatat {format(studentLast.non_gelar)} orang pada angkatan {students.tahun_akhir}. Penerimaan kelas internasional (IUP) konsisten di kisaran {format(sceneValues.studentsIup)} mahasiswa per angkatan.</p></Insight>
     </StoryScene>
 
     <StoryScene id="asal-mahasiswa" number="6.2" pillar="Mahasiswa & Akses" question={scenes["6.2"].question} deck={deck("6.2")} tone="paper" wide>
-      <SceneBlock title="Sebaran Provinsi Asal Mahasiswa" lede="Warna menunjukkan jumlah mahasiswa berdasarkan provinsi pada kartu tanda penduduk, diakumulasi untuk enam angkatan. Peta kecil di bawahnya memisahkan tiap angkatan.">
+      <SceneBlock title="Sebaran Provinsi Asal Mahasiswa" lede="Intensitas warna menunjukkan jumlah mahasiswa berdasarkan provinsi asal KTP (akumulasi enam angkatan). Peta-peta kecil di bawahnya menampilkan sebaran per angkatan.">
         <ChoroplethMap data={provinceMap} panels={provincePanels} title="Sebaran Provinsi Asal Mahasiswa" hideHeader valueLabel="mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} note={`Sebanyak ${format(studentAccess.luar_negeri)} mahasiswa beralamat di luar negeri dan ${format(studentAccess.provinsi_tanpa_data)} tidak memiliki catatan provinsi; keduanya tidak dapat diletakkan pada peta dan tidak dihitung sebagai "luar Jawa".`} />
       </SceneBlock>
-      <SceneBlock title="Jangkauan Nasional per Angkatan" lede={`Empat ukuran pada ${format(studentYears.length)} titik angkatan. Tiap baris diskalakan pada rentangnya sendiri, jadi yang dibandingkan antarbaris adalah bentuknya—bukan tingginya.`}>
+      <SceneBlock title="Jangkauan Nasional per Angkatan" lede="Grafik menampilkan tren empat indikator jangkauan wilayah selama ${format(studentYears.length)} angkatan terakhir.">
         <TrendRows data={reachRows} periods={studentYears} title="Jangkauan Nasional per Angkatan" hideHeader axisLabel="Nilai per angkatan" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} valueFormatter={(value:number) => format(value, 1)} />
       </SceneBlock>
-      <SceneBlock title="Kabupaten dan Kota Asal Terbanyak" lede={`Sepuluh teratas dari ${format(studentAccess.kabupaten_unik)} kabupaten/kota yang tercatat sepanjang enam angkatan.`}>
+      <SceneBlock title="Kabupaten dan Kota Asal Terbanyak" lede="Sepuluh kabupaten/kota dengan jumlah mahasiswa terbanyak dari total ${format(studentAccess.kabupaten_unik)} daerah yang tercatat dalam enam angkatan.">
         <HorizontalBarChart data={districtBars} title="Kabupaten dan Kota Asal Terbanyak" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="positive"><p>Jangkauan penerimaan meluas dari <strong>{format(students.provinsi_awal)} provinsi</strong> pada angkatan {students.tahun_awal} menjadi {format(students.provinsi_akhir)} pada {students.tahun_akhir}. Namun porsi mahasiswa dari luar Jawa tidak bergerak searah: memuncak pada {format(students.porsi_luar_jawa_puncak, 1)}% di angkatan {students.tahun_luar_jawa_puncak}, lalu turun kembali ke {format(students.porsi_luar_jawa_akhir, 1)}%. Lebih banyak provinsi terwakili, tetapi tidak dengan lebih banyak orang—dan {format(studentAccess.daerah_3t_total)} mahasiswa berasal dari kabupaten/kota kategori 3T.</p></Insight>
+      <Insight tone="positive"><p>Jangkauan asal daerah mahasiswa meluas dari <strong>{format(students.provinsi_awal)} provinsi</strong> pada angkatan {students.tahun_awal} menjadi {format(students.provinsi_akhir)} provinsi pada {students.tahun_akhir}. Proporsi mahasiswa asal luar Jawa sempat mencapai {format(students.porsi_luar_jawa_puncak, 1)}% pada angkatan {students.tahun_luar_jawa_puncak}, dan berada di angka {format(students.porsi_luar_jawa_akhir, 1)}% pada angkatan {students.tahun_akhir}. Secara keseluruhan, sebanyak {format(studentAccess.daerah_3t_total)} mahasiswa berasal dari wilayah Terdepan, Terluar, dan Tertinggal (3T).</p></Insight>
     </StoryScene>
 
     <StoryScene id="gender-disiplin" number="6.3" pillar="Mahasiswa & Akses" question={scenes["6.3"].question} deck={deck("6.3")} wide>
-      <SceneBlock title="Porsi Mahasiswa Perempuan per Angkatan" lede="Penyebutnya adalah mahasiswa yang jenis kelaminnya tercatat, bukan seluruh angkatan.">
+      <SceneBlock title="Porsi Mahasiswa Perempuan per Angkatan" lede="Persentase dihitung berdasarkan data mahasiswa yang mencantumkan informasi jenis kelamin.">
         <LineAreaChart data={genderTrend} xKey="year" series={[{ key: "porsi", label: "Porsi perempuan (%)", color: ACCENT.teal }]} title="Porsi Mahasiswa Perempuan per Angkatan" hideHeader yLabel="Persen mahasiswa perempuan" yDomain={[40, 55]} showMarkers source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value, 1)} />
       </SceneBlock>
-      <SceneBlock title="Komposisi Gender per Program Studi" lede="Enam angkatan digabung agar tiap program studi memiliki basis yang cukup besar. Baris diurutkan dari porsi perempuan tertinggi.">
+      <SceneBlock title="Komposisi Gender per Program Studi" lede="Akumulasi enam angkatan untuk melihat perbandingan komposisi gender di setiap program studi, diurutkan dari proporsi perempuan tertinggi.">
         <StackedBarChart data={genderByProgramme} xKey="prodi" series={genderSeries} normalized title="Komposisi Gender per Program Studi" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_programme.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="attention" label="Catatan Analisis"><p>Pada tingkat fakultas komposisinya nyaris seimbang, tetapi angkanya sedang bergerak menjauh: porsi perempuan turun dari {format(students.porsi_perempuan_awal, 1)}% pada angkatan {students.tahun_awal} menjadi <strong>{format(students.porsi_perempuan_akhir, 1)}% pada {students.tahun_akhir}</strong>, titik terendah sepanjang enam angkatan. Angka fakultas juga menyembunyikan jurang antardisiplin yang jauh lebih lebar: {genderTop.prodi} {format(genderTop.share, 1)}% perempuan, sedangkan {genderLow.prodi} hanya {format(genderLow.share, 1)}%—selisih {format(genderTop.share - genderLow.share, 1)} poin persentase antara dua program studi pada fakultas yang sama.</p></Insight>
+      <Insight tone="attention" label="Catatan Analisis"><p>Di tingkat fakultas, proporsi gender relatif seimbang, meski persentase mahasiswa perempuan mengalami pergeseran dari {format(students.porsi_perempuan_awal, 1)}% pada angkatan {students.tahun_awal} menjadi <strong>{format(students.porsi_perempuan_akhir, 1)}% pada angkatan {students.tahun_akhir}</strong>. Perbedaan lebih menonjol terlihat antarbidang studi: Program Studi {genderTop.prodi} memiliki porsi perempuan tertinggi ({format(genderTop.share, 1)}%), sedangkan {genderLow.prodi} berada di angka {format(genderLow.share, 1)}% (selisih {format(genderTop.share - genderLow.share, 1)} poin persentase).</p></Insight>
     </StoryScene>
 
     <StoryScene id="pintu-masuk" number="6.4" pillar="Mahasiswa & Akses" question={scenes["6.4"].question} deck={deck("6.4")} tone="paper" wide>
-      <SceneBlock title="Komposisi Jalur Masuk per Angkatan" lede="Nama jalur nasional berubah pada 2023: SNMPTN menjadi SNBP dan SBMPTN menjadi SNBT. Keduanya digabung ke satu kelompok agar garis waktu enam tahun dapat dibandingkan.">
+      <SceneBlock title="Komposisi Jalur Masuk per Angkatan" lede="Kategori jalur seleksi nasional diselaraskan (SNMPTN menjadi SNBP dan SBMPTN menjadi SNBT) agar tren penerimaan selama enam tahun dapat dibandingkan secara konsisten.">
         <StackedBarChart data={pathwayMix} xKey="year" series={pathwaySeries} normalized title="Komposisi Jalur Masuk per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_pathway.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="info"><p><strong>{pathwayTop.name}</strong> menjadi pintu masuk terbesar sepanjang periode: {format(pathwayTop.total)} mahasiswa atau {format((pathwayTop.total / students.total) * 100, 1)}% dari seluruh yang tercatat. Dua jalur seleksi nasional bersama-sama menyumbang {format(((pathwayTotals.find((row) => row.name === "Seleksi Nasional Prestasi")?.total ?? 0) + (pathwayTotals.find((row) => row.name === "Seleksi Nasional Tes")?.total ?? 0)) / students.total * 100, 1)}%, sementara jalur afirmasi dan rekognisi pembelajaran lampau masih di bawah sepuluh mahasiswa per angkatan.</p></Insight>
+      <Insight tone="info"><p>Jalur <strong>{pathwayTop.name}</strong> menjadi jalur masuk utama dengan total {format(pathwayTop.total)} mahasiswa ({format((pathwayTop.total / students.total) * 100, 1)}% dari keseluruhan). Jalur seleksi nasional (prestasi dan tes) secara gabungan menyumbang {format(((pathwayTotals.find((row) => row.name === "Seleksi Nasional Prestasi")?.total ?? 0) + (pathwayTotals.find((row) => row.name === "Seleksi Nasional Tes")?.total ?? 0)) / students.total * 100, 1)}%, sedangkan jalur afirmasi dan Rekognisi Pembelajaran Lampau (RPL) rata-rata menerima di bawah sepuluh mahasiswa per angkatan.</p></Insight>
     </StoryScene>
 
     <StoryScene id="latar-keluarga" number="6.5" pillar="Mahasiswa & Akses" question={scenes["6.5"].question} deck={deck("6.5")} wide>
-      <SceneBlock title="Pekerjaan Wali Mahasiswa" lede="Teks bebas pada berkas sumber dinormalisasi dari 175 varian menjadi sebelas kelompok melalui pipeline/mappings/pekerjaan_wali.csv.">
+      <SceneBlock title="Pekerjaan Wali Mahasiswa" lede="Data isian pekerjaan orang tua/wali distandardisasi dari 175 variasi teks menjadi 11 kategori utama.">
         <HorizontalBarChart data={guardianBars} title="Pekerjaan Wali Mahasiswa" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title="Pergeseran Latar Pekerjaan Wali per Angkatan" lede="Kelompok 'tidak dilaporkan' dikeluarkan dari baris ini karena besarnya akan menenggelamkan sisanya. Tiap baris diskalakan pada rentangnya sendiri.">
+      <SceneBlock title="Pergeseran Latar Pekerjaan Wali per Angkatan" lede="Grafik memperlihatkan dinamika latar belakang pekerjaan orang tua/wali per angkatan (kategori data kosong tidak disertakan dalam perbandingan tren).">
         <TrendRows data={guardianRows} periods={studentYears} title="Pergeseran Latar Pekerjaan Wali per Angkatan" hideHeader axisLabel="Mahasiswa per angkatan" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <DataGap
-        label="Gap Data"
+        label="Agenda Integrasi Data"
         title="Latar sosial-ekonomi keluarga belum dapat diukur"
-        description={`Sebanyak ${format(studentBackground.wali_tidak_dilaporkan)} dari ${format(students.total)} rekaman mengisi pekerjaan wali dengan "lain-lain", tanda hubung, atau dikosongkan. Kolom Beasiswa/Kerjasama pada keenam berkas kosong seluruhnya, sehingga status penerima bantuan tidak dapat ditautkan ke tiap mahasiswa. Sebaran ini karena itu dibaca sebagai potret kasar latar pekerjaan, bukan sebagai ukuran kemampuan ekonomi keluarga.`}
+        description={`Sebanyak ${format(studentBackground.wali_tidak_dilaporkan)} dari ${format(students.total)} data mencantumkan keterangan "lain-lain" atau tidak mengisi kolom pekerjaan wali. Selain itu, status penerima bantuan beasiswa belum terhubung langsung dengan profil perorangan pada basis data ini. Oleh karena itu, grafik ini merupakan gambaran umum latar pekerjaan dan tidak mencerminkan tingkat kemampuan ekonomi keluarga.`}
         owner="Bagian Akademik dan Kemahasiswaan FMIPA"
-        knownValue={`${format(students.total - studentBackground.wali_tidak_dilaporkan)} rekaman dengan pekerjaan wali yang dapat dikelompokkan`}
+        knownValue={`${format(students.total - studentBackground.wali_tidak_dilaporkan)} data dengan pekerjaan wali terklasifikasi`}
       />
     </StoryScene>
 
     <StoryScene id="sekolah-keberagaman" number="6.6" pillar="Mahasiswa & Akses" question={scenes["6.6"].question} deck={deck("6.6")} tone="paper" wide>
-      <SceneBlock title="Sekolah Asal Terbanyak" lede={`Dua belas teratas dari ${format(studentBackground.sekolah_unik)} sekolah yang tercatat pada angkatan ${studentBackground.sekolah_tahun[0]}–${studentBackground.sekolah_tahun[studentBackground.sekolah_tahun.length - 1]}. Sekolah dengan kurang dari tiga mahasiswa tidak ditampilkan.`}>
+      <SceneBlock title="Sekolah Asal Terbanyak" lede={`Dua belas sekolah asal dengan jumlah lulusan terbanyak pada angkatan ${studentBackground.sekolah_tahun[0]}–${studentBackground.sekolah_tahun[studentBackground.sekolah_tahun.length - 1]} (sekolah dengan kurang dari tiga mahasiswa disamarkan demi privasi data).`}>
         <HorizontalBarChart data={schoolBars} title="Sekolah Asal Terbanyak" hideHeader sort="descending" axisLabel="Mahasiswa" source="Daftar mahasiswa FMIPA UGM 2023–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title="Komposisi Agama per Angkatan" lede="Proporsi dihitung terhadap seluruh mahasiswa pada angkatan tersebut.">
+      <SceneBlock title="Komposisi Agama per Angkatan" lede="Proporsi dihitung dari total mahasiswa pada masing-masing angkatan.">
         <StackedBarChart data={religionMix} xKey="year" series={religionSeries} normalized title="Komposisi Agama per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="attention" label="Catatan Analisis"><p>Sekolah asal mahasiswa sangat beragam—{format(studentBackground.sekolah_unik)} sekolah berbeda hanya dalam empat angkatan—tetapi puncaknya terkonsentrasi kuat: <strong>{format(studentBackground.sekolah_porsi_diy, 1)}%</strong> mahasiswa yang tercatat sekolahnya berasal dari SMA/MA di Daerah Istimewa Yogyakarta, dan {format(schoolsInYogyakarta)} dari {format(schoolBars.length)} sekolah pengumpan terbesar berada di Kota Yogyakarta.</p></Insight>
+      <Insight tone="attention" label="Catatan Analisis"><p>Asal sekolah mahasiswa sangat beragam—mencapai {format(studentBackground.sekolah_unik)} sekolah dalam empat angkatan terakhir. Meski demikian, konsentrasi tertinggi masih berasal dari wilayah lokal: sebanyak <strong>{format(studentBackground.sekolah_porsi_diy, 1)}%</strong> mahasiswa berasal dari SMA/MA di Daerah Istimewa Yogyakarta, dengan {format(schoolsInYogyakarta)} dari {format(schoolBars.length)} sekolah penyumbang mahasiswa terbanyak berada di Kota Yogyakarta.</p></Insight>
       <DataGap
-        label="Gap Data"
+        label="Agenda Integrasi Data"
         title="Sekolah asal angkatan 2021 dan 2022 tidak tercatat"
-        description="Kolom Sekolah Asal, Kabupaten Sekolah, dan Propinsi Sekolah kosong seluruhnya pada berkas angkatan 2021 dan 2022, dan baru terisi sebagian pada 2023 (61%) dan 2024 (71%) sebelum mendekati lengkap pada 2025 dan 2026. Grafik ini karena itu hanya mencakup empat angkatan terakhir dan tidak dapat dipakai untuk melihat tren enam tahun."
+        description="Informasi asal sekolah belum terdata pada berkas angkatan 2021 dan 2022, lalu terisi sebagian pada angkatan 2023 (61%) dan 2024 (71%), serta mendekati lengkap pada 2025 dan 2026. Oleh sebab itu, visualisasi ini mencakup data empat angkatan terakhir."
         owner="Bagian Akademik FMIPA / DAA UGM"
         knownValue={`${format(studentBackground.sekolah_tercatat)} mahasiswa dengan sekolah asal tercatat pada angkatan 2023–2026`}
       />
     </StoryScene>
 
     <StoryScene id="perjalanan-angkatan" number="6.7" pillar="Mahasiswa & Akses" question={scenes["6.7"].question} deck={deck("6.7")} wide>
-      <SceneBlock title="Status Akhir Mahasiswa per Angkatan" lede="Hanya angkatan 2021 yang telah melewati masa studi nominal empat tahun. Angkatan yang lebih muda dibaca sebagai potret berjalan, bukan sebagai hasil akhir.">
+      <SceneBlock title="Status Akhir Mahasiswa per Angkatan" lede="Angkatan 2021 telah menuntaskan masa studi sarjana empat tahun, sedangkan angkatan setelahnya masih berada dalam masa studi aktif.">
         <StackedBarChart data={outcomeMix} xKey="year" series={outcomeSeries} normalized title="Status Akhir Mahasiswa per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} lede="Yang dibandingkan adalah dua angkatan dengan jumlah semester yang sangat berbeda, sehingga garis yang menurun menunjukkan tahap studi—bukan penurunan mutu.">
+      <SceneBlock title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} lede="Grafik membandingkan median IPK antara angkatan senior dan angkatan awal studi untuk melihat perkembangan capaian akademik.">
         <SlopeChart data={ipkSlope} startTitle={`Angkatan ${ipkStart}`} endTitle={`Angkatan ${ipkEnd}`} title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} hideHeader yLabel="Median IPK" domain={[2.6, 3.8]} source="Daftar mahasiswa FMIPA UGM 2021–2025" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value, 2)} />
       </SceneBlock>
-      <Insight tone="positive"><p>Lima tahun setelah masuk, <strong>{format(cohortFirst("Lulus"))} dari {format(studentFirst.total)} mahasiswa</strong> angkatan {students.tahun_awal} telah lulus, {format(cohortFirst("Masih aktif"))} masih aktif, dan {format(cohortFirst("Mengundurkan diri"))} mengundurkan diri. Angka pengunduran diri tidak dapat dibandingkan langsung antarangkatan karena lama paparannya berbeda: angkatan {students.tahun_awal} telah melalui lima tahun, angkatan {students.tahun_akhir} baru beberapa bulan. Porsi tertinggi tercatat pada angkatan <strong>{withdrawalPeak.year}</strong> ({format(withdrawalPeak.n)} mahasiswa atau {format(withdrawalPeak.share, 1)}%), bukan pada angkatan tertua.</p></Insight>
+      <Insight tone="positive"><p>Setelah lima tahun masa studi, sebanyak <strong>{format(cohortFirst("Lulus"))} dari {format(studentFirst.total)} mahasiswa</strong> angkatan {students.tahun_awal} telah menyelesaikan studi (lulus), {format(cohortFirst("Masih aktif"))} mahasiswa masih aktif menyelesaikan tugas akhir, dan {format(cohortFirst("Mengundurkan diri"))} mahasiswa tercatat mengundurkan diri. Tingkat pengunduran diri bervariasi antarangkatan, dengan persentase tertinggi tercatat pada angkatan <strong>{withdrawalPeak.year}</strong> ({format(withdrawalPeak.n)} mahasiswa atau {format(withdrawalPeak.share, 1)}%).</p></Insight>
       <DataGap
-        label="Gap Data"
+        label="Agenda Integrasi Data"
         title="IPK angkatan 2026 belum tersedia"
-        description="Kolom IPK dan SKS Kumulatif kosong seluruhnya untuk angkatan 2026 karena mereka baru memulai semester pertama pada saat data ditarik. Distribusi IPK karena itu hanya mencakup lima angkatan, dan median antarangkatan tidak setara karena jumlah semester yang telah ditempuh berbeda."
+        description={`Data IPK dan SKS Kumulatif mahasiswa angkatan 2026 belum tersedia karena baru memasuki semester pertama perkuliahan saat data dihimpun. Oleh karena itu, analisis IPK mencakup lima angkatan (${ipkStart}–${ipkEnd}).`}
         owner="Bagian Akademik FMIPA"
         knownValue={`${format((studentIpk.per_tahun as any[]).reduce((sum, row) => sum + row.tercatat, 0))} mahasiswa dengan IPK tercatat pada angkatan ${ipkStart}–${ipkEnd}`}
         tone="hold"
@@ -1027,17 +1027,17 @@ const pillarSummary = [
 
     <StoryScene id="belum-selesai" number="7.1" question={scenes["7.1"].question} deck={deck("7.1")} wide>
       <IssueCards issues={[
-        { value: `${format(tckBehind)} / ${format(tck.length)}`, title: "Indikator Kinerja", description: "Perlu akselerasi pemenuhan target menuju akhir tahun.", status: "Akuntabilitas" },
-        { value: format(tckFlagged), title: "Catatan Kualitas Data", description: "Indikator dengan satuan campur atau capaian tak kumulatif pada berkas sumber.", status: "Tata Kelola Data" },
-        { value: `${format(partnershipCoverage.lokasi_kosong)} dokumen`, title: "Alamat Mitra Kerja Sama", description: "Dokumen kerja sama dalam negeri tanpa data provinsi.", status: "Kelengkapan Data" },
-        { value: `${format(fundingChange, 1)}%`, title: "Dinamika Pendanaan Riset", description: `Penyesuaian perolehan dana dari Rp${format(funding2024, 2)} M (2024) menjadi Rp${format(funding2025, 2)} M (2025).`, status: "Keberlanjutan" },
+        { value: `${format(tckBehind)} / ${format(tck.length)}`, title: "Indikator Kinerja", description: "Perlu percepatan pemenuhan target menuju akhir tahun anggaran.", status: "Akuntabilitas" },
+        { value: format(tckFlagged), title: "Catatan Kualitas Data", description: "Indikator dengan satuan beragam atau capaian non-kumulatif pada data sumber.", status: "Tata Kelola Data" },
+        { value: `${format(partnershipCoverage.lokasi_kosong)} dokumen`, title: "Alamat Mitra Kerja Sama", description: "Dokumen kerja sama dalam negeri dalam proses pemutakhiran data provinsi.", status: "Kelengkapan Data" },
+        { value: `${format(fundingChange, 1)}%`, title: "Dinamika Pendanaan Riset", description: `Penyesuaian perolehan dana riset dari Rp${format(funding2024, 2)} M (2024) menjadi Rp${format(funding2025, 2)} M (2025).`, status: "Keberlanjutan" },
       ]} columns={4} />
     </StoryScene>
 
     <StoryScene id="titik-awal" number="7.2" question={scenes["7.2"].question} deck={deck("7.2")} tone="paper" wide>
       <PillarSummary pillars={pillarSummary} />
       <div class="handover-cta">
-        <div><p class="eyebrow">Transparansi Data Terbuka</p><h3>Pijakan data yang teruji dan dapat dipertanggungjawabkan.</h3><p>Halaman Data &amp; Metodologi menyajikan dataset turunan lengkap, kamus indikator, penjelasan selisih angka antarsumber, serta agenda penguatan data ke depan.</p></div>
+        <div><p class="eyebrow">Transparansi &amp; Akuntabilitas</p><h3>Pijakan data yang teruji dan dapat dipertanggungjawabkan.</h3><p>Halaman Data &amp; Metodologi menyajikan dataset turunan lengkap, kamus indikator, penjelasan harmonisasi angka antarsumber, serta agenda penguatan tata kelola data ke depan.</p></div>
         <a href={withBase("/data")}>Buka Data &amp; Metodologi →</a>
       </div>
     </StoryScene>

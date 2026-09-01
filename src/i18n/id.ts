@@ -12,21 +12,21 @@ export const ui = {
 export const chapters = {
   position: {
     number: "Bagian I",
-    title: "Potret & Capaian FMIPA Saat Ini",
+    title: "Potret & Capaian Kinerja FMIPA",
     description:
-      "Gambaran komprehensif berdasarkan basis data resmi: komposisi sivitas akademika, pencapaian indikator kinerja utama, serta aspek strategis yang terus diakselerasi per Agustus 2026.",
+      "Gambaran menyeluruh berbasis data resmi institusi: profil sivitas akademika, pencapaian target kinerja utama, serta aspek strategis yang terus diperkuat hingga Agustus 2026.",
   },
   journey: {
     number: "Bagian II",
     title: "Rekam Jejak Transformasi Lima Tahun",
     description:
-      "Data kinerja menjadi bermakna saat ditinjau sebagai ikhtiar berkelanjutan. Melalui lima pilar utama, tergambar lompatan capaian, dinamika pertumbuhan, profil mahasiswa yang dididik, serta ruang evaluasi ke depan.",
+      "Capaian kinerja bermakna saat ditinjau sebagai ikhtiar berkelanjutan. Melalui lima pilar utama, tergambar lompatan prestasi, dinamika riset dan pengabdian, profil mahasiswa, serta ruang evaluasi ke depan.",
   },
   handover: {
     number: "Bagian III",
     title: "Estafet Kepemimpinan & Agenda Strategis",
     description:
-      "Pertanggungjawaban yang transparan tidak hanya mendokumentasikan keberhasilan, melainkan juga menyerahkan peta kerja dan data dasar yang teruji bagi kepemimpinan berikutnya.",
+      "Pertanggungjawaban yang transparan tidak hanya mendokumentasikan capaian, melainkan juga meletakkan peta jalan dan basis data yang teruji bagi kepemimpinan periode berikutnya.",
   },
 };
 
@@ -119,165 +119,165 @@ interface Scene {
 
 export const scenes = {
   "1.1": {
-    question: "Bagaimana Komposisi FMIPA Saat Ini?",
+    question: "Bagaimana Komposisi dan Struktur FMIPA Saat Ini?",
     deck: (v) =>
-      `Empat departemen dan ${v.format(v.studyProgrammes)} program studi didukung oleh ${v.format(v.lecturers)} dosen, ${v.format(v.academicStaff)} tenaga kependidikan, ${v.format(v.laboratories)} laboratorium terpadu, serta ${v.format(v.activeStudents)} mahasiswa sarjana aktif.`,
+      `Empat departemen dan ${v.format(v.studyProgrammes)} program studi ditopang oleh ${v.format(v.lecturers)} dosen, ${v.format(v.academicStaff)} tenaga kependidikan, ${v.format(v.laboratories)} laboratorium terpadu, serta ${v.format(v.activeStudents)} mahasiswa sarjana aktif.`,
   },
   "1.2": {
-    question: "Bagaimana Ketercapaian terhadap Target Kinerja?",
+    question: "Bagaimana Ketercapaian Target Kinerja Fakultas?",
     deck: (v) =>
-      `Sebanyak ${v.format(v.tckAchieved)} dari ${v.format(v.tckTotal)} indikator telah memenuhi target triwulan berjalan, sementara ${v.format(v.tckBehind)} indikator lainnya masih dalam proses akselerasi—seluruhnya disajikan secara terbuka beserta catatan kualitas datanya.`,
+      `Sebanyak ${v.format(v.tckAchieved)} dari ${v.format(v.tckTotal)} indikator telah memenuhi target berjalan, sementara ${v.format(v.tckBehind)} indikator lainnya terus diakselerasi pemenuhannya—seluruhnya disajikan secara transparan beserta catatan teknis datanya.`,
   },
   "1.3": {
-    question: "Alur Transformasi: Dari Sumber Daya Menuju Dampak",
-    deck: "Dalam lima tahun terakhir, alokasi dana dan dedikasi tridharma bertransformasi menjadi riset unggulan, publikasi bereputasi, pengabdian masyarakat, dan dampak nyata bagi bangsa.",
+    question: "Alur Transformasi: Dari Sumber Daya Menuju Dampak Nyata",
+    deck: "Dalam lima tahun terakhir, alokasi pendanaan dan komitmen tridharma bertransformasi secara berkelanjutan menjadi riset unggulan, publikasi bereputasi, program pengabdian, dan manfaat nyata bagi bangsa.",
   },
   "2.1": {
-    question: "Bagaimana Pertumbuhan Sitasi dan Reputasi Riset?",
-    deck: "Jumlah sitasi tahunan melonjak signifikan dari 4.129 (2019) menjadi 12.629 (2024); data 2025 masih terus bertambah seiring proses pemutakhiran berkala di Scopus.",
+    question: "Bagaimana Lompatan Sitasi dan Reputasi Riset Global?",
+    deck: "Jumlah sitasi tahunan melonjak lebih dari tiga kali lipat, dari 4.129 sitasi (2019) menjadi 12.629 sitasi (2024); data 2025 masih terus bertambah seiring proses pemutakhiran berkala di Scopus.",
   },
   "2.2": {
-    question: "Bagaimana Distribusi Publikasi Antardepartemen?",
-    deck: "Pemetaan ulang berbasis ID Scopus berhasil mengidentifikasi afiliasi departemen untuk 94,2% publikasi periode 2020–2025, sementara 157 artikel lainnya tetap dicatat sebagai proses penelusuran.",
+    question: "Bagaimana Distribusi Publikasi Ilmiah Antardepartemen?",
+    deck: "Pemetaan berbasis ID Scopus berhasil mengidentifikasi afiliasi departemen untuk 94,2% artikel ilmiah periode 2020–2025, sementara 157 artikel lainnya tetap dicatat dan ditelusuri secara berkelanjutan.",
   },
   "2.3": {
-    question: "Apa Saja Bidang dan Topik Riset Unggulan FMIPA?",
-    deck: "Sebanyak 528 klaster topik memperlihatkan bentang riset yang luas dan interdisipliner, mulai dari sains material, energi terbarukan, kecerdasan artifisial, hingga biosains dan lingkungan.",
+    question: "Apa Saja Bidang dan Topik Riset Unggulan di FMIPA?",
+    deck: "Sebanyak 528 klaster topik memperlihatkan cakupan riset yang luas dan interdisipliner, mulai dari sains material, energi terbarukan, kecerdasan buatan, hingga biosains dan pemantauan lingkungan.",
   },
   "2.4": {
-    question: "Sejauh Mana Jejaring Kolaborasi Riset Internasional?",
-    deck: "Jejaring kemitraan telah menjangkau peneliti di 61 negara. Proporsi publikasi kolaborasi internasional meningkat dari 18,4% pada 2021 menjadi 27,7% pada 2025.",
+    question: "Sejauh Mana Jangkauan Kolaborasi Riset Internasional?",
+    deck: "Jejaring kemitraan telah menjangkau peneliti di 61 negara. Proporsi publikasi bersama mitra internasional meningkat dari 18,4% pada 2021 menjadi 27,7% pada 2025.",
   },
   "2.5": {
-    question: "Bagaimana Komposisi dan Jenjang Jabatan Dosen?",
+    question: "Bagaimana Komposisi Jenjang Jabatan Fungsional Dosen?",
     deck: (v) =>
-      `Dari total ${v.format(v.lecturers)} dosen tetap pada data kepegawaian aktif, sebanyak 42 orang (20,7%) telah mengemban jabatan fungsional Guru Besar.`,
+      `Dari total ${v.format(v.lecturers)} dosen tetap aktif, sebanyak 42 orang (20,7%) telah mengemban jabatan fungsional Guru Besar.`,
   },
   "2.6": {
-    question: "Aspek Apa yang Perlu Ditingkatkan pada Reputasi Akademik?",
-    deck: "Pemerataan produktivitas publikasi antarbidang masih perlu didorong, sejalan dengan penguatan publikasi mahasiswa doktor dan perluasan mitra riset internasional.",
+    question: "Aspek Apa yang Menjadi Fokus Penguatan Reputasi Akademik?",
+    deck: "Pemerataan produktivitas publikasi antardepartemen terus didorong, diiringi peningkatan publikasi mahasiswa program doktor dan perluasan jejaring riset internasional.",
   },
   "3.1": {
     question: "Berapa Besar Perolehan Dana Riset FMIPA?",
-    deck: "Perolehan dana riset meningkat hingga 22,7 kali lipat, dari Rp3,30 miliar pada 2021 menjadi Rp74,91 miliar pada 2024, sebelum mengalami penyesuaian pada 2025.",
+    deck: "Perolehan dana riset melonjak hingga 22,7 kali lipat, dari Rp3,30 miliar pada 2021 menjadi puncaknya Rp74,91 miliar pada 2024, sebelum mengalami penyesuaian pada 2025.",
   },
   "3.2": {
     question: "Bagaimana Jangkauan Pengabdian kepada Masyarakat di Nusantara?",
-    deck: "Aktivitas Pengabdian kepada Masyarakat (PkM) melonjak dari 109 menjadi 445 kegiatan per tahun. Sepanjang 2021–2025, sebanyak 921 dari 1.481 kegiatan telah terpetakan sebarannya di berbagai provinsi.",
+    deck: "Kegiatan Pengabdian kepada Masyarakat (PkM) meningkat pesat dari 109 menjadi 445 kegiatan per tahun. Sepanjang 2021–2025, sebanyak 921 dari 1.481 kegiatan telah terpetakan sebarannya di berbagai provinsi.",
   },
   "3.3": {
-    question: "Bagaimana Kontribusi Riset terhadap Agenda SDGs Dunia?",
-    deck: "Aktivitas tridharma terfokus kuat pada industri dan inovasi, kesehatan, konsumsi-produksi berkelanjutan, serta air bersih; integrasi pencatatan untuk beberapa pilar SDGs lainnya terus ditingkatkan.",
+    question: "Bagaimana Kontribusi Riset terhadap Agenda Berkelanjutan (SDGs)?",
+    deck: "Kegiatan tridharma berkontribusi kuat pada pilar industri dan inovasi, kesehatan, konsumsi-produksi bertanggung jawab, serta air bersih; integrasi pencatatan untuk pilar SDGs lainnya terus diperluas.",
   },
   "3.4": {
-    question: "Bagaimana Diseminasi Ilmu Melalui Jurnal Ilmiah?",
-    deck: "Empat jurnal ilmiah terbitan FMIPA telah memuat 461 artikel terindeks. Sementara itu, dokumentasi paparan media massa mulai dihimpun secara terstruktur sejak 2023.",
+    question: "Bagaimana Diseminasi Ilmu Melalui Jurnal Berkala Ilmiah?",
+    deck: "Empat jurnal ilmiah terbitan FMIPA telah mempublikasikan 461 artikel terindeks bereputasi. Selain itu, liputan inovasi di media massa mulai dihimpun secara terstruktur sejak 2023.",
   },
   "3.5": {
-    question: "Seberapa Luas Jejaring Kemitraan yang Dibangun?",
+    question: "Seberapa Luas Jejaring Kemitraan Strategis yang Dibangun?",
     deck: (v) =>
-      `Sebanyak ${v.format(v.partnershipTotal)} dokumen kerja sama ditandatangani sepanjang 2021–2026, ${v.format(v.partnershipInternational)} di antaranya bersama mitra luar negeri dari ${v.format(v.partnershipCountries)} negara.`,
+      `Sebanyak ${v.format(v.partnershipTotal)} dokumen kerja sama disepakati sepanjang 2021–2026, dengan ${v.format(v.partnershipInternational)} dokumen di antaranya melibatkan mitra luar negeri dari ${v.format(v.partnershipCountries)} negara.`,
   },
   "3.6": {
-    question: "Tantangan Apa yang Dihadapi pada Pilar Kontribusi?",
+    question: "Tantangan Apa yang Menjadi Prioritas pada Pilar Kontribusi?",
     deck: (v) =>
-      `Pilar ini menghadapi target kinerja paling menantang: ${v.format(v.contributionAchieved)} dari ${v.format(v.contributionTotal)} indikator telah memenuhi target triwulan berjalan, dengan prioritas akselerasi pada luaran tridharma dan pemberitaan ber-SDGs.`,
+      `Pilar ini memiliki target paling dinamis: ${v.format(v.contributionAchieved)} dari ${v.format(v.contributionTotal)} indikator telah memenuhi target triwulan berjalan, dengan prioritas percepatan pada hilirisasi luaran tridharma dan publikasi capaian SDGs.`,
   },
   "4.1": {
-    question: "Bagaimana Daya Serap dan Kiprah Lulusan FMIPA?",
+    question: "Bagaimana Daya Serap dan Kiprah Karier Lulusan FMIPA?",
     deck: (v) =>
-      `Tracer study mencatat ${v.format(v.tracerRespondents)} responden lulusan; sektor ${v.tracerTopSector} menjadi tujuan karier terbesar, disusul sektor keuangan dan pendidikan.`,
+      `Survei penelusuran lulusan (tracer study) terhadap ${v.format(v.tracerRespondents)} responden mencatat sektor ${v.tracerTopSector} sebagai bidang kerja utama, disusul sektor keuangan dan pendidikan-riset.`,
   },
   "4.2": {
     question: "Berapa Rata-rata Masa Tunggu Kerja Lulusan?",
     deck: (v) =>
-      `Sebanyak ${v.format(v.tracerWithinSixMonths)} dari ${v.format(v.tracerRespondents)} responden memperoleh pekerjaan dalam enam bulan setelah lulus, dan ${v.format(v.tracerBeforeGraduation)} di antaranya bahkan telah bekerja sebelum tanggal kelulusan.`,
+      `Sebanyak ${v.format(v.tracerWithinSixMonths)} dari ${v.format(v.tracerRespondents)} responden memperoleh pekerjaan dalam waktu enam bulan setelah lulus, dan ${v.format(v.tracerBeforeGraduation)} orang di antaranya bahkan telah bekerja sebelum resmi diwisuda.`,
   },
   "4.3": {
     question: "Bagaimana Kesiapan Karier Mahasiswa Sebelum Lulus?",
-    deck: "Partisipasi mahasiswa dalam program MBKM melampaui target tahunan, didukung oleh peningkatan prestasi kompetisi, program akselerasi, serta perluasan jejaring karier profesional.",
+    deck: "Partisipasi mahasiswa dalam program MBKM melampaui target tahunan, diperkuat oleh deretan prestasi kompetisi, program fast track, serta perluasan jejaring karier profesional.",
   },
   "4.4": {
-    question: "Bagaimana Capaian Internasionalisasi Mahasiswa Asing?",
+    question: "Bagaimana Capaian Internasionalisasi Mahasiswa?",
     deck: (v) =>
-      `Tercatat ${v.format(v.foreignCredit)} mahasiswa asing program credit-earning dan ${v.format(v.foreignNonCredit)} program non-kredit, yang terus dipacu menuju pemenuhan target akhir tahun.`,
+      `Tercatat ${v.format(v.foreignCredit)} mahasiswa asing mengikuti program credit-earning dan ${v.format(v.foreignNonCredit)} mahasiswa pada program non-kredit, yang terus dipacu menuju pemenuhan target akhir tahun.`,
   },
   "4.5": {
     question: "Bagaimana Tingkat Kelulusan Tepat Waktu Mahasiswa?",
-    deck: "Persentase kelulusan tepat waktu ketiga jenjang melampaui target triwulan berjalan. Angka terkini yang sahih berasal dari Triwulan II karena kolom Triwulan III pada berkas sumber memuat cacah mahasiswa, bukan persentase.",
+    deck: "Persentase kelulusan tepat waktu di jenjang Sarjana, Magister, maupun Doktor melampaui target berjalan. Evaluasi mengacu pada data Triwulan II yang lengkap persentasenya, mengingat pencatatan Triwulan III pada dokumen sumber masih berupa jumlah orang.",
   },
   "4.6": {
-    question: "Seberapa Ketat Seleksi Masuk dan Sekuat Apa Minat Calon Mahasiswa?",
+    question: "Bagaimana Dinamika Seleksi Masuk dan Minat Calon Mahasiswa?",
     deck: (v) =>
-      `Minat masuk menyusut dari ${v.format(v.admissionsApplicantsFirst)} pelamar pada ${v.admissionsFirstYear} menjadi ${v.format(v.admissionsApplicants)} pada ${v.admissionsLastYear}, sementara daya tampung justru bertambah menjadi ${v.format(v.admissionsSeats)} kursi—keketatan seleksi karena itu melonggar dari 1 : ${v.format(v.admissionsTightnessFirst, 1)} menjadi 1 : ${v.format(v.admissionsTightnessLast, 1)}. Sisi lain menguat: ${v.format(v.admissionsYieldLast, 1)}% yang diterima melakukan registrasi, naik dari ${v.format(v.admissionsYieldFirst, 1)}%.`,
+      `Jumlah pendaftar bergerak dari ${v.format(v.admissionsApplicantsFirst)} orang pada ${v.admissionsFirstYear} menjadi ${v.format(v.admissionsApplicants)} orang pada ${v.admissionsLastYear}, diiringi perluasan daya tampung menjadi ${v.format(v.admissionsSeats)} kursi sehingga rasio keketatan seleksi menjadi 1 : ${v.format(v.admissionsTightnessLast, 1)} (dari sebelumnya 1 : ${v.format(v.admissionsTightnessFirst, 1)}). Komitmen studi tetap tinggi dengan ${v.format(v.admissionsYieldLast, 1)}% calon mahasiswa yang diterima melakukan registrasi ulang (naik dari ${v.format(v.admissionsYieldFirst, 1)}%).`,
   },
   "4.7": {
     question: "Bagaimana Profil Lulusan dan Prestasi Mahasiswa?",
     deck: (v) =>
-      `Lulusan sarjana mencapai ${v.format(v.graduatesLatest)} orang pada tahun akademik terakhir, sementara ${v.format(v.achievementsTotal)} prestasi kompetisi tercatat sejak 2022 dengan ${v.format(v.achievementsInternational)} di antaranya pada tingkat internasional.`,
+      `Jumlah lulusan sarjana mencapai ${v.format(v.graduatesLatest)} orang pada tahun akademik terakhir, sementara ${v.format(v.achievementsTotal)} prestasi kompetisi diraih mahasiswa sejak 2022 dengan ${v.format(v.achievementsInternational)} capaian di tingkat internasional.`,
   },
   "4.3p": {
-    question: "Seberapa Besar Keterlibatan Mahasiswa dalam Riset?",
-    deck: "Sebanyak 182 judul riset tercatat secara aktif melibatkan mahasiswa Sarjana, dengan peningkatan keterlibatan tertinggi pada kurun waktu 2023–2024.",
+    question: "Seberapa Besar Keterlibatan Mahasiswa dalam Riset Dosen?",
+    deck: "Sebanyak 182 judul riset tercatat secara aktif melibatkan mahasiswa Sarjana sebagai asisten peneliti, dengan peningkatan tertinggi pada kurun waktu 2023–2024.",
   },
   "5.1": {
     question: "Bagaimana Pengembangan Karier dan Kualifikasi SDM?",
     deck: (v) =>
-      `Sebanyak ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator pilar kesejahteraan dan tata kelola telah memenuhi target triwulan berjalan, didorong oleh akselerasi kenaikan jabatan fungsional dan rekognisi internasional.`,
+      `Sebanyak ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator pilar tata kelola dan kesejahteraan telah memenuhi target berjalan, didorong oleh percepatan kenaikan jabatan akademik dan perolehan rekognisi internasional.`,
   },
   "5.2": {
     question: "Bagaimana Penguatan Fasilitas Kampus Inklusif dan Berkelanjutan?",
     deck: (v) =>
-      `Penyediaan ${v.format(v.disabilityFacilities)} unit fasilitas ramah disabilitas telah melampaui target tahunan (${v.format(v.disabilityTarget)} unit). Sementara itu, verifikasi data implementasi green building terus dikoordinasikan bersama universitas.`,
+      `Penyediaan ${v.format(v.disabilityFacilities)} unit fasilitas ramah disabilitas telah melampaui target tahunan (${v.format(v.disabilityTarget)} unit). Sementara itu, verifikasi data penerapan gedung ramah lingkungan (green building) terus dikoordinasikan bersama universitas.`,
   },
   "5.3": {
     question: "Bagaimana Penjaminan Kesehatan dan Ruang Aman Sivitas?",
     deck: (v) =>
-      `Program Health Promoting University memeriksa ${v.format(v.posbinduLecturers)} kunjungan dosen dan ${v.format(v.posbinduStaff)} kunjungan tenaga kependidikan pada ${v.format(v.posbinduSessions)} sesi Posbindu sepanjang 2026. ${v.posbinduTopRisk} menjadi temuan terbanyak: ${v.format(v.posbinduTopRiskShare)}% peserta yang diperiksa berada pada ambang berisiko.`,
+      `Program Health Promoting University mencatat ${v.format(v.posbinduLecturers)} pemeriksaan dosen dan ${v.format(v.posbinduStaff)} pemeriksaan tenaga kependidikan dalam ${v.format(v.posbinduSessions)} sesi Posbindu sepanjang 2026. Parameter ${v.posbinduTopRisk} menjadi temuan utama, dengan ${v.format(v.posbinduTopRiskShare)}% peserta berada pada kategori berisiko.`,
   },
   "6.1": {
-    question: "Siapa yang Belajar di FMIPA?",
+    question: "Siapa yang Belajar di FMIPA UGM?",
     deck: (v) =>
-      `Sebanyak ${v.format(v.studentsTotal)} mahasiswa tercatat pada enam angkatan ${v.studentsFirstYear}\u2013${v.studentsLastYear}, ${v.format(v.studentsUndergraduate)} di antaranya menempuh ${v.format(v.studentsProgrammes)} program studi sarjana. Peserta non-gelar\u2014pertukaran masuk dan MBKM\u2014menyusut dari ${v.format(v.studentsNonDegreeFirst)} menjadi ${v.format(v.studentsNonDegreeLast)} orang.`,
+      `Sebanyak ${v.format(v.studentsTotal)} mahasiswa tercatat dalam enam angkatan (${v.studentsFirstYear}\u2013${v.studentsLastYear}), dengan ${v.format(v.studentsUndergraduate)} orang di antaranya menempuh studi di ${v.format(v.studentsProgrammes)} program sarjana. Sementara itu, peserta program non-gelar (pertukaran mahasiswa dan MBKM) tercatat ${v.format(v.studentsNonDegreeLast)} orang.`,
   },
   "6.2": {
-    question: "Dari Mana Mahasiswa FMIPA Berasal?",
+    question: "Dari Mana Saja Wilayah Asal Mahasiswa FMIPA?",
     deck: (v) =>
-      `Jangkauan penerimaan meluas dari ${v.format(v.studentsProvincesFirst)} menjadi ${v.format(v.studentsProvincesLast)} provinsi. Porsi mahasiswa dari luar Jawa memuncak pada ${v.format(v.studentsOutsideJavaPeak, 1)}% di angkatan ${v.studentsOutsideJavaPeakYear}, lalu kembali turun ke ${v.format(v.studentsOutsideJavaLast, 1)}% pada angkatan ${v.studentsLastYear}.`,
+      `Jangkauan asal daerah mahasiswa meluas dari ${v.format(v.studentsProvincesFirst)} menjadi ${v.format(v.studentsProvincesLast)} provinsi. Proporsi mahasiswa dari luar Jawa sempat mencapai puncaknya sebesar ${v.format(v.studentsOutsideJavaPeak, 1)}% pada angkatan ${v.studentsOutsideJavaPeakYear}, dan berada di angka ${v.format(v.studentsOutsideJavaLast, 1)}% pada angkatan ${v.studentsLastYear}.`,
   },
   "6.3": {
-    question: "Bagaimana Komposisi Perempuan dan Laki-laki?",
+    question: "Bagaimana Komposisi Gender Mahasiswa Antarprogram Studi?",
     deck: (v) =>
-      `Porsi mahasiswa perempuan turun dari ${v.format(v.studentsWomenShareFirst, 1)}% pada angkatan ${v.studentsFirstYear} menjadi ${v.format(v.studentsWomenShareLast, 1)}% pada angkatan ${v.studentsLastYear}\u2014titik terendah enam tahun. Jurang terlebar justru antardisiplin: ${v.studentsWomenTopProgramme} ${v.format(v.studentsWomenTopShare, 1)}% perempuan, sedangkan ${v.studentsWomenLowProgramme} hanya ${v.format(v.studentsWomenLowShare, 1)}%.`,
+      `Proporsi mahasiswa perempuan berada di angka ${v.format(v.studentsWomenShareLast, 1)}% pada angkatan ${v.studentsLastYear}, dibandingkan ${v.format(v.studentsWomenShareFirst, 1)}% pada angkatan ${v.studentsFirstYear}. Variasi terlihat antarbidang keilmuan: Program Studi ${v.studentsWomenTopProgramme} memiliki proporsi perempuan tertinggi (${v.format(v.studentsWomenTopShare, 1)}%), sedangkan ${v.studentsWomenLowProgramme} berada di angka ${v.format(v.studentsWomenLowShare, 1)}%.`,
   },
   "6.4": {
-    question: "Melalui Pintu Mana Mahasiswa Masuk?",
+    question: "Bagaimana Sebaran Jalur Masuk Penerimaan Mahasiswa?",
     deck: (v) =>
-      `${v.studentsTopPathway} menjadi pintu masuk terbesar dengan ${v.format(v.studentsTopPathwayShare, 1)}% dari seluruh mahasiswa tercatat. Jalur internasional IUP bertahan pada kisaran ${v.format(v.studentsIup)} mahasiswa per angkatan, sementara mobilitas masuk non-gelar menyusut tajam.`,
+      `Jalur ${v.studentsTopPathway} menjadi pintu masuk terbesar dengan kontribusi ${v.format(v.studentsTopPathwayShare, 1)}% dari total mahasiswa. Jalur kelas internasional (IUP) stabil di kisaran ${v.format(v.studentsIup)} mahasiswa per angkatan, didampingi jalur seleksi nasional dan afirmasi.`,
   },
   "6.5": {
-    question: "Dari Latar Keluarga Seperti Apa?",
+    question: "Bagaimana Profil Latar Belakang Keluarga Mahasiswa?",
     deck: (v) =>
-      `Pekerjaan wali terbanyak adalah ${v.studentsGuardianTop} (${v.format(v.studentsGuardianTopShare, 1)}%), diikuti karyawan swasta dan pegawai negeri sipil. Sebanyak ${v.format(v.studentsGuardianUnreported)} rekaman tidak menyebutkan pekerjaan, sehingga potret ini dibaca sebagai sebaran kasar\u2014bukan ukuran kesejahteraan.`,
+      `Latar belakang pekerjaan orang tua/wali didominasi oleh ${v.studentsGuardianTop} (${v.format(v.studentsGuardianTopShare, 1)}%), disusul karyawan swasta dan pegawai negeri sipil. Sebanyak ${v.format(v.studentsGuardianUnreported)} data tidak mencantumkan pekerjaan, sehingga informasi ini dibaca sebagai gambaran umum dan bukan ukuran kemampuan ekonomi keluarga.`,
   },
   "6.6": {
-    question: "Dari Sekolah Mana dan Seberapa Beragam?",
+    question: "Bagaimana Sebaran Sekolah Asal dan Keberagaman Mahasiswa?",
     deck: (v) =>
-      `Mahasiswa angkatan 2023\u20132026 berasal dari ${v.format(v.studentsSchoolUnique)} sekolah berbeda, namun ${v.format(v.studentsSchoolDiyShare, 1)}% di antaranya bersekolah di Daerah Istimewa Yogyakarta. Keberagaman keyakinan tercatat pada enam agama.`,
+      `Mahasiswa angkatan 2023\u20132026 berasal dari ${v.format(v.studentsSchoolUnique)} sekolah menengah, dengan ${v.format(v.studentsSchoolDiyShare, 1)}% di antaranya menyelesaikan studi di Daerah Istimewa Yogyakarta. Sivitas mahasiswa juga mencerminkan keberagaman latar belakang keyakinan.`,
   },
   "6.7": {
-    question: "Bagaimana Perjalanan Satu Angkatan?",
+    question: "Bagaimana Dinamika Perjalanan Studi Satu Angkatan?",
     deck: (v) =>
-      `Lima tahun setelah masuk, ${v.format(v.studentsCohortGraduated)} mahasiswa angkatan ${v.studentsFirstYear} telah lulus dan ${v.format(v.studentsCohortWithdrew)} mengundurkan diri. Median IPK menurun pada angkatan yang lebih muda karena semester yang ditempuh masih sedikit, bukan karena mutu yang merosot.`,
+      `Setelah lima tahun masa studi, sebanyak ${v.format(v.studentsCohortGraduated)} mahasiswa angkatan ${v.studentsFirstYear} telah menyelesaikan studi (lulus) dan ${v.format(v.studentsCohortWithdrew)} mahasiswa mengundurkan diri. Perbedaan median IPK antarangkatan dipengaruhi oleh jumlah semester yang telah ditempuh dan belum mencerminkan capaian kelulusan akhir.`,
   },
   "7.1": {
-    question: "Evaluasi dan Agenda Akselerasi Kinerja",
+    question: "Evaluasi Capaian dan Agenda Akselerasi Kinerja",
     deck: (v) =>
-      `Pemetaan terhadap ${v.format(v.tckBehind)} indikator yang memerlukan akselerasi, penguatan integrasi sistem data lulusan dan keselamatan, serta strategi antisipasi keberlanjutan pendanaan riset ke depan.`,
+      `Pemetaan komprehensif terhadap ${v.format(v.tckBehind)} indikator yang memerlukan percepatan, penguatan integrasi sistem data lulusan dan keselamatan kerja, serta strategi menjaga kesinambungan pendanaan riset ke depan.`,
   },
   "7.2": {
-    question: "Pijakan Data untuk Periode Kepemimpinan Berikutnya",
-    deck: "Seluruh data capaian lima pilar kini terdokumentasi secara transparan sebagai basis data awal yang siap ditindaklanjuti dan dikembangkan oleh pimpinan fakultas selanjutnya.",
+    question: "Pijakan Data bagi Kepemimpinan Periode Berikutnya",
+    deck: "Seluruh data capaian tridharma kini terdokumentasi secara transparan dan akuntabel sebagai fondasi awal bagi kepemimpinan fakultas periode berikutnya.",
   },
 } satisfies Record<string, Scene>;
 

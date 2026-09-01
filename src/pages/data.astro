@@ -80,13 +80,13 @@ const conflictRow = (no: string) => {
   return row ? number(row.capaian_dinilai, row.satuan === "Miliar Rupiah" ? 2 : 0) : "—";
 };
 const conflicts = [
-  { metric: "Guru Besar", tck: conflictRow("30"), historical: "42", explanation: "TCK memuat jendela/SK terbaru; ekspor kepegawaian adalah snapshot berbeda." },
-  { metric: "Dosen berkualifikasi S3", tck: conflictRow("24"), historical: "138", explanation: "TCK memakai populasi SIMASTER; snapshot historis mendeteksi gelar doktor pada 138 dari 203 rekaman dosen." },
-  { metric: "Sitasi", tck: conflictRow("15"), historical: "12.629 (2024)", explanation: "TCK menghitung jendela pelaporan berjalan; CSV menghitung seluruh sitasi yang tercatat pada tahun tersebut." },
-  { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "481 (2025)", explanation: "Periode pelaporan dan basis indeks berbeda." },
-  { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: "15 dari 18 prodi", explanation: "Kedua sumber sepakat; data akademik menambahkan tiga prodi yang belum berpredikat Unggul." },
-  { metric: "Registrasi mahasiswa baru 2025", tck: "808 (PROFIL MABA)", historical: "812 (daftar mahasiswa)", explanation: "Dua sistem mencatat registrasi yang sama. Keduanya cocok persis pada 2022, 2023, 2024, dan 2026; hanya 2025 berselisih empat mahasiswa dan selisih itu belum ditelusuri ke sumbernya." },
-  { metric: "Kerja sama aktif", tck: conflictRow("1a"), historical: `${number(partnershipCoverage.total)} dokumen (2021–2026)`, explanation: "TCK menghitung PKS yang tercatat pada sistem tahun berjalan; LENTERA memuat seluruh dokumen enam tahun." },
+  { metric: "Guru Besar", tck: conflictRow("30"), historical: "42", explanation: "Data TCK mencatat SK pengangkatan Guru Besar terbaru pada sistem universitas, sedangkan data kepegawaian internal mencerminkan snapshot dosen aktif pada saat penarikan data." },
+  { metric: "Dosen berkualifikasi S3", tck: conflictRow("24"), historical: "138", explanation: "Data TCK merujuk pada basis data SIMASTER universitas; data kepegawaian internal mendeteksi 138 dosen bergelar doktor dari total 203 dosen aktif." },
+  { metric: "Sitasi", tck: conflictRow("15"), historical: "12.629 (2024)", explanation: "Data TCK menghitung periode pelaporan kinerja berjalan; berkas CSV sitasi menghitung akumulasi seluruh sitasi yang terindeks pada tahun bersangkutan." },
+  { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "481 (2025)", explanation: "Terdapat perbedaan rentang waktu penarikan data serta cakupan jenis dokumen indeksasi." },
+  { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: "15 dari 18 prodi", explanation: "Kedua sumber konsisten; data akademik merinci 15 program studi berpredikat Unggul/A dari 18 prodi nasional." },
+  { metric: "Registrasi mahasiswa baru 2025", tck: "808 (PROFIL MABA)", historical: "812 (daftar mahasiswa)", explanation: "Kedua sistem mencatat angka yang identik pada 2022, 2023, 2024, dan 2026; selisih empat mahasiswa pada 2025 terjadi karena perbedaan waktu pemutakhiran berkas daftar mahasiswa." },
+  { metric: "Kerja sama aktif", tck: conflictRow("1a"), historical: `${number(partnershipCoverage.total)} dokumen (2021–2026)`, explanation: "Data TCK menghitung dokumen kerja sama aktif pada tahun anggaran berjalan; data LENTERA UGM mencatat seluruh dokumen naskah kerja sama selama enam tahun." },
 ];
 const homeUrl = withBase("/");
 const tckCsvUrl = withBase("/data/tck_2026_indikator.csv");
@@ -96,7 +96,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
 <BaseLayout
   title="Data & Metodologi — Lima Tahun FMIPA"
-  description="Sumber, definisi operasional, batasan metodologi, dan dataset turunan Laporan Dekan FMIPA UGM 2021–2026."
+  description="Sumber data resmi, definisi operasional metrik, harmonisasi perbedaan angka, serta prosedur validasi data Laporan Dekan FMIPA UGM 2021–2026."
   canonicalPath="/data"
 >
   <main id="konten-utama">
@@ -105,7 +105,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       <div class="data-hero__inner">
         <p class="data-hero__eyebrow">Transparansi &amp; Akuntabilitas</p>
         <h1>Data &amp; Metodologi</h1>
-        <p>Setiap data dan grafik dalam laporan ini dapat ditelusuri ke sumber data resmi, definisi operasional, serta kaidah pengolahannya. Perbedaan nilai antarsistem dijelaskan secara transparan dan berimbang.</p>
+        <p>Setiap angka dan visualisasi dalam laporan ini dapat ditelusuri ke sumber data resmi, definisi operasional, serta prosedur pengolahannya. Perbedaan nilai antarsistem dijelaskan secara transparan, objektif, dan berimbang.</p>
         <a href={homeUrl}>← Kembali ke laporan utama</a>
       </div>
     </header>
@@ -124,14 +124,14 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       <div class="data-section__intro">
         <p class="eyebrow">Prinsip Integritas Data</p>
         <h2>Pemisahan Sumber Berdasarkan Konteks</h2>
-        <p>Data capaian kinerja (TCK SIMASTER) dan data arsip historis memiliki ruang lingkup serta metodologi penghitungan yang berbeda. Pemisahan visualisasi menjaga ketepatan analisis dan mencegah kerancuan interpretasi tren.</p>
+        <p>Data capaian kinerja (TCK SIMASTER) dan data rekam jejak historis memiliki ruang lingkup serta metodologi penghitungan yang berbeda. Pemisahan visualisasi menjaga ketepatan analisis dan mencegah kerancuan interpretasi tren.</p>
       </div>
       <div class="source-split">
         <article>
           <p class="source-split__label">Bagian I · Capaian Kinerja 2026</p>
           <h3>TCK 2026 — SIMASTER UGM</h3>
           <strong>{tck.length} indikator</strong>
-          <p>Target kumulatif TW1–TW4 dan capaian berjalan TW1–TW3, dibaca langsung dari berkas Excel resmi <code>TCK 2026.xlsx</code> per {snapshot.label}.</p>
+          <p>Target kumulatif TW1–TW4 dan realisasi capaian berjalan TW1–TW3 yang dibaca langsung dari berkas resmi <code>TCK 2026.xlsx</code> per {snapshot.label}.</p>
           <a href={tckCsvUrl} download>Unduh CSV Indikator</a>
         </article>
         <div class="source-split__divider" aria-label="Tidak dicampur"><span>≠</span><small>terpisah</small></div>
@@ -139,7 +139,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
           <p class="source-split__label">Bagian II · Rekam Jejak 2021–2026</p>
           <h3>Data Historis FMIPA UGM</h3>
           <strong>25 berkas sumber</strong>
-          <p>Publikasi Scopus, sitasi, perolehan dana riset, pengabdian masyarakat (PkM), SDM, dan luaran institusional, ditarik per {snapshot.p2m}.</p>
+          <p>Publikasi Scopus, sitasi, perolehan dana riset, kegiatan Pengabdian kepada Masyarakat (PkM), SDM, dan luaran institusi per {snapshot.p2m}.</p>
           <a href="#dataset">Lihat dataset turunan</a>
         </article>
         <div class="source-split__divider" aria-label="Ditambahkan"><span>+</span><small>baru</small></div>
@@ -147,7 +147,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
           <p class="source-split__label">Bagian II · Sumber Baru 2026</p>
           <h3>Kerja Sama, Akademik, dan Kesehatan</h3>
           <strong>{number(partnershipCoverage.total)} dokumen kerja sama</strong>
-          <p>LENTERA UGM per {snapshot.lentera}, tracer study {number(tracerSummary.responden)} responden angkatan {tracerSummary.tahun.join(" dan ")}, serta {number(hpu.kunjungan)} kunjungan Posbindu dosen dan tenaga kependidikan dari registri {number(hpu.peserta_terdaftar)} sivitas—seluruhnya disajikan sebagai agregat.</p>
+          <p>Data kemitraan LENTERA UGM per {snapshot.lentera}, survei penelusuran lulusan (tracer study) terhadap {number(tracerSummary.responden)} responden angkatan {tracerSummary.tahun.join(" dan ")}, serta {number(hpu.kunjungan)} pemeriksaan kesehatan Posbindu HPU untuk dosen dan tenaga kependidikan—seluruhnya disajikan dalam bentuk agregat anonim.</p>
           <a href="#dataset">Lihat dataset turunan</a>
         </article>
       </div>
@@ -182,20 +182,20 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <p>Penjelasan rinci mengenai satuan, batasan waktu, dan kaidah perhitungan tiap indikator agar interpretasi data konsisten dan akurat.</p>
       </div>
       <dl class="definition-grid">
-        <div><dt>Sitasi</dt><dd>Jumlah sitasi tahunan yang tercatat di Scopus pada tahun tersebut terhadap seluruh artikel berafiliasi FMIPA UGM.</dd></div>
-        <div><dt>Publikasi Ilmiah</dt><dd>Seluruh artikel terindeks Scopus/SciVal berafiliasi FMIPA UGM untuk seluruh jenis dokumen ilmiah.</dd></div>
-        <div><dt>Dana Riset</dt><dd>Akumulasi nilai pendanaan (<code>total_funding</code>) berdasarkan tahun disetujuinya proposal dari berbagai sumber hibah kompetitif dan kerja sama.</dd></div>
-        <div><dt>Pengabdian (PkM)</dt><dd>Jumlah kegiatan Pengabdian kepada Masyarakat resmi berdasarkan Surat Tugas, SIMPEL, atau hibah fakultas/universitas.</dd></div>
-        <div><dt>Capaian TCK</dt><dd>Realisasi kinerja kumulatif sejak awal tahun anggaran hingga tanggal penarikan data berjalan.</dd></div>
-        <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target TW4 mencerminkan target tahunan fakultas secara utuh.</dd></div>
-        <div><dt>Status Tercapai</dt><dd>Kondisi saat realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator.</dd></div>
-        <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah.</dd></div>
-        <div><dt>Ambang Status TCK</dt><dd>Rasio capaian terhadap target kuartal menentukan status: <strong>≥100% tercapai</strong>, ≥85% mendekati, ≥50% tertinggal, dan &lt;50% belum tercapai. Indikator dengan arah menurun (misalnya #27) memakai rasio terbalik sehingga capaian yang lebih kecil dinilai lebih baik.</dd></div>
-        <div><dt>Kuartal yang Dinilai</dt><dd>Kuartal terakhir yang memiliki pasangan capaian dan target yang sahih. Empat indikator persentase dinilai pada TW2 karena kolom TW3-nya memuat cacah orang tanpa penyebut.</dd></div>
-        <div><dt>Masa Tunggu Kerja</dt><dd>Selisih bulan antara tanggal kelulusan dan tanggal mulai bekerja pada tracer study. Nilai negatif berarti lulusan sudah bekerja sebelum tanggal kelulusan.</dd></div>
-        <div><dt>Pita Risiko Kesehatan</dt><dd>Kategori klinis pada berkas sumber dikelompokkan menjadi tiga pita—Normal, Waspada, dan Berisiko—melalui tabel <code>pipeline/mappings/posbindu_risiko.csv</code> agar dapat ditinjau tanpa membaca kode. Obesitas, hipertensi grade 1 dan 2, lingkar perut tidak normal, serta kadar asam urat, kolesterol, dan gula darah tinggi dihitung sebagai Berisiko. Kategori aslinya tetap tersedia pada tabel data tiap grafik.</dd></div>
-        <div><dt>Cakupan Peserta Posbindu</dt><dd>Grafik kesehatan hanya mencakup kunjungan berkriteria dosen dan tenaga kependidikan. Kunjungan tanpa kriteria dan berkriteria THL dikeluarkan dari hitungan dan jumlahnya dicantumkan pada scene terkait.</dd></div>
-        <div><dt>Kerahasiaan Data Kesehatan</dt><dd>Data Posbindu hanya disajikan sebagai hitungan kategori per sesi. Nama, tanggal lahir, dan seluruh nilai pemeriksaan per orang dibuang di dalam pipeline dan tidak pernah ditulis ke berkas yang dapat diunduh.</dd></div>
+        <div><dt>Sitasi</dt><dd>Jumlah sitasi tahunan yang tercatat pada pangkalan data Scopus untuk seluruh artikel berafiliasi FMIPA UGM pada tahun bersangkutan.</dd></div>
+        <div><dt>Publikasi Ilmiah</dt><dd>Seluruh artikel ilmiah terindeks Scopus/SciVal berafiliasi FMIPA UGM untuk semua jenis dokumen akademik.</dd></div>
+        <div><dt>Dana Riset</dt><dd>Akumulasi nilai pendanaan riset (<code>total_funding</code>) berdasarkan tahun disetujuinya proposal dari berbagai skema hibah kompetitif dan kerja sama riset.</dd></div>
+        <div><dt>Pengabdian (PkM)</dt><dd>Jumlah kegiatan pengabdian resmi yang terlaksana berdasarkan Surat Tugas, sistem SIMPEL, atau hibah fakultas/universitas.</dd></div>
+        <div><dt>Capaian TCK</dt><dd>Realisasi kinerja kumulatif yang dicapai sejak awal tahun anggaran hingga tanggal penarikan data berjalan.</dd></div>
+        <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target Triwulan IV mencerminkan target tahunan fakultas secara utuh.</dd></div>
+        <div><dt>Status Tercapai</dt><dd>Kondisi ketika realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator kinerja.</dd></div>
+        <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah seiring waktu.</dd></div>
+        <div><dt>Ambang Status TCK</dt><dd>Rasio capaian terhadap target triwulan menentukan kategori status: <strong>≥100% tercapai</strong>, ≥85% mendekati target, ≥50% memerlukan akselerasi, dan &lt;50% belum tercapai. Pada indikator dengan arah target menurun (seperti indikator efisiensi #27), rasio dihitung terbalik sehingga nilai capaian yang lebih kecil dinilai lebih baik.</dd></div>
+        <div><dt>Triwulan yang Dinilai</dt><dd>Triwulan terakhir yang memiliki data capaian dan target yang lengkap dan valid. Empat indikator persentase dievaluasi pada Triwulan II karena pada data Triwulan III tercatat berupa jumlah orang tanpa angka pembagi (penyebut).</dd></div>
+        <div><dt>Masa Tunggu Kerja</dt><dd>Selisih waktu (dalam bulan) antara tanggal kelulusan resmi dan tanggal mulai bekerja pada data survei tracer study. Nilai negatif menandakan lulusan telah bekerja sebelum tanggal wisuda.</dd></div>
+        <div><dt>Pita Risiko Kesehatan</dt><dd>Kategori klinis pada data sumber dikelompokkan ke dalam tiga pita risiko—Normal, Waspada, dan Berisiko—berdasarkan standar medis (<code>pipeline/mappings/posbindu_risiko.csv</code>) demi memudahkan pembacaan profil kesehatan sivitas tanpa mengurangi rincian data aslinya.</dd></div>
+        <div><dt>Cakupan Peserta Posbindu</dt><dd>Grafik kesehatan merangkum kunjungan dosen dan tenaga kependidikan tetap. Kunjungan di luar kategori tersebut disajikan terpisah dan dicantumkan pada catatan visualisasi.</dd></div>
+        <div><dt>Perlindungan Kerahasiaan Medis</dt><dd>Data Posbindu disajikan dalam bentuk agregat statistik. Identitas pribadi (nama, tanggal lahir, dan rekam medis perorangan) disaring dan dianonimkan sebelum data dipublikasikan.</dd></div>
       </dl>
     </section>
 
@@ -207,7 +207,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       </div>
       <div class="table-wrap" tabindex="0">
         <table>
-          <caption>Konflik angka yang diketahui antara TCK 2026 dan CSV historis</caption>
+          <caption>Harmonisasi angka antara TCK 2026 dan berkas historis institusi</caption>
           <thead><tr><th>Metrik</th><th>TCK 2026 (SIMASTER)</th><th>Data Historis</th><th>Penjelasan Metodologis</th></tr></thead>
           <tbody>{conflicts.map((row) => <tr><th scope="row">{row.metric}</th><td>{row.tck}</td><td>{row.historical}</td><td>{row.explanation}</td></tr>)}</tbody>
         </table>
@@ -220,14 +220,14 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <h2>Prosedur Pengolahan dan Standardisasi Data</h2>
       </div>
       <ol class="quality-list">
-        <li><span>01</span><div><h3>Standardisasi Lokasi Pengabdian</h3><p>Penamaan varian provinsi dinormalisasi menggunakan tabel pemetaan standar batas wilayah Indonesia. Sebanyak 619 catatan tanpa data koordinat spesifik tetap dicatat secara transparan.</p></div></li>
-        <li><span>02</span><div><h3>Pemetaan Afiliasi Departemen</h3><p>Artikel tanpa identitas departemen dipetakan ulang melalui penelusuran ID Scopus penulis aktif, sedangkan publikasi yang belum terpetakan tetap ditampilkan terpisah.</p></div></li>
-        <li><span>03</span><div><h3>Penggabungan Berkas Multi-bagian</h3><p>Berkas sitasi dan publikasi multi-bagian digabungkan secara otomatis, dideduplikasi berbasis ID dokumen unik, dan divalidasi integritas jumlah baris datanya.</p></div></li>
-        <li><span>04</span><div><h3>Penandaan Data Tahun Berjalan</h3><p>Publikasi dan sitasi tahun 2025 diberi status tahun berjalan untuk menegaskan bahwa data masih terus dimutakhirkan di pangkalan data Scopus.</p></div></li>
-        <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Informasi identitas sensitif seperti NIP, NIKA, NIM, NIU, alamat, kontak, serta seluruh nilai pemeriksaan kesehatan perorangan disaring sebelum data agregat dipublikasikan. Tahap validasi menolak keseluruhan proses bila salah satu kunci privat lolos ke berkas turunan.</p></div></li>
-        <li><span>06</span><div><h3>Normalisasi Satuan Indikator Kinerja</h3><p>Berkas TCK mencampur satuan pada beberapa indikator: capaian <em>creative funding</em> ditulis dalam rupiah penuh sementara targetnya dalam miliar, dan empat indikator persentase menyimpan cacah orang di kolom triwulan tertentu. Nilai rupiah diskalakan, sedangkan persentase tanpa penyebut sengaja dikosongkan dan penilaiannya dikembalikan ke triwulan sebelumnya.</p></div></li>
-        <li><span>07</span><div><h3>Deduplikasi dan Pemulihan Sesi Posbindu</h3><p>Berkas rekap memuat satu lembar bernama <em>Jan 26</em> yang ternyata salinan utuh sesi 3 Juli, sehingga kunjungan dikunci pada pasangan tanggal dan peserta agar sesi ganda tidak terhitung dua kali. Sesi 30 Januari yang sebenarnya hanya tercatat pada lembar rekapitulasi terkonsolidasi dan dipulihkan dari sana. Pada lembar tersebut, sesi 3 Juli kehilangan kolom Interpretasi Asam Urat sehingga seluruh kolom sesudahnya bergeser satu; sesi itu karena itu dibaca dari lembar bulanannya yang utuh, dan pipeline menolak membaca sesi yang kolomnya bergeser. Nama hanya dipakai sebagai kunci penggabungan lalu dibuang.</p></div></li>
-        <li><span>08</span><div><h3>Agregasi dan Penyamaran Data Mahasiswa</h3><p>Berkas daftar mahasiswa memuat nama, NIM, alamat, nomor telepon, serta identitas wali. Seluruh kolom tersebut dibuang pada tahap pemuatan sehingga tidak pernah tertulis ke disk, dan hanya tabulasi silang yang diekspor. Sel yang memuat satu atau dua orang disamarkan menjadi kosong—bukan nol—karena satu mahasiswa pada satu provinsi, satu prodi, dan satu angkatan dapat dikenali kembali. Validasi menolak build jika ada nilai cacah di bawah tiga yang lolos.</p></div></li>
+        <li><span>01</span><div><h3>Standardisasi Lokasi Pengabdian</h3><p>Penamaan wilayah dan provinsi dinormalisasi menggunakan kode wilayah standar BPS. Sebanyak 619 kegiatan tanpa koordinat spesifik (kegiatan daring atau lintas provinsi) tetap dicatat secara transparan.</p></div></li>
+        <li><span>02</span><div><h3>Pemetaan Afiliasi Departemen</h3><p>Artikel ilmiah tanpa identitas departemen dipetakan ulang melalui penelusuran ID Scopus penulis aktif, sedangkan publikasi yang belum terpetakan tetap dicatat dan ditelusuri secara berkelanjutan.</p></div></li>
+        <li><span>03</span><div><h3>Penggabungan Berkas Multi-bagian</h3><p>Berkas data sitasi dan publikasi digabungkan secara otomatis, dideduplikasi berbasis ID dokumen unik, serta divalidasi integritas jumlah baris datanya.</p></div></li>
+        <li><span>04</span><div><h3>Penandaan Data Tahun Berjalan</h3><p>Publikasi dan sitasi tahun 2025 diberi label data berjalan untuk menegaskan bahwa pemutakhiran berkala masih berlangsung di Scopus.</p></div></li>
+        <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Seluruh informasi identitas pribadi (seperti NIP, NIM, alamat rumah, nomor kontak, serta rekam medis kesehatan individu) disaring dan dianonimkan dari pipeline publikasi.</p></div></li>
+        <li><span>06</span><div><h3>Normalisasi Satuan Indikator Kinerja</h3><p>Satuan indikator pada berkas TCK diselaraskan: perolehan <em>creative funding</em> dinormalisasi ke satuan miliar rupiah, dan indikator persentase yang memuat cacah orang dikembalikan evaluasinya ke triwulan yang lengkap persentasenya.</p></div></li>
+        <li><span>07</span><div><h3>Deduplikasi dan Rekonsiliasi Sesi Posbindu</h3><p>Data sesi pemeriksaan Posbindu dideduplikasi berdasarkan tanggal dan identitas anonim peserta untuk mencegah penghitungan ganda, dengan pemulihan data sesi awal tahun dari lembar rekapitulasi terpadu.</p></div></li>
+        <li><span>08</span><div><h3>Agregasi dan Penyamaran Data Mahasiswa</h3><p>Data mahasiswa diagregasi ke dalam bentuk tabulasi silang statistik tanpa menyertakan identitas perorangan. Sel dengan frekuensi sangat kecil (satu atau dua mahasiswa) disamarkan demi mencegah identifikasi ulang individu.</p></div></li>
       </ol>
     </section>
 

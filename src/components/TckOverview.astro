@@ -60,8 +60,8 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
   </div>
 
   <div class="tck__context">
-    <p><strong>Triwulan III Masih Berjalan:</strong> Posisi data ditarik per {snapshotLabel} (periode TW3 berakhir 30 September).</p>
-    <p><strong>Realisasi Anggaran:</strong> {format(budgetPercent)}% terserap. Sesuai siklus keuangan universitas, penyerapan anggaran terkonsentrasi pada Triwulan IV.</p>
+    <p><strong>Triwulan III Tahun Berjalan:</strong> Posisi data mengacu pada penarikan per {snapshotLabel} (periode TW3 berakhir 30 September).</p>
+    <p><strong>Realisasi Anggaran:</strong> {format(budgetPercent)}% terserap. Sesuai siklus keuangan universitas, konsolidasi serapan anggaran terkonsentrasi pada Triwulan IV.</p>
   </div>
 
   <div class="tck__controls" data-tck-controls hidden>
@@ -105,7 +105,7 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
                       <span class="tck-row__status" aria-hidden="true">{statusIcon[row.status_kuartal]}</span>
                       <strong>{format(row.capaian_dinilai)}</strong>
                       <small>{row.satuan} · {format(ratio)}% {quarterLabel(row)} · {format(annualRatio)}% tahunan</small>
-                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dinilai pada {quarterLabel(row)}: capaian TW3 tercatat tanpa penyebut persentase.</small>}
+                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dievaluasi pada {quarterLabel(row)}: capaian TW3 pada berkas sumber tercatat berupa cacah orang tanpa penyebut.</small>}
                     </div>
                   </div>
                 </li>
@@ -131,7 +131,7 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
     <div tabindex="0">
       <table>
         <caption>Posisi indikator TCK 2026 per {snapshotLabel}</caption>
-        <thead><tr><th>No.</th><th>Indikator</th><th>Pilar</th><th>Kuartal dinilai</th><th>Target</th><th>Capaian</th><th>Target tahunan</th><th>Status</th></tr></thead>
+        <thead><tr><th>No.</th><th>Indikator</th><th>Pilar</th><th>Triwulan dinilai</th><th>Target</th><th>Capaian</th><th>Target tahunan</th><th>Status</th></tr></thead>
         <tbody>
           {rows.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{row.pilar}</td><td>{quarterLabel(row)}</td><td>{format(row.target_dinilai)}</td><td>{format(row.capaian_dinilai)}</td><td>{format(row.target_tw4)}</td><td>{row.status_kuartal}</td></tr>)}
         </tbody>
@@ -140,10 +140,10 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
   </details>
   {flagged.length > 0 && (
     <details class="tck__table tck__anomali">
-      <summary>Catatan kualitas data pada {flagged.length} indikator</summary>
+      <summary>Catatan teknis data pada {flagged.length} indikator</summary>
       <div tabindex="0">
         <table>
-          <caption>Penyimpangan yang ditemukan pada berkas sumber TCK 2026</caption>
+          <caption>Catatan teknis yang ditemukan pada dokumen sumber TCK 2026</caption>
           <thead><tr><th>No.</th><th>Indikator</th><th>Catatan</th></tr></thead>
           <tbody>{flagged.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{row.anomali}</td></tr>)}</tbody>
         </table>
