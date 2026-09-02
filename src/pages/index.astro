@@ -19,19 +19,22 @@ import {
   BulletChart,
   ChoroplethMap,
   DotMatrix,
+  DumbbellChart,
+  FunnelFlow,
   HorizontalBarChart,
   LineAreaChart,
   PointMap,
   RiskProfile,
   SDGGrid,
-  SlopeChart,
   StackedBarChart,
+  Treemap,
   TrendRows,
-  TopicBubbles,
+  WorldMap,
 } from "../components/charts";
 import { chapters, deckOf, scenes, type SceneValues } from "../i18n/id";
 import { ACCENT, DEPT, SEQ, UGM_BLUE } from "../lib/palette";
 import { centroidForProvince } from "../lib/province-centroids";
+import { countryNameId } from "../lib/country-centroids";
 import { withBase } from "../lib/paths";
 
 import citationsRaw from "../data/derived/citations_by_year.json";
@@ -77,7 +80,6 @@ import studentAccessRaw from "../data/derived/students_access.json";
 
 const citations: any[] = (citationsRaw as any[]).filter((row) => row.year >= 2019 && row.year <= 2025);
 const citationTotal = (citationsRaw as any[]).reduce((sum, row) => sum + row.citations, 0);
-const citationRecent = (citationsRaw as any[]).filter((row) => row.year >= 2021 && row.year <= 2025).reduce((sum, row) => sum + row.citations, 0);
 const citationStart = Math.min(...(citationsRaw as any[]).map((row) => row.year));
 const citationEnd = Math.max(...(citationsRaw as any[]).map((row) => row.year));
 const tck: any[] = tckRaw as any[];
@@ -114,10 +116,25 @@ const publicationSeries = [
 ] as any;
 
 const deptColors: Record<string, string> = { Fisika: DEPT.fisika, "Ilmu Komputer dan Elektronika": DEPT.ike, Kimia: DEPT.kimia, Matematika: DEPT.matematika, "Belum terpetakan": DEPT.unmapped };
+
+/* One colour per undergraduate programme, fixed for the whole page: a
+   programme keeps the same colour in the cohort mix, the selectivity rows and
+   the grade-point rows, so the reader learns it once. All eight are distinct —
+   two pairs used to share a hue, which read as one series wherever they met. */
+const programmeSeriesColor: Record<string, string> = {
+  Kimia: DEPT.kimia,
+  "Ilmu Komputer": DEPT.ike,
+  "Elektronika dan Instrumentasi": ACCENT.amber,
+  Fisika: DEPT.fisika,
+  Geofisika: ACCENT.crimson,
+  Matematika: DEPT.matematika,
+  Statistika: ACCENT.navy,
+  "Ilmu Aktuaria": SEQ[250],
+};
+const programmeColor = (prodi: string) => programmeSeriesColor[prodi] ?? ACCENT.slate;
 const topicNodes: any[] = (topicsRaw as any[]).map((row) => ({ label: row.cluster, value: row.n, group: row.dept, color: deptColors[row.dept] ?? DEPT.unmapped, detail: row.topic }));
 
-const countryNames: Record<string, string> = { Japan: "Jepang", "South Korea": "Korea Selatan", Germany: "Jerman", "United States": "Amerika Serikat", Singapore: "Singapura", China: "Tiongkok", Netherlands: "Belanda", "United Kingdom": "Britania Raya", Taiwan: "Taiwan", Australia: "Australia", Malaysia: "Malaysia", Thailand: "Thailand", "Czech Republic": "Ceko", India: "India", Austria: "Austria", Finland: "Finlandia", Philippines: "Filipina", Cambodia: "Kamboja", Pakistan: "Pakistan", "Sri Lanka": "Sri Lanka" };
-const countries: any[] = (countriesRaw as any[]).slice(0, 9).map((row) => ({ country: countryNames[row.country] ?? row.country, iso3: row.iso3, n: row.n }));
+const countries: any[] = (countriesRaw as any[]).slice(0, 9).map((row) => ({ country: countryNameId(row.country), iso3: row.iso3, n: row.n }));
 
 const positionsOrder = ["Asisten Ahli", "Lektor", "Lektor Kepala", "Guru Besar", "Belum terisi"];
 const positionCounts = new Map<string, number>();
@@ -184,8 +201,7 @@ const partnershipSeries = [
 ] as any;
 const partnershipCountries: any[] = (partnershipPartnersRaw as any).negara
   .filter((row: any) => row.lingkup === "Internasional")
-  .slice(0, 8)
-  .map((row: any) => ({ label: countryNames[row.negara] ?? row.negara, value: row.n, valueLabel: format(row.n), color: ACCENT.orange }));
+  .map((row: any) => ({ name: row.negara, iso3: row.iso3, value: row.n }));
 const partnershipKinds: any[] = (partnershipPartnersRaw as any).jenis_mitra
   .slice(0, 6)
   .map((row: any) => ({ label: row.jenis_mitra, value: row.n, valueLabel: format(row.n), color: ACCENT.navy }));
@@ -216,11 +232,13 @@ const admissionsClose = admissionsAt(admissionLast);
 
 /* Selection funnel for the latest year. The two percentages have different
    denominators, so each annotation names its own — reading both as "percent of
-   applicants" is the easiest mistake to make with a funnel. */
+   applicants" is the easiest mistake to make with a funnel. `dropLabel` names
+   the people who leave at each step, so the chart can draw them rather than
+   leaving them as the empty space around the shape. */
 const admissionFunnel: any[] = [
-  { label: "Peminat", value: admissionsClose?.peminat ?? 0, valueLabel: format(admissionsClose?.peminat ?? 0), color: ACCENT.navy, annotation: "seluruh pelamar" },
-  { label: "Diterima", value: admissionsClose?.diterima ?? 0, valueLabel: format(admissionsClose?.diterima ?? 0), color: ACCENT.navy, annotation: `${format(((admissionsClose?.diterima ?? 0) / (admissionsClose?.peminat || 1)) * 100, 1)}% dari peminat` },
-  { label: "Registrasi", value: admissionsClose?.registrasi ?? 0, valueLabel: format(admissionsClose?.registrasi ?? 0), color: ACCENT.navy, annotation: `${format(((admissionsClose?.registrasi ?? 0) / (admissionsClose?.diterima || 1)) * 100, 1)}% dari yang diterima` },
+  { label: "Peminat", value: admissionsClose?.peminat ?? 0, valueLabel: format(admissionsClose?.peminat ?? 0), annotation: "seluruh pelamar" },
+  { label: "Diterima", value: admissionsClose?.diterima ?? 0, valueLabel: format(admissionsClose?.diterima ?? 0), annotation: `${format(((admissionsClose?.diterima ?? 0) / (admissionsClose?.peminat || 1)) * 100, 1)}% dari peminat`, dropLabel: "tidak diterima" },
+  { label: "Registrasi", value: admissionsClose?.registrasi ?? 0, valueLabel: format(admissionsClose?.registrasi ?? 0), annotation: `${format(((admissionsClose?.registrasi ?? 0) / (admissionsClose?.diterima || 1)) * 100, 1)}% dari yang diterima`, dropLabel: "diterima tetapi tidak registrasi" },
 ];
 
 /* Selectivity is a ratio, so it needs its own chart: it cannot appear on a plot
@@ -239,8 +257,10 @@ const selectivityRows: any[] = [...new Set((admissionsRaw as any[]).map((row) =>
   .map((prodi) => {
     const at = (year: number) => (admissionsRaw as any[]).find((row) => row.prodi === prodi && row.tahun === year);
     const ratioOf = (row: any) => (row && row.diterima > 0 ? row.peminat / row.diterima : null);
+    const label = String(prodi).replace(/^S1\s+/i, "");
     return {
-      label: String(prodi).replace(/^S1\s+/i, ""),
+      label,
+      color: programmeColor(label),
       values: admissionYears.map((year) => ratioOf(at(year))),
       applicants: admissionYears.map((year) => at(year)?.peminat ?? null),
       seats: admissionYears.map((year) => at(year)?.diterima ?? null),
@@ -309,17 +329,27 @@ const scholarships = scholarshipsRaw as { total: number; skema: number };
 /* Outbound mobility. A handful of records carry no destination country; they are
    kept in the total but labelled rather than dropped or guessed. */
 const exchange = exchangeRaw as { total: number; negara: number; universitas: number; per_negara: any[] };
-const exchangeCountryNames: Record<string, string> = { Japan: "Jepang", UK: "Britania Raya", German: "Jerman", Netherlands: "Belanda", Swedia: "Swedia", Singapore: "Singapura", China: "Tiongkok", Denmark: "Denmark", Taiwan: "Taiwan" };
-const exchangeBars: any[] = exchange.per_negara.map((row) => ({
-  label: row.negara ? (exchangeCountryNames[row.negara] ?? row.negara) : "Negara belum tercatat",
-  value: row.n,
-  valueLabel: format(row.n),
-  color: row.negara ? ACCENT.teal : ACCENT.slate,
-}));
+const exchangeCountries: any[] = exchange.per_negara
+  .filter((row) => Boolean(row.negara))
+  .map((row) => ({ name: row.negara, value: row.n }));
+const exchangeUnrecorded = exchange.per_negara
+  .filter((row) => !row.negara)
+  .reduce((sum, row) => sum + row.n, 0);
 
 /* --- Tracer study --- */
 const tracerSummary = tracerSummaryRaw as { responden: number; tahun: number[]; median_bulan: number; rerata_bulan: number; bekerja_sebelum_lulus: number; dalam_6_bulan: number };
-const tracerSectors: any[] = (tracerSectorsRaw as any[]).map((row) => ({ label: row.sektor, value: row.n, valueLabel: format(row.n), color: row.sektor === "Belum bekerja" ? ACCENT.slate : ACCENT.teal }));
+/* Sectors are shaded by size along the sequential ramp, but the two rows that
+   are not a sector at all — "Belum bekerja" and the residual "Lainnya" — keep
+   the neutral grey so an exception never reads as a small industry. */
+const tracerRamp = [SEQ[700], SEQ[550], SEQ[400], SEQ[250], SEQ[100]];
+const tracerRanked = [...(tracerSectorsRaw as any[])].sort((a, b) => b.n - a.n);
+const tracerSectors: any[] = tracerRanked.map((row, index) => ({
+  label: row.sektor,
+  value: row.n,
+  color: row.sektor === "Belum bekerja" || row.sektor === "Lainnya"
+    ? ACCENT.slate
+    : tracerRamp[Math.min(tracerRamp.length - 1, Math.floor((index / Math.max(1, tracerRanked.length - 1)) * tracerRamp.length))],
+}));
 const waitingOrder = ["Sudah bekerja sebelum lulus", "0–3 bulan", "4–6 bulan", "7–12 bulan", "Lebih dari 12 bulan"];
 const waitingKey = (label: string) => `b${waitingOrder.indexOf(label)}`;
 const waitingSeries = waitingOrder.map((label, index) => ({
@@ -449,18 +479,8 @@ const studentLast = studentYearRows[studentYearRows.length - 1];
    the eight degree programmes stay readable. */
 const studentProgrammeRows = studentProgrammeRaw as any[];
 const degreeProgrammes = [...new Set(studentProgrammeRows.filter((row) => row.jenjang === "Sarjana").map((row) => row.prodi as string))].sort();
-const programmeSeriesColor: Record<string, string> = {
-  Kimia: DEPT.kimia,
-  "Ilmu Komputer": DEPT.ike,
-  "Elektronika dan Instrumentasi": ACCENT.orange,
-  Fisika: DEPT.fisika,
-  Geofisika: SEQ[250],
-  Matematika: DEPT.matematika,
-  Statistika: ACCENT.navy,
-  "Ilmu Aktuaria": ACCENT.teal,
-};
 const programmeSeries = [
-  ...degreeProgrammes.map((prodi) => ({ key: prodi, label: prodi, color: programmeSeriesColor[prodi] ?? ACCENT.slate })),
+  ...degreeProgrammes.map((prodi) => ({ key: prodi, label: prodi, color: programmeColor(prodi) })),
   { key: "Non-gelar", label: "Non-gelar (pertukaran & MBKM)", color: ACCENT.mist },
 ];
 const programmeMix = studentYears.map((year) => {
@@ -514,10 +534,10 @@ const provincePanels = studentYears.map((year) => ({
     .map((row) => ({ code: row.provinsi_kode, name: row.provinsi, value: row.n, withheld: Boolean(row.disamarkan) })),
 }));
 const reachRows = [
-  { label: "Provinsi terwakili", values: studentAccess.per_tahun.map((row: any) => row.provinsi_terwakili) },
-  { label: "Mahasiswa dari luar Jawa", values: studentAccess.per_tahun.map((row: any) => row.luar_jawa) },
-  { label: "Porsi luar Jawa (%)", values: studentAccess.per_tahun.map((row: any) => row.porsi_luar_jawa) },
-  { label: "Mahasiswa asal daerah 3T", values: studentAccess.per_tahun.map((row: any) => row.daerah_3t) },
+  { label: "Provinsi terwakili", color: ACCENT.navy, values: studentAccess.per_tahun.map((row: any) => row.provinsi_terwakili) },
+  { label: "Mahasiswa dari luar Jawa", color: SEQ[400], values: studentAccess.per_tahun.map((row: any) => row.luar_jawa) },
+  { label: "Porsi luar Jawa (%)", color: ACCENT.teal, values: studentAccess.per_tahun.map((row: any) => row.porsi_luar_jawa) },
+  { label: "Mahasiswa asal daerah 3T", color: ACCENT.amber, values: studentAccess.per_tahun.map((row: any) => row.daerah_3t) },
 ] as any;
 const districtBars = (studentAccess.kabupaten_teratas as any[]).slice(0, 10)
   .map((row) => ({ label: row.kabupaten, value: row.n, color: SEQ[550] }));
@@ -574,11 +594,14 @@ const guardianTopRow = (studentBackground.pekerjaan_wali_total as any[])
   .find((row) => row.n !== null && row.pekerjaan_wali !== "Tidak dilaporkan");
 const guardianGroups = [...new Set((studentBackground.pekerjaan_wali as any[]).map((row) => row.pekerjaan_wali as string))]
   .filter((group) => group !== "Tidak dilaporkan");
+const guardianPalette = [ACCENT.navy, DEPT.ike, DEPT.kimia, DEPT.matematika, SEQ[400], ACCENT.amber, ACCENT.crimson, SEQ[250], DEPT.fisika, ACCENT.slate];
 const guardianRows = guardianGroups.map((group) => ({
   label: group,
   values: studentYears.map((year) =>
     (studentBackground.pekerjaan_wali as any[]).find((row) => row.angkatan === year && row.pekerjaan_wali === group)?.n ?? null),
-})).sort((a, b) => (b.values.at(-1) ?? 0) - (a.values.at(-1) ?? 0)) as any;
+}))
+  .sort((a, b) => (b.values.at(-1) ?? 0) - (a.values.at(-1) ?? 0))
+  .map((row, index) => ({ ...row, color: guardianPalette[index % guardianPalette.length] })) as any;
 
 const religionNames = [...new Set((studentBackground.agama as any[]).map((row) => row.agama as string))].sort();
 const religionColor: Record<string, string> = {
@@ -640,11 +663,18 @@ const withdrawalPeak = [...withdrawalRates].sort((a, b) => b.share - a.share)[0]
 const ipkYears = studentIpk.tahun as number[];
 const ipkStart = ipkYears[0];
 const ipkEnd = ipkYears[ipkYears.length - 1];
-const ipkSlope = degreeProgrammes.map((prodi) => {
-  const start = (studentIpk.per_prodi as any[]).find((row) => row.angkatan === ipkStart && row.prodi === prodi);
-  const end = (studentIpk.per_prodi as any[]).find((row) => row.angkatan === ipkEnd && row.prodi === prodi);
-  return start && end ? { label: prodi, start: start.median, end: end.median } : null;
-}).filter(Boolean) as any;
+/* Every cohort on the row, not only the first and the last. A slope chart of
+   two endpoints crossed itself eight times over and hid the middle years, which
+   are the ones that show this is a gradient of study stage rather than a step. */
+const ipkRows = degreeProgrammes
+  .map((prodi) => ({
+    label: prodi,
+    color: programmeColor(prodi),
+    values: ipkYears.map((year) =>
+      (studentIpk.per_prodi as any[]).find((row) => row.angkatan === year && row.prodi === prodi)?.median ?? null),
+  }))
+  .filter((row) => row.values.some((value: number | null) => value !== null))
+  .sort((a, b) => (b.values.at(-1) ?? 0) - (a.values.at(-1) ?? 0)) as any;
 
 const sceneValues: SceneValues = {
   lecturers: institutionRaw.lecturers,
@@ -736,7 +766,15 @@ const pillarSummary = [
 
 <BaseLayout>
   <main id="konten-utama">
-    <ColdOpen total={citationTotal} recent={citationRecent} startYear={citationStart} endYear={citationEnd} />
+    <ColdOpen
+      publications={valueModelRaw.metrics.publications_n}
+      citations={valueModelRaw.metrics.citations_n}
+      outreach={valueModelRaw.metrics.outreach_n}
+      citationsAllTime={citationTotal}
+      period={valueModelRaw.period}
+      archiveStart={citationStart}
+      archiveEnd={citationEnd}
+    />
 
     <ChapterIntro id="posisi" number={chapters.position.number} title={chapters.position.title} description={chapters.position.description} />
 
@@ -783,7 +821,7 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="topik-riset" number="2.3" pillar="Reputasi Akademik" question={scenes["2.3"].question} deck={deck("2.3")} wide>
-      <TopicBubbles nodes={topicNodes} title={scenes["2.3"].question} hideHeader maxNodes={110} labelCount={5} valueLabel="publikasi" source="SciVal topic clusters" extracted={snapshot.p2m} csvHref={dataUrl("topics.csv")} />
+      <Treemap data={topicNodes} title={scenes["2.3"].question} hideHeader maxNodes={110} height={640} valueLabel="publikasi" categoryLabel="Topik" source="SciVal topic clusters" extracted={snapshot.p2m} csvHref={dataUrl("topics.csv")} note="Setiap petak adalah satu klaster topik SciVal; luasnya sebanding dengan jumlah publikasi, dan warnanya menunjukkan departemen pengampu." />
     </StoryScene>
 
     <StoryScene id="kolaborasi" number="2.4" pillar="Reputasi Akademik" question={scenes["2.4"].question} deck={deck("2.4")} tone="paper" wide>
@@ -830,8 +868,8 @@ const pillarSummary = [
       <SceneBlock title="Dokumen Kerja Sama yang Disepakati per Tahun" lede="Data dihitung berdasarkan jumlah dokumen naskah kerja sama (satu institusi mitra dapat memiliki lebih dari satu dokumen kerja sama).">
         <StackedBarChart data={partnerships} xKey="year" series={partnershipSeries} title="Dokumen Kerja Sama yang Ditandatangani per Tahun" hideHeader yLabel="Dokumen kerja sama" source="LENTERA UGM" extracted={snapshot.lentera} csvHref={dataUrl("partnerships_by_year.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title="Mitra Luar Negeri Teratas">
-        <HorizontalBarChart data={partnershipCountries} title="Mitra Luar Negeri Teratas" hideHeader sort="descending" axisLabel="Dokumen kerja sama" source="LENTERA UGM" extracted={snapshot.lentera} csvHref={dataUrl("partnership_points.csv")} valueFormatter={(value:number) => format(value)} />
+      <SceneBlock title="Sebaran Negara Mitra Luar Negeri" lede={`Seluruh ${format(partnershipCountries.length)} negara mitra internasional, bukan hanya yang teratas. Warna dan besar lingkaran menunjukkan jumlah dokumen kerja sama; urutannya tetap terbaca pada daftar di samping peta.`}>
+        <WorldMap data={partnershipCountries} title="Sebaran Negara Mitra Luar Negeri" hideHeader valueLabel="dokumen kerja sama" topCount={10} source="LENTERA UGM · batas Natural Earth 1:110m" extracted={snapshot.lentera} csvHref={dataUrl("partnership_points.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <SceneBlock title="Ragam Jenis Mitra">
         <HorizontalBarChart data={partnershipKinds} title="Ragam Jenis Mitra" hideHeader sort="descending" axisLabel="Dokumen kerja sama" source="LENTERA UGM" extracted={snapshot.lentera} csvHref={dataUrl("partnership_points.csv")} valueFormatter={(value:number) => format(value)} />
@@ -850,7 +888,7 @@ const pillarSummary = [
     <PillarHeader id="employability" number="3" title="Employability & Lulusan" evidence="Data Terverifikasi" color="green" summary="Kesiapan dan daya saing lulusan tergambar nyata dari survei penelusuran lulusan (tracer study): keragaman sektor karier, singkatnya masa tunggu kerja, dinamika seleksi masuk, hingga deretan prestasi mahasiswa di tingkat nasional dan internasional." />
 
     <StoryScene id="tujuan-lulusan" number="4.1" pillar="Employability" question={scenes["4.1"].question} deck={deck("4.1")} tone="paper" wide>
-      <HorizontalBarChart data={tracerSectors} title={scenes["4.1"].question} hideHeader sort="descending" axisLabel="Responden lulusan" source={`Tracer study FMIPA UGM · angkatan ${tracerSummary.tahun.join(" dan ")}`} extracted="unduhan 29 Juli 2025" csvHref={dataUrl("tracer_sectors.csv")} valueFormatter={(value:number) => format(value)} />
+      <Treemap data={tracerSectors} title={scenes["4.1"].question} hideHeader height={470} valueLabel="responden lulusan" categoryLabel="Sektor" source={`Tracer study FMIPA UGM · angkatan ${tracerSummary.tahun.join(" dan ")}`} extracted="unduhan 29 Juli 2025" csvHref={dataUrl("tracer_sectors.csv")} valueFormatter={(value:number) => format(value)} note="Luas tiap petak sebanding dengan jumlah responden pada sektor tersebut. Kategori 'Belum bekerja' dan 'Lainnya' diberi warna netral karena keduanya bukan sektor industri." />
       <Insight tone="positive"><p>Sektor <strong>{tracerTopSector}</strong> menjadi bidang karier terbanyak yang ditekuni lulusan, disusul sektor keuangan/perbankan serta pendidikan dan riset. Sebaran ini membuktikan bahwa lulusan sains dan matematika memiliki fleksibilitas tinggi dan terserap luas di berbagai lini industri.</p></Insight>
     </StoryScene>
 
@@ -869,7 +907,7 @@ const pillarSummary = [
         <BulletChart data={internationalStudents} title="Mahasiswa Asing yang Masuk ke FMIPA" hideHeader maxPercent={140} source="TCK 2026 #4a–4b" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
       </SceneBlock>
       <SceneBlock title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" lede="Data menghitung total keikutsertaan program mobilitas internasional mahasiswa.">
-        <HorizontalBarChart data={exchangeBars} title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" hideHeader sort="descending" axisLabel="Mahasiswa" source="Data mobilitas mahasiswa FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("exchange_students.json")} valueFormatter={(value:number) => format(value)} />
+        <WorldMap data={exchangeCountries} unmapped={{ label: "Negara belum tercatat", value: exchangeUnrecorded }} title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" hideHeader valueLabel="rekaman mobilitas" topCount={10} source="Data mobilitas mahasiswa FMIPA UGM · batas Natural Earth 1:110m" extracted={snapshot.label} csvHref={dataUrl("exchange_students.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <Insight tone="info"><p>Program internasionalisasi berlangsung dua arah: sebanyak {format(getTckRow("4a").capaian_dinilai + getTckRow("4b").capaian_dinilai)} mahasiswa asing menempuh studi di FMIPA, sementara <strong>{format(exchange.total)} mahasiswa FMIPA</strong> mengikuti program pertukaran, <em>dual degree</em>, maupun riset singkat di {format(exchange.universitas)} perguruan tinggi di {format(exchange.negara - 1)} negara.</p></Insight>
     </StoryScene>
@@ -884,8 +922,8 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="selektivitas" number="4.6" pillar="Employability" question={scenes["4.6"].question} deck={deck("4.6")} tone="paper" wide>
-      <SceneBlock title={`Corong Seleksi Sarjana ${admissionLast}`} lede="Persentase daya terima dihitung dari total peminat, sedangkan persentase registrasi dihitung dari calon mahasiswa yang dinyatakan diterima.">
-        <HorizontalBarChart data={admissionFunnel} title={`Corong Seleksi Sarjana ${admissionLast}`} hideHeader sort="none" axisLabel="Calon mahasiswa" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} valueFormatter={(value:number) => format(value)} />
+      <SceneBlock title={`Corong Seleksi Sarjana ${admissionLast}`} lede="Lebar tiap pita sebanding dengan jumlah orang pada satu skala yang sama, dan bagian yang menyempit di antara dua tahap adalah mereka yang tidak berlanjut. Persentase daya terima dihitung dari total peminat, sedangkan persentase registrasi dihitung dari calon mahasiswa yang dinyatakan diterima.">
+        <FunnelFlow stages={admissionFunnel} title={`Corong Seleksi Sarjana ${admissionLast}`} hideHeader valueLabel="calon mahasiswa" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <SceneBlock title="Keketatan Seleksi per Tahun" lede="Rasio keketatan menggambarkan perbandingan jumlah peminat dengan satu kursi daya tampung yang tersedia.">
         <LineAreaChart data={tightness} xKey="year" series={[{ key: "rasio", label: "Peminat per kursi", color: ACCENT.navy }]} title="Keketatan Seleksi per Tahun" hideHeader yLabel="Peminat per satu kursi" showMarkers source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("admissions_by_year.csv")} valueFormatter={(value:number) => format(value, 1)} />
@@ -943,7 +981,7 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="asal-mahasiswa" number="6.2" pillar="Mahasiswa & Akses" question={scenes["6.2"].question} deck={deck("6.2")} tone="paper" wide>
-      <SceneBlock title="Sebaran Provinsi Asal Mahasiswa" lede="Intensitas warna menunjukkan jumlah mahasiswa berdasarkan provinsi asal KTP (akumulasi enam angkatan). Peta-peta kecil di bawahnya menampilkan sebaran per angkatan.">
+      <SceneBlock title="Sebaran Provinsi Asal Mahasiswa" lede="Intensitas warna menunjukkan jumlah mahasiswa berdasarkan provinsi asal KTP. Pilih tab angkatan untuk melihat sebaran tahun tersebut pada peta yang sama; skala warnanya tetap sehingga warna yang sama berarti jumlah yang sama di tahun mana pun.">
         <ChoroplethMap data={provinceMap} panels={provincePanels} title="Sebaran Provinsi Asal Mahasiswa" hideHeader valueLabel="mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_province.csv")} note={`Sebanyak ${format(studentAccess.luar_negeri)} mahasiswa beralamat di luar negeri dan ${format(studentAccess.provinsi_tanpa_data)} tidak memiliki catatan provinsi; keduanya tidak dapat diletakkan pada peta dan tidak dihitung sebagai "luar Jawa".`} />
       </SceneBlock>
       <SceneBlock title="Jangkauan Nasional per Angkatan" lede="Grafik menampilkan tren empat indikator jangkauan wilayah selama ${format(studentYears.length)} angkatan terakhir.">
@@ -1009,8 +1047,8 @@ const pillarSummary = [
       <SceneBlock title="Status Akhir Mahasiswa per Angkatan" lede="Angkatan 2021 telah menuntaskan masa studi sarjana empat tahun, sedangkan angkatan setelahnya masih berada dalam masa studi aktif.">
         <StackedBarChart data={outcomeMix} xKey="year" series={outcomeSeries} normalized title="Status Akhir Mahasiswa per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <SceneBlock title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} lede="Grafik membandingkan median IPK antara angkatan senior dan angkatan awal studi untuk melihat perkembangan capaian akademik.">
-        <SlopeChart data={ipkSlope} startTitle={`Angkatan ${ipkStart}`} endTitle={`Angkatan ${ipkEnd}`} title={`Median IPK per Program Studi, Angkatan ${ipkStart} dan ${ipkEnd}`} hideHeader yLabel="Median IPK" domain={[2.6, 3.8]} source="Daftar mahasiswa FMIPA UGM 2021–2025" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value, 2)} />
+      <SceneBlock title={`Median IPK per Program Studi, Angkatan ${ipkStart}–${ipkEnd}`} lede={`Satu baris per program studi dengan ${format(ipkYears.length)} titik angkatan pada satu sumbu yang sama. Titik paling pucat adalah angkatan ${ipkStart} dan yang paling pekat angkatan ${ipkEnd}. Kedua ujungnya telah menempuh jumlah semester yang sangat berbeda, sehingga titik yang bergeser ke kiri menunjukkan tahap studi—bukan penurunan mutu.`}>
+        <DumbbellChart data={ipkRows} periods={ipkYears} title={`Median IPK per Program Studi, Angkatan ${ipkStart}–${ipkEnd}`} hideHeader axisLabel="Median IPK" domain={[2.65, 3.85]} source="Daftar mahasiswa FMIPA UGM 2021–2025" extracted={snapshot.label} csvHref={dataUrl("students_cohort_outcome.csv")} valueFormatter={(value:number) => format(value, 2)} />
       </SceneBlock>
       <Insight tone="positive"><p>Setelah lima tahun masa studi, sebanyak <strong>{format(cohortFirst("Lulus"))} dari {format(studentFirst.total)} mahasiswa</strong> angkatan {students.tahun_awal} telah menyelesaikan studi (lulus), {format(cohortFirst("Masih aktif"))} mahasiswa masih aktif menyelesaikan tugas akhir, dan {format(cohortFirst("Mengundurkan diri"))} mahasiswa tercatat mengundurkan diri. Tingkat pengunduran diri bervariasi antarangkatan, dengan persentase tertinggi tercatat pada angkatan <strong>{withdrawalPeak.year}</strong> ({format(withdrawalPeak.n)} mahasiswa atau {format(withdrawalPeak.share, 1)}%).</p></Insight>
       <DataGap

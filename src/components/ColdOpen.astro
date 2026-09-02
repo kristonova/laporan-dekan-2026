@@ -1,27 +1,65 @@
 ---
 import { withBase } from "../lib/paths";
 
+/**
+ * The opening figure of a report called "Lima Tahun FMIPA" should be a
+ * five-year figure. A single lifetime citation count (1987 onwards) was the
+ * larger number but the wrong window, and it left the hero quoting a period the
+ * data does not cover. Three numbers, one per strand of the tridharma, say what
+ * the five years actually contain — and the citation share below still carries
+ * the lifetime comparison that made the old number worth printing.
+ *
+ * The figures are printed, never counted up. This is a document of record that
+ * gets screenshotted and printed, and a capture taken part-way through a count
+ * would put a number into circulation that is simply wrong.
+ */
 interface Props {
-  total?: number;
-  recent?: number;
-  startYear?: number;
-  endYear?: number;
+  publications?: number;
+  citations?: number;
+  outreach?: number;
+  /** Lifetime citations, used only for the share sentence. */
+  citationsAllTime?: number;
+  period?: string;
+  archiveStart?: number;
+  archiveEnd?: number;
 }
-const { total = 70_905, recent = 46_930, startYear = 1987, endYear = 2025 } = Astro.props;
+
+const {
+  publications = 2_353,
+  citations = 46_930,
+  outreach = 1_481,
+  citationsAllTime = 70_905,
+  period = "2021–2025",
+  archiveStart = 1987,
+  archiveEnd = 2025,
+} = Astro.props;
+
 const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
-const totalLabel = format(total);
-const shareLabel = `${format((recent / total) * 100, 1)}%`;
+const shareLabel = `${format((citations / Math.max(1, citationsAllTime)) * 100, 1)}%`;
+const metrics = [
+  { value: publications, label: "publikasi ilmiah", detail: "terindeks Scopus" },
+  { value: citations, label: "sitasi artikel", detail: `${shareLabel} dari sitasi sepanjang masa` },
+  { value: outreach, label: "kegiatan pengabdian", detail: "tersebar di seluruh Indonesia" },
+];
 const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
 ---
 
 <section class="cold-open" aria-labelledby="cold-open-title">
   <div class="cold-open__supergraphic" aria-hidden="true" style={supergraphicStyle}></div>
   <div class="cold-open__content">
-    <p class="cold-open__eyebrow">Lima Tahun FMIPA · 2021–2026</p>
-    <p class="cold-open__number" data-count-to={total} aria-label={`${totalLabel} total sitasi`}>{totalLabel}</p>
-    <h1 id="cold-open-title">total sitasi artikel ilmiah sivitas FMIPA UGM.</h1>
-    <p class="cold-open__statement"><mark>{shareLabel}</mark> dihasilkan dalam kurun waktu lima tahun terakhir (2021–2026).</p>
-    <p class="cold-open__context">Berdasarkan pangkalan data {startYear}–{endYear}. Lompatan sitasi ini mencerminkan penguatan reputasi akademik dan mutu riset yang diakui komunitas sains global.</p>
+    <p class="cold-open__eyebrow">Lima Tahun FMIPA · {period}</p>
+    <ul class="cold-open__metrics">
+      {metrics.map((metric) => (
+        <li>
+          <p class="cold-open__number" aria-label={`${format(metric.value)} ${metric.label}`}>{format(metric.value)}</p>
+          <p class="cold-open__label">{metric.label}</p>
+          <p class="cold-open__detail">{metric.detail}</p>
+        </li>
+      ))}
+    </ul>
+    <h1 id="cold-open-title">lima tahun kerja tridharma sivitas FMIPA UGM.</h1>
+    <p class="cold-open__statement"><mark>{shareLabel}</mark> dari seluruh sitasi yang pernah diraih fakultas lahir pada periode ini.</p>
+    <p class="cold-open__context">Berdasarkan pangkalan data {archiveStart}–{archiveEnd}; angka {archiveEnd} masih bertambah seiring pemutakhiran indeksasi. Tiga angka ini tidak merangkum segalanya, tetapi menandai percepatan riset, publikasi, dan pengabdian yang berjalan bersamaan.</p>
     <a class="cold-open__continue" href="#posisi">Pelajari Laporan Selengkapnya <span aria-hidden="true">↓</span></a>
   </div>
   <div class="cold-open__band" aria-hidden="true"></div>
@@ -41,44 +79,60 @@ const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/bra
   }
   .cold-open__content { width: min(100%, var(--content-max)); min-width: 0; margin-inline: auto; position: relative; z-index: 1; }
   .cold-open__eyebrow {
-    margin: 0 0 28px;
+    margin: 0 0 32px;
     color: var(--ugm-gold);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: .18em;
     text-transform: uppercase;
   }
+
+  /* Three columns of equal weight: no single figure is the headline, the set is.
+     Below 760px they stack, and the rule moves from the inline start to the
+     block start so the grouping still reads. */
+  .cold-open__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 4vw, 52px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cold-open__metrics li { min-width: 0; margin: 0; }
+  .cold-open__metrics li + li { padding-inline-start: clamp(18px, 3vw, 40px); border-inline-start: 1px solid rgba(255,255,255,.16); }
   .cold-open__number {
     margin: 0;
     color: var(--ugm-gold);
     font-family: var(--font-ui);
-    font-size: clamp(72px, 15vw, 176px);
+    font-size: clamp(48px, 7.6vw, 104px);
     font-weight: 300;
     font-variant-numeric: tabular-nums;
-    line-height: .82;
-    letter-spacing: -.065em;
+    line-height: .86;
+    letter-spacing: -.05em;
   }
+  .cold-open__label { margin: 14px 0 0; color: #fff; font-size: clamp(15px, 1.6vw, 19px); font-weight: 700; }
+  .cold-open__detail { margin: 5px 0 0; color: rgba(255,255,255,.58); font-size: 13px; }
   .cold-open h1 {
-    margin: 24px 0 0;
+    margin: clamp(36px, 5vw, 60px) 0 0;
     color: #fff;
     font-family: var(--font-display);
-    font-size: clamp(36px, 5vw, 70px);
+    font-size: clamp(32px, 4.4vw, 62px);
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.02;
   }
   .cold-open__statement {
-    margin: 28px 0 0;
+    margin: 24px 0 0;
     color: rgba(255,255,255,.9);
-    font-size: clamp(22px, 3.2vw, 42px);
-    line-height: 1.25;
+    font-size: clamp(18px, 2.4vw, 30px);
+    line-height: 1.3;
   }
   .cold-open__statement mark { padding: 0 .14em; background: var(--ugm-gold); color: #0B1F2E; }
-  .cold-open__context { width: 100%; max-width: 520px; margin: 24px 0 0; overflow-wrap: anywhere; color: rgba(255,255,255,.62); font-size: 16px; }
+  .cold-open__context { width: 100%; max-width: 560px; margin: 22px 0 0; overflow-wrap: anywhere; color: rgba(255,255,255,.62); font-size: 15px; }
   .cold-open__continue {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin-block-start: 56px;
+    margin-block-start: clamp(32px, 4vw, 52px);
     color: #fff;
     font-size: 13px;
     font-weight: 700;
@@ -98,4 +152,8 @@ const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/bra
     opacity: .1;
   }
   .cold-open__band { position: absolute; inset: auto 0 0; height: 14px; background: var(--ugm-gold); }
+  @media (max-width: 760px) {
+    .cold-open__metrics { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+    .cold-open__metrics li + li { padding-inline-start: 0; padding-block-start: 24px; border-inline-start: 0; border-block-start: 1px solid rgba(255,255,255,.16); }
+  }
 </style>

@@ -1,6 +1,8 @@
 type InitializableRoot = Document | HTMLElement;
 
 const initializedTooltips = new WeakSet<Element>();
+const initializedPortraits = new WeakSet<Element>();
+const initializedChoropleths = new WeakSet<Element>();
 const initializedCounts = new WeakSet<Element>();
 const initializedReveals = new WeakSet<Element>();
 const initializedSdgGrids = new WeakSet<Element>();
@@ -10,57 +12,67 @@ const initializedTables = new WeakSet<Element>();
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const idNumber = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 1 });
 
+function ensureChartTooltip(): HTMLElement {
+  const existing = document.querySelector<HTMLElement>("[data-chart-tooltip]");
+  if (existing) return existing;
+
+  const tooltip = document.createElement("div");
+  tooltip.id = "chart-tooltip";
+  tooltip.dataset.chartTooltip = "";
+  tooltip.setAttribute("role", "tooltip");
+  tooltip.hidden = true;
+  Object.assign(tooltip.style, {
+    position: "fixed",
+    zIndex: "1000",
+    maxWidth: "min(22rem, calc(100vw - 2rem))",
+    padding: "0.55rem 0.7rem",
+    border: "1px solid rgba(255,255,255,.2)",
+    borderRadius: ".4rem",
+    background: "#0b1f2e",
+    color: "#fff",
+    boxShadow: "0 10px 30px rgba(11,31,46,.2)",
+    font: "600 .78rem/1.45 system-ui, sans-serif",
+    pointerEvents: "none",
+  });
+  document.body.append(tooltip);
+  return tooltip;
+}
+
+function positionTooltip(anchor: Element, clientX?: number, clientY?: number): void {
+  const tooltip = ensureChartTooltip();
+  const rect = anchor.getBoundingClientRect();
+  const x = clientX ?? rect.left + rect.width / 2;
+  const y = clientY ?? rect.top;
+  const gap = 14;
+  const tooltipRect = tooltip.getBoundingClientRect();
+  tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - tooltipRect.width - 8, x + gap))}px`;
+  tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - tooltipRect.height - 8, y - tooltipRect.height - gap))}px`;
+}
+
+function showTooltip(anchor: Element, text: string, clientX?: number, clientY?: number): void {
+  const tooltip = ensureChartTooltip();
+  tooltip.textContent = text;
+  tooltip.hidden = false;
+  anchor.setAttribute("aria-describedby", tooltip.id);
+  positionTooltip(anchor, clientX, clientY);
+}
+
+function hideTooltip(anchor?: Element): void {
+  const tooltip = document.querySelector<HTMLElement>("[data-chart-tooltip]");
+  if (!tooltip) return;
+  tooltip.hidden = true;
+  if (anchor && anchor.getAttribute("aria-describedby") === tooltip.id) anchor.removeAttribute("aria-describedby");
+}
+
 function initTooltips(root: InitializableRoot): void {
   const targets = root.querySelectorAll<HTMLElement | SVGElement>("[data-tooltip]");
   if (!targets.length) return;
+  ensureChartTooltip();
 
-  let tooltip = document.querySelector<HTMLElement>("[data-chart-tooltip]");
-  if (!tooltip) {
-    tooltip = document.createElement("div");
-    tooltip.id = "chart-tooltip";
-    tooltip.dataset.chartTooltip = "";
-    tooltip.setAttribute("role", "tooltip");
-    tooltip.hidden = true;
-    Object.assign(tooltip.style, {
-      position: "fixed",
-      zIndex: "1000",
-      maxWidth: "min(22rem, calc(100vw - 2rem))",
-      padding: "0.55rem 0.7rem",
-      border: "1px solid rgba(255,255,255,.2)",
-      borderRadius: ".4rem",
-      background: "#0b1f2e",
-      color: "#fff",
-      boxShadow: "0 10px 30px rgba(11,31,46,.2)",
-      font: "600 .78rem/1.45 system-ui, sans-serif",
-      pointerEvents: "none",
-    });
-    document.body.append(tooltip);
-  }
-
-  const position = (eventTarget: Element, clientX?: number, clientY?: number) => {
-    if (!tooltip) return;
-    const rect = eventTarget.getBoundingClientRect();
-    const x = clientX ?? rect.left + rect.width / 2;
-    const y = clientY ?? rect.top;
-    const gap = 14;
-    const tooltipRect = tooltip.getBoundingClientRect();
-    tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - tooltipRect.width - 8, x + gap))}px`;
-    tooltip.style.top = `${Math.max(8, Math.min(window.innerHeight - tooltipRect.height - 8, y - tooltipRect.height - gap))}px`;
-  };
-
-  const show = (target: HTMLElement | SVGElement, clientX?: number, clientY?: number) => {
-    if (!tooltip) return;
-    tooltip.textContent = target.dataset.tooltip ?? "";
-    tooltip.hidden = false;
-    target.setAttribute("aria-describedby", tooltip.id);
-    position(target, clientX, clientY);
-  };
-
-  const hide = (target: HTMLElement | SVGElement) => {
-    if (!tooltip) return;
-    tooltip.hidden = true;
-    if (target.getAttribute("aria-describedby") === tooltip.id) target.removeAttribute("aria-describedby");
-  };
+  const position = (target: Element, clientX?: number, clientY?: number) => positionTooltip(target, clientX, clientY);
+  const show = (target: HTMLElement | SVGElement, clientX?: number, clientY?: number) =>
+    showTooltip(target, target.dataset.tooltip ?? "", clientX, clientY);
+  const hide = (target: HTMLElement | SVGElement) => hideTooltip(target);
 
   targets.forEach((target) => {
     if (initializedTooltips.has(target)) return;
@@ -88,15 +100,28 @@ function initCountUp(root: InitializableRoot): void {
     const decimals = Math.max(0, Number(element.dataset.countDecimals) || 0);
     const formatter = new Intl.NumberFormat("id-ID", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
+    /* These are headline figures, so a stalled animation must never be what the
+       reader is left looking at. The last frame writes the exact target, and a
+       timer plus a print hook write it again in case the frame loop is throttled
+       or the page is captured part-way through the count. */
+    const final = `${prefix}${formatter.format(target)}${suffix}`;
+    const settle = () => { element.textContent = final; };
+
     const run = () => {
       const started = performance.now();
       const frame = (now: number) => {
         const progress = Math.min(1, (now - started) / duration);
+        if (progress >= 1) {
+          settle();
+          return;
+        }
         const eased = 1 - (1 - progress) ** 3;
         element.textContent = `${prefix}${formatter.format(target * eased)}${suffix}`;
-        if (progress < 1) requestAnimationFrame(frame);
+        requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
+      window.setTimeout(settle, duration + 400);
+      window.addEventListener("beforeprint", settle, { once: true });
     };
 
     if (!("IntersectionObserver" in window)) {
@@ -217,6 +242,121 @@ function initPointMaps(root: InitializableRoot): void {
   });
 }
 
+/**
+ * The institution portrait: 367 dots in one grid.
+ *
+ * Hover is delegated rather than bound per dot, and only the five legend chips
+ * are tab stops — giving every dot a listener pair and a tab stop would cost
+ * two thousand listeners and bury the rest of the page in the tab order.
+ */
+function initPortraits(root: InitializableRoot): void {
+  root.querySelectorAll<HTMLElement>("[data-portrait]").forEach((portrait) => {
+    if (initializedPortraits.has(portrait)) return;
+    initializedPortraits.add(portrait);
+
+    const buttons = [...portrait.querySelectorAll<HTMLButtonElement>("[data-dept-toggle]")];
+    const fields = [...portrait.querySelectorAll<HTMLElement>("[data-portrait-dots]")];
+    if (!buttons.length || !fields.length) return;
+
+    portrait.classList.add("is-interactive");
+    const hint = portrait.querySelector<HTMLElement>("[data-portrait-hint]");
+    if (hint) hint.hidden = false;
+
+    const setActive = (group: string | null) => {
+      if (group) portrait.dataset.activeDept = group;
+      else delete portrait.dataset.activeDept;
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.deptToggle === group)));
+    };
+    const toggle = (group: string) => setActive(portrait.dataset.activeDept === group ? null : group);
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => toggle(button.dataset.deptToggle ?? ""));
+    });
+
+    fields.forEach((field) => {
+      const dotAt = (event: Event) => (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-portrait-tip]") ?? null;
+      field.addEventListener("pointerover", (event) => {
+        const dot = dotAt(event);
+        if (dot) showTooltip(dot, dot.dataset.portraitTip ?? "", (event as PointerEvent).clientX, (event as PointerEvent).clientY);
+      });
+      field.addEventListener("pointermove", (event) => {
+        const dot = dotAt(event);
+        if (dot) positionTooltip(dot, (event as PointerEvent).clientX, (event as PointerEvent).clientY);
+      });
+      field.addEventListener("pointerleave", () => hideTooltip());
+      field.addEventListener("click", (event) => {
+        const dot = dotAt(event);
+        if (dot?.dataset.dept) toggle(dot.dataset.dept);
+      });
+    });
+
+    portrait.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") {
+        hideTooltip();
+        setActive(null);
+      }
+    });
+  });
+}
+
+/**
+ * Cohort tabs on the province choropleth.
+ *
+ * One map is rendered; each province path carries its fill and its reading for
+ * every tab, and switching tabs rewrites those attributes. Colour classes are
+ * computed once from the all-cohort totals and never per tab, so a shade means
+ * the same number whichever year is showing.
+ */
+function initChoroplethTabs(root: InitializableRoot): void {
+  root.querySelectorAll<HTMLElement>("[data-choropleth]").forEach((map) => {
+    if (initializedChoropleths.has(map)) return;
+    initializedChoropleths.add(map);
+
+    const controls = map.querySelector<HTMLElement>("[data-choropleth-controls]");
+    const buttons = [...map.querySelectorAll<HTMLButtonElement>("[data-choropleth-panel]")];
+    const paths = [...map.querySelectorAll<SVGPathElement>("[data-province]")];
+    const labels = [...map.querySelectorAll<SVGTextElement>("[data-province-label]")];
+    const output = map.querySelector<HTMLElement>("[data-choropleth-total]");
+    const scope = map.querySelector<HTMLElement>("[data-choropleth-scope]");
+    if (!controls || buttons.length < 2 || !paths.length) return;
+    controls.hidden = false;
+
+    const at = (element: Element, attribute: string, index: number) =>
+      (element.getAttribute(attribute) ?? "").split("|")[index] ?? "";
+
+    const selectPanel = (key: string) => {
+      const index = buttons.findIndex((button) => button.dataset.choroplethPanel === key);
+      if (index < 0) return;
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.choroplethPanel === key)));
+
+      paths.forEach((path) => {
+        const fill = at(path, "data-fills", index);
+        const reading = at(path, "data-readings", index);
+        if (fill) path.setAttribute("fill", fill);
+        path.dataset.tooltip = reading;
+        path.setAttribute("aria-label", reading);
+        const title = path.querySelector("title");
+        if (title) title.textContent = reading;
+      });
+
+      labels.forEach((label) => {
+        const text = at(label, "data-values", index);
+        label.textContent = text;
+        label.setAttribute("aria-hidden", "true");
+        (label as unknown as SVGElement).style.display = text ? "" : "none";
+      });
+
+      if (output) output.textContent = at(controls, "data-totals", index);
+      if (scope) scope.textContent = at(controls, "data-scopes", index);
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => selectPanel(button.dataset.choroplethPanel ?? ""));
+    });
+    selectPanel(map.dataset.defaultPanel ?? buttons[0]?.dataset.choroplethPanel ?? "");
+  });
+}
+
 function initTableDialogs(root: InitializableRoot): void {
   root.querySelectorAll<HTMLDetailsElement>(".chart-frame__table-wrap").forEach((details) => {
     if (initializedTables.has(details)) return;
@@ -236,6 +376,8 @@ export function initChartEnhancements(root: InitializableRoot = document): void 
   initReveal(root);
   initSdgGrids(root);
   initPointMaps(root);
+  initPortraits(root);
+  initChoroplethTabs(root);
   initTableDialogs(root);
 }
 

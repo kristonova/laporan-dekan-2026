@@ -1,0 +1,300 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, formatNumber, scaleLinear, slugify, textLines, ticks } from "./_utils";
+
+/**
+ * One row per category, every period on a single shared axis.
+ *
+ * A slope chart of eight programmes crosses itself into a knot: the lines are
+ * the whole encoding, and once they overlap the reader has to trace them by
+ * colour. Here the row does the separating and the axis does the comparing, so
+ * nothing has to be traced at all. Unlike TrendRows, the scale is deliberately
+ * shared — with an index like a grade point, the level is the point.
+ *
+ * Direction is carried by the dot ramp (earliest small and pale, latest large
+ * and solid) and repeated as a glyph in the right gutter, never by colour alone.
+ */
+interface DumbbellRow extends Record<string, unknown> {
+  label: string;
+  values: (number | null)[];
+  color?: string;
+  note?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<DumbbellRow>, "tableRows" | "tableColumns"> {
+  data: DumbbellRow[];
+  /** X labels, one per point. */
+  periods: (string | number)[];
+  width?: number;
+  rowHeight?: number;
+  domain?: [number, number];
+  valueFormatter?: (value: number) => string;
+  axisLabel?: string;
+  note?: string;
+}
+
+const {
+  data,
+  periods,
+  width = 980,
+  rowHeight = 48,
+  domain,
+  valueFormatter = (value: number) => formatNumber(value, 2),
+  axisLabel,
+  note,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 74, right: 158, bottom: 34, left: 214 };
+const plotWidth = width - margin.left - margin.right;
+const present = data.flatMap((row) => row.values.filter((value): value is number => value !== null));
+const rawMin = present.length ? Math.min(...present) : 0;
+const rawMax = present.length ? Math.max(...present) : 1;
+const pad = Math.max(0.05, (rawMax - rawMin) * 0.14);
+const [minValue, maxValue] = domain ?? [rawMin - pad, rawMax + pad];
+const x = (value: number) => margin.left + scaleLinear(value, minValue, maxValue, 0, plotWidth);
+const axisTicks = ticks(minValue, maxValue, 4);
+const height = margin.top + data.length * rowHeight + margin.bottom;
+const lastPeriod = periods.length - 1;
+
+/* Order is carried by size, and "now" by fill: the earlier cohorts are drawn
+   hollow and the latest solid. An opacity ramp was tried first and fails on the
+   lighter programme colours — a pale hue at a third opacity is invisible, and
+   the encoding has to survive whatever hue the row happens to carry. */
+const dotRadius = (index: number) => 3.4 + (index / Math.max(1, lastPeriod)) * 3.2;
+
+const rows = data.map((row, rowIndex) => {
+  const centreY = margin.top + rowIndex * rowHeight + rowHeight / 2;
+  const points = row.values
+    .map((value, index) => ({ value, index }))
+    .filter((point): point is { value: number; index: number } => point.value !== null)
+    .map((point) => ({ ...point, x: x(point.value), r: dotRadius(point.index), latest: point.index === lastPeriod }));
+  const first = points[0];
+  const last = points.at(-1);
+  const delta = first && last ? last.value - first.value : 0;
+  const xs = points.map((point) => point.x);
+  return {
+    ...row,
+    lines: textLines(row.label, 24, 2),
+    centreY,
+    points,
+    first,
+    last,
+    delta,
+    spanFrom: xs.length ? Math.min(...xs) : margin.left,
+    spanTo: xs.length ? Math.max(...xs) : margin.left,
+    color: row.color ?? SERIES_COLORS[rowIndex % SERIES_COLORS.length],
+    marker: delta > 0.005 ? "▲" : delta < -0.005 ? "▼" : "▬",
+  };
+});
+
+const tableRows = data.map((row) => ({
+  Kategori: row.label,
+  ...Object.fromEntries(periods.map((period, index) => [
+    String(period),
+    row.values[index] === null ? "—" : valueFormatter(row.values[index] as number),
+  ])),
+  Perubahan: row.values[0] !== null && row.values[lastPeriod] !== null
+    ? valueFormatter((row.values[lastPeriod] as number) - (row.values[0] as number))
+    : "—",
+  Catatan: row.note ?? "—",
+}));
+const tableColumns = [
+  { key: "Kategori", label: "Kategori" },
+  ...periods.map((period) => ({ key: String(period), label: String(period), align: "end" as const })),
+  { key: "Perubahan", label: "Perubahan", align: "end" as const },
+  { key: "Catatan", label: "Catatan" },
+];
+const legendGap = Math.min(78, plotWidth / Math.max(1, periods.length + 1));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={700}
+  {note}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      {rows.length} baris, satu per kategori. Setiap baris memuat {periods.length} titik periode pada satu sumbu
+      mendatar yang sama, dari titik paling pucat (periode terawal) hingga titik paling pekat (periode terakhir).
+      Seluruh angka tersedia pada tabel di bawah grafik.
+    </desc>
+
+    <g class="axis" aria-hidden="true">
+      {axisTicks.map((tick) => (
+        <g>
+          <line x1={x(tick)} x2={x(tick)} y1={margin.top - 12} y2={height - margin.bottom} />
+          <text x={x(tick)} y={margin.top - 20} text-anchor="middle">{valueFormatter(tick)}</text>
+        </g>
+      ))}
+      {axisLabel && <text class="axis-label" x={margin.left} y="18">{axisLabel}</text>}
+    </g>
+
+    <g class="period-legend" aria-hidden="true">
+      {periods.map((period, index) => (
+        <g transform={`translate(${margin.left + index * legendGap}, 40)`}>
+          <circle class:list={["legend-dot", index === lastPeriod && "is-latest"]} cx="0" cy="-4" r={dotRadius(index)} />
+          <text x="12" y="0">{String(period)}</text>
+        </g>
+      ))}
+    </g>
+
+    {rows.map((row) => {
+      const readings = row.points.map((point) => `${periods[point.index]} ${valueFormatter(point.value)}`).join(", ");
+      const tooltip = `${row.label}: ${readings}.${row.note ? ` ${row.note}` : ""}`;
+      return (
+        <g class="dumbbell" style={`--row-color:${row.color}`} tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <line class="row-rule" x1={margin.left} x2={margin.left + plotWidth} y1={row.centreY} y2={row.centreY} />
+          <text class="row-label" x={margin.left - 22} y={row.centreY + (row.lines.length === 1 ? 4 : -3)} text-anchor="end">
+            {row.lines.map((line, lineIndex) => (
+              <tspan x={margin.left - 22} dy={lineIndex === 0 ? 0 : 14}>{line}</tspan>
+            ))}
+          </text>
+
+          <line class="span" x1={row.spanFrom} x2={row.spanTo} y1={row.centreY} y2={row.centreY} />
+          {row.points.map((point) => (
+            <circle class:list={["dot", point.latest && "is-latest"]} cx={point.x} cy={row.centreY} r={point.r} />
+          ))}
+
+          <text class="row-value" x={margin.left + plotWidth + 16} y={row.centreY + 4}>
+            <tspan class="row-from">{row.first ? valueFormatter(row.first.value) : "—"}</tspan>
+            <tspan class="row-arrow"> → </tspan>
+            <tspan class="row-to">{row.last ? valueFormatter(row.last.value) : "—"}</tspan>
+            <tspan class="row-marker"> {row.marker}</tspan>
+          </text>
+        </g>
+      );
+    })}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .axis line {
+    stroke: var(--rule-light, #e5e8ea);
+    stroke-width: 1;
+  }
+
+  .axis text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+  }
+
+  .axis .axis-label {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+    text-anchor: start;
+  }
+
+  .legend-dot {
+    fill: var(--surface, #fff);
+    stroke: var(--ink-muted, #656b70);
+    stroke-width: 1.8;
+  }
+
+  .legend-dot.is-latest {
+    fill: var(--ink-muted, #656b70);
+  }
+
+  .period-legend text {
+    fill: var(--ink-muted, #656b70);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .row-rule {
+    stroke: var(--rule-light, #eef1f2);
+    stroke-width: 1;
+  }
+
+  .span {
+    stroke: var(--row-color, var(--chart-primary, #01416b));
+    stroke-width: 5;
+    stroke-linecap: round;
+    opacity: 0.34;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .dot {
+    fill: var(--surface, #fff);
+    stroke: var(--row-color, var(--chart-primary, #01416b));
+    stroke-width: 1.9;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .dot.is-latest {
+    fill: var(--row-color, var(--chart-primary, #01416b));
+    stroke: var(--surface, #fff);
+    stroke-width: 1.5;
+  }
+
+  .row-label {
+    fill: currentColor;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .row-value {
+    fill: currentColor;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .row-from {
+    fill: var(--ink-muted, #656b70);
+    font-weight: 600;
+  }
+
+  .row-arrow {
+    fill: var(--ink-muted, #656b70);
+  }
+
+  .row-marker {
+    fill: var(--ink-muted, #656b70);
+    font-size: 10px;
+  }
+
+  .dumbbell text {
+    pointer-events: none;
+  }
+
+  .dumbbell:hover .span,
+  .dumbbell:focus .span {
+    opacity: 0.62;
+  }
+
+  .dumbbell:focus-visible {
+    outline: none;
+  }
+
+  .dumbbell:focus-visible .row-rule {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+</style>

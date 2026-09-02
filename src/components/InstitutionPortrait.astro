@@ -22,24 +22,43 @@ const departments = [
   { name: "Kimia", sourceName: "Kimia", className: "kimia" },
   { name: "Matematika", sourceName: "Matematika", className: "matematika" },
 ];
+const format = (value: number) => new Intl.NumberFormat("id-ID").format(value);
+const countOf = (department: (typeof departments)[number]) => departmentCounts[department.sourceName] ?? 0;
+/* Every dot carries the name and count of the group it belongs to, so pointing
+   at any one of them answers the question the matrix raises. The dots are not
+   tab stops: 367 of them would bury the rest of the page, so the legend chips
+   below carry the keyboard path and the click target instead. */
 const lecturerDots = departments.flatMap((department) =>
-  Array.from({ length: departmentCounts[department.sourceName] ?? 0 }, () => department.className),
+  Array.from({ length: countOf(department) }, () => ({
+    className: department.className,
+    tip: `${department.name} · ${format(countOf(department))} dosen`,
+  })),
 );
+const staffTip = `Tenaga kependidikan · ${format(academicStaff)} orang`;
+const legendEntries = [
+  ...departments.map((department) => ({ key: department.className, label: department.name, count: countOf(department) })),
+  { key: "staff", label: "Tenaga kependidikan", count: academicStaff },
+];
 ---
 
-<div class="portrait">
+<div class="portrait" data-portrait>
   <div class="portrait__people" aria-label={`${lecturers} dosen dan ${academicStaff} tenaga kependidikan`}>
     <div class="portrait__group">
       <strong>{lecturers}</strong><span>dosen</span>
-      <div class="portrait__dots" aria-hidden="true">
-        {lecturerDots.map((className) => <i class={`dot dot--${className}`}></i>)}
+      <div
+        class="portrait__dots"
+        data-portrait-dots
+        role="img"
+        aria-label={`Sebaran ${format(lecturers)} dosen menurut departemen: ${departments.map((department) => `${department.name} ${format(countOf(department))}`).join(", ")}`}
+      >
+        {lecturerDots.map((dot) => <i class={`dot dot--${dot.className}`} data-dept={dot.className} data-portrait-tip={dot.tip}></i>)}
       </div>
     </div>
     <div class="portrait__plus" aria-hidden="true">+</div>
     <div class="portrait__group portrait__group--staff">
       <strong>{academicStaff}</strong><span>tenaga kependidikan</span>
-      <div class="portrait__dots" aria-hidden="true">
-        {Array.from({ length: academicStaff }, () => <i class="dot dot--staff"></i>)}
+      <div class="portrait__dots" data-portrait-dots role="img" aria-label={staffTip}>
+        {Array.from({ length: academicStaff }, () => <i class="dot dot--staff" data-dept="staff" data-portrait-tip={staffTip}></i>)}
       </div>
     </div>
   </div>
@@ -49,9 +68,15 @@ const lecturerDots = departments.flatMap((department) =>
     <div><strong>{laboratories}</strong><span>laboratorium</span></div>
   </div>
   <ul class="portrait__legend" aria-label="Departemen">
-    {departments.map((department) => <li><i class={`dot dot--${department.className}`}></i>{department.name} · {departmentCounts[department.sourceName] ?? 0}</li>)}
-    <li><i class="dot dot--staff"></i>Tenaga kependidikan</li>
+    {legendEntries.map((entry) => (
+      <li>
+        <button type="button" data-dept-toggle={entry.key} aria-pressed="false">
+          <i class={`dot dot--${entry.key}`} aria-hidden="true"></i>{entry.label} · {format(entry.count)}
+        </button>
+      </li>
+    ))}
   </ul>
+  <p class="portrait__hint" data-portrait-hint hidden>Arahkan kursor ke titik untuk melihat kelompoknya, atau pilih satu kelompok di atas untuk menyorotnya.</p>
 </div>
 
 <style>
@@ -83,8 +108,37 @@ const lecturerDots = departments.flatMap((department) =>
   .portrait__structure strong { color: var(--ugm-blue); font-family: var(--font-display); font-size: 52px; line-height: 1; }
   .portrait__structure span { margin-block-start: 8px; font-weight: 700; }
   .portrait__structure small { margin-block-start: 6px; color: var(--text-muted); }
-  .portrait__legend { display: flex; flex-wrap: wrap; gap: 12px 22px; padding: 0; margin: 0; list-style: none; color: var(--text-secondary); font-size: 13px; }
-  .portrait__legend li { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+  .portrait__legend { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; font-size: 13px; }
+  .portrait__legend li { margin: 0; }
+  .portrait__legend button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 6px 13px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: var(--surface-card);
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+  }
+  .portrait__legend button:hover { border-color: var(--ugm-blue); color: var(--text-primary); }
+  .portrait__legend button[aria-pressed="true"] { border-color: var(--ugm-blue); background: var(--surface-tint); color: var(--text-primary); font-weight: 700; }
+  .portrait__legend button:focus-visible { outline: 3px solid var(--focus-color); outline-offset: 2px; }
+  .portrait__hint { margin: 0; color: var(--text-muted); font-size: 12px; }
+
+  /* Highlighting is a dim, not a colour change: the department colours are the
+     one thing on this graphic that must never move. */
+  .portrait[data-active-dept] .portrait__dots i { opacity: .14; }
+  .portrait[data-active-dept="fisika"] .portrait__dots i[data-dept="fisika"],
+  .portrait[data-active-dept="ike"] .portrait__dots i[data-dept="ike"],
+  .portrait[data-active-dept="kimia"] .portrait__dots i[data-dept="kimia"],
+  .portrait[data-active-dept="matematika"] .portrait__dots i[data-dept="matematika"],
+  .portrait[data-active-dept="staff"] .portrait__dots i[data-dept="staff"] { opacity: 1; }
+  .portrait.is-interactive .portrait__dots i { cursor: pointer; transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(.2,0,.2,1)); }
+  .portrait.is-interactive .portrait__dots i:hover { box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 3.5px var(--text-primary); }
+  @media (prefers-reduced-motion: reduce) { .portrait.is-interactive .portrait__dots i { transition: none; } }
   @media (max-width: 900px) {
     .portrait__dots { grid-template-columns: repeat(24, 1fr); }
   }

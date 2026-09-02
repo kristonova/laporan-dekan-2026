@@ -12,7 +12,6 @@ Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data
 Laporan ini tidak dimulai sebagai dashboard. Pembaca dibawa dari satu temuan utama menuju konteks, bukti, ketegangan, lalu agenda tindak lanjut.
 Laporan ini dirancang bukan sekadar sebagai *dashboard* kumpulan angka mentah, melainkan alur cerita bertahap yang memandu pembaca dari temuan kunci, pembuktian data, dinamika capaian, hingga agenda strategis ke depan.
 
-| Tahap narasi | Peran dalam cerita | Implementasi saat ini |
 | Tahap Narasi | Peran dalam Narasi | Wujud Implementasi |
 | --- | --- | --- |
 | **1. Hook** | Membuka dengan angka yang langsung memberi skala perubahan | Cold open menampilkan lompatan sitasi dalam lima tahun |
@@ -32,7 +31,6 @@ Narasi utama tersusun atas **35 adegan (*scene*) tematik dan satu adegan pembuka
 ## Pengalaman pembaca
 ## Halaman & Antarmuka Pengguna
 
-| Rute | Pengalaman | Kegunaan |
 | Rute | Format Tampilan | Kegunaan Utama |
 | --- | --- | --- |
 | `/` | Cerita panjang tiga bagian, lima pilar, grafik, insight, dan catatan metodologi | Membaca laporan lengkap secara mandiri |
@@ -148,7 +146,6 @@ python -m venv .venv
 ## Perintah proyek
 ## Daftar Perintah Proyek
 
-| Perintah | Fungsi |
 | Perintah | Deskripsi Fungsi |
 | --- | --- |
 | `npm run dev` | Menjalankan Astro development server |
@@ -202,7 +199,6 @@ Jika semua tahap perlu dijalankan sekaligus, gunakan `npm run verify`.
 ### Sumber yang dibaca pipeline
 ### Berkas Sumber yang Dibaca Pipeline
 
-| Sumber | Lokasi relatif terhadap direktori induk | Dipakai untuk |
 | Sumber Data | Lokasi Relatif (di Direktori Induk) | Digunakan Untuk |
 | --- | --- | --- |
 | Ekspor P2M, 14 jenis dataset dalam 23 berkas CSV | `data ugm/p2m/` | Sitasi, publikasi, riset, PkM, SDM, jurnal, dan media |

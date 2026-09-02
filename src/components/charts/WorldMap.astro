@@ -1,0 +1,599 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { finite, formatNumber, slugify } from "./_utils";
+import worldRaw from "../../data/geo/world-countries.json";
+import { COUNTRY_FALLBACK_COORDS, ORIGIN_COORD, countryNameId, iso3Of } from "../../lib/country-centroids";
+import { withBase } from "../../lib/paths";
+
+/**
+ * Partner countries on a world map: choropleth fill plus a proportional marker.
+ *
+ * The fill alone is not enough. Natural Earth 1:110m carries 177 polygons and
+ * none for Singapore or Hong Kong, and a country the size of Taiwan is barely a
+ * pixel at this scale, so a fill-only map would quietly lose exactly the
+ * partners that matter most here. The marker carries the number; the fill is
+ * there so a large partner still reads as a partner.
+ *
+ * A map also throws away rank, which a bar chart gave for free. The ranked list
+ * beside the map puts it back rather than pretending the loss did not happen.
+ */
+type Position = [number, number];
+type Polygon = Position[][];
+interface WorldFeature {
+  properties: { ADMIN?: string; ADM0_A3?: string };
+  geometry:
+    | { type: "Polygon"; coordinates: Polygon }
+    | { type: "MultiPolygon"; coordinates: Polygon[] };
+}
+
+interface CountryDatum extends Record<string, unknown> {
+  /** Source spelling; resolved to ISO3 and to an Indonesian display name. */
+  name: string;
+  value: number;
+  iso3?: string;
+  detail?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<CountryDatum>, "tableRows" | "tableColumns"> {
+  data: CountryDatum[];
+  valueLabel?: string;
+  valueFormatter?: (value: number) => string;
+  /** Draw connector arcs from Yogyakarta, echoing the collaboration scene. */
+  arcs?: boolean;
+  /** Records that carry no country at all, reported rather than dropped. */
+  unmapped?: { label: string; value: number };
+  /** How many countries the ranked list names before it stops. */
+  topCount?: number;
+  note?: string;
+}
+
+const {
+  data,
+  valueLabel = "dokumen kerja sama",
+  valueFormatter = (value: number) => formatNumber(value, 0),
+  arcs = true,
+  unmapped,
+  topCount = 12,
+  note,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const width = 1000;
+const height = 470;
+const north = 84;
+const south = -58;
+const project = ([lng, lat]: Position): [number, number] => [
+  ((lng + 180) / 360) * width,
+  ((north - lat) / (north - south)) * height,
+];
+
+const world = worldRaw as unknown as { features: WorldFeature[] };
+const ringPath = (ring: Position[]) => `${ring.map((point, index) => {
+  const [x, y] = project(point);
+  return `${index === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+}).join(" ")} Z`;
+const polygonPath = (polygon: Polygon) => polygon.map(ringPath).join(" ");
+const geometryPath = (feature: WorldFeature) => feature.geometry.type === "Polygon"
+  ? polygonPath(feature.geometry.coordinates)
+  : feature.geometry.coordinates.map(polygonPath).join(" ");
+
+/* Anchor the marker on the area centroid of the country's largest ring. A
+   bounding-box centre drops Norway into the sea and pulls the United States
+   towards Alaska; the shoelace centroid of the main landmass does not. */
+const ringCentroid = (ring: Position[]): Position | null => {
+  let twiceArea = 0;
+  let x = 0;
+  let y = 0;
+  for (let index = 0; index < ring.length - 1; index += 1) {
+    const [x0, y0] = ring[index];
+    const [x1, y1] = ring[index + 1];
+    const cross = x0 * y1 - x1 * y0;
+    twiceArea += cross;
+    x += (x0 + x1) * cross;
+    y += (y0 + y1) * cross;
+  }
+  if (Math.abs(twiceArea) < 1e-9) {
+    if (!ring.length) return null;
+    const lngs = ring.map(([lng]) => lng);
+    const lats = ring.map(([, lat]) => lat);
+    return [(Math.min(...lngs) + Math.max(...lngs)) / 2, (Math.min(...lats) + Math.max(...lats)) / 2];
+  }
+  return [x / (3 * twiceArea), y / (3 * twiceArea)];
+};
+
+const featureCentroid = (feature: WorldFeature): Position | null => {
+  const polygons = feature.geometry.type === "Polygon"
+    ? [feature.geometry.coordinates]
+    : feature.geometry.coordinates;
+  let best: { ring: Position[]; span: number } | null = null;
+  for (const polygon of polygons) {
+    const ring = polygon[0];
+    if (!ring || ring.length < 4) continue;
+    const lngs = ring.map(([lng]) => lng);
+    const lats = ring.map(([, lat]) => lat);
+    const span = (Math.max(...lngs) - Math.min(...lngs)) * (Math.max(...lats) - Math.min(...lats));
+    if (!best || span > best.span) best = { ring, span };
+  }
+  return best ? ringCentroid(best.ring) : null;
+};
+
+const featureByIso = new Map(world.features.map((feature) => [feature.properties.ADM0_A3 ?? "", feature]));
+const centroidCache = new Map<string, Position | null>();
+const centroidFor = (iso3: string): Position | null => {
+  if (centroidCache.has(iso3)) return centroidCache.get(iso3) ?? null;
+  const feature = featureByIso.get(iso3);
+  const centroid = feature ? featureCentroid(feature) : (COUNTRY_FALLBACK_COORDS[iso3] ?? null);
+  centroidCache.set(iso3, centroid);
+  return centroid;
+};
+
+const countries = data
+  .map((row) => {
+    const iso3 = iso3Of(row.name, row.iso3 as string | undefined);
+    return {
+      raw: row.name,
+      name: countryNameId(row.name),
+      iso3,
+      value: finite(row.value),
+      detail: row.detail,
+      coord: iso3 ? centroidFor(iso3) : null,
+    };
+  })
+  .filter((row) => row.value > 0)
+  .sort((a, b) => b.value - a.value);
+
+const placed = countries.filter((row) => row.coord);
+/* A country the join could not resolve is named in the note, never dropped in
+   silence: the total under the map has to keep adding up. */
+const unplaced = countries.filter((row) => !row.coord);
+const total = countries.reduce((sum, row) => sum + row.value, 0);
+const maxValue = Math.max(1, ...countries.map((row) => row.value));
+
+/* The fill says "partner", never "how much". Shading a country by value on a
+   world map lets area do the talking: Australia with three documents would read
+   as the strongest tie on the page while Taiwan with fifteen is a few pixels
+   wide. Magnitude is the circles' job, and they are drawn at a size the country
+   underneath cannot distort. */
+const valueByIso = new Map(countries.filter((row) => row.iso3).map((row) => [row.iso3, row]));
+
+const land = world.features
+  .filter((feature) => feature.properties.ADMIN !== "Antarctica")
+  .map((feature) => {
+    const iso3 = feature.properties.ADM0_A3 ?? "";
+    const partner = valueByIso.get(iso3);
+    return {
+      path: geometryPath(feature),
+      iso3,
+      partner,
+      tooltip: partner ? `${partner.name}: ${valueFormatter(partner.value)} ${valueLabel}` : undefined,
+    };
+  });
+
+/* Area, not radius, carries the value: the square root keeps a partner with
+   fifteen documents fifteen times the ink of one with a single document. */
+const radiusOf = (value: number) => 4 + Math.sqrt(value / maxValue) * 13;
+
+const origin = project(ORIGIN_COORD);
+const arcPath = (target: readonly [number, number]) => {
+  const midX = (origin[0] + target[0]) / 2;
+  const midY = Math.min(origin[1], target[1]) - Math.max(32, Math.abs(origin[0] - target[0]) * 0.16);
+  return `M${origin[0]},${origin[1]} Q${midX},${midY} ${target[0]},${target[1]}`;
+};
+
+const markers = placed.map((row) => {
+  const [x, y] = project(row.coord as Position);
+  return {
+    ...row,
+    x,
+    y,
+    r: radiusOf(row.value),
+    tooltip: `${row.name}: ${valueFormatter(row.value)} ${valueLabel}${row.detail ? `. ${row.detail}` : ""}`,
+  };
+});
+
+const ranked = countries.slice(0, topCount);
+const rankedRest = Math.max(0, countries.length - ranked.length);
+const graticuleLongitudes = [-120, -60, 0, 60, 120].map((longitude) => project([longitude, 0])[0]);
+const graticuleLatitudes = [-30, 0, 30, 60].map((latitude) => project([0, latitude])[1]);
+const worldGeoJsonUrl = withBase("/data/world-countries.geojson");
+
+/* Three reference circles drawn with the same radius function as the map, so
+   the key can be compared against the marks by eye rather than by trust. */
+const minValue = Math.min(...countries.map((row) => row.value));
+const legendItems = [...new Set([maxValue, Math.max(minValue, Math.round(maxValue / 3)), minValue])]
+  .sort((a, b) => b - a)
+  .map((value) => ({ value, r: radiusOf(value), label: formatNumber(value, 0) }));
+
+const unplacedNote = unplaced.length
+  ? `Sebanyak ${formatNumber(unplaced.length, 0)} negara belum dapat dicocokkan dengan batas peta (${unplaced.map((row) => row.name).join(", ")}); angkanya tetap dihitung pada total dan tersedia pada tabel.`
+  : undefined;
+const unmappedNote = unmapped && unmapped.value > 0
+  ? `${formatNumber(unmapped.value, 0)} rekaman tidak mencantumkan negara sehingga tidak dapat diletakkan pada peta.`
+  : undefined;
+const frameNote = [note, unplacedNote, unmappedNote].filter(Boolean).join(" ") || undefined;
+
+const tableRows = countries.map((row) => ({
+  Negara: row.name,
+  "Kode ISO3": row.iso3 || "—",
+  Jumlah: valueFormatter(row.value),
+}));
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  tableColumns={[
+    { key: "Negara", label: "Negara" },
+    { key: "Kode ISO3", label: "Kode ISO3" },
+    { key: "Jumlah", label: `Jumlah ${valueLabel}`, align: "end" },
+  ]}
+  class={className}
+  {hideHeader}
+  note={frameNote}
+>
+  <div class="world-map">
+    <div class="world-map__stage">
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+        <title id={`${id}-svg-title`}>{title}</title>
+        <desc id={`${id}-svg-desc`}>
+          Peta dunia dengan {formatNumber(countries.length, 0)} negara mitra. Warna yang lebih pekat dan lingkaran
+          yang lebih besar berarti lebih banyak {valueLabel}. Batas negara dari Natural Earth skala 1 banding 110 juta.
+          Seluruh angka tersedia pada tabel di bawah peta.
+        </desc>
+
+        <g class="world-map__grid" aria-hidden="true">
+          {graticuleLatitudes.map((y) => <line x1="0" y1={y} x2={width} y2={y} />)}
+          {graticuleLongitudes.map((x) => <line x1={x} y1="0" x2={x} y2={height} />)}
+        </g>
+
+        <g class="world-map__land">
+          {land.map((country) => (
+            country.partner ? (
+              <path class="is-partner" d={country.path} tabindex="0" data-tooltip={country.tooltip} aria-label={country.tooltip}>
+                <title>{country.tooltip}</title>
+              </path>
+            ) : (
+              <path d={country.path} aria-hidden="true" />
+            )
+          ))}
+        </g>
+
+        {arcs && (
+          <g class="world-map__arcs" aria-hidden="true">
+            {markers.map((marker) => (
+              <path d={arcPath([marker.x, marker.y])} style={`--arc-weight:${(1.1 + (marker.value / maxValue) * 3).toFixed(2)}`} />
+            ))}
+          </g>
+        )}
+
+        {arcs && (
+          <circle class="world-map__origin" cx={origin[0]} cy={origin[1]} r="6" aria-hidden="true">
+            <title>Yogyakarta · FMIPA UGM</title>
+          </circle>
+        )}
+
+        <g class="world-map__markers">
+          {markers.map((marker) => (
+            <circle cx={marker.x} cy={marker.y} r={marker.r} tabindex="0" data-tooltip={marker.tooltip} aria-label={marker.tooltip}>
+              <title>{marker.tooltip}</title>
+            </circle>
+          ))}
+        </g>
+      </svg>
+    </div>
+
+    <div class="world-map__side">
+      <p class="world-map__count">
+        <strong>{formatNumber(countries.length, 0)}</strong>
+        <span>negara · {valueFormatter(total)} {valueLabel}</span>
+      </p>
+
+      <ol class="world-map__rank">
+        {ranked.map((row) => (
+          <li>
+            <span class="world-map__rank-name">{row.name}</span>
+            <span class="world-map__rank-bar" aria-hidden="true">
+              <i style={`inline-size:${Math.max(4, (row.value / maxValue) * 100).toFixed(1)}%`}></i>
+            </span>
+            <span class="world-map__rank-value">{valueFormatter(row.value)}</span>
+          </li>
+        ))}
+      </ol>
+
+      {rankedRest > 0 && (
+        <p class="world-map__rest">dan {formatNumber(rankedRest, 0)} negara lain · lihat tabel data</p>
+      )}
+
+      {unmapped && unmapped.value > 0 && (
+        <p class="world-map__unmapped"><i aria-hidden="true"></i>{unmapped.label} · {valueFormatter(unmapped.value)}</p>
+      )}
+
+      <div class="world-map__legend" role="img" aria-label={`Besar lingkaran menunjukkan jumlah ${valueLabel}: ${legendItems.map((item) => item.label).join(", ")}`}>
+        <span class="world-map__legend-title">{valueLabel}</span>
+        <svg viewBox={`0 0 ${legendItems.length * 62} 48`} aria-hidden="true">
+          {legendItems.map((item, index) => (
+            <g transform={`translate(${index * 62 + 20}, 0)`}>
+              <circle class="world-map__legend-mark" cx="0" cy="18" r={item.r} />
+              <text x="0" y="45" text-anchor="middle">{item.label}</text>
+            </g>
+          ))}
+        </svg>
+        <span class="world-map__legend-key"><i aria-hidden="true"></i>negara mitra</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="world-map__attribution">
+    <span>Batas negara: Natural Earth 1:110m, WGS 84</span>
+    <a href="https://github.com/nvkelso/natural-earth-vector" target="_blank" rel="noreferrer">Sumber</a>
+    <a href={worldGeoJsonUrl} download>Unduh GeoJSON</a>
+  </p>
+</ChartFrame>
+
+<style>
+  .world-map {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+    gap: clamp(16px, 2.4vw, 32px);
+    align-items: start;
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .world-map__stage {
+    min-inline-size: 0;
+    border: 1px solid var(--rule, #d9dde0);
+    background: var(--surface, #fff);
+  }
+
+  .world-map__stage svg {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .world-map__grid line {
+    stroke: var(--rule-light, #e5e8ea);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .world-map__land path {
+    fill: var(--country-fill, var(--surface-2, #eef1f3));
+    stroke: var(--rule, #d9dde0);
+    stroke-width: 0.7;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* One tint for every partner: the fill is a category, not a quantity. The
+     second step of the ramp is used rather than the first, because the ramp
+     inverts between themes and its lightest step lands within a hair of the
+     dark land colour — the partners would simply vanish there. A color-mix of
+     the surface was tried first and does not re-resolve when the theme toggle
+     flips the attribute, so a plain token is the dependable choice. */
+  .world-map {
+    --partner-tint: var(--seq-250, #86b6ef);
+  }
+
+  .world-map__land path.is-partner {
+    fill: var(--partner-tint);
+    stroke: var(--surface, #fff);
+    stroke-width: 0.9;
+  }
+
+  .world-map__land path.is-partner:hover,
+  .world-map__land path.is-partner:focus-visible {
+    stroke: var(--ink, #2b2d2f);
+    stroke-width: 2;
+    outline: none;
+  }
+
+  .world-map__arcs path {
+    fill: none;
+    stroke: var(--seq-400, #3987e5);
+    stroke-width: var(--arc-weight, 1.5);
+    stroke-linecap: round;
+    opacity: 0.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .world-map__origin {
+    fill: var(--attention, #fdd402);
+    stroke: var(--ink, #0b1f2e);
+    stroke-width: 2.5;
+  }
+
+  .world-map__markers circle {
+    fill: var(--chart-primary, #01416b);
+    fill-opacity: 0.85;
+    stroke: var(--surface, #fff);
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .world-map__markers circle:hover,
+  .world-map__markers circle:focus-visible {
+    fill-opacity: 1;
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+    outline: none;
+  }
+
+  .world-map__side { min-inline-size: 0; }
+
+  .world-map__count {
+    margin: 0 0 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .world-map__count strong {
+    color: var(--chart-primary, #01416b);
+    font-size: 2.1rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .world-map__count span {
+    color: var(--ink-muted, #60676c);
+    font-size: 0.74rem;
+  }
+
+  .world-map__rank {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: rank;
+  }
+
+  .world-map__rank li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding-block: 0.18rem;
+    border-block-end: 1px solid var(--rule-light, #e5e8ea);
+    font-size: 0.78rem;
+  }
+
+  .world-map__rank-name {
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .world-map__rank-bar {
+    display: block;
+    block-size: 8px;
+    background: var(--surface-2, #eef1f3);
+  }
+
+  .world-map__rank-bar i {
+    display: block;
+    block-size: 100%;
+    background: var(--chart-primary, #01416b);
+  }
+
+  .world-map__rank-value {
+    color: var(--ink, #2b2d2f);
+    font-weight: 700;
+    text-align: end;
+  }
+
+  .world-map__rest,
+  .world-map__unmapped {
+    margin: 0.55rem 0 0;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.72rem;
+  }
+
+  .world-map__unmapped {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding-block-start: 0.5rem;
+    border-block-start: 1px solid var(--rule, #d9dde0);
+    font-weight: 700;
+  }
+
+  .world-map__unmapped i {
+    inline-size: 14px;
+    block-size: 10px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--surface-subtle, #f0f3f4) 0 2px,
+      var(--rule-strong, #aeb8be) 2px 3px
+    );
+  }
+
+  .world-map__legend {
+    display: grid;
+    justify-items: start;
+    gap: 0.3rem;
+    margin-block-start: 0.9rem;
+    padding-block-start: 0.7rem;
+    border-block-start: 1px solid var(--rule, #d9dde0);
+    font-size: 0.74rem;
+  }
+
+  .world-map__legend-title {
+    color: var(--ink-muted, #60676c);
+    font-weight: 700;
+  }
+
+  .world-map__legend svg {
+    display: block;
+    inline-size: min(100%, 200px);
+    block-size: auto;
+    overflow: visible;
+  }
+
+  .world-map__legend-mark {
+    fill: var(--chart-primary, #01416b);
+    fill-opacity: 0.85;
+    stroke: var(--surface, #fff);
+    stroke-width: 1.6;
+  }
+
+  .world-map__legend text {
+    fill: var(--ink-muted, #60676c);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .world-map__legend-key {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--ink-muted, #60676c);
+  }
+
+  .world-map__legend-key i {
+    inline-size: 16px;
+    block-size: 11px;
+    border: 1px solid var(--rule-strong, #aeb8be);
+    background: var(--partner-tint);
+  }
+
+  .world-map__attribution {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.85rem;
+    margin: 0.8rem 0 0;
+    color: var(--ink-muted, #60676c);
+    font-size: 0.72rem;
+  }
+
+  .world-map__attribution a {
+    color: var(--link, #01416b);
+    font-weight: 700;
+  }
+
+  @media (max-width: 60rem) {
+    .world-map { grid-template-columns: minmax(0, 1fr); }
+    .world-map__stage { overflow-x: auto; }
+    .world-map__stage svg { min-inline-size: 620px; }
+    .world-map__rank { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

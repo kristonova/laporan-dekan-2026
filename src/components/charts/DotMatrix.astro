@@ -1,7 +1,7 @@
 ---
 import ChartFrame from "./ChartFrame.astro";
 import type { ChartChromeProps } from "./_types";
-import { SERIES_COLORS, formatNumber, slugify } from "./_utils";
+import { SERIES_COLORS, flowLegend, formatNumber, slugify } from "./_utils";
 
 interface DotGroup extends Record<string, unknown> {
   label: string;
@@ -69,10 +69,13 @@ const positionedGroups = preparedGroups.map((group) => {
 });
 const rows = Math.max(1, Math.ceil(offset / columns));
 const matrixHeight = 42 + rows * (dotSize + 7);
-/* One legend entry per row. Two columns squeezed the name and its count into
-   half the stage and they collided as soon as the chart was not full width. */
-const legendStep = 40;
-const height = matrixHeight + groups.length * legendStep + 40;
+/* The legend flows across one line and wraps only when it runs out of width.
+   Fixed columns squeezed "Lektor Kepala" into half the stage and it collided
+   with its neighbour as soon as the chart was not full width; a stack of one
+   entry per row cost four times the height for the same five labels. */
+const legendLabels = preparedGroups.map((group) => `${group.label} · ${formatNumber(group.count)} ${unitLabel}`);
+const legend = flowLegend(legendLabels, width - 4, { fontSize: 12, keyWidth: 24, gap: 24, rowHeight: 24 });
+const height = matrixHeight + legend.rows * legend.rowHeight + 34;
 /* Below this the symbols and their legend stop being readable, so the frame
    scrolls instead of scaling the whole matrix down to nothing on a phone. */
 const minPlotWidth = Math.round(Math.min(720, Math.max(420, usedColumns * xStep + 90)));
@@ -138,12 +141,11 @@ const tableRows = groups.map((group) => ({
       );
     })}
 
-    <g class="legend" transform={`translate(2, ${matrixHeight + 17})`}>
+    <g class="legend" transform={`translate(2, ${matrixHeight + 14})`}>
       {positionedGroups.map((group, groupIndex) => (
-        <g transform={`translate(0, ${groupIndex * legendStep})`}>
-          <circle cx="9" cy="9" r="7" fill={`url(#${id}-dot-${groupIndex})`} />
-          <text x="26" y="7">{group.label}</text>
-          <text class="legend-value" x="26" y="24">{formatNumber(group.count)} {unitLabel}</text>
+        <g transform={`translate(${legend.positions[groupIndex]?.x ?? 0}, ${legend.positions[groupIndex]?.y ?? 0})`}>
+          <circle cx="8" cy="8" r="7" fill={`url(#${id}-dot-${groupIndex})`} />
+          <text x="24" y="12">{group.label}<tspan class="legend-value"> · {formatNumber(group.count)} {unitLabel}</tspan></text>
         </g>
       ))}
     </g>
@@ -163,10 +165,14 @@ const tableRows = groups.map((group) => ({
     font-size: 11px;
   }
 
-  .legend text:not(.legend-value) {
+  .legend text {
     fill: currentColor;
     font-size: 12px;
     font-weight: 750;
+  }
+
+  .legend .legend-value {
+    font-weight: 500;
   }
 
   /* Hover marks the group by ringing it, not by growing it: nothing on this

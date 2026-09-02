@@ -27,8 +27,10 @@ export interface ProvinceValue extends Record<string, unknown> {
 
 interface Props extends Omit<ChartChromeProps<ProvinceValue>, "tableRows" | "tableColumns"> {
   data: ProvinceValue[];
-  /** One panel per cohort, drawn as small multiples below the main map. */
+  /** One tab per cohort, drawn into the same map rather than beside it. */
   panels?: { label: string; data: ProvinceValue[] }[];
+  /** Label for the tab that shows `data`, the pooled figure. */
+  allLabel?: string;
   width?: number;
   height?: number;
   bounds?: { minLat: number; maxLat: number; minLng: number; maxLng: number };
@@ -42,6 +44,7 @@ interface Props extends Omit<ChartChromeProps<ProvinceValue>, "tableRows" | "tab
 const {
   data,
   panels = [],
+  allLabel = "Semua angkatan",
   width = 960,
   height = 430,
   bounds = { minLat: -11, maxLat: 6.5, minLng: 94.5, maxLng: 141.5 },
@@ -76,13 +79,12 @@ const provincePath = (feature: ProvinceFeature) => {
     : feature.geometry.coordinates as PolygonCoordinates[];
   return polygons.flatMap((polygon) => polygon.map(ringPath)).join(" ");
 };
-/* Paths do not change between the main map and the panels, so they are built
-   once rather than once per panel — this map is drawn seven times on one page. */
 const paths = new Map(provinceFeatures.map((feature) => [feature.properties.code, provincePath(feature)]));
 
-/* Bin thresholds come from quantiles of the values actually present, so a
-   distribution as skewed as this one (one province holds a quarter of the
-   intake) still separates the small provinces from each other. */
+/* Bin thresholds come from quantiles of the pooled values, and every tab reuses
+   them. Reclassifying per cohort would make the same shade mean a different
+   number on the next tab, which is exactly the comparison a reader makes when
+   clicking between years. */
 const present = data.filter((row) => row.value !== null && Number.isFinite(Number(row.value)));
 const sorted = present.map((row) => finite(row.value)).sort((a, b) => a - b);
 const classCount = Math.max(2, Math.min(bins, sorted.length || 2));
@@ -94,8 +96,6 @@ const thresholds = Array.from({ length: classCount - 1 }, (_, index) => {
 });
 const rampSteps = ["100", "250", "400", "550", "700"];
 const rampFallback = ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"];
-/* Five tokens for up to five classes; fewer classes take the darker end so the
-   top class always reads as "most". */
 const rampOffset = rampSteps.length - classCount;
 const binColor = (index: number) => {
   const step = rampOffset + index;
@@ -108,23 +108,86 @@ const binOf = (value: number) => {
 };
 
 const byCode = (rows: ProvinceValue[]) => new Map(rows.map((row) => [String(row.code), row]));
-const mainByCode = byCode(data);
-const total = present.reduce((sum, row) => sum + finite(row.value), 0);
 const withheldCount = data.filter((row) => row.withheld).length;
 const maxValue = sorted.at(-1) ?? 0;
+
+/* Every tab, pooled first. The pooled tab is what renders without JavaScript. */
+const tabs = [
+  { key: "semua", label: allLabel, scope: "semua angkatan", data },
+  ...panels.map((panel) => ({ key: slugify(panel.label), label: panel.label, scope: `angkatan ${panel.label}`, data: panel.data })),
+];
+const tabLookup = tabs.map((tab) => byCode(tab.data));
 
 const fillFor = (row: ProvinceValue | undefined) =>
   row && row.value !== null ? binColor(binOf(finite(row.value))) : `url(#${id}-nodata)`;
 const describe = (feature: ProvinceFeature, row: ProvinceValue | undefined) => {
-  if (!row) return `${feature.properties.name}: tidak ada mahasiswa tercatat`;
+  if (!row) return `${feature.properties.name}: tidak ada ${valueLabel} tercatat`;
   if (row.value === null) {
     return `${feature.properties.name}: ${row.withheld ? `kurang dari 3 ${valueLabel}, angka disamarkan` : "tidak tercatat"}`;
   }
   return `${feature.properties.name}: ${formatNumber(finite(row.value))} ${valueLabel}`;
 };
 
-/* Legend ranges are written from the thresholds so the reader never has to
-   guess where one class ends and the next begins. */
+const provinces = provinceFeatures.map((feature) => {
+  const rows = tabLookup.map((lookup) => lookup.get(feature.properties.code));
+  return {
+    code: feature.properties.code,
+    name: feature.properties.name,
+    path: paths.get(feature.properties.code) ?? "",
+    fills: rows.map((row) => fillFor(row)),
+    readings: rows.map((row) => describe(feature, row)),
+  };
+});
+
+/* Anchor each label on its own polygon's bounding-box centre: the report has no
+   centroid table keyed by BPS code, and a bounding-box centre is close enough
+   for a label that also names nothing but a number. */
+const anchors = new Map(provinceFeatures.map((feature) => {
+  const positions = (feature.geometry.type === "Polygon"
+    ? [feature.geometry.coordinates as PolygonCoordinates]
+    : feature.geometry.coordinates as PolygonCoordinates[]
+  ).flat(2) as Position[];
+  const lngs = positions.map(([lng]) => lng);
+  const lats = positions.map(([, lat]) => lat);
+  return [feature.properties.code, {
+    x: projectX((Math.min(...lngs) + Math.max(...lngs)) / 2),
+    y: projectY((Math.min(...lats) + Math.max(...lats)) / 2),
+  }];
+}));
+
+/* Only the largest few provinces are labelled on any one tab, but the tab
+   switch has to be able to reach any of them, so the union is rendered once and
+   each tab blanks the ones it does not name. */
+const topPerTab = tabs.map((tab) => new Set(
+  [...tab.data]
+    .filter((row) => row.value !== null)
+    .sort((a, b) => finite(b.value) - finite(a.value))
+    .slice(0, labelCount)
+    .map((row) => String(row.code)),
+));
+const labelCodes = [...new Set(topPerTab.flatMap((set) => [...set]))];
+const labels = labelCodes.map((code) => ({
+  code,
+  anchor: anchors.get(code) ?? { x: 0, y: 0 },
+  values: tabs.map((_tab, index) => {
+    if (!topPerTab[index].has(code)) return "";
+    const row = tabLookup[index].get(code);
+    return row && row.value !== null ? formatNumber(finite(row.value)) : "";
+  }),
+}));
+
+/* A province whose count was withheld for being under three still has students
+   in it, so it counts towards the reach even though it adds nothing to the
+   total. Counting only the printable cells would understate every cohort. */
+const tabTotals = tabs.map((tab) => {
+  const counted = tab.data.filter((row) => row.value !== null);
+  const reached = tab.data.filter((row) => row.value !== null || row.withheld);
+  return {
+    total: `${formatNumber(counted.reduce((sum, row) => sum + finite(row.value), 0))} ${valueLabel}`,
+    scope: `tersebar di ${formatNumber(reached.length)} provinsi · ${tab.scope}`,
+  };
+});
+
 const legendItems = Array.from({ length: classCount }, (_, index) => {
   const low = index === 0 ? sorted[0] ?? 0 : Math.floor(thresholds[index - 1]) + 1;
   const high = index === classCount - 1 ? maxValue : Math.floor(thresholds[index]);
@@ -134,9 +197,10 @@ const legendItems = Array.from({ length: classCount }, (_, index) => {
   };
 });
 
-const topProvinces = [...present]
-  .sort((a, b) => finite(b.value) - finite(a.value))
-  .slice(0, labelCount);
+const scaleNote = tabs.length > 1
+  ? `Skala warna dihitung sekali dari gabungan ${allLabel.toLowerCase()} dan dipakai pada seluruh tab, sehingga satu warna berarti jumlah yang sama di tahun mana pun.`
+  : undefined;
+const frameNote = [note, scaleNote].filter(Boolean).join(" ") || undefined;
 
 const tableRows: ProvinceValue[] = [...data]
   .sort((a, b) => finite(b.value) - finite(a.value) || a.name.localeCompare(b.name, "id"))
@@ -162,12 +226,26 @@ const tableRows: ProvinceValue[] = [...data]
   ]}
   class={className}
   {hideHeader}
-  {note}
+  note={frameNote}
 >
-  <div class="choropleth">
+  <div class="choropleth" data-choropleth data-default-panel="semua">
+    <div
+      class="choropleth__tabs"
+      data-choropleth-controls
+      data-totals={tabTotals.map((row) => row.total).join("|")}
+      data-scopes={tabTotals.map((row) => row.scope).join("|")}
+      role="group"
+      aria-label="Pilih angkatan"
+      hidden
+    >
+      {tabs.map((tab, index) => (
+        <button type="button" data-choropleth-panel={tab.key} aria-pressed={index === 0 ? "true" : "false"}>{tab.label}</button>
+      ))}
+    </div>
+
     <p class="choropleth__counter">
-      <output>{formatNumber(total)} {valueLabel}</output>
-      <span>tersebar di {formatNumber(present.length)} provinsi</span>
+      <output data-choropleth-total>{tabTotals[0].total}</output>
+      <span data-choropleth-scope>{tabTotals[0].scope}</span>
     </p>
 
     <svg class="choropleth__main" viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
@@ -184,44 +262,35 @@ const tableRows: ProvinceValue[] = [...data]
         </pattern>
       </defs>
       <g class="provinces">
-        {provinceFeatures.map((feature) => {
-          const row = mainByCode.get(feature.properties.code);
-          return (
-            <path
-              d={paths.get(feature.properties.code)}
-              fill={fillFor(row)}
-              fill-rule="evenodd"
-              tabindex="0"
-              role="img"
-              aria-label={describe(feature, row)}
-            >
-              <title>{describe(feature, row)}</title>
-            </path>
-          );
-        })}
+        {provinces.map((province) => (
+          <path
+            data-province={province.code}
+            data-fills={province.fills.join("|")}
+            data-readings={province.readings.join("|")}
+            data-tooltip={province.readings[0]}
+            d={province.path}
+            fill={province.fills[0]}
+            fill-rule="evenodd"
+            tabindex="0"
+            role="img"
+            aria-label={province.readings[0]}
+          >
+            <title>{province.readings[0]}</title>
+          </path>
+        ))}
       </g>
       <g class="choropleth__labels" aria-hidden="true">
-        {topProvinces.map((row) => {
-          const feature = provinceFeatures.find((item) => item.properties.code === String(row.code));
-          if (!feature) return null;
-          /* Anchor each label on its own polygon's bounding-box centre: the
-             report has no centroid table keyed by BPS code, and a bounding-box
-             centre is close enough for a label that also names the province. */
-          const positions = (feature.geometry.type === "Polygon"
-            ? [feature.geometry.coordinates as PolygonCoordinates]
-            : feature.geometry.coordinates as PolygonCoordinates[]
-          ).flat(2) as Position[];
-          const lngs = positions.map(([lng]) => lng);
-          const lats = positions.map(([, lat]) => lat);
-          const x = projectX((Math.min(...lngs) + Math.max(...lngs)) / 2);
-          const y = projectY((Math.min(...lats) + Math.max(...lats)) / 2);
-          return (
-            <text x={x} y={y} text-anchor="middle">
-              <tspan class="choropleth__halo">{formatNumber(finite(row.value))}</tspan>
-              <tspan class="choropleth__value" x={x} y={y}>{formatNumber(finite(row.value))}</tspan>
-            </text>
-          );
-        })}
+        {labels.map((label) => (
+          <text
+            class="choropleth__value"
+            data-province-label={label.code}
+            data-values={label.values.join("|")}
+            x={label.anchor.x}
+            y={label.anchor.y}
+            text-anchor="middle"
+            style={label.values[0] ? undefined : "display:none"}
+          >{label.values[0]}</text>
+        ))}
       </g>
     </svg>
 
@@ -235,31 +304,9 @@ const tableRows: ProvinceValue[] = [...data]
       </ul>
     </div>
 
-    {panels.length > 1 && (
-      <div class="choropleth__panels" aria-label="Peta per angkatan">
-        {panels.map((panel) => {
-          const lookup = byCode(panel.data);
-          const panelTotal = panel.data.reduce((sum, row) => sum + finite(row.value), 0);
-          const panelProvinces = panel.data.filter((row) => row.value !== null || row.withheld).length;
-          return (
-            <figure class="choropleth__panel">
-              <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${panel.label}: ${formatNumber(panelTotal)} ${valueLabel} di ${formatNumber(panelProvinces)} provinsi`}>
-                <g class="provinces">
-                  {provinceFeatures.map((feature) => (
-                    <path d={paths.get(feature.properties.code)} fill={fillFor(lookup.get(feature.properties.code))} fill-rule="evenodd" />
-                  ))}
-                </g>
-              </svg>
-              <figcaption><strong>{panel.label}</strong> · {formatNumber(panelProvinces)} provinsi</figcaption>
-            </figure>
-          );
-        })}
-      </div>
-    )}
-
     <p class="choropleth__attribution">
       {withheldCount > 0 && <>Sebanyak {formatNumber(withheldCount)} sel provinsi memuat kurang dari tiga orang dan angkanya disamarkan. </>}
-      Batas provinsi: Peta Nusa / Laravel Nusa, Kepmendagri 2025, lisensi MIT ·
+      Batas provinsi: Peta Nusa / Laravel Nusa, Kepmendagri 2025, lisensi MIT.{" "}
       <a href={indonesiaGeoJsonUrl} download>Unduh GeoJSON</a>
     </p>
   </div>
@@ -270,6 +317,42 @@ const tableRows: ProvinceValue[] = [...data]
     color: var(--ink, #2b2d2f);
     font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
     font-variant-numeric: tabular-nums;
+  }
+
+  .choropleth__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-block-end: 0.85rem;
+  }
+
+  .choropleth__tabs button {
+    min-block-size: 34px;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--rule, #d9dde0);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    color: var(--ink-muted, #60676c);
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .choropleth__tabs button:hover {
+    border-color: var(--chart-primary, #01416b);
+    color: var(--ink, #2b2d2f);
+  }
+
+  .choropleth__tabs button[aria-pressed="true"] {
+    border-color: var(--chart-primary, #01416b);
+    background: var(--chart-primary, #01416b);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .choropleth__tabs button:focus-visible {
+    outline: 3px solid var(--focus, #1c75bc);
+    outline-offset: 2px;
   }
 
   .choropleth__counter {
@@ -305,27 +388,17 @@ const tableRows: ProvinceValue[] = [...data]
   }
 
   /* The value sits on whichever bin colour happens to be underneath, so it is
-     drawn twice: once as a thick same-colour-as-surface halo, once as ink. */
-  .choropleth__halo {
-    fill: none;
+     painted with a surface-coloured stroke behind the ink. One element, so the
+     tab switch can rewrite it with a single textContent assignment. */
+  .choropleth__value {
+    fill: var(--ink, #2b2d2f);
+    font-size: 12px;
+    font-weight: 800;
+    paint-order: stroke;
     stroke: var(--surface, #fff);
     stroke-width: 3.5;
     stroke-linejoin: round;
-    paint-order: stroke;
   }
-
-  .choropleth__labels text {
-    font-size: 12px;
-    font-weight: 800;
-  }
-
-  .choropleth__halo,
-  .choropleth__value {
-    font-size: 12px;
-    font-weight: 800;
-  }
-
-  .choropleth__value { fill: var(--ink, #2b2d2f); }
 
   .choropleth__legend {
     display: flex;
@@ -371,39 +444,13 @@ const tableRows: ProvinceValue[] = [...data]
     );
   }
 
-  .choropleth__panels {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.9rem;
-    margin-block-start: 1rem;
-  }
-
-  .choropleth__panel { margin: 0; }
-
-  .choropleth__panel svg {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-  }
-
-  .choropleth__panel .provinces path { stroke-width: 0.4; }
-
-  .choropleth__panel figcaption {
-    margin-block-start: 0.15rem;
-    color: var(--ink-muted, #60676c);
-    font-size: 0.75rem;
-  }
-
-  .choropleth__panel figcaption strong { color: var(--ink, #2b2d2f); }
-
   .choropleth__attribution {
     margin: 0.7rem 0 0;
     color: var(--ink-muted, #60676c);
     font-size: 0.72rem;
   }
 
-  @media (max-width: 720px) {
-    .choropleth__panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 45rem) {
     .choropleth__labels { display: none; }
   }
 </style>

@@ -48,21 +48,25 @@ const early = sorted.filter((row) => row.year <= 2021);
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];
       if (visible) root.dataset.stage = (visible.target as HTMLElement).dataset.fundingStep ?? "full";
-    }, { rootMargin: "-64% 0px -2%", threshold: [0,.25,.5,.75,1] });
+    }, { rootMargin: "-30% 0px -45%", threshold: [0,.25,.5,.75,1] });
     steps.forEach((step) => observer.observe(step));
   });
 </script>
 
 <style>
-  /* One column. The axis still widens as the reader scrolls — that mechanic is
-     the point of the scene — but the chart is stuck to the top of the viewport
-     at full width and the steps pass underneath it, instead of the two sharing
-     a row and each getting half the space. */
-  .funding-shift { display: grid; gap: 0; }
-  .funding-shift__graphic { position: sticky; z-index: var(--z-sticky); top: calc(var(--header-height) + 12px); aspect-ratio: 1040 / 490; min-block-size: 20rem; max-block-size: 64vh; border: 1px solid var(--border-subtle); background: var(--surface-card); }
+  /* Two columns. The axis widens as the reader scrolls — that mechanic is the
+     point of the scene — so the chart stays pinned in the left column at a size
+     where the 2019–2021 bars remain readable, and the three narration cards run
+     down the right-hand column beside it. */
+  .funding-shift { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: clamp(32px, 6vw, 74px); align-items: start; }
+  .funding-shift__graphic { position: sticky; z-index: var(--z-sticky); top: calc(var(--header-height) + 12px); min-block-size: 34rem; border: 1px solid var(--border-subtle); background: var(--surface-card); }
   .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity var(--duration-story) var(--ease-story); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--ugm-blue); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
   .funding-shift[data-stage="early"] .funding-shift__stage--full { opacity: 0; pointer-events: none; }.funding-shift[data-stage="full"] .funding-shift__stage--early { opacity: 0; pointer-events: none; }
-  .funding-shift__steps { display: grid; gap: 44vh; padding-block: 26vh 24vh; }.funding-shift__steps article { max-width: 62ch; padding: 28px; border: 1px solid var(--border-default); border-block-start: 4px solid var(--ugm-gold); background: var(--surface-card); box-shadow: var(--shadow-md); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
-  @media(max-width:767px){.funding-shift__graphic{position:relative;top:auto;aspect-ratio:auto;min-block-size:0;max-block-size:none;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
-  @media(prefers-reduced-motion:reduce){.funding-shift__stage{transition:none}.funding-shift__graphic{position:relative;top:auto;max-block-size:none}.funding-shift__steps{gap:var(--flow-block);padding-block:var(--flow-chart) 0}}
+  .funding-shift__steps { display: grid; gap: 40vh; padding-block: 8vh 35vh; }.funding-shift__steps article { max-width: 62ch; padding: 28px; border: 1px solid var(--border-default); border-block-start: 4px solid var(--ugm-gold); background: var(--surface-card); box-shadow: var(--shadow-md); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
+  @media(max-width:1023px){.funding-shift{grid-template-columns:minmax(0,1fr);gap:clamp(24px,4vw,40px)}.funding-shift__steps{gap:34vh;padding-block:6vh 24vh}}
+  @media(max-width:767px){.funding-shift__graphic{position:relative;top:auto;min-block-size:0;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
+  /* Reduced motion keeps the two columns — sticky is not animation. What it
+     drops is the scroll-driven swap, so the chart is pinned to the top of its
+     column at the full five-year scale and the cards simply stack beside it. */
+  @media(prefers-reduced-motion:reduce){.funding-shift__stage{transition:none}.funding-shift__graphic{position:relative;top:auto}.funding-shift__steps{gap:var(--flow-block);padding-block:0}}
 </style>

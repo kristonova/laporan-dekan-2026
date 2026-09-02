@@ -1,0 +1,456 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { SERIES_COLORS, finite, flowLegend, formatNumber, slugify, textLines } from "./_utils";
+
+/**
+ * Squarified treemap (Bruls, Huizing and van Wijk 2000), laid out at build time.
+ *
+ * Area is the only encoding that carries the number, so the algorithm matters:
+ * a naive slice-and-dice produces slivers that cannot be compared or labelled.
+ * Squarifying keeps tiles close to square, which is what makes a hundred topics
+ * legible in one field.
+ *
+ * Two modes. With `group` set on the data the layout runs twice, once to place
+ * the groups and once inside each group, so a department reads as one block.
+ * With no groups it is a single flat layout.
+ */
+interface TreemapDatum extends Record<string, unknown> {
+  label: string;
+  value: number;
+  group?: string;
+  color?: string;
+  detail?: string;
+}
+
+interface Props extends Omit<ChartChromeProps<TreemapDatum>, "tableRows" | "tableColumns"> {
+  data: TreemapDatum[];
+  width?: number;
+  height?: number;
+  /** Tiles beyond this are dropped from the field and reported in the note. */
+  maxNodes?: number;
+  valueLabel?: string;
+  categoryLabel?: string;
+  valueFormatter?: (value: number) => string;
+  /** Draw a name and total band at the top of every group block. */
+  groupHeaders?: boolean;
+  note?: string;
+}
+
+const {
+  data,
+  width = 1040,
+  height = 620,
+  maxNodes = 140,
+  valueLabel = "publikasi",
+  categoryLabel = "Kategori",
+  valueFormatter = (value: number) => formatNumber(value, 0),
+  groupHeaders = true,
+  note,
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+interface Rect { x: number; y: number; w: number; h: number }
+interface Placed<T> extends Rect { datum: T; value: number }
+
+function squarify<T>(items: { value: number; datum: T }[], bounds: Rect): Placed<T>[] {
+  const usable = items.filter((item) => item.value > 0);
+  const total = usable.reduce((sum, item) => sum + item.value, 0);
+  if (!usable.length || total <= 0 || bounds.w <= 0 || bounds.h <= 0) return [];
+
+  const scale = (bounds.w * bounds.h) / total;
+  const queue = usable.map((item) => ({ ...item, area: item.value * scale }));
+  const out: Placed<T>[] = [];
+  const free: Rect = { ...bounds };
+  let row: typeof queue = [];
+
+  /* Aspect ratio of the worst tile in a row laid along a side of length `side`.
+     Adding an item is worth it only while this number keeps falling. */
+  const worst = (candidate: typeof queue, side: number) => {
+    if (!candidate.length || side <= 0) return Number.POSITIVE_INFINITY;
+    const sum = candidate.reduce((carry, item) => carry + item.area, 0);
+    if (sum <= 0) return Number.POSITIVE_INFINITY;
+    const max = Math.max(...candidate.map((item) => item.area));
+    const min = Math.min(...candidate.map((item) => item.area));
+    if (min <= 0) return Number.POSITIVE_INFINITY;
+    const side2 = side * side;
+    const sum2 = sum * sum;
+    return Math.max((side2 * max) / sum2, sum2 / (side2 * min));
+  };
+
+  const flush = (candidate: typeof queue) => {
+    const sum = candidate.reduce((carry, item) => carry + item.area, 0);
+    const side = Math.min(free.w, free.h);
+    if (sum <= 0 || side <= 0) return;
+    const along = free.w >= free.h ? free.w : free.h;
+    const thickness = Math.min(sum / side, along);
+    if (thickness <= 0) return;
+    if (free.w >= free.h) {
+      let y = free.y;
+      for (const item of candidate) {
+        const tileHeight = item.area / thickness;
+        out.push({ x: free.x, y, w: thickness, h: tileHeight, datum: item.datum, value: item.value });
+        y += tileHeight;
+      }
+      free.x += thickness;
+      free.w = Math.max(0, free.w - thickness);
+    } else {
+      let x = free.x;
+      for (const item of candidate) {
+        const tileWidth = item.area / thickness;
+        out.push({ x, y: free.y, w: tileWidth, h: thickness, datum: item.datum, value: item.value });
+        x += tileWidth;
+      }
+      free.y += thickness;
+      free.h = Math.max(0, free.h - thickness);
+    }
+  };
+
+  for (const item of queue) {
+    const side = Math.min(free.w, free.h);
+    if (row.length && worst(row, side) < worst([...row, item], side)) {
+      flush(row);
+      row = [];
+    }
+    row.push(item);
+  }
+  if (row.length) flush(row);
+  return out;
+}
+
+const clampChannel = (value: number) => Math.max(0, Math.min(255, Math.round(value)));
+const parseHex = (hex: string): [number, number, number] => {
+  const clean = hex.replace("#", "");
+  const full = clean.length === 3 ? clean.split("").map((char) => char + char).join("") : clean;
+  return [
+    Number.parseInt(full.slice(0, 2), 16) || 0,
+    Number.parseInt(full.slice(2, 4), 16) || 0,
+    Number.parseInt(full.slice(4, 6), 16) || 0,
+  ];
+};
+const toHex = (channels: number[]) =>
+  `#${channels.map((channel) => clampChannel(channel).toString(16).padStart(2, "0")).join("")}`;
+
+/* Tiles inside one group share a hue. Stepping each one a little further
+   towards white keeps neighbouring tiles apart without inventing a second
+   encoding: the shade means nothing but "next tile along". */
+const lighten = (hex: string, amount: number): string => {
+  const [r, g, b] = parseHex(hex);
+  return toHex([r + (255 - r) * amount, g + (255 - g) * amount, b + (255 - b) * amount]);
+};
+
+/* Labels sit directly on the tile, so the ink has to follow the fill. */
+const readableInk = (hex: string) => {
+  const [r, g, b] = parseHex(hex).map((channel) => {
+    const ratio = channel / 255;
+    return ratio <= 0.03928 ? ratio / 12.92 : ((ratio + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 0.42 ? "#12212b" : "#ffffff";
+};
+
+const sorted = [...data]
+  .filter((row) => finite(row.value) > 0)
+  .sort((a, b) => finite(b.value) - finite(a.value));
+const visible = sorted.slice(0, maxNodes);
+const omitted = Math.max(0, sorted.length - visible.length);
+const grouped = visible.some((row) => Boolean(row.group));
+
+const margin = { top: 26, right: 4, bottom: 0, left: 4 };
+const groupNames = grouped
+  ? [...new Set(visible.map((row) => row.group ?? "Lainnya"))]
+      .map((name) => ({
+        name,
+        total: visible
+          .filter((row) => (row.group ?? "Lainnya") === name)
+          .reduce((sum, row) => sum + finite(row.value), 0),
+      }))
+      .sort((a, b) => b.total - a.total)
+  : [];
+const groupColor = new Map(
+  groupNames.map((group, index) => [
+    group.name,
+    visible.find((row) => (row.group ?? "Lainnya") === group.name)?.color
+      ?? SERIES_COLORS[index % SERIES_COLORS.length],
+  ]),
+);
+
+const legendLabels = groupNames.map((group) => `${group.name} · ${valueFormatter(group.total)}`);
+const legend = grouped
+  ? flowLegend(legendLabels, width - margin.left - margin.right, { fontSize: 11, keyWidth: 20, gap: 22, rowHeight: 20 })
+  : { positions: [] as { x: number; y: number }[], rows: 0, rowHeight: 20 };
+const legendHeight = grouped ? legend.rows * legend.rowHeight + 22 : 0;
+const field: Rect = {
+  x: margin.left,
+  y: margin.top,
+  w: width - margin.left - margin.right,
+  h: height - margin.top - margin.bottom - legendHeight,
+};
+
+interface Tile {
+  rect: Rect;
+  label: string;
+  value: number;
+  group: string;
+  detail?: string;
+  fill: string;
+  ink: string;
+}
+
+const gap = 2;
+const headerBand = 21;
+const tiles: Tile[] = [];
+const groupBlocks: { name: string; total: number; rect: Rect; color: string }[] = [];
+
+if (grouped) {
+  const blocks = squarify(groupNames.map((group) => ({ value: group.total, datum: group })), field);
+  for (const block of blocks) {
+    const base = groupColor.get(block.datum.name) ?? SERIES_COLORS[0];
+    const outer: Rect = {
+      x: block.x + gap,
+      y: block.y + gap,
+      w: Math.max(0, block.w - gap * 2),
+      h: Math.max(0, block.h - gap * 2),
+    };
+    groupBlocks.push({ name: block.datum.name, total: block.datum.total, rect: outer, color: base });
+    const showHeader = groupHeaders && outer.h > headerBand + 22 && outer.w > 88;
+    const inner: Rect = showHeader
+      ? { x: outer.x, y: outer.y + headerBand, w: outer.w, h: Math.max(0, outer.h - headerBand) }
+      : outer;
+    const children = visible.filter((row) => (row.group ?? "Lainnya") === block.datum.name);
+    const placed = squarify(children.map((row) => ({ value: finite(row.value), datum: row })), inner);
+    placed.forEach((item, index) => {
+      /* Cycle the tint over a short ramp so a long tail does not fade to white. */
+      const fill = lighten(base, Math.min(0.52, (index % 6) * 0.105));
+      tiles.push({
+        rect: { x: item.x, y: item.y, w: item.w, h: item.h },
+        label: item.datum.label,
+        value: item.value,
+        group: block.datum.name,
+        detail: item.datum.detail,
+        fill,
+        ink: readableInk(fill),
+      });
+    });
+  }
+} else {
+  const placed = squarify(visible.map((row) => ({ value: finite(row.value), datum: row })), field);
+  placed.forEach((item, index) => {
+    const fill = item.datum.color ?? SERIES_COLORS[index % SERIES_COLORS.length];
+    tiles.push({
+      rect: { x: item.x, y: item.y, w: item.w, h: item.h },
+      label: item.datum.label,
+      value: item.value,
+      group: item.datum.group ?? "",
+      detail: item.datum.detail,
+      fill,
+      ink: readableInk(fill),
+    });
+  });
+}
+
+/* A label is only drawn where it fits whole, measured rather than guessed: a
+   line that spills is worse than no line, because it lands on the neighbouring
+   tile and reads as that tile's name. Everything else keeps its tooltip, so no
+   tile is ever mute, it just does not shout. */
+/* One character budget, used both to wrap and to decide. `textLines` already
+   keeps every line inside the budget, with one exception it cannot avoid: a
+   single word longer than the budget is kept whole rather than broken. That is
+   the case this check exists for. */
+const labelAdvance = 6.2;
+const labelled = tiles.map((tile) => {
+  const inset = 8;
+  const usableWidth = tile.rect.w - inset * 2;
+  const roomy = usableWidth > 54 && tile.rect.h > 34;
+  const maxCharacters = Math.max(6, Math.floor(usableWidth / labelAdvance));
+  const maxLines = tile.rect.h > 66 ? 3 : tile.rect.h > 48 ? 2 : 1;
+  const lines = roomy ? textLines(tile.label, maxCharacters, maxLines) : [];
+  const fits = lines.length > 0 && lines.every((line) => line.length <= maxCharacters);
+  return {
+    ...tile,
+    canLabel: fits,
+    showValue: fits && tile.rect.h > 46,
+    lines: fits ? lines : [],
+  };
+});
+
+const total = tiles.reduce((sum, tile) => sum + tile.value, 0);
+const tableRows = sorted.map((row) => ({
+  [categoryLabel]: row.label,
+  Kelompok: row.group ?? "—",
+  Jumlah: valueFormatter(finite(row.value)),
+  Keterangan: row.detail ?? "—",
+}));
+const omittedNote = omitted > 0
+  ? `Bidang grafik menampilkan ${formatNumber(visible.length, 0)} ${categoryLabel.toLowerCase()} terbesar agar tetap terbaca; ${formatNumber(omitted, 0)} lainnya tersedia pada tabel data.`
+  : undefined;
+const frameNote = [note, omittedNote].filter(Boolean).join(" ") || undefined;
+const legendY = field.y + field.h + 24;
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  tableColumns={[
+    { key: categoryLabel, label: categoryLabel },
+    { key: "Kelompok", label: "Kelompok" },
+    { key: "Jumlah", label: "Jumlah", align: "end" },
+    { key: "Keterangan", label: "Keterangan" },
+  ]}
+  class={className}
+  {hideHeader}
+  minPlotWidth={680}
+  note={frameNote}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      Peta petak untuk {formatNumber(visible.length, 0)} {categoryLabel.toLowerCase()} dengan total {valueFormatter(total)} {valueLabel}.
+      Luas tiap petak sebanding dengan jumlahnya. Seluruh angka tersedia pada tabel di bawah grafik.
+    </desc>
+
+    <text class="unit-key" x={margin.left} y="15">luas petak = {valueLabel}</text>
+    <text class="unit-total" x={width - margin.right} y="15" text-anchor="end">total {valueFormatter(total)} {valueLabel}</text>
+
+    {groupBlocks.map((block) => (
+      <rect class="group-block" x={block.rect.x} y={block.rect.y} width={block.rect.w} height={block.rect.h} rx="4" />
+    ))}
+
+    {labelled.map((tile) => {
+      const tooltip = `${tile.label}: ${valueFormatter(tile.value)} ${valueLabel}${tile.group ? ` · ${tile.group}` : ""}${tile.detail ? `. ${tile.detail}` : ""}`;
+      return (
+        <g class="tile" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+          <rect
+            x={tile.rect.x}
+            y={tile.rect.y}
+            width={Math.max(0, tile.rect.w - 1)}
+            height={Math.max(0, tile.rect.h - 1)}
+            fill={tile.fill}
+            rx="2"
+          />
+          {tile.canLabel && (
+            <text class="tile-label" x={tile.rect.x + 8} y={tile.rect.y + 18} fill={tile.ink} aria-hidden="true">
+              {tile.lines.map((line, lineIndex) => (
+                <tspan x={tile.rect.x + 8} dy={lineIndex === 0 ? 0 : 12}>{line}</tspan>
+              ))}
+              {tile.showValue && (
+                <tspan class="tile-value" x={tile.rect.x + 8} dy="14">{valueFormatter(tile.value)}</tspan>
+              )}
+            </text>
+          )}
+        </g>
+      );
+    })}
+
+    {groupHeaders && groupBlocks.filter((block) => block.rect.h > headerBand + 22 && block.rect.w > 88).map((block) => (
+      <g class="group-header" aria-hidden="true">
+        <rect x={block.rect.x} y={block.rect.y} width={block.rect.w} height={headerBand} fill={block.color} rx="3" />
+        <text x={block.rect.x + 8} y={block.rect.y + 14}>{block.name}</text>
+        <text class="group-total" x={block.rect.x + block.rect.w - 8} y={block.rect.y + 14} text-anchor="end">{valueFormatter(block.total)}</text>
+      </g>
+    ))}
+
+    {grouped && (
+      <g class="legend" transform={`translate(${margin.left}, ${legendY})`} aria-label="Legenda kelompok">
+        {groupNames.map((group, index) => (
+          <g transform={`translate(${legend.positions[index]?.x ?? 0}, ${legend.positions[index]?.y ?? 0})`}>
+            <rect x="0" y="1" width="11" height="11" rx="2" fill={groupColor.get(group.name)} />
+            <text x="18" y="11">{group.name} · {valueFormatter(group.total)}</text>
+          </g>
+        ))}
+      </g>
+    )}
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Open Sans", system-ui, sans-serif);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .unit-key,
+  .unit-total {
+    fill: var(--ink-muted, #646a70);
+    font-size: 11px;
+  }
+
+  .group-block {
+    fill: var(--surface-subtle, #f2f4f5);
+    stroke: var(--rule, #d9dde0);
+    stroke-width: 1;
+  }
+
+  .tile rect {
+    stroke: var(--surface, #fff);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
+  }
+
+  .tile text {
+    pointer-events: none;
+  }
+
+  .tile-label {
+    font-size: 11px;
+    font-weight: 750;
+  }
+
+  .tile-value {
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.82;
+  }
+
+  /* Hover dims the tile rather than moving or growing it. */
+  .tile:hover rect,
+  .tile:focus rect {
+    opacity: 0.82;
+  }
+
+  .tile:focus-visible {
+    outline: none;
+  }
+
+  .tile:focus-visible rect {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+
+  .group-header text {
+    fill: #fff;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .group-header .group-total {
+    font-weight: 600;
+    opacity: 0.86;
+  }
+
+  .legend text {
+    fill: currentColor;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile rect { transition: none; }
+  }
+</style>

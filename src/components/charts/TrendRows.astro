@@ -1,7 +1,7 @@
 ---
 import ChartFrame from "./ChartFrame.astro";
 import type { ChartChromeProps } from "./_types";
-import { formatNumber, scaleLinear, slugify, textLines } from "./_utils";
+import { SERIES_COLORS, formatNumber, scaleLinear, slugify, textLines } from "./_utils";
 
 /**
  * One full-width trajectory per category, stacked down the page.
@@ -14,6 +14,8 @@ import { formatNumber, scaleLinear, slugify, textLines } from "./_utils";
 interface TrendRow extends Record<string, unknown> {
   label: string;
   values: (number | null)[];
+  /** Line and marker colour. Falls back to `colors`, then to the ramp. */
+  color?: string;
   note?: string;
 }
 
@@ -30,6 +32,8 @@ interface Props extends Omit<ChartChromeProps<TrendRow>, "tableRows" | "tableCol
   axisLabel?: string;
   /** Extra columns appended to the data table, keyed per row and period. */
   detail?: { label: string; values: (number | null)[][] }[];
+  /** Palette used for rows that carry no `color` of their own. */
+  colors?: string[];
 }
 
 const {
@@ -42,6 +46,7 @@ const {
   valueFormatter = (value: number) => formatNumber(value, 1),
   axisLabel,
   detail = [],
+  colors = SERIES_COLORS,
   title,
   deck,
   id = slugify(title),
@@ -91,7 +96,12 @@ const rows = data.map((row, index) => {
   const first = points[0];
   const last = points.at(-1);
   const delta = first && last ? last.value - first.value : 0;
+  /* A row with one surviving observation is not a flat trajectory. Printing
+     "5 → 5 ▬" for it would claim six years of stability from a single year of
+     data, when the rest of the row was suppressed for being under three. */
+  const single = points.length < 2;
   return {
+    single,
     ...row,
     lines: textLines(row.label, labelWrap, 2),
     top,
@@ -100,8 +110,10 @@ const rows = data.map((row, index) => {
     first,
     last,
     delta,
-    /* Direction is carried by a glyph and by the numbers, never by colour alone. */
+    /* Direction is carried by a glyph and by the numbers, never by colour alone.
+       The colour separates one row from the next; it never states a value. */
     marker: delta > 0.05 ? "▲" : delta < -0.05 ? "▼" : "▬",
+    color: row.color ?? colors[index % Math.max(1, colors.length)],
   };
 });
 
@@ -165,9 +177,9 @@ const tableColumns = [
 
     {rows.map((row) => {
       const readings = row.points.map((point) => `${periods[point.index]} ${valueFormatter(point.value)}`).join(", ");
-      const tooltip = `${row.label}: ${readings}.`;
+      const tooltip = `${row.label}: ${readings}.${row.single ? " Hanya satu angkatan yang tercatat; sisanya kosong atau disamarkan." : ""}`;
       return (
-        <g class="trend-row" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+        <g class="trend-row" style={`--trend-color:${row.color}`} tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
           <text class="row-label" x={margin.left - 20} y={row.top + (row.lines.length === 1 ? 24 : 17)} text-anchor="end">
             {row.lines.map((line, lineIndex) => (
               <tspan x={margin.left - 20} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>
@@ -183,10 +195,19 @@ const tableColumns = [
           {row.last && <circle class="point is-last" cx={row.last.x} cy={row.last.y} r="6" />}
 
           <text class="row-value" x={margin.left + plotWidth + 18} y={row.top + trackHeight / 2 + 5}>
-            <tspan class="row-from">{row.first ? valueFormatter(row.first.value) : "—"}</tspan>
-            <tspan class="row-arrow"> → </tspan>
-            <tspan class="row-to">{row.last ? valueFormatter(row.last.value) : "—"}</tspan>
-            <tspan class="row-marker"> {row.marker}</tspan>
+            {row.single ? (
+              <>
+                <tspan class="row-to">{row.first ? valueFormatter(row.first.value) : "—"}</tspan>
+                <tspan class="row-single" x={margin.left + plotWidth + 18} dy="15">satu angkatan tercatat</tspan>
+              </>
+            ) : (
+              <>
+                <tspan class="row-from">{row.first ? valueFormatter(row.first.value) : "—"}</tspan>
+                <tspan class="row-arrow"> → </tspan>
+                <tspan class="row-to">{row.last ? valueFormatter(row.last.value) : "—"}</tspan>
+                <tspan class="row-marker"> {row.marker}</tspan>
+              </>
+            )}
           </text>
         </g>
       );
@@ -228,7 +249,7 @@ const tableColumns = [
   }
 
   .trend {
-    stroke: var(--chart-primary, #01416b);
+    stroke: var(--trend-color, var(--chart-primary, #01416b));
     stroke-width: 2;
     stroke-linejoin: round;
     stroke-linecap: round;
@@ -236,7 +257,7 @@ const tableColumns = [
   }
 
   .point {
-    fill: var(--chart-primary, #01416b);
+    fill: var(--trend-color, var(--chart-primary, #01416b));
     stroke: var(--surface, #fff);
     stroke-width: 1.5;
     vector-effect: non-scaling-stroke;
@@ -270,6 +291,12 @@ const tableColumns = [
   .row-marker {
     fill: var(--ink-muted, #656b70);
     font-size: 10px;
+  }
+
+  .row-single {
+    fill: var(--ink-muted, #656b70);
+    font-size: 10px;
+    font-weight: 500;
   }
 
   .trend-row:hover .trend,
