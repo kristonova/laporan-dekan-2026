@@ -9,6 +9,7 @@ export { default as LineAreaChart } from "./LineAreaChart.astro";
 export { default as PointMap } from "./PointMap.astro";
 export { default as RiskProfile } from "./RiskProfile.astro";
 export { default as SDGGrid } from "./SDGGrid.astro";
+export { default as SmallMultiplesTrend } from "./SmallMultiplesTrend.astro";
 export { default as StackedBarChart } from "./StackedBarChart.astro";
 export { default as Treemap } from "./Treemap.astro";
 export { default as TrendRows } from "./TrendRows.astro";

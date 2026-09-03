@@ -1,0 +1,5 @@
+urutan,sistolik_minimal,diastolik_minimal,nilai_sumber,catatan
+1,160,100,Hipertensi Grade 2,Cukup salah satu terpenuhi. Sistolik dan diastolik selalu bilangan bulat pada seluruh sumber.
+2,140,91,Hipertensi Grade 1,Setara sistolik >=140 atau diastolik >90.
+3,130,81,Prehipertensi,Setara sistolik >=130 atau diastolik >80.
+4,,,Normal,Selain itu.

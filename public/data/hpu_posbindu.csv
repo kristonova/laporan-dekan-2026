@@ -1,0 +1,24 @@
+indikator,kategori_sumber,pita,kunjungan,diperiksa,porsi_berisiko
+Lingkar Perut,Tidak Normal,Berisiko,72,120,0.6
+Lingkar Perut,Normal,Normal,48,120,0.6
+Lingkar Perut,Tidak diperiksa,Tidak diperiksa,11,120,0.6
+Indeks Massa Tubuh,Obesitas,Berisiko,68,120,0.5667
+Indeks Massa Tubuh,Normal,Normal,28,120,0.5667
+Indeks Massa Tubuh,Berlebih,Waspada,24,120,0.5667
+Indeks Massa Tubuh,Tidak diperiksa,Tidak diperiksa,11,120,0.5667
+Asam Urat,Tinggi,Berisiko,64,121,0.5289
+Asam Urat,Normal,Normal,57,121,0.5289
+Asam Urat,Tidak diperiksa,Tidak diperiksa,10,121,0.5289
+Kolesterol,Tinggi,Berisiko,61,121,0.5041
+Kolesterol,Waspada,Waspada,46,121,0.5041
+Kolesterol,Normal,Normal,14,121,0.5041
+Kolesterol,Tidak diperiksa,Tidak diperiksa,10,121,0.5041
+Tekanan Darah,Normal,Normal,47,121,0.3388
+Tekanan Darah,Prehipertensi,Waspada,33,121,0.3388
+Tekanan Darah,Hipertensi Grade 1,Berisiko,29,121,0.3388
+Tekanan Darah,Hipertensi Grade 2,Berisiko,12,121,0.3388
+Tekanan Darah,Tidak diperiksa,Tidak diperiksa,10,121,0.3388
+Gula Darah,Normal,Normal,105,121,0.0413
+Gula Darah,Waspada,Waspada,11,121,0.0413
+Gula Darah,Tidak diperiksa,Tidak diperiksa,10,121,0.0413
+Gula Darah,Tinggi,Berisiko,5,121,0.0413

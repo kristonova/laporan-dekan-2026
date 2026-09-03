@@ -5,7 +5,7 @@ import snapshotRaw from "../data/derived/snapshot.json";
 import tckRaw from "../data/derived/tck_2026_joined.json";
 import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
 import tracerSummaryRaw from "../data/derived/tracer_summary.json";
-import hpuRaw from "../data/derived/hpu_posbindu.json";
+import hpuYearlyRaw from "../data/derived/hpu_posbindu_tahunan.json";
 import studentSummaryRaw from "../data/derived/students_summary.json";
 import studentAccessRaw from "../data/derived/students_access.json";
 import studentBackgroundRaw from "../data/derived/students_background.json";
@@ -15,7 +15,7 @@ const tck = tckRaw as any[];
 const flagged = tck.filter((row) => row.anomali);
 const partnershipCoverage = partnershipCoverageRaw as { total: number; terpetakan: number; internasional: number; lokasi_kosong: number };
 const tracerSummary = tracerSummaryRaw as { responden: number; tahun: number[] };
-const hpu = hpuRaw as { kunjungan: number; peserta_terdaftar: number; sesi: unknown[] };
+const hpuYear = hpuYearlyRaw as { lapisan: { kunci: string; kunjungan: number }[]; tahun: number[] };
 const students = studentSummaryRaw as any;
 const studentAccess = studentAccessRaw as any;
 const studentBackground = studentBackgroundRaw as any;
@@ -54,6 +54,7 @@ const datasets = [
   { file: "partnership_coverage.json", label: "Cakupan data kerja sama", coverage: "Ringkasan keterpetaan lokasi mitra", source: "LENTERA UGM", scenes: "3.5, 7.1" },
   { file: "tracer_summary.json", label: "Ringkasan tracer study", coverage: "Median, rerata, dan serapan enam bulan", source: "Tracer study FMIPA", scenes: "4.1, 4.2" },
   { file: "hpu_posbindu.json", label: "Health Promoting University", coverage: "Agregat anonim dosen dan tendik, 5 sesi Posbindu 2026", source: "Posbindu Melati FMIPA", scenes: "5.3" },
+  { file: "hpu_posbindu_tahunan.json", label: "Health Promoting University 2022–2026", coverage: `Agregat anonim per tahun, dua lapisan peserta, ${number(hpuYear.lapisan[1]?.kunjungan ?? 0)} kunjungan lima tahun`, source: "Digitasi arsip analog, registri Posbindu, dan rekap 2026", scenes: "5.3" },
   { file: "students_summary.json", label: "Ringkasan profil mahasiswa", coverage: `${number(students.total)} mahasiswa · angkatan ${students.tahun_awal}–${students.tahun_akhir}`, source: "Daftar mahasiswa FMIPA UGM", scenes: "6.1–6.7" },
   { file: "students_by_programme.json", label: "Mahasiswa per program studi", coverage: "Angkatan × jenjang × departemen × prodi, dengan pilahan gender", source: "Daftar mahasiswa FMIPA UGM", scenes: "6.1, 6.3" },
   { file: "students_by_province.json", label: "Provinsi asal mahasiswa", coverage: `Angkatan × provinsi ber-kode BPS · ${number(studentAccess.kabupaten_unik)} kabupaten/kota tercatat`, source: "Daftar mahasiswa FMIPA UGM", scenes: "6.2" },
@@ -67,6 +68,10 @@ const datasets = [
 const gaps = [
   { priority: "P0", item: "Penyebut indikator persentase #5b dan #8b1–8b3", reason: "Kolom capaian TW3 memuat cacah mahasiswa tanpa penyebut, sehingga persentase TW3 tidak dapat dihitung", owner: "Bagian Perencanaan FMIPA" },
   { priority: "P0", item: "Klarifikasi indikator #32", reason: "Indeks kenaikan nilai hijau bangunan tercatat negatif pada berkas sumber", owner: "Bagian Perencanaan / Direktorat Aset" },
+  { priority: "P1", item: "Digitasi arsip Posbindu September–Desember", reason: "Registri mencatat sesi pemeriksaan pada September–Desember 2023, 2024, dan 2025 yang lembar analognya belum pernah didigitasi, sehingga tahun-tahun itu hanya terbaca pada presisi bulan", owner: "Tim Posbindu Melati FMIPA" },
+  { priority: "P1", item: "Kriteria peserta Posbindu 2026", reason: "257 dari 391 kunjungan 2026 tidak mencantumkan kategori peserta, sehingga hanya dapat dihitung pada lapisan seluruh peserta", owner: "Tim Posbindu Melati FMIPA" },
+  { priority: "P2", item: "Gender peserta Posbindu 2022–2024", reason: "Lembar digitasi tidak memuat kolom jenis kelamin; lingkar perut dan asam urat memakai ambang berbeda per gender sehingga sebagian kunjungan terukur tetapi tidak dapat dinilai", owner: "Tim Posbindu Melati FMIPA" },
+  { priority: "P2", item: "Tindak lanjut dan rujukan Posbindu", reason: "Kolom rujukan terisi pada 34 dari 391 kunjungan 2026, sehingga konversi temuan berisiko menjadi tindak lanjut klinis belum dapat diukur", owner: "Tim Posbindu Melati FMIPA" },
   { priority: "P1", item: "Data K3L dan penanganan kekerasan seksual", reason: "Program berjalan bersama Satgas PPKS dan Tim K3L, tetapi belum tersedia sebagai data terstruktur", owner: "Satgas PPKS / Tim K3L FMIPA" },
   { priority: "P1", item: "Alamat provinsi mitra kerja sama", reason: "Sebagian dokumen LENTERA belum memuat kabupaten/provinsi mitra", owner: "Unit Kerja Sama FMIPA" },
   { priority: "P2", item: "Tracer study per angkatan dan wilayah kerja", reason: "Data yang tersedia mencakup angkatan 2024–2025 tanpa dimensi wilayah", owner: "DPKM / CDC UGM" },
@@ -86,6 +91,9 @@ const conflicts = [
   { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "481 (2025)", explanation: "Terdapat perbedaan rentang waktu penarikan data serta cakupan jenis dokumen indeksasi." },
   { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: "15 dari 18 prodi", explanation: "Kedua sumber konsisten; data akademik merinci 15 program studi berpredikat Unggul/A dari 18 prodi nasional." },
   { metric: "Registrasi mahasiswa baru 2025", tck: "808 (PROFIL MABA)", historical: "812 (daftar mahasiswa)", explanation: "Kedua sistem mencatat angka yang identik pada 2022, 2023, 2024, dan 2026; selisih empat mahasiswa pada 2025 terjadi karena perbedaan waktu pemutakhiran berkas daftar mahasiswa." },
+  { metric: "Sesi Posbindu Januari 2026", tck: "Lembar “Jan 26”", historical: "Salinan lembar “Juli 26”", explanation: "Lembar bulanan berlabel Januari memuat data 3 Juli 2026 secara identik. Sesi 30 Januari yang sesungguhnya hanya tercatat pada lembar rekapitulasi terpadu dan diambil dari sana; salinan gandanya dibuang agar tidak menambah sesi keenam." },
+  { metric: "Pemeriksaan 3 Juli 2026", tck: "Lembar rekapitulasi terpadu", historical: "Lembar bulanan “Juli 26”", explanation: "Pada lembar terpadu, kolom interpretasi asam urat hilang untuk sesi ini sehingga 68 dari 70 baris bergeser satu kolom ke kiri. Nilai diambil dari lembar bulanan yang utuh; sesi Februari, Mei, dan Agustus cocok 100% pada kedua lembar." },
+  { metric: "Rekap pemeriksaan 2024", tck: "Rekap_Pemeriksaan_Kesehatan_2024", historical: "Rekap_Digitasi_2022_2024", explanation: "Kedua berkas memuat 240 catatan yang sama persis: seluruh ID Record berpasangan dan tidak ada satu pun selisih nilai numerik. Berkas 2024 karenanya tidak dipakai terpisah agar tahun 2024 tidak terhitung dua kali." },
   { metric: "Kerja sama aktif", tck: conflictRow("1a"), historical: `${number(partnershipCoverage.total)} dokumen (2021–2026)`, explanation: "Data TCK menghitung dokumen kerja sama aktif pada tahun anggaran berjalan; data LENTERA UGM mencatat seluruh dokumen naskah kerja sama selama enam tahun." },
 ];
 const homeUrl = withBase("/");
@@ -105,26 +113,26 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       <div class="data-hero__inner">
         <p class="data-hero__eyebrow">Transparansi &amp; Akuntabilitas</p>
         <h1>Data &amp; Metodologi</h1>
-        <p>Setiap angka dan visualisasi dalam laporan ini dapat ditelusuri ke sumber data resmi, definisi operasional, serta prosedur pengolahannya. Perbedaan nilai antarsistem dijelaskan secara transparan, objektif, dan berimbang.</p>
+        <p>Setiap angka dan visualisasi dalam laporan ini dapat ditelusuri langsung ke sumber data resmi, definisi operasional, serta metodologi pengolahannya. Penyelarasan angka antarsistem institusi disajikan secara transparan, objektif, dan bertanggung jawab.</p>
         <a href={homeUrl}>← Kembali ke laporan utama</a>
       </div>
     </header>
 
     <nav class="data-nav" aria-label="Bagian halaman data">
-      <a href="#aturan-sumber">Prinsip sumber</a>
-      <a href="#dataset">Dataset agregat</a>
-      <a href="#definisi">Definisi metrik</a>
-      <a href="#konflik">Harmonisasi data</a>
-      <a href="#kualitas">Validasi data</a>
-      <a href="#anomali">Catatan anomali</a>
-      <a href="#gap">Agenda penguatan data</a>
+      <a href="#aturan-sumber">Prinsip Sumber</a>
+      <a href="#dataset">Dataset Terbuka</a>
+      <a href="#definisi">Definisi Metrik</a>
+      <a href="#konflik">Harmonisasi Data</a>
+      <a href="#kualitas">Validasi Data</a>
+      <a href="#anomali">Catatan Kualitas Data</a>
+      <a href="#gap">Agenda Penguatan Data</a>
     </nav>
 
     <section class="data-section" id="aturan-sumber">
       <div class="data-section__intro">
         <p class="eyebrow">Prinsip Integritas Data</p>
         <h2>Pemisahan Sumber Berdasarkan Konteks</h2>
-        <p>Data capaian kinerja (TCK SIMASTER) dan data rekam jejak historis memiliki ruang lingkup serta metodologi penghitungan yang berbeda. Pemisahan visualisasi menjaga ketepatan analisis dan mencegah kerancuan interpretasi tren.</p>
+        <p>Data capaian kinerja tahunan (TCK SIMASTER) dan data rekam jejak tridharma historis memiliki cakupan serta metodologi penghitungan yang berbeda. Pemisahan penyajian ini menjaga ketepatan evaluasi dan mencegah kerancuan interpretasi tren institusi.</p>
       </div>
       <div class="source-split">
         <article>
@@ -147,7 +155,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
           <p class="source-split__label">Bagian II · Sumber Baru 2026</p>
           <h3>Kerja Sama, Akademik, dan Kesehatan</h3>
           <strong>{number(partnershipCoverage.total)} dokumen kerja sama</strong>
-          <p>Data kemitraan LENTERA UGM per {snapshot.lentera}, survei penelusuran lulusan (tracer study) terhadap {number(tracerSummary.responden)} responden angkatan {tracerSummary.tahun.join(" dan ")}, serta {number(hpu.kunjungan)} pemeriksaan kesehatan Posbindu HPU untuk dosen dan tenaga kependidikan—seluruhnya disajikan dalam bentuk agregat anonim.</p>
+          <p>Data kemitraan LENTERA UGM per {snapshot.lentera}, survei penelusuran lulusan (tracer study) terhadap {number(tracerSummary.responden)} responden angkatan {tracerSummary.tahun.join(" dan ")}, serta {number(hpuYear.lapisan.find((row) => row.kunci === "staf")?.kunjungan ?? 0)} pemeriksaan kesehatan Posbindu HPU untuk dosen dan tenaga kependidikan sepanjang {hpuYear.tahun[0]}–{hpuYear.tahun[hpuYear.tahun.length - 1]}—seluruhnya disajikan dalam bentuk agregat anonim.</p>
           <a href="#dataset">Lihat dataset turunan</a>
         </article>
       </div>
@@ -190,10 +198,13 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target Triwulan IV mencerminkan target tahunan fakultas secara utuh.</dd></div>
         <div><dt>Status Tercapai</dt><dd>Kondisi ketika realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator kinerja.</dd></div>
         <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah seiring waktu.</dd></div>
-        <div><dt>Ambang Status TCK</dt><dd>Rasio capaian terhadap target triwulan menentukan kategori status: <strong>≥100% tercapai</strong>, ≥85% mendekati target, ≥50% memerlukan akselerasi, dan &lt;50% belum tercapai. Pada indikator dengan arah target menurun (seperti indikator efisiensi #27), rasio dihitung terbalik sehingga nilai capaian yang lebih kecil dinilai lebih baik.</dd></div>
-        <div><dt>Triwulan yang Dinilai</dt><dd>Triwulan terakhir yang memiliki data capaian dan target yang lengkap dan valid. Empat indikator persentase dievaluasi pada Triwulan II karena pada data Triwulan III tercatat berupa jumlah orang tanpa angka pembagi (penyebut).</dd></div>
-        <div><dt>Masa Tunggu Kerja</dt><dd>Selisih waktu (dalam bulan) antara tanggal kelulusan resmi dan tanggal mulai bekerja pada data survei tracer study. Nilai negatif menandakan lulusan telah bekerja sebelum tanggal wisuda.</dd></div>
-        <div><dt>Pita Risiko Kesehatan</dt><dd>Kategori klinis pada data sumber dikelompokkan ke dalam tiga pita risiko—Normal, Waspada, dan Berisiko—berdasarkan standar medis (<code>pipeline/mappings/posbindu_risiko.csv</code>) demi memudahkan pembacaan profil kesehatan sivitas tanpa mengurangi rincian data aslinya.</dd></div>
+        <div><dt>Kategori Status Capaian</dt><dd>Rasio capaian terhadap target triwulan dikelompokkan ke dalam empat status: <strong>≥100% Tercapai</strong>, <strong>≥85% Mendekati Target</strong>, <strong>≥50% Perlu Akselerasi</strong>, dan <strong>&lt;50% Belum Tercapai</strong>. Untuk indikator bertipe efisiensi (target nilai menurun), rasio dihitung terbalik sehingga capaian yang lebih rendah dinilai lebih unggul.</dd></div>
+        <div><dt>Triwulan Evaluasi Sahih</dt><dd>Triwulan evaluasi kinerja merujuk pada triwulan terakhir dengan ketersediaan data capaian dan target yang lengkap secara metodologis. Empat indikator persentase dievaluasi pada Triwulan II karena pelaporan Triwulan III baru memuat jumlah orang tanpa angka penyebut populasi.</dd></div>
+        <div><dt>Masa Tunggu Kerja</dt><dd>Rentang waktu (dalam bulan) antara tanggal resmi kelulusan dan tanggal mulai bekerja berdasarkan survei penelusuran lulusan (tracer study). Nilai negatif menunjukkan bahwa responden telah diterima bekerja sebelum resmi diwisuda.</dd></div>
+        <div><dt>Pita Risiko Kesehatan</dt><dd>Hasil pemeriksaan kesehatan dikelompokkan ke dalam tiga pita risiko medis—Normal, Waspada, dan Berisiko—merujuk pedoman klinis terstandar demi memudahkan interpretasi kesehatan sivitas tanpa menghilangkan rincian data aslinya.</dd></div>
+        <div><dt>Standardisasi Ambang Klinis Retrospektif</dt><dd>Arsip data pemeriksaan 2022–2025 merekam nilai numerik hasil tes laboratorium, sedangkan dokumen 2026 memuat nilai numerik beserta kategori interpretasi klinisnya. Ambang batas klinis dari data 2026 dibaca dan diterapkan secara terstandar ke seluruh data tahun-tahun sebelumnya, sehingga evaluasi tren kesehatan lima tahun dapat dibandingkan secara setara dan konsisten.</dd></div>
+        <div><dt>Kategori Terukur dan Terinterpretasi</dt><dd>Parameter lingkar perut dan asam urat memiliki ambang batas biologis yang berbeda untuk pria dan wanita. Kunjungan dengan catatan hasil uji fisik namun tanpa informasi jenis kelamin tetap dihitung sebagai data <em>terukur</em>, namun tidak dimasukkan ke dalam persentase klasifikasi risiko demi menjaga ketepatan medis.</dd></div>
+        <div><dt>Presisi Waktu Data Posbindu</dt><dd>Data periode 2022–2024 memiliki tanggal pelaksanaan sesi pemeriksaan yang presisi, sedangkan data 2025 dicatat berdasarkan periode bulanan. Visualisasi menandai data dengan presisi bulanan secara khusus untuk membedakannya dari tanggal sesi harian, dengan rekonsiliasi data bulanan untuk mencegah penghitungan ganda.</dd></div>
         <div><dt>Cakupan Peserta Posbindu</dt><dd>Grafik kesehatan merangkum kunjungan dosen dan tenaga kependidikan tetap. Kunjungan di luar kategori tersebut disajikan terpisah dan dicantumkan pada catatan visualisasi.</dd></div>
         <div><dt>Perlindungan Kerahasiaan Medis</dt><dd>Data Posbindu disajikan dalam bentuk agregat statistik. Identitas pribadi (nama, tanggal lahir, dan rekam medis perorangan) disaring dan dianonimkan sebelum data dipublikasikan.</dd></div>
       </dl>
@@ -202,8 +213,8 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
     <section class="data-section data-section--navy" id="konflik">
       <div class="data-section__intro">
         <p class="eyebrow">Harmonisasi Data</p>
-        <h2>Penjelasan Selisih Angka Antarsumber</h2>
-        <p>Perbedaan angka antarsistem data bukan merupakan anomali, melainkan disebabkan oleh perbedaan periode penarikan data (*cut-off date*), dasar regulasi (SK), dan ruang lingkup basis data masing-masing pengelola.</p>
+        <h2>Penyelarasan Selisih Angka Antarsumber</h2>
+        <p>Perbedaan angka antarsistem data bukan anomali yang ditutupi, melainkan konsekuensi logis dari perbedaan tanggal penarikan data (cut-off date), dasar penetapan surat keputusan (SK), serta ruang lingkup kewenangan basis data masing-masing pengelola.</p>
       </div>
       <div class="table-wrap" tabindex="0">
         <table>
@@ -233,14 +244,14 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
 
     <section class="data-section" id="anomali">
       <div class="data-section__intro">
-        <p class="eyebrow">Keterbukaan Anomali</p>
+        <p class="eyebrow">Transparansi Data</p>
         <h2>Catatan Kualitas Data pada Berkas Sumber</h2>
-        <p>Penyimpangan yang ditemukan saat membaca berkas resmi tidak diperbaiki secara diam-diam. Setiap indikator berikut membawa catatan yang ikut ditampilkan pada visualisasi laporan.</p>
+        <p>Setiap catatan teknis dan ketidaksesuaian administratif pada dokumen resmi disajikan secara terbuka dan apa adanya. Penjelasan metodologis dilampirkan secara transparan untuk mendampingi setiap visualisasi data.</p>
       </div>
       <div class="table-wrap" tabindex="0">
         <table>
-          <caption>{flagged.length} dari {tck.length} indikator TCK 2026 membawa catatan kualitas data</caption>
-          <thead><tr><th>No.</th><th>Indikator</th><th>Kuartal dinilai</th><th>Catatan</th></tr></thead>
+          <caption>{flagged.length} dari {tck.length} indikator TCK 2026 disertai catatan teknis dan metodologis</caption>
+          <thead><tr><th>No.</th><th>Indikator</th><th>Triwulan Evaluasi</th><th>Catatan Metodologis</th></tr></thead>
           <tbody>{flagged.map((row) => <tr><th scope="row">{row.no}</th><td>{row.indikator}</td><td>{String(row.kuartal_dinilai).toUpperCase()}</td><td>{row.anomali}</td></tr>)}</tbody>
         </table>
       </div>

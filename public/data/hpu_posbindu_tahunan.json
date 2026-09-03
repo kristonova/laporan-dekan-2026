@@ -1,0 +1,1227 @@
+{
+  "periode": "2022–2026",
+  "tahun": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "sumber_per_tahun": [
+    {
+      "tahun": 2022,
+      "sumber": "Digitasi arsip analog + registri",
+      "presisi": "sesi dan bulan",
+      "bulan_layanan": 6,
+      "kunjungan": 131
+    },
+    {
+      "tahun": 2023,
+      "sumber": "Digitasi arsip analog + registri",
+      "presisi": "sesi dan bulan",
+      "bulan_layanan": 11,
+      "kunjungan": 389
+    },
+    {
+      "tahun": 2024,
+      "sumber": "Digitasi arsip analog + registri",
+      "presisi": "sesi dan bulan",
+      "bulan_layanan": 11,
+      "kunjungan": 398
+    },
+    {
+      "tahun": 2025,
+      "sumber": "Registri Posbindu",
+      "presisi": "bulan",
+      "bulan_layanan": 7,
+      "kunjungan": 199
+    },
+    {
+      "tahun": 2026,
+      "sumber": "Rekap Posbindu 2026",
+      "presisi": "sesi",
+      "bulan_layanan": 5,
+      "kunjungan": 391
+    }
+  ],
+  "lapisan": [
+    {
+      "kunci": "staf",
+      "label": "Dosen dan tenaga kependidikan",
+      "kunjungan": 553,
+      "indikator": [
+        {
+          "kunci": "lingkar_perut",
+          "indikator": "Lingkar Perut",
+          "berbasis_gender": true,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 46,
+              "dinilai": 29,
+              "pita": {
+                "Normal": 12,
+                "Waspada": 0,
+                "Berisiko": 17,
+                "Tidak diperiksa": 36
+              },
+              "porsi_berisiko": 0.5862
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 129,
+              "dinilai": 92,
+              "pita": {
+                "Normal": 35,
+                "Waspada": 0,
+                "Berisiko": 57,
+                "Tidak diperiksa": 68
+              },
+              "porsi_berisiko": 0.6196
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 102,
+              "dinilai": 72,
+              "pita": {
+                "Normal": 22,
+                "Waspada": 0,
+                "Berisiko": 50,
+                "Tidak diperiksa": 72
+              },
+              "porsi_berisiko": 0.6944
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 45,
+              "dinilai": 45,
+              "pita": {
+                "Normal": 14,
+                "Waspada": 0,
+                "Berisiko": 31,
+                "Tidak diperiksa": 8
+              },
+              "porsi_berisiko": 0.6889
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 120,
+              "dinilai": 120,
+              "pita": {
+                "Normal": 48,
+                "Waspada": 0,
+                "Berisiko": 72,
+                "Tidak diperiksa": 11
+              },
+              "porsi_berisiko": 0.6
+            }
+          ]
+        },
+        {
+          "kunci": "imt",
+          "indikator": "Indeks Massa Tubuh",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 31,
+              "dinilai": 31,
+              "pita": {
+                "Normal": 5,
+                "Waspada": 6,
+                "Berisiko": 20,
+                "Tidak diperiksa": 34
+              },
+              "porsi_berisiko": 0.6452
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 137,
+              "dinilai": 137,
+              "pita": {
+                "Normal": 24,
+                "Waspada": 30,
+                "Berisiko": 83,
+                "Tidak diperiksa": 23
+              },
+              "porsi_berisiko": 0.6058
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 99,
+              "dinilai": 99,
+              "pita": {
+                "Normal": 18,
+                "Waspada": 14,
+                "Berisiko": 67,
+                "Tidak diperiksa": 45
+              },
+              "porsi_berisiko": 0.6768
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 44,
+              "dinilai": 44,
+              "pita": {
+                "Normal": 5,
+                "Waspada": 12,
+                "Berisiko": 27,
+                "Tidak diperiksa": 9
+              },
+              "porsi_berisiko": 0.6136
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 120,
+              "dinilai": 120,
+              "pita": {
+                "Normal": 28,
+                "Waspada": 24,
+                "Berisiko": 68,
+                "Tidak diperiksa": 11
+              },
+              "porsi_berisiko": 0.5667
+            }
+          ]
+        },
+        {
+          "kunci": "asam_urat",
+          "indikator": "Asam Urat",
+          "berbasis_gender": true,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 41,
+              "dinilai": 22,
+              "pita": {
+                "Normal": 8,
+                "Waspada": 0,
+                "Berisiko": 14,
+                "Tidak diperiksa": 43
+              },
+              "porsi_berisiko": 0.6364
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 130,
+              "dinilai": 90,
+              "pita": {
+                "Normal": 32,
+                "Waspada": 0,
+                "Berisiko": 58,
+                "Tidak diperiksa": 70
+              },
+              "porsi_berisiko": 0.6444
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 126,
+              "dinilai": 85,
+              "pita": {
+                "Normal": 38,
+                "Waspada": 0,
+                "Berisiko": 47,
+                "Tidak diperiksa": 59
+              },
+              "porsi_berisiko": 0.5529
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 48,
+              "dinilai": 48,
+              "pita": {
+                "Normal": 30,
+                "Waspada": 0,
+                "Berisiko": 18,
+                "Tidak diperiksa": 5
+              },
+              "porsi_berisiko": 0.375
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 121,
+              "dinilai": 121,
+              "pita": {
+                "Normal": 57,
+                "Waspada": 0,
+                "Berisiko": 64,
+                "Tidak diperiksa": 10
+              },
+              "porsi_berisiko": 0.5289
+            }
+          ]
+        },
+        {
+          "kunci": "kolesterol",
+          "indikator": "Kolesterol",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 44,
+              "dinilai": 44,
+              "pita": {
+                "Normal": 1,
+                "Waspada": 12,
+                "Berisiko": 31,
+                "Tidak diperiksa": 21
+              },
+              "porsi_berisiko": 0.7045
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 138,
+              "dinilai": 138,
+              "pita": {
+                "Normal": 12,
+                "Waspada": 36,
+                "Berisiko": 90,
+                "Tidak diperiksa": 22
+              },
+              "porsi_berisiko": 0.6522
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 117,
+              "dinilai": 117,
+              "pita": {
+                "Normal": 22,
+                "Waspada": 29,
+                "Berisiko": 66,
+                "Tidak diperiksa": 27
+              },
+              "porsi_berisiko": 0.5641
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 48,
+              "dinilai": 48,
+              "pita": {
+                "Normal": 8,
+                "Waspada": 19,
+                "Berisiko": 21,
+                "Tidak diperiksa": 5
+              },
+              "porsi_berisiko": 0.4375
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 121,
+              "dinilai": 121,
+              "pita": {
+                "Normal": 14,
+                "Waspada": 46,
+                "Berisiko": 61,
+                "Tidak diperiksa": 10
+              },
+              "porsi_berisiko": 0.5041
+            }
+          ]
+        },
+        {
+          "kunci": "tekanan_darah",
+          "indikator": "Tekanan Darah",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 47,
+              "dinilai": 47,
+              "pita": {
+                "Normal": 25,
+                "Waspada": 12,
+                "Berisiko": 10,
+                "Tidak diperiksa": 18
+              },
+              "porsi_berisiko": 0.2128
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 148,
+              "dinilai": 148,
+              "pita": {
+                "Normal": 76,
+                "Waspada": 40,
+                "Berisiko": 32,
+                "Tidak diperiksa": 12
+              },
+              "porsi_berisiko": 0.2162
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 96,
+              "dinilai": 96,
+              "pita": {
+                "Normal": 41,
+                "Waspada": 34,
+                "Berisiko": 21,
+                "Tidak diperiksa": 48
+              },
+              "porsi_berisiko": 0.2188
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 50,
+              "dinilai": 50,
+              "pita": {
+                "Normal": 25,
+                "Waspada": 11,
+                "Berisiko": 14,
+                "Tidak diperiksa": 3
+              },
+              "porsi_berisiko": 0.28
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 121,
+              "dinilai": 121,
+              "pita": {
+                "Normal": 47,
+                "Waspada": 33,
+                "Berisiko": 41,
+                "Tidak diperiksa": 10
+              },
+              "porsi_berisiko": 0.3388
+            }
+          ]
+        },
+        {
+          "kunci": "gula_darah",
+          "indikator": "Gula Darah",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 65,
+              "terukur": 31,
+              "dinilai": 31,
+              "pita": {
+                "Normal": 26,
+                "Waspada": 4,
+                "Berisiko": 1,
+                "Tidak diperiksa": 34
+              },
+              "porsi_berisiko": 0.0323
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 160,
+              "terukur": 103,
+              "dinilai": 103,
+              "pita": {
+                "Normal": 91,
+                "Waspada": 8,
+                "Berisiko": 4,
+                "Tidak diperiksa": 57
+              },
+              "porsi_berisiko": 0.0388
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 144,
+              "terukur": 112,
+              "dinilai": 112,
+              "pita": {
+                "Normal": 89,
+                "Waspada": 20,
+                "Berisiko": 3,
+                "Tidak diperiksa": 32
+              },
+              "porsi_berisiko": 0.0268
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 53,
+              "terukur": 48,
+              "dinilai": 48,
+              "pita": {
+                "Normal": 41,
+                "Waspada": 4,
+                "Berisiko": 3,
+                "Tidak diperiksa": 5
+              },
+              "porsi_berisiko": 0.0625
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 131,
+              "terukur": 121,
+              "dinilai": 121,
+              "pita": {
+                "Normal": 105,
+                "Waspada": 11,
+                "Berisiko": 5,
+                "Tidak diperiksa": 10
+              },
+              "porsi_berisiko": 0.0413
+            }
+          ]
+        }
+      ],
+      "partisipasi": [
+        {
+          "tahun": 2022,
+          "kunjungan": 65,
+          "bulan_layanan": 6
+        },
+        {
+          "tahun": 2023,
+          "kunjungan": 160,
+          "bulan_layanan": 9
+        },
+        {
+          "tahun": 2024,
+          "kunjungan": 144,
+          "bulan_layanan": 10
+        },
+        {
+          "tahun": 2025,
+          "kunjungan": 53,
+          "bulan_layanan": 6
+        },
+        {
+          "tahun": 2026,
+          "kunjungan": 131,
+          "bulan_layanan": 5
+        }
+      ],
+      "multirisiko": [
+        {
+          "jumlah_indikator": 0,
+          "kunjungan": 17
+        },
+        {
+          "jumlah_indikator": 1,
+          "kunjungan": 36
+        },
+        {
+          "jumlah_indikator": 2,
+          "kunjungan": 52
+        },
+        {
+          "jumlah_indikator": 3,
+          "kunjungan": 62
+        },
+        {
+          "jumlah_indikator": 4,
+          "kunjungan": 55
+        },
+        {
+          "jumlah_indikator": 5,
+          "kunjungan": 14
+        }
+      ],
+      "diperiksa_lengkap": 236
+    },
+    {
+      "kunci": "semua",
+      "label": "Seluruh peserta",
+      "kunjungan": 1508,
+      "indikator": [
+        {
+          "kunci": "kolesterol",
+          "indikator": "Kolesterol",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 86,
+              "dinilai": 86,
+              "pita": {
+                "Normal": 2,
+                "Waspada": 25,
+                "Berisiko": 59,
+                "Tidak diperiksa": 45
+              },
+              "porsi_berisiko": 0.686
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 330,
+              "dinilai": 330,
+              "pita": {
+                "Normal": 32,
+                "Waspada": 102,
+                "Berisiko": 196,
+                "Tidak diperiksa": 59
+              },
+              "porsi_berisiko": 0.5939
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 320,
+              "dinilai": 320,
+              "pita": {
+                "Normal": 59,
+                "Waspada": 90,
+                "Berisiko": 171,
+                "Tidak diperiksa": 78
+              },
+              "porsi_berisiko": 0.5344
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 172,
+              "dinilai": 172,
+              "pita": {
+                "Normal": 23,
+                "Waspada": 59,
+                "Berisiko": 90,
+                "Tidak diperiksa": 27
+              },
+              "porsi_berisiko": 0.5233
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 345,
+              "dinilai": 345,
+              "pita": {
+                "Normal": 41,
+                "Waspada": 134,
+                "Berisiko": 170,
+                "Tidak diperiksa": 46
+              },
+              "porsi_berisiko": 0.4928
+            }
+          ]
+        },
+        {
+          "kunci": "asam_urat",
+          "indikator": "Asam Urat",
+          "berbasis_gender": true,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 77,
+              "dinilai": 31,
+              "pita": {
+                "Normal": 15,
+                "Waspada": 0,
+                "Berisiko": 16,
+                "Tidak diperiksa": 100
+              },
+              "porsi_berisiko": 0.5161
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 322,
+              "dinilai": 176,
+              "pita": {
+                "Normal": 81,
+                "Waspada": 0,
+                "Berisiko": 95,
+                "Tidak diperiksa": 213
+              },
+              "porsi_berisiko": 0.5398
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 346,
+              "dinilai": 206,
+              "pita": {
+                "Normal": 104,
+                "Waspada": 0,
+                "Berisiko": 102,
+                "Tidak diperiksa": 192
+              },
+              "porsi_berisiko": 0.4951
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 183,
+              "dinilai": 183,
+              "pita": {
+                "Normal": 118,
+                "Waspada": 0,
+                "Berisiko": 65,
+                "Tidak diperiksa": 16
+              },
+              "porsi_berisiko": 0.3552
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 344,
+              "dinilai": 344,
+              "pita": {
+                "Normal": 209,
+                "Waspada": 0,
+                "Berisiko": 135,
+                "Tidak diperiksa": 47
+              },
+              "porsi_berisiko": 0.3924
+            }
+          ]
+        },
+        {
+          "kunci": "imt",
+          "indikator": "Indeks Massa Tubuh",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 67,
+              "dinilai": 67,
+              "pita": {
+                "Normal": 24,
+                "Waspada": 16,
+                "Berisiko": 27,
+                "Tidak diperiksa": 64
+              },
+              "porsi_berisiko": 0.403
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 355,
+              "dinilai": 355,
+              "pita": {
+                "Normal": 99,
+                "Waspada": 90,
+                "Berisiko": 166,
+                "Tidak diperiksa": 34
+              },
+              "porsi_berisiko": 0.4676
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 286,
+              "dinilai": 286,
+              "pita": {
+                "Normal": 84,
+                "Waspada": 61,
+                "Berisiko": 141,
+                "Tidak diperiksa": 112
+              },
+              "porsi_berisiko": 0.493
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 176,
+              "dinilai": 176,
+              "pita": {
+                "Normal": 71,
+                "Waspada": 46,
+                "Berisiko": 59,
+                "Tidak diperiksa": 23
+              },
+              "porsi_berisiko": 0.3352
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 342,
+              "dinilai": 342,
+              "pita": {
+                "Normal": 123,
+                "Waspada": 89,
+                "Berisiko": 130,
+                "Tidak diperiksa": 49
+              },
+              "porsi_berisiko": 0.3801
+            }
+          ]
+        },
+        {
+          "kunci": "lingkar_perut",
+          "indikator": "Lingkar Perut",
+          "berbasis_gender": true,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 98,
+              "dinilai": 45,
+              "pita": {
+                "Normal": 24,
+                "Waspada": 0,
+                "Berisiko": 21,
+                "Tidak diperiksa": 86
+              },
+              "porsi_berisiko": 0.4667
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 342,
+              "dinilai": 187,
+              "pita": {
+                "Normal": 94,
+                "Waspada": 0,
+                "Berisiko": 93,
+                "Tidak diperiksa": 202
+              },
+              "porsi_berisiko": 0.4973
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 296,
+              "dinilai": 193,
+              "pita": {
+                "Normal": 80,
+                "Waspada": 0,
+                "Berisiko": 113,
+                "Tidak diperiksa": 205
+              },
+              "porsi_berisiko": 0.5855
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 178,
+              "dinilai": 178,
+              "pita": {
+                "Normal": 119,
+                "Waspada": 0,
+                "Berisiko": 59,
+                "Tidak diperiksa": 21
+              },
+              "porsi_berisiko": 0.3315
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 343,
+              "dinilai": 343,
+              "pita": {
+                "Normal": 218,
+                "Waspada": 0,
+                "Berisiko": 125,
+                "Tidak diperiksa": 48
+              },
+              "porsi_berisiko": 0.3644
+            }
+          ]
+        },
+        {
+          "kunci": "tekanan_darah",
+          "indikator": "Tekanan Darah",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 98,
+              "dinilai": 98,
+              "pita": {
+                "Normal": 64,
+                "Waspada": 19,
+                "Berisiko": 15,
+                "Tidak diperiksa": 33
+              },
+              "porsi_berisiko": 0.1531
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 369,
+              "dinilai": 369,
+              "pita": {
+                "Normal": 219,
+                "Waspada": 95,
+                "Berisiko": 55,
+                "Tidak diperiksa": 20
+              },
+              "porsi_berisiko": 0.1491
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 284,
+              "dinilai": 284,
+              "pita": {
+                "Normal": 159,
+                "Waspada": 85,
+                "Berisiko": 40,
+                "Tidak diperiksa": 114
+              },
+              "porsi_berisiko": 0.1408
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 192,
+              "dinilai": 192,
+              "pita": {
+                "Normal": 123,
+                "Waspada": 44,
+                "Berisiko": 25,
+                "Tidak diperiksa": 7
+              },
+              "porsi_berisiko": 0.1302
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 343,
+              "dinilai": 343,
+              "pita": {
+                "Normal": 183,
+                "Waspada": 86,
+                "Berisiko": 74,
+                "Tidak diperiksa": 48
+              },
+              "porsi_berisiko": 0.2157
+            }
+          ]
+        },
+        {
+          "kunci": "gula_darah",
+          "indikator": "Gula Darah",
+          "berbasis_gender": false,
+          "seri": [
+            {
+              "tahun": 2022,
+              "kunjungan": 131,
+              "terukur": 75,
+              "dinilai": 75,
+              "pita": {
+                "Normal": 68,
+                "Waspada": 6,
+                "Berisiko": 1,
+                "Tidak diperiksa": 56
+              },
+              "porsi_berisiko": 0.0133
+            },
+            {
+              "tahun": 2023,
+              "kunjungan": 389,
+              "terukur": 282,
+              "dinilai": 282,
+              "pita": {
+                "Normal": 267,
+                "Waspada": 11,
+                "Berisiko": 4,
+                "Tidak diperiksa": 107
+              },
+              "porsi_berisiko": 0.0142
+            },
+            {
+              "tahun": 2024,
+              "kunjungan": 398,
+              "terukur": 332,
+              "dinilai": 332,
+              "pita": {
+                "Normal": 298,
+                "Waspada": 30,
+                "Berisiko": 4,
+                "Tidak diperiksa": 66
+              },
+              "porsi_berisiko": 0.012
+            },
+            {
+              "tahun": 2025,
+              "kunjungan": 199,
+              "terukur": 171,
+              "dinilai": 171,
+              "pita": {
+                "Normal": 158,
+                "Waspada": 10,
+                "Berisiko": 3,
+                "Tidak diperiksa": 28
+              },
+              "porsi_berisiko": 0.0175
+            },
+            {
+              "tahun": 2026,
+              "kunjungan": 391,
+              "terukur": 345,
+              "dinilai": 345,
+              "pita": {
+                "Normal": 319,
+                "Waspada": 21,
+                "Berisiko": 5,
+                "Tidak diperiksa": 46
+              },
+              "porsi_berisiko": 0.0145
+            }
+          ]
+        }
+      ],
+      "partisipasi": [
+        {
+          "tahun": 2022,
+          "kunjungan": 131,
+          "bulan_layanan": 6
+        },
+        {
+          "tahun": 2023,
+          "kunjungan": 389,
+          "bulan_layanan": 11
+        },
+        {
+          "tahun": 2024,
+          "kunjungan": 398,
+          "bulan_layanan": 11
+        },
+        {
+          "tahun": 2025,
+          "kunjungan": 199,
+          "bulan_layanan": 7
+        },
+        {
+          "tahun": 2026,
+          "kunjungan": 391,
+          "bulan_layanan": 5
+        }
+      ],
+      "multirisiko": [
+        {
+          "jumlah_indikator": 0,
+          "kunjungan": 114
+        },
+        {
+          "jumlah_indikator": 1,
+          "kunjungan": 172
+        },
+        {
+          "jumlah_indikator": 2,
+          "kunjungan": 147
+        },
+        {
+          "jumlah_indikator": 3,
+          "kunjungan": 138
+        },
+        {
+          "jumlah_indikator": 4,
+          "kunjungan": 81
+        },
+        {
+          "jumlah_indikator": 5,
+          "kunjungan": 21
+        }
+      ],
+      "diperiksa_lengkap": 673
+    }
+  ],
+  "kualitas": [
+    {
+      "tahun": 2022,
+      "Jelas": 28,
+      "Perlu verifikasi": 69,
+      "Tidak dicatat": 34
+    },
+    {
+      "tahun": 2023,
+      "Jelas": 116,
+      "Perlu verifikasi": 160,
+      "Tidak dicatat": 113
+    },
+    {
+      "tahun": 2024,
+      "Jelas": 133,
+      "Perlu verifikasi": 107,
+      "Tidak dicatat": 158
+    },
+    {
+      "tahun": 2025,
+      "Jelas": 0,
+      "Perlu verifikasi": 0,
+      "Tidak dicatat": 199
+    }
+  ],
+  "retensi": [
+    {
+      "kunjungan_ke": 1,
+      "orang": 442
+    },
+    {
+      "kunjungan_ke": 2,
+      "orang": 178
+    },
+    {
+      "kunjungan_ke": 3,
+      "orang": 92
+    },
+    {
+      "kunjungan_ke": 4,
+      "orang": 52
+    },
+    {
+      "kunjungan_ke": 5,
+      "orang": 31
+    }
+  ],
+  "tanpa_tahun": 169,
+  "komposisi_kriteria": [
+    {
+      "tahun": "2022",
+      "kriteria": "Mahasiswa",
+      "n": 51
+    },
+    {
+      "tahun": "2022",
+      "kriteria": "Tendik",
+      "n": 44
+    },
+    {
+      "tahun": "2022",
+      "kriteria": "Dosen",
+      "n": 21
+    },
+    {
+      "tahun": "2022",
+      "kriteria": "Lainnya",
+      "n": 9
+    },
+    {
+      "tahun": "2022",
+      "kriteria": "Cleaning Service",
+      "n": 4
+    },
+    {
+      "tahun": "2022",
+      "kriteria": "Tanpa kriteria",
+      "n": 2
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Mahasiswa",
+      "n": 205
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Tendik",
+      "n": 108
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Dosen",
+      "n": 52
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Lainnya",
+      "n": 16
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Cleaning Service",
+      "n": 4
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "THL",
+      "n": 2
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Asisten",
+      "n": 1
+    },
+    {
+      "tahun": "2023",
+      "kriteria": "Tanpa kriteria",
+      "n": 1
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "Mahasiswa",
+      "n": 230
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "Tendik",
+      "n": 76
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "Dosen",
+      "n": 68
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "Lainnya",
+      "n": 21
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "Tanpa kriteria",
+      "n": 2
+    },
+    {
+      "tahun": "2024",
+      "kriteria": "THL",
+      "n": 1
+    },
+    {
+      "tahun": "2025",
+      "kriteria": "Mahasiswa",
+      "n": 138
+    },
+    {
+      "tahun": "2025",
+      "kriteria": "Tendik",
+      "n": 29
+    },
+    {
+      "tahun": "2025",
+      "kriteria": "Dosen",
+      "n": 24
+    },
+    {
+      "tahun": "2025",
+      "kriteria": "Lainnya",
+      "n": 8
+    },
+    {
+      "tahun": "2026",
+      "kriteria": "Tanpa kriteria",
+      "n": 257
+    },
+    {
+      "tahun": "2026",
+      "kriteria": "Tendik",
+      "n": 80
+    },
+    {
+      "tahun": "2026",
+      "kriteria": "Dosen",
+      "n": 51
+    },
+    {
+      "tahun": "2026",
+      "kriteria": "THL",
+      "n": 3
+    }
+  ],
+  "catatan": "Agregat anonim. Kategori 2022–2025 dihitung ulang dari nilai mentah memakai ambang yang dibaca balik dari sumber 2026 (pipeline/mappings/posbindu_ambang.csv). Lingkar perut dan asam urat memakai ambang berbeda per jenis kelamin, sehingga kunjungan tanpa data gender terukur tetapi tidak dinilai."
+}

@@ -24,6 +24,8 @@ EXPECTED_FILES = {
     "graduates_profile.json", "graduates_by_programme.json", "student_achievements.json",
     "scholarships.json", "accreditation.json", "exchange_students.json",
     "tracer_waiting_time.json", "tracer_sectors.json", "tracer_summary.json", "hpu_posbindu.json",
+    # Added with the 2022-2025 Posbindu backfill.
+    "hpu_posbindu_tahunan.json",
     # Added with the student roster (six intake cohorts, 2021-2026).
     "students_summary.json", "students_by_programme.json", "students_by_province.json",
     "students_by_pathway.json", "students_background.json", "students_cohort_outcome.json",
@@ -202,7 +204,9 @@ def main() -> None:
     assert tracer["dalam_6_bulan"] == 536
 
     posbindu = load_json("hpu_posbindu.json")
-    assert posbindu["peserta_terdaftar"] == 651
+    # Tied to what the loader actually read, not to a literal that a legitimate
+    # data refresh would turn into a false failure.
+    assert posbindu["peserta_terdaftar"] == manifest["posbindu_participants"]["rows_after_deduplication"]
     # Five sessions in 2026. The sheet labelled "Jan 26" duplicates Juli and must
     # not add a sixth; the real 30 January session comes from the consolidated
     # sheet, which is the only place it was recorded.
@@ -210,10 +214,10 @@ def main() -> None:
         "2026-01-30", "2026-02-27", "2026-05-29", "2026-07-03", "2026-08-28"
     ]
     # The published universe is teaching and support staff only.
-    assert posbindu["kunjungan"] == sum(row["peserta"] for row in posbindu["sesi"]) == 131
+    assert posbindu["kunjungan"] == sum(row["peserta"] for row in posbindu["sesi"])
     assert {row["kriteria"] for row in posbindu["kunjungan_per_kriteria"]} == {"Dosen", "Tendik"}
     # Everything filtered out is still counted, so the universe stays legible.
-    assert posbindu["kunjungan"] + sum(posbindu["dikecualikan"].values()) == 391
+    assert posbindu["kunjungan"] + sum(posbindu["dikecualikan"].values()) == manifest["posbindu_visits"]["rows_after_deduplication"]
 
     # Every band must come from mappings/posbindu_risiko.csv. An unmapped source
     # label would otherwise fall through to "Tidak diperiksa" and read as a gap.
@@ -239,6 +243,46 @@ def main() -> None:
                 assert (column, str(label)) in mapped or label == "Tidak diperiksa", (
                     f"Kategori {label!r} pada {key} belum ada di posbindu_risiko.csv"
                 )
+
+    # --- Posbindu 2022-2026 -------------------------------------------------
+    yearly = load_json("hpu_posbindu_tahunan.json")
+    assert yearly["tahun"] == [2022, 2023, 2024, 2025, 2026]
+    # 2025 exists only in the registry; losing it would silently reopen the gap
+    # the backfill was built to close.
+    assert all(row["kunjungan"] > 0 for row in yearly["sumber_per_tahun"])
+    assert {row["kunci"] for row in yearly["lapisan"]} == {"staf", "semua"}
+
+    layers = {row["kunci"]: row for row in yearly["lapisan"]}
+    # The staff layer is a subset of the whole cohort, and the 2026 slice of it
+    # must still agree with the session-level file built from the same source.
+    assert layers["staf"]["kunjungan"] < layers["semua"]["kunjungan"]
+    staff_2026 = next(row for row in layers["staf"]["partisipasi"] if row["tahun"] == 2026)
+    assert staff_2026["kunjungan"] == posbindu["kunjungan"]
+
+    history_rows = manifest["posbindu_history"]["rows_after_deduplication"]
+    dated = sum(row["kunjungan"] for row in yearly["sumber_per_tahun"])
+    # Every visit is either placed in a year or counted as undateable; none is
+    # quietly dropped between the loader and the page.
+    assert dated + yearly["tanpa_tahun"] == history_rows + manifest["posbindu_visits"]["rows_after_deduplication"]
+
+    for layer in yearly["lapisan"]:
+        for measure in layer["indikator"]:
+            for point in measure["seri"]:
+                assert set(point["pita"]) <= allowed, f"Pita tak dikenal pada {measure['indikator']}"
+                assert sum(point["pita"].values()) == point["kunjungan"]
+                # A reading that exists but cannot be banded for want of a sex is
+                # counted as measured, never as assessed. The reverse is a bug.
+                assert point["dinilai"] <= point["terukur"] <= point["kunjungan"], (
+                    f"{measure['indikator']} {point['tahun']}: dinilai/terukur/kunjungan tidak konsisten"
+                )
+                if not measure["berbasis_gender"]:
+                    assert point["dinilai"] == point["terukur"], (
+                        f"{measure['indikator']} tidak bergantung gender tetapi kehilangan penilaian"
+                    )
+
+    # Repeat attendance can only shrink as the number of visits rises.
+    reach = [row["orang"] for row in yearly["retensi"]]
+    assert reach == sorted(reach, reverse=True) and reach[0] > 0
 
     students = load_json("students_summary.json")
     student_years = {row["angkatan"]: row for row in students["per_tahun"]}

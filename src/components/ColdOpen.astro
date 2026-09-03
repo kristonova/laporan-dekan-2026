@@ -38,8 +38,8 @@ const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { m
 const shareLabel = `${format((citations / Math.max(1, citationsAllTime)) * 100, 1)}%`;
 const metrics = [
   { value: publications, label: "publikasi ilmiah", detail: "terindeks Scopus" },
-  { value: citations, label: "sitasi artikel", detail: `${shareLabel} dari sitasi sepanjang masa` },
-  { value: outreach, label: "kegiatan pengabdian", detail: "tersebar di seluruh Indonesia" },
+  { value: citations, label: "sitasi karya ilmiah", detail: `${shareLabel} dari seluruh sitasi sepanjang sejarah FMIPA` },
+  { value: outreach, label: "kegiatan pengabdian", detail: "menjangkau berbagai penjuru nusantara" },
 ];
 const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
 ---
@@ -57,10 +57,10 @@ const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/bra
         </li>
       ))}
     </ul>
-    <h1 id="cold-open-title">lima tahun kerja tridharma sivitas FMIPA UGM.</h1>
-    <p class="cold-open__statement"><mark>{shareLabel}</mark> dari seluruh sitasi yang pernah diraih fakultas lahir pada periode ini.</p>
-    <p class="cold-open__context">Berdasarkan pangkalan data {archiveStart}–{archiveEnd}; angka {archiveEnd} masih bertambah seiring pemutakhiran indeksasi. Tiga angka ini tidak merangkum segalanya, tetapi menandai percepatan riset, publikasi, dan pengabdian yang berjalan bersamaan.</p>
-    <a class="cold-open__continue" href="#posisi">Pelajari Laporan Selengkapnya <span aria-hidden="true">↓</span></a>
+    <h1 id="cold-open-title">Lima tahun dedikasi dan transformasi tridharma FMIPA UGM.</h1>
+    <p class="cold-open__statement"><mark>{shareLabel}</mark> dari seluruh sitasi ilmiah dalam sejarah fakultas tercipta pada kurun waktu lima tahun ini.</p>
+    <p class="cold-open__context">Merujuk pangkalan data {archiveStart}–{archiveEnd} (angka {archiveEnd} masih terus bertambah seiring pemutakhiran berkala di Scopus). Ketiga pilar angka ini mencerminkan akselerasi riset, produktivitas publikasi global, serta pengabdian masyarakat yang melesat serempak sepanjang 2021–2025.</p>
+    <a class="cold-open__continue" href="#posisi">Telusuri Laporan Selengkapnya <span aria-hidden="true">↓</span></a>
   </div>
   <div class="cold-open__band" aria-hidden="true"></div>
 </section>

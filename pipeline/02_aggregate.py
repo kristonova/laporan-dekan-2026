@@ -479,6 +479,21 @@ def health_outputs() -> None:
         })
     profile.sort(key=lambda row: row["porsi_berisiko"], reverse=True)
 
+    # Same reason as the yearly file: the scene footer offers a CSV, so one is
+    # written for the risk profile the chart actually draws.
+    pd.DataFrame([
+        {
+            "indikator": row["indikator"],
+            "kategori_sumber": category["nilai"],
+            "pita": category["pita"],
+            "kunjungan": category["n"],
+            "diperiksa": row["diperiksa"],
+            "porsi_berisiko": row["porsi_berisiko"],
+        }
+        for row in profile
+        for category in row["kategori"]
+    ]).to_csv(PUBLIC_DATA_DIR / "hpu_posbindu.csv", index=False)
+
     write_json("hpu_posbindu.json", {
         "universe": "Dosen dan tenaga kependidikan",
         "kunjungan": int(len(staff)),
@@ -496,6 +511,186 @@ def health_outputs() -> None:
     })
 
 
+HEALTH_YEARS = ["2022", "2023", "2024", "2025", "2026"]
+
+# Two reading layers, decided with the data owner: the headline stays the staff
+# the faculty is responsible for, and the whole cohort travels beside it so the
+# reach of the programme is legible rather than hidden by the filter.
+HEALTH_LAYERS = {
+    "staf": ("Dosen dan tenaga kependidikan", HEALTH_STAFF),
+    "semua": ("Seluruh peserta", None),
+}
+
+# What each year can and cannot say, carried with the numbers so no chart has to
+# imply a precision its source never had.
+HEALTH_PROVENANCE = {
+    "2022": ("Digitasi arsip analog + registri", "sesi dan bulan"),
+    "2023": ("Digitasi arsip analog + registri", "sesi dan bulan"),
+    "2024": ("Digitasi arsip analog + registri", "sesi dan bulan"),
+    "2025": ("Registri Posbindu", "bulan"),
+    "2026": ("Rekap Posbindu 2026", "sesi"),
+}
+
+
+def health_longitudinal_outputs() -> None:
+    """Posbindu screening across 2022-2026, on one comparable set of categories.
+
+    The 2022-2025 sources recorded measurements and the 2026 source recorded
+    both measurements and interpretations, so the older years are re-derived in
+    01_clean.py using thresholds read back off 2026 itself. What arrives here is
+    already banded; this function only counts.
+
+    Waist circumference and uric acid carry a second denominator. Their cut-off
+    depends on sex, which the digitisation sheet never recorded, so a visit
+    without a known sex is measured but not assessed. Both numbers are published
+    rather than the smaller one being passed off as the whole.
+    """
+    history = pd.read_csv(CLEAN_DIR / "posbindu_history.csv", dtype={"tahun": "string"}).fillna("")
+    current = pd.read_csv(CLEAN_DIR / "posbindu_visits.csv").fillna("")
+
+    # 2026 arrives keyed by session date and already sex-complete, so every
+    # measured indicator is also an assessed one.
+    current["tahun"] = current["tanggal"].astype(str).str[:4]
+    current["bulan"] = current["tanggal"].astype(str).str[:7]
+    for measure in HEALTH_MEASURES:
+        current[f"terukur_{measure}"] = current[f"risiko_{measure}"].ne("Tidak diperiksa")
+    current["jumlah_berisiko"] = sum(
+        current[f"risiko_{measure}"].eq("Berisiko").astype(int) for measure in HEALTH_MEASURES
+    )
+    current["jumlah_diperiksa"] = sum(
+        current[f"risiko_{measure}"].ne("Tidak diperiksa").astype(int) for measure in HEALTH_MEASURES
+    )
+
+    shared = (
+        ["tahun", "bulan", "kriteria", "jumlah_berisiko", "jumlah_diperiksa"]
+        + [column for measure in HEALTH_MEASURES for column in (measure, f"risiko_{measure}", f"terukur_{measure}")]
+    )
+    dated = history[history["tahun"] != ""]
+    combined = pd.concat([dated[shared], current[shared]], ignore_index=True)
+
+    def layer_rows(scope: list[str] | None) -> pd.DataFrame:
+        return combined if scope is None else combined[combined["kriteria"].isin(scope)]
+
+    layers = []
+    for key, (label, scope) in HEALTH_LAYERS.items():
+        rows = layer_rows(scope)
+        indicators = []
+        for measure, measure_label in HEALTH_MEASURES.items():
+            series = []
+            for year in HEALTH_YEARS:
+                yearly = rows[rows["tahun"] == year]
+                counts = Counter(yearly[f"risiko_{measure}"])
+                assessed = sum(count for band, count in counts.items() if band != "Tidak diperiksa")
+                series.append({
+                    "tahun": int(year),
+                    "kunjungan": int(len(yearly)),
+                    # Had a reading at all.
+                    "terukur": int(yearly[f"terukur_{measure}"].astype(bool).sum()),
+                    # Had a reading that could be placed in a band.
+                    "dinilai": int(assessed),
+                    "pita": {band: int(counts.get(band, 0)) for band in HEALTH_BANDS},
+                    "porsi_berisiko": round(counts.get("Berisiko", 0) / assessed, 4) if assessed else None,
+                })
+            indicators.append({
+                "kunci": measure,
+                "indikator": measure_label,
+                "berbasis_gender": measure in {"lingkar_perut", "asam_urat"},
+                "seri": series,
+            })
+        # Ordered by the most recent year with a reading, so the chart opens on
+        # what matters now rather than on what happened in 2022.
+        indicators.sort(key=lambda row: row["seri"][-1]["porsi_berisiko"] or 0, reverse=True)
+        layers.append({
+            "kunci": key,
+            "label": label,
+            "kunjungan": int(len(rows)),
+            "indikator": indicators,
+            "partisipasi": [
+                {
+                    "tahun": int(year),
+                    "kunjungan": int((rows["tahun"] == year).sum()),
+                    "bulan_layanan": int(rows.loc[rows["tahun"] == year, "bulan"].nunique()),
+                }
+                for year in HEALTH_YEARS
+            ],
+            "multirisiko": [
+                {"jumlah_indikator": int(count), "kunjungan": int(total)}
+                for count, total in sorted(Counter(
+                    rows.loc[rows["jumlah_diperiksa"] == len(HEALTH_MEASURES), "jumlah_berisiko"]
+                ).items())
+            ],
+            "diperiksa_lengkap": int((rows["jumlah_diperiksa"] == len(HEALTH_MEASURES)).sum()),
+        })
+
+    # Repeat attendance, from the registry panel: one row per person, up to five
+    # examinations each. It is the only source shaped to answer this at all.
+    panel = history[history["urutan_kunjungan"] != ""].copy()
+    panel["urutan_kunjungan"] = pd.to_numeric(panel["urutan_kunjungan"], errors="coerce")
+    reach = panel.groupby("peserta_ref")["urutan_kunjungan"].max()
+    retention = [
+        {"kunjungan_ke": step, "orang": int((reach >= step).sum())}
+        for step in range(1, int(reach.max()) + 1)
+    ]
+
+    quality = [
+        {
+            "tahun": int(year),
+            **{
+                label: int(((dated["tahun"] == year) & (dated["kualitas"] == label)).sum())
+                for label in ("Jelas", "Perlu verifikasi", "Tidak dicatat")
+            },
+        }
+        for year in HEALTH_YEARS[:-1]
+    ]
+
+    # output() mirrors a CSV only for list payloads, and this one is an object,
+    # so the tidy download is written explicitly. Without it the chart footer
+    # would offer "Unduh CSV" and hand the reader JSON.
+    pd.DataFrame([
+        {
+            "tahun": point["tahun"],
+            "lapisan": layer["label"],
+            "indikator": measure["indikator"],
+            "kunjungan": point["kunjungan"],
+            "terukur": point["terukur"],
+            "dinilai": point["dinilai"],
+            **{f"pita_{band.lower().replace(' ', '_')}": count for band, count in point["pita"].items()},
+            "porsi_berisiko": point["porsi_berisiko"],
+        }
+        for layer in layers
+        for measure in layer["indikator"]
+        for point in measure["seri"]
+    ]).to_csv(PUBLIC_DATA_DIR / "hpu_posbindu_tahunan.csv", index=False)
+
+    output("hpu_posbindu_tahunan.json", {
+        "periode": "2022–2026",
+        "tahun": [int(year) for year in HEALTH_YEARS],
+        "sumber_per_tahun": [
+            {
+                "tahun": int(year),
+                "sumber": HEALTH_PROVENANCE[year][0],
+                "presisi": HEALTH_PROVENANCE[year][1],
+                "bulan_layanan": int(combined.loc[combined["tahun"] == year, "bulan"].nunique()),
+                "kunjungan": int((combined["tahun"] == year).sum()),
+            }
+            for year in HEALTH_YEARS
+        ],
+        "lapisan": layers,
+        "kualitas": quality,
+        "retensi": retention,
+        "tanpa_tahun": int((history["tahun"] == "").sum()),
+        "komposisi_kriteria": records(
+            combined.groupby(["tahun", "kriteria"]).size().reset_index(name="n").sort_values(["tahun", "n"], ascending=[True, False])
+        ),
+        "catatan": (
+            "Agregat anonim. Kategori 2022–2025 dihitung ulang dari nilai mentah memakai ambang "
+            "yang dibaca balik dari sumber 2026 (pipeline/mappings/posbindu_ambang.csv). Lingkar "
+            "perut dan asam urat memakai ambang berbeda per jenis kelamin, sehingga kunjungan "
+            "tanpa data gender terukur tetapi tidak dinilai."
+        ),
+    })
+
+
 def main() -> None:
     snapshot_output()
     tck_outputs()
@@ -504,6 +699,7 @@ def main() -> None:
     student_profile_outputs()
     tracer_outputs()
     health_outputs()
+    health_longitudinal_outputs()
 
     citations = pd.read_csv(CLEAN_DIR / "citations.csv")
     citations["year"] = pd.to_numeric(citations["year"], errors="coerce").astype("Int64")

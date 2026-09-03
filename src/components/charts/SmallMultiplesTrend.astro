@@ -1,0 +1,462 @@
+---
+import ChartFrame from "./ChartFrame.astro";
+import type { ChartChromeProps } from "./_types";
+import { finite, formatNumber, slugify, textLines } from "./_utils";
+
+/**
+ * A grid of small multiples: one 100% stacked area per indicator, over time.
+ *
+ * Six indicators across five years is thirty numbers. As one chart it is
+ * spaghetti; as six full-size charts it is six scales to reconcile. Small
+ * multiples give every panel the same axes, the same bands and the same
+ * baseline, so the reader compares shapes instead of re-reading legends — the
+ * only thing that varies between panels is the data.
+ *
+ * The band being watched is stacked against the baseline rather than floating
+ * on top of the others, because a band with a moving floor cannot be read for
+ * trend. Its upper edge is drawn as a line, which makes that trend the most
+ * legible mark in the panel.
+ */
+interface TrendPoint extends Record<string, unknown> {
+  tahun: number;
+  /** Counts per band key. Shares are taken over the assessed total below. */
+  pita: Record<string, number>;
+  /** Visits that could be placed in a band — the denominator of every share. */
+  dinilai: number;
+  /** Visits with a reading, which can exceed `dinilai` when a cut-off needs
+      information the source never recorded. */
+  terukur?: number;
+}
+
+interface TrendPanel extends Record<string, unknown> {
+  label: string;
+  points: TrendPoint[];
+  /** Shown under the panel title, for a caveat that belongs to this indicator. */
+  note?: string;
+}
+
+interface BandSpec {
+  key: string;
+  label: string;
+  color: string;
+  pattern?: "solid" | "diagonal" | "dots" | "cross";
+}
+
+interface Props extends Omit<ChartChromeProps<Record<string, unknown>>, "tableRows" | "tableColumns"> {
+  panels: TrendPanel[];
+  /** Stacking order, from the baseline upward. */
+  bands: BandSpec[];
+  /** Band whose upper edge is drawn as a line and labelled. Defaults to the first. */
+  highlight?: string;
+  columns?: number;
+  width?: number;
+  panelHeight?: number;
+  /** Years whose source could not date a visit to the day. Hatched, not hidden. */
+  provisionalYears?: number[];
+  provisionalLabel?: string;
+  valueSuffix?: string;
+}
+
+const {
+  panels,
+  bands,
+  highlight = bands[0]?.key,
+  columns = 3,
+  width = 980,
+  panelHeight = 124,
+  provisionalYears = [],
+  provisionalLabel,
+  valueSuffix = "berisiko",
+  title,
+  deck,
+  id = slugify(title),
+  source,
+  extracted,
+  csvHref,
+  tableCaption,
+  class: className,
+  hideHeader,
+} = Astro.props;
+
+const margin = { top: 26, right: 22, bottom: 58, left: 46 };
+const gapX = 30;
+const headerHeight = 46;
+const rows = Math.ceil(panels.length / columns);
+const panelWidth = (width - margin.left - margin.right - gapX * (columns - 1)) / columns;
+const rowHeight = headerHeight + panelHeight + 46;
+const height = margin.top + rows * rowHeight + margin.bottom;
+
+const years = [...new Set(panels.flatMap((panel) => panel.points.map((point) => point.tahun)))].sort((a, b) => a - b);
+const stepX = years.length > 1 ? panelWidth / (years.length - 1) : 0;
+const provisional = new Set(provisionalYears);
+
+const laid = panels.map((panel, index) => {
+  const column = index % columns;
+  const row = Math.floor(index / columns);
+  const left = margin.left + column * (panelWidth + gapX);
+  const top = margin.top + row * rowHeight + headerHeight;
+
+  const points = years.map((year, yearIndex) => {
+    const point = panel.points.find((candidate) => candidate.tahun === year);
+    const counts = Object.fromEntries(bands.map((band) => [band.key, Math.max(0, finite(point?.pita?.[band.key]))]));
+    const assessed = finite(point?.dinilai);
+    /* A year nobody was assessed in has no share to draw. It becomes a break in
+       the area rather than a zero, which would read as "everybody was normal". */
+    const shares = assessed > 0
+      ? Object.fromEntries(bands.map((band) => [band.key, counts[band.key] / assessed]))
+      : null;
+    return {
+      year,
+      x: left + yearIndex * stepX,
+      counts,
+      assessed,
+      measured: finite(point?.terukur, assessed),
+      shares,
+    };
+  });
+
+  /* Cumulative from the baseline up, so the highlighted band keeps a flat floor. */
+  const stacked = points.map((point) => {
+    let cursor = 0;
+    const levels = bands.map((band) => {
+      const share = point.shares ? point.shares[band.key] : 0;
+      const level = { band, from: cursor, to: cursor + share };
+      cursor += share;
+      return level;
+    });
+    return { ...point, levels };
+  });
+
+  const y = (value: number) => top + (1 - value) * panelHeight;
+  const runs: (typeof stacked)[] = [];
+  for (const point of stacked) {
+    if (!point.shares) { runs.push([]); continue; }
+    if (!runs.length) runs.push([]);
+    runs[runs.length - 1].push(point);
+  }
+
+  const areas = bands.map((band, bandIndex) => ({
+    band,
+    bandIndex,
+    paths: runs
+      .filter((run) => run.length > 0)
+      .map((run) => {
+        const top_ = run.map((point) => `${point.x} ${y(point.levels[bandIndex].to)}`);
+        const bottom = [...run].reverse().map((point) => `${point.x} ${y(point.levels[bandIndex].from)}`);
+        /* A single point has no width, so it is drawn as a short bar instead of
+           a degenerate polygon that would vanish. */
+        if (run.length === 1) {
+          const only = run[0];
+          const barWidth = Math.min(18, stepX || 18);
+          return `M ${only.x - barWidth / 2} ${y(only.levels[bandIndex].to)} H ${only.x + barWidth / 2} V ${y(only.levels[bandIndex].from)} H ${only.x - barWidth / 2} Z`;
+        }
+        return `M ${top_.join(" L ")} L ${bottom.join(" L ")} Z`;
+      }),
+  }));
+
+  const highlightIndex = Math.max(0, bands.findIndex((band) => band.key === highlight));
+  const edge = runs
+    .filter((run) => run.length > 1)
+    .map((run) => `M ${run.map((point) => `${point.x} ${y(point.levels[highlightIndex].to)}`).join(" L ")}`);
+  const marks = stacked.filter((point) => point.shares);
+  const first = marks[0];
+  const last = marks.at(-1);
+
+  return {
+    ...panel,
+    lines: textLines(panel.label, Math.max(16, Math.floor(panelWidth / 7.4)), 2),
+    left,
+    top,
+    y,
+    points: stacked,
+    areas,
+    highlightIndex,
+    edge,
+    marks,
+    first,
+    last,
+    latest: last?.shares ? last.shares[highlight] : null,
+    earliest: first?.shares ? first.shares[highlight] : null,
+  };
+});
+
+const share = (value: number | null) => (value === null ? "—" : `${formatNumber(value * 100, 0)}%`);
+
+const tableRows = laid.flatMap((panel) =>
+  panel.points
+    .filter((point) => point.shares)
+    .map((point) => ({
+      Indikator: panel.label,
+      Tahun: String(point.year),
+      Terukur: formatNumber(point.measured, 0),
+      Dinilai: formatNumber(point.assessed, 0),
+      ...Object.fromEntries(bands.map((band) => [band.label, formatNumber(point.counts[band.key], 0)])),
+      Porsi: share(point.shares![highlight]),
+    })),
+);
+const tableColumns = [
+  { key: "Indikator", label: "Indikator" },
+  { key: "Tahun", label: "Tahun" },
+  { key: "Terukur", label: "Terukur", align: "end" as const },
+  { key: "Dinilai", label: "Dinilai", align: "end" as const },
+  ...bands.map((band) => ({ key: band.label, label: band.label, align: "end" as const })),
+  { key: "Porsi", label: `Porsi ${valueSuffix}`, align: "end" as const },
+];
+
+const provisionalSpan = laid.length && provisional.size
+  ? years.reduce<{ from: number; to: number } | null>((span, year, index) => {
+      if (!provisional.has(year)) return span;
+      const x = index * stepX;
+      return span ? { from: Math.min(span.from, x), to: Math.max(span.to, x) } : { from: x, to: x };
+    }, null)
+  : null;
+---
+
+<ChartFrame
+  {id}
+  {title}
+  {deck}
+  {source}
+  {extracted}
+  {csvHref}
+  {tableCaption}
+  {tableRows}
+  {tableColumns}
+  class={className}
+  {hideHeader}
+  minPlotWidth={760}
+>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${id}-svg-title ${id}-svg-desc`}>
+    <title id={`${id}-svg-title`}>{title}</title>
+    <desc id={`${id}-svg-desc`}>
+      {panels.length} panel kecil dengan sumbu yang sama, masing-masing membagi peserta yang dinilai
+      ke dalam {bands.length} pita risiko dari {years[0]} sampai {years.at(-1)}. Nilai lengkap tersedia pada tabel.
+    </desc>
+
+    <defs>
+      {bands.map((band, index) => (
+        <pattern id={`${id}-band-${index}`} width="9" height="9" patternUnits="userSpaceOnUse">
+          <rect width="9" height="9" fill={band.color} />
+          {band.pattern === "diagonal" && <path d="M -2 2 L 2 -2 M 0 9 L 9 0 M 7 11 L 11 7" stroke="#fff" stroke-width="1.4" opacity="0.5" />}
+          {band.pattern === "dots" && <circle cx="3" cy="3" r="1.2" fill="#fff" opacity="0.62" />}
+          {band.pattern === "cross" && <path d="M 1 4.5 H 8 M 4.5 1 V 8" stroke="#fff" stroke-width="1.1" opacity="0.5" />}
+        </pattern>
+      ))}
+      <pattern id={`${id}-provisional`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="1.1" opacity="0.34" />
+      </pattern>
+    </defs>
+
+    {laid.map((panel) => (
+      <g class="panel">
+        <text class="panel-title" x={panel.left} y={panel.top - 26}>
+          {panel.lines.map((line, index) => (
+            <tspan x={panel.left} dy={index === 0 ? 0 : 14}>{line}</tspan>
+          ))}
+        </text>
+        <text class="panel-value" x={panel.left + panelWidth} y={panel.top - 26} text-anchor="end">
+          {share(panel.latest)}
+        </text>
+
+        <g aria-hidden="true">
+          <rect class="plot" x={panel.left} y={panel.top} width={panelWidth} height={panelHeight} />
+          {[0.25, 0.5, 0.75].map((tick) => (
+            <line class="grid" x1={panel.left} x2={panel.left + panelWidth} y1={panel.y(tick)} y2={panel.y(tick)} />
+          ))}
+
+          {panel.areas.map((area) =>
+            area.paths.map((path) => (
+              <path class="area" d={path} fill={`url(#${id}-band-${area.bandIndex})`} />
+            )),
+          )}
+
+          {provisionalSpan && (
+            <rect
+              class="provisional"
+              x={panel.left + provisionalSpan.from - Math.min(stepX, 26) / 2}
+              y={panel.top}
+              width={provisionalSpan.to - provisionalSpan.from + Math.min(stepX, 26)}
+              height={panelHeight}
+              fill={`url(#${id}-provisional)`}
+            />
+          )}
+
+          {panel.edge.map((path) => <path class="edge" d={path} />)}
+          <line class="baseline" x1={panel.left} x2={panel.left + panelWidth} y1={panel.y(0)} y2={panel.y(0)} />
+        </g>
+
+        {panel.points.map((point) => {
+          if (!point.shares) return null;
+          const detail = bands
+            .map((band) => `${band.label} ${formatNumber(point.counts[band.key], 0)}`)
+            .join(", ");
+          const tooltip = `${panel.label} ${point.year}: ${detail}. Dinilai ${formatNumber(point.assessed, 0)} dari ${formatNumber(point.measured, 0)} kunjungan terukur.`;
+          return (
+            <g class="mark" tabindex="0" data-tooltip={tooltip} aria-label={tooltip}>
+              <circle
+                class="dot"
+                cx={point.x}
+                cy={panel.y(point.levels[panel.highlightIndex].to)}
+                r="3.4"
+              />
+              <circle class="hit" cx={point.x} cy={panel.y(point.levels[panel.highlightIndex].to)} r="15" />
+            </g>
+          );
+        })}
+
+        {panel.note && (
+          <text class="panel-note" x={panel.left} y={panel.top + panelHeight + 34}>{panel.note}</text>
+        )}
+
+        <g class="axis" aria-hidden="true">
+          {years.map((year, index) => (
+            <text
+              class:list={["year", { faded: provisional.has(year) }]}
+              x={panel.left + index * stepX}
+              y={panel.top + panelHeight + 18}
+              text-anchor={index === 0 ? "start" : index === years.length - 1 ? "end" : "middle"}
+            >
+              {year}
+            </text>
+          ))}
+        </g>
+      </g>
+    ))}
+
+    {/* One scale label per row, not per grid: the axis is shared, but a row
+        two hundred pixels below the last label is a row without an axis. */}
+    <g class="axis" aria-hidden="true">
+      {Array.from({ length: rows }, (_, row) =>
+        [0, 0.5, 1].map((tick) => (
+          <text
+            class="tick"
+            x={margin.left - 10}
+            y={margin.top + row * rowHeight + headerHeight + (1 - tick) * panelHeight + 4}
+            text-anchor="end"
+          >
+            {Math.round(tick * 100)}%
+          </text>
+        )),
+      )}
+    </g>
+
+    <g class="legend" aria-hidden="true" transform={`translate(${margin.left} ${height - margin.bottom + 22})`}>
+      {bands.map((band, index) => (
+        <g transform={`translate(${index * 168} 0)`}>
+          <rect width="16" height="11" y="-9" rx="2" fill={`url(#${id}-band-${index})`} />
+          <text x="24" y="0">{band.label}</text>
+        </g>
+      ))}
+      {provisionalLabel && (
+        <g transform={`translate(${bands.length * 168} 0)`}>
+          <rect class="provisional-key" width="16" height="11" y="-9" rx="2" fill={`url(#${id}-provisional)`} />
+          <text x="24" y="0">{provisionalLabel}</text>
+        </g>
+      )}
+    </g>
+  </svg>
+</ChartFrame>
+
+<style>
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--ink, #2b2d2f);
+    font-family: var(--font-sans, "Gama Sans", system-ui, sans-serif);
+  }
+
+  .panel-title {
+    fill: currentColor;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .panel-value {
+    fill: currentColor;
+    font-size: 19px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel-note,
+  .tick,
+  .year,
+  .legend text {
+    fill: var(--ink-muted, #5b6165);
+    font-size: 11px;
+  }
+
+  .legend text {
+    dominant-baseline: middle;
+  }
+
+  .year.faded {
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  .plot {
+    fill: var(--surface-2, #eef0f1);
+  }
+
+  .grid {
+    stroke: var(--rule-light, #dfe3e5);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .baseline {
+    stroke: var(--rule, #c3c9cc);
+    stroke-width: 1.2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .area {
+    stroke: var(--surface, #fff);
+    stroke-width: 0.6;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .edge {
+    fill: none;
+    stroke: var(--ink, #2b2d2f);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .dot {
+    fill: var(--surface, #fff);
+    stroke: var(--ink, #2b2d2f);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .hit {
+    fill: transparent;
+  }
+
+  .mark {
+    transition: opacity var(--duration-base, 180ms) var(--ease-standard, cubic-bezier(0.2, 0, 0.2, 1));
+  }
+
+  .mark:hover .dot,
+  .mark:focus .dot {
+    r: 5;
+  }
+
+  .mark:focus-visible {
+    outline: none;
+  }
+
+  .mark:focus-visible .dot {
+    stroke: var(--focus, #1c75bc);
+    stroke-width: 3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark { transition: none; }
+  }
+</style>

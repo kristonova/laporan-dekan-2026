@@ -1,0 +1,19 @@
+indikator,jenis_kelamin,urutan,operator,ambang,nilai_sumber,catatan
+imt,,1,<,18.5,Underweight,WHO Asia-Pasifik. Baris dibaca berurutan; yang pertama cocok dipakai.
+imt,,2,<,23,Normal,
+imt,,3,<,25,Overweight,
+imt,,4,selain itu,,Obesity,
+lingkar_perut,Pria,1,<=,90,Normal,P2PTM Kemenkes: lingkar perut di atas 90 cm pada pria = obesitas sentral.
+lingkar_perut,Pria,2,selain itu,,Tidak Normal,
+lingkar_perut,Wanita,1,<=,80,Normal,P2PTM Kemenkes: lingkar perut di atas 80 cm pada wanita = obesitas sentral.
+lingkar_perut,Wanita,2,selain itu,,Tidak Normal,
+asam_urat,Pria,1,<=,7.0,Normal,Ambang rujukan asam urat pria.
+asam_urat,Pria,2,selain itu,,Tinggi,
+asam_urat,Wanita,1,<=,6.0,Normal,Ambang rujukan asam urat wanita.
+asam_urat,Wanita,2,selain itu,,Tinggi,
+kolesterol,,1,<,150,Normal,Kolesterol total.
+kolesterol,,2,<,190,Waspada,
+kolesterol,,3,selain itu,,Tinggi,
+gula_darah,,1,<,145,Normal,Gula darah sewaktu.
+gula_darah,,2,<,200,Waspada,
+gula_darah,,3,selain itu,,Tinggi,

@@ -329,8 +329,20 @@ POSBINDU_LABELS = {
 
 POSBINDU_MEASURES = ["imt", "tekanan_darah", "lingkar_perut", "asam_urat", "kolesterol", "gula_darah"]
 
-# Screening staff, so the two categories the report is about are spelled one way.
-POSBINDU_CRITERIA = {"dosen": "Dosen", "tendik": "Tendik", "thl": "THL"}
+# Screening staff, so the two categories the report is about are spelled one
+# way. The 2022-2025 sources spell the same roles differently again, so their
+# labels join the same table rather than becoming separate categories.
+POSBINDU_CRITERIA = {
+    "dosen": "Dosen",
+    "tendik": "Tendik", "tenaga kependidikan": "Tendik",
+    "thl": "THL", "tenaga harian lepas": "THL",
+    "mahasiswa": "Mahasiswa",
+    "cleaning service": "Cleaning Service",
+    "asisten": "Asisten",
+    "lain-lain": "Lainnya", "lainnya (kode l)": "Lainnya",
+    # The source itself could not place these; they are not guessed here.
+    "perlu klasifikasi": "Tanpa kriteria", "belum dipastikan": "Tanpa kriteria",
+}
 
 
 def normalize_measure(column: str, value: object) -> str:
@@ -375,6 +387,141 @@ def clean_posbindu() -> None:
     participants = pd.read_csv(LOADED_DIR / "posbindu_participants.csv").fillna("")
     participants["kriteria"] = participants["kriteria"].astype(str).str.strip().replace("", "Tidak diketahui")
     participants[["kriteria"]].to_csv(CLEAN_DIR / "posbindu_participants.csv", index=False)
+
+
+# --- Posbindu 2022-2025: categories recomputed from raw measurements ---------
+
+# The 2022-2025 sources recorded numbers, not interpretations. The 2026 workbook
+# recorded both, which is what makes the older years recoverable: the thresholds
+# below were read back off the 2026 pairs and reproduce its own labels exactly
+# (blood pressure, waist, uric acid, cholesterol and glucose all 100%; BMI on
+# 273 of 278, the five gaps being rows where the source contradicts its own
+# numbers). Applying them to 2022-2025 therefore yields a series that is
+# comparable with 2026 rather than merely adjacent to it.
+POSBINDU_HISTORY_MEASURES = {
+    "imt": "imt",
+    "lingkar_perut": "lp",
+    "asam_urat": "asam_urat",
+    "kolesterol": "kolesterol",
+    "gula_darah": "gula_darah",
+}
+
+# Waist circumference and uric acid are the two indicators whose cut-off depends
+# on sex. The digitisation sheet never recorded it, so a row without a sex is
+# left unassessed rather than assessed against the wrong threshold.
+POSBINDU_SEXED = {"lingkar_perut", "asam_urat"}
+
+
+def posbindu_thresholds() -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Clinical cut-offs, from the two reviewable mapping tables.
+
+    Kept beside posbindu_risiko.csv for the same reason: the data owner can
+    check the clinical judgement without reading code.
+    """
+    single = pd.read_csv(MAPPINGS_DIR / "posbindu_ambang.csv")
+    tension = pd.read_csv(MAPPINGS_DIR / "posbindu_ambang_tensi.csv")
+    return single.sort_values("urutan"), tension.sort_values("urutan")
+
+
+def classify_measure(table: pd.DataFrame, measure: str, value: object, sex: str) -> str:
+    """First matching rule wins, in the order the mapping table lists them."""
+    if value == "" or pd.isna(value):
+        return ""
+    rules = table[table["indikator"] == measure]
+    if measure in POSBINDU_SEXED:
+        if not sex:
+            return ""
+        rules = rules[rules["jenis_kelamin"] == sex]
+    for rule in rules.itertuples():
+        operator = str(rule.operator).strip()
+        if operator == "selain itu":
+            return str(rule.nilai_sumber)
+        if operator == "<" and float(value) < float(rule.ambang):
+            return str(rule.nilai_sumber)
+        if operator == "<=" and float(value) <= float(rule.ambang):
+            return str(rule.nilai_sumber)
+    return ""
+
+
+def classify_tension(table: pd.DataFrame, systolic: object, diastolic: object) -> str:
+    """Blood pressure needs both readings, so it has its own small table."""
+    if systolic == "" or diastolic == "" or pd.isna(systolic) or pd.isna(diastolic):
+        return ""
+    for rule in table.itertuples():
+        if pd.isna(rule.sistolik_minimal) and pd.isna(rule.diastolik_minimal):
+            return str(rule.nilai_sumber)
+        if float(systolic) >= float(rule.sistolik_minimal) or float(diastolic) >= float(rule.diastolik_minimal):
+            return str(rule.nilai_sumber)
+    return ""
+
+
+def clean_posbindu_history() -> None:
+    history = pd.read_csv(LOADED_DIR / "posbindu_history.csv")
+    single, tension = posbindu_thresholds()
+    bands = risk_bands()
+
+    def number(column: str) -> pd.Series:
+        return pd.to_numeric(history[column], errors="coerce")
+
+    weight, height = number("bb"), number("tb")
+    # The digitisation sheet carries a computed BMI; the registry carries a
+    # column full of #VALUE!. Either way it is recomputed where the inputs exist.
+    body_mass = number("imt").where(lambda series: series.notna(), weight / (height / 100) ** 2)
+    body_mass = body_mass.where(height > 0)
+
+    values = {
+        "imt": body_mass,
+        "lp": number("lp"),
+        "asam_urat": number("asam_urat"),
+        "kolesterol": number("kolesterol"),
+        "gula_darah": number("gula_darah"),
+    }
+    systolic, diastolic = number("sistolik"), number("diastolik")
+    sex = history["jenis_kelamin"].fillna("").astype(str).str.strip()
+
+    clean = pd.DataFrame({
+        "tahun": history["tahun"].fillna("").map(lambda year: "" if year == "" else str(int(year))),
+        # Month, not date: the registry never had a trustworthy day, so service
+        # cadence is counted in months across every source.
+        "bulan": history["bulan"].fillna(""),
+        "presisi": history["presisi"],
+        "sumber": history["sumber"],
+        "kualitas": history["kualitas"].fillna("Tidak dicatat").replace("", "Tidak dicatat"),
+        "jenis_kelamin": sex.replace("", "Tidak diketahui"),
+        "peserta_ref": history["peserta_ref"].fillna(""),
+        "urutan_kunjungan": history["urutan_kunjungan"].fillna(""),
+    })
+
+    for measure, column in POSBINDU_HISTORY_MEASURES.items():
+        series = values[column]
+        raw = [classify_measure(single, measure, value, row_sex) for value, row_sex in zip(series, sex)]
+        clean[measure] = [normalize_measure(measure, label) for label in raw]
+        clean[f"risiko_{measure}"] = clean[measure].map(
+            lambda label, measure=measure: bands.get((measure, label), "Tidak diperiksa")
+        )
+        # A reading that exists but cannot be judged for want of a sex is not the
+        # same as no reading at all, and the two are never merged in the totals.
+        clean[f"terukur_{measure}"] = series.notna()
+
+    raw_tension = [classify_tension(tension, top, bottom) for top, bottom in zip(systolic, diastolic)]
+    clean["tekanan_darah"] = [normalize_measure("tekanan_darah", label) for label in raw_tension]
+    clean["risiko_tekanan_darah"] = clean["tekanan_darah"].map(
+        lambda label: bands.get(("tekanan_darah", label), "Tidak diperiksa")
+    )
+    clean["terukur_tekanan_darah"] = systolic.notna() & diastolic.notna()
+
+    clean["kriteria"] = (
+        history["kriteria"].fillna("").astype(str).str.strip()
+        .map(lambda value: POSBINDU_CRITERIA.get(value.lower(), value.title() if value else "Tanpa kriteria"))
+    )
+    # How many of the six indicators put this visit in the highest band at once.
+    clean["jumlah_berisiko"] = sum(
+        clean[f"risiko_{measure}"].eq("Berisiko").astype(int) for measure in POSBINDU_MEASURES
+    )
+    clean["jumlah_diperiksa"] = sum(
+        clean[f"risiko_{measure}"].ne("Tidak diperiksa").astype(int) for measure in POSBINDU_MEASURES
+    )
+    clean.to_csv(CLEAN_DIR / "posbindu_history.csv", index=False)
 
 
 # --- Academic labels ---------------------------------------------------------
@@ -670,6 +817,7 @@ def main() -> None:
     clean_students(province_lookup)
     clean_tracer()
     clean_posbindu()
+    clean_posbindu_history()
 
     # Academic tables arrive already aggregated; they only need to be carried
     # forward so the aggregate stage reads everything from one directory.

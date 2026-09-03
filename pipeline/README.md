@@ -18,7 +18,7 @@ python -m venv .venv
 
 Urutan tahap:
 
-1. `00_load.py` membaca seluruh sumber sekali: CSV multi-part P2M di `data ugm/p2m/`, berkas Excel `TCK 2026.xlsx`, workbook kerja sama LENTERA, tujuh tabel akademik, dua ekspor tracer study `.xls`, serta rekap Posbindu. Baris didedup dan asal data dicatat pada manifest.
+1. `00_load.py` membaca seluruh sumber sekali: CSV multi-part P2M di `data ugm/p2m/`, berkas Excel `TCK 2026.xlsx`, workbook kerja sama LENTERA, tujuh tabel akademik, dua ekspor tracer study `.xls`, serta empat sumber Posbindu (rekap 2026, digitasi arsip analog 2022–2024, dan registri peserta). Baris didedup dan asal data dicatat pada manifest.
 2. `01_clean.py` menormalisasi provinsi, memetakan departemen publikasi melalui ID Scopus, memulihkan pemisah ribuan skor SINTA, menghitung ulang rasio dan status TCK, mengklasifikasi bidang kerja lulusan, serta membuang kolom tingkat individu.
 3. `02_aggregate.py` menghasilkan JSON kecil di `src/data/derived/` dan cermin unduhan yang sudah disanitasi di `public/data/`.
 4. `03_validate.py` menguji jumlah part, angka jangkar PRD, 42 indikator TCK, arah indikator #27, kesesuaian dengan berkas rincian, dan ketiadaan kunci privat.
@@ -32,6 +32,11 @@ Urutan tahap:
 | `tck_2026_anggaran.json` | Pagu dan realisasi anggaran fakultas |
 | `provinsi_bps.csv` | Normalisasi nama provinsi ke kode BPS |
 | `bidang_kerja.csv` | Aturan regex bidang kerja tracer study → 13 sektor kanonik (99,8% terklasifikasi) |
+| `jalur_masuk.csv` | Normalisasi nama jalur masuk mahasiswa |
+| `pekerjaan_wali.csv` | Normalisasi pekerjaan wali mahasiswa |
+| `posbindu_risiko.csv` | Kategori klinis sumber → tiga pita risiko (Normal, Waspada, Berisiko) |
+| `posbindu_ambang.csv` | Ambang klinis per indikator dan jenis kelamin, dibaca berurutan dan yang pertama cocok dipakai |
+| `posbindu_ambang_tensi.csv` | Ambang tekanan darah, yang butuh sistolik dan diastolik sekaligus |
 
 ## Keputusan yang disengaja
 
@@ -41,5 +46,8 @@ Urutan tahap:
 - **Koordinat tidak ditebak.** `outreach_points.json` dan `partnership_points.json` mempertahankan status lokasi; UI memakai centroid provinsi skematik dengan label metodologis yang terlihat.
 - **Data perorangan tidak pernah keluar.** Nama, NIP/NIM/NIU, kontak, dan seluruh nilai pemeriksaan Posbindu dibuang di tahap load atau clean. `03_validate.py` menolak proses bila salah satu kunci privat muncul di `src/data/derived/`.
 - **Sesi Posbindu ganda didedup.** Satu lembar rekap menduplikasi sesi lain secara utuh; kunjungan dikunci pada pasangan (tanggal, peserta) sebelum nama dibuang.
+- **Kategori Posbindu 2022–2025 dihitung ulang, bukan ditebak.** Sumber lama hanya mencatat angka; berkas 2026 mencatat angka sekaligus interpretasinya. Ambang dibaca balik dari pasangan tersebut dan diverifikasi terhadap label 2026 itu sendiri: tekanan darah, lingkar perut, asam urat, kolesterol, dan gula darah cocok 100%, IMT 273 dari 278 (lima sisanya baris yang labelnya bertentangan dengan angkanya sendiri di berkas asli). Ambangnya tinggal di `mappings/`, bukan di kode.
+- **Dua sumber Posbindu disatukan per bulan, bukan per baris.** Digitasi arsip analog memegang 12 sesi bertanggal pasti; registri memegang bulan-bulan yang tidak pernah didigitasi — termasuk seluruh 2025. Registri hanya diterima untuk bulan yang tidak dicakup digitasi, sehingga kedua sumber tidak pernah menggambarkan sesi yang sama dan tidak ada pencocokan nama yang perlu dipercaya.
+- **Terukur dan dinilai dibedakan.** Lingkar perut dan asam urat berambang beda per jenis kelamin, yang tidak pernah dicatat lembar digitasi. Kunjungan tanpa gender dihitung terukur tetapi tidak dinilai; keduanya diekspor agar penyebut persentase tetap jujur.
 
 `build-service-worker.mjs` dijalankan setelah build untuk memasukkan seluruh output ber-hash ke precache. `check-build.mjs` memeriksa tautan internal, fragmen, nilai non-finit, format tahun, dan keberadaan setiap URL precache.

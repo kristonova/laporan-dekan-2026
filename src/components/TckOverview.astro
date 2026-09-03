@@ -105,7 +105,7 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
                       <span class="tck-row__status" aria-hidden="true">{statusIcon[row.status_kuartal]}</span>
                       <strong>{format(row.capaian_dinilai)}</strong>
                       <small>{row.satuan} · {format(ratio)}% {quarterLabel(row)} · {format(annualRatio)}% tahunan</small>
-                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dievaluasi pada {quarterLabel(row)}: capaian TW3 pada berkas sumber tercatat berupa cacah orang tanpa penyebut.</small>}
+                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dievaluasi pada {quarterLabel(row)}: pelaporan TW3 pada dokumen sumber baru memuat jumlah orang tanpa angka penyebut populasi.</small>}
                     </div>
                   </div>
                 </li>

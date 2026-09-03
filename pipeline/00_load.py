@@ -618,6 +618,175 @@ def load_posbindu() -> tuple[pd.DataFrame, pd.DataFrame]:
     return pd.DataFrame(visits), pd.DataFrame(participants)
 
 
+# --- Posbindu 2022-2025: the years the 2026 workbook does not reach ---------
+
+# The digitisation workbook is authoritative wherever it has a session: it
+# carries an exact date and a transcription audit. The registry is the only
+# record of the months it never covered, and the only record of 2025 at all.
+POSBINDU_HISTORY_FILE = "Rekap_Digitasi_Posbindu_Melati_FMIPA_UGM_2022_2024.xlsx"
+POSBINDU_HISTORY_SHEET = "Data Konsolidasi"
+POSBINDU_REGISTRY_FILE = "Data Posbindu.xlsx"
+
+# Registry dates survived Excel only as month precision (the day is always 01),
+# and 208 of them not even that. Anything before the programme began is noise.
+POSBINDU_FIRST_YEAR = 2022
+# 2026 belongs to the recap workbook, which still has real session dates.
+POSBINDU_LAST_HISTORY_YEAR = 2025
+
+POSBINDU_MEASURE_COLUMNS = {
+    "bb": "BB (kg)", "tb": "TB (cm)", "lp": "LP (cm)",
+    "sistolik": "Sistolik (mmHg)", "diastolik": "Diastolik (mmHg)",
+    "gula_darah": "GDS (mg/dL)", "asam_urat": "Asam Urat (mg/dL)",
+    "kolesterol": "Kolesterol (mg/dL)",
+}
+
+POSBINDU_SEX = {"Laki-laki": "Pria", "Perempuan": "Wanita"}
+
+
+def _posbindu_number(value: object) -> float | str:
+    """A measurement cell as a number, or "" when blank or unreadable.
+
+    Analog transcription leaves dashes, stray text and Indonesian decimal
+    commas behind; none of those may become a silent zero.
+    """
+    text = str(value if value is not None else "").strip().replace(",", ".")
+    if not text or text in {"-", "nan", "NaT"}:
+        return ""
+    try:
+        number = float(text)
+    except ValueError:
+        return ""
+    return "" if pd.isna(number) else number
+
+
+def load_posbindu_history() -> tuple[pd.DataFrame, dict]:
+    """Posbindu screening 2022-2025, reduced to anonymous per-visit measurements.
+
+    Two sources with different strengths are stitched on the month, the finest
+    precision they share:
+
+    * The digitisation workbook holds 12 sessions between October 2022 and July
+      2024, with exact dates and a per-row transcription-quality flag.
+    * The registry holds one row per person and up to five examinations each.
+      Its dates survived only as month precision, so it is admitted for the
+      months the digitisation never covered -- every 2025 session, and the
+      September-December sessions of 2023 and 2024 that were never digitised.
+
+    Admitting the registry by month rather than by row means the two sources can
+    never describe the same session, so nothing is counted twice and no fuzzy
+    name match has to be trusted. Names are used only to carry sex across from
+    the registry and are dropped before the frame is built (PRD section 11.3).
+    """
+    digitised = read_workbook(HEALTH_DIR / POSBINDU_HISTORY_FILE, POSBINDU_HISTORY_SHEET, header=0)
+    registry = read_workbook(HEALTH_DIR / POSBINDU_REGISTRY_FILE, "Sheet1", header=0)
+
+    # Both sheets carry one plain header row, unlike the merged headers
+    # elsewhere in this module, so pandas may name the columns here.
+    imt_column = next((name for name in digitised.columns if str(name).startswith("IMT Hitung")), None)
+    if imt_column is None:
+        raise SystemExit(f"Kolom 'IMT Hitung' hilang dari {POSBINDU_HISTORY_FILE}.")
+
+    # Sex is recorded only in the registry; the digitisation sheet never had it.
+    sex_by_name: dict[str, str] = {}
+    for _, row in registry.iterrows():
+        key = _posbindu_key(row.get("Nama Lengkap"))
+        sex = POSBINDU_SEX.get(str(row.get("Jenis Kelamin") or "").strip(), "")
+        if key and sex:
+            sex_by_name[key] = sex
+
+    rows: list[dict] = []
+    digitised_months: set[str] = set()
+
+    for _, row in digitised.iterrows():
+        date = excel_date(row.get("Tanggal"))
+        if date is None:
+            continue
+        digitised_months.add(date.strftime("%Y-%m"))
+        rows.append({
+            "tahun": date.year,
+            "bulan": date.strftime("%Y-%m"),
+            "sumber": "digitasi",
+            "presisi": "sesi",
+            "kriteria": str(row.get("Status Standar") or "").strip(),
+            "jenis_kelamin": sex_by_name.get(_posbindu_key(row.get("Nama")), ""),
+            "kualitas": str(row.get("Kualitas Transkripsi") or "").strip(),
+            "peserta_ref": "",
+            "urutan_kunjungan": "",
+            "imt": _posbindu_number(row.get(imt_column)),
+            **{field: _posbindu_number(row.get(column)) for field, column in POSBINDU_MEASURE_COLUMNS.items()},
+        })
+
+    # --- registry, unpivoted from five examination blocks to one row each -----
+    skipped = {"bulan_sudah_didigitasi": 0, "di_luar_rentang": 0}
+    undated = 0
+
+    for position, (_, row) in enumerate(registry.iterrows()):
+        if not str(row.get("Nama Lengkap") or "").strip():
+            continue
+        sex = POSBINDU_SEX.get(str(row.get("Jenis Kelamin") or "").strip(), "")
+        kriteria = str(row.get("Kriteria") or "").strip()
+        for visit in range(1, 6):
+            measures = {
+                "bb": _posbindu_number(row.get(f"BB{visit}")),
+                "tb": _posbindu_number(row.get(f"TB{visit}")),
+                "lp": _posbindu_number(row.get(f"LP{visit}")),
+                "gula_darah": _posbindu_number(row.get(f"GDS{visit}")),
+                "kolesterol": _posbindu_number(row.get(f"KLS{visit}")),
+                "asam_urat": _posbindu_number(row.get(f"AU{visit}")),
+            }
+            # Blood pressure arrives as a single "135/83" cell.
+            reading = re.match(r"^\s*(\d{2,3})\s*/\s*(\d{2,3})\s*$", str(row.get(f"TD{visit}") or "").strip())
+            measures["sistolik"] = float(reading.group(1)) if reading else ""
+            measures["diastolik"] = float(reading.group(2)) if reading else ""
+            # Registry BMI columns are full of #VALUE!; it is recomputed in clean.
+            measures["imt"] = ""
+            if not any(value != "" for value in measures.values()):
+                continue
+
+            raw = row.get(f"Pemeriksaan {visit}")
+            date = excel_date(raw) if str(raw or "").strip() not in {"", "-", "nan"} else None
+            if date is not None and not POSBINDU_FIRST_YEAR <= date.year <= POSBINDU_LAST_HISTORY_YEAR:
+                skipped["di_luar_rentang"] += 1
+                continue
+            if date is None:
+                # Truncated text like "-Agustus 2" survives as a countable visit
+                # with no year, never as a guess.
+                undated += 1
+                year, month, precision = "", "", "tidak pasti"
+            else:
+                month = date.strftime("%Y-%m")
+                if month in digitised_months:
+                    skipped["bulan_sudah_didigitasi"] += 1
+                    continue
+                year, precision = date.year, "bulan"
+
+            rows.append({
+                "tahun": year,
+                "bulan": month,
+                "sumber": "registri",
+                "presisi": precision,
+                "kriteria": kriteria,
+                "jenis_kelamin": sex,
+                "kualitas": "",
+                "peserta_ref": position,
+                "urutan_kunjungan": visit,
+                **measures,
+            })
+
+    digitised_rows = sum(1 for row in rows if row["sumber"] == "digitasi")
+    summary = {
+        "sesi_digitasi": len(digitised_months),
+        "baris_digitasi": digitised_rows,
+        "baris_registri": len(rows) - digitised_rows,
+        "registri_tanpa_tanggal": undated,
+        "registri_dilewati": skipped,
+        "gender_digitasi_dari_registri": sum(
+            1 for row in rows if row["sumber"] == "digitasi" and row["jenis_kelamin"]
+        ),
+    }
+    return pd.DataFrame(rows), summary
+
+
 def main() -> None:
     ensure_directories()
     manifest: dict[str, dict] = {}
@@ -669,12 +838,24 @@ def main() -> None:
     record("posbindu_visits", visits, ["hasil-posbindu-melati-mipa rekap 2026.xlsx"])
     record("posbindu_participants", participants, ["Data Posbindu.xlsx"])
 
+    history, history_summary = load_posbindu_history()
+    record(
+        "posbindu_history",
+        history,
+        [POSBINDU_HISTORY_FILE, POSBINDU_REGISTRY_FILE],
+        # Registry rows for months the digitisation already covers are the only
+        # rows dropped, and they are dropped to avoid counting a session twice.
+        removed=history_summary["registri_dilewati"]["bulan_sudah_didigitasi"],
+    )
+    manifest["posbindu_history"]["rekonsiliasi"] = history_summary
+
     (LOADED_DIR / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         f"Loaded {len(DATASETS)} historical datasets, {len(tck)} TCK indicators, "
         f"{len(partnerships)} cooperation documents, {len(academic_loaders)} academic tables, "
         f"{len(roster)} student records across {len(roster_files)} cohorts, "
-        f"and {len(visits)} anonymised Posbindu visits."
+        f"{len(visits)} anonymised Posbindu visits for 2026, "
+        f"and {len(history)} for 2022-2025."
     )
 
 
