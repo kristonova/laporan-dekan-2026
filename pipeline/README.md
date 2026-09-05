@@ -1,5 +1,35 @@
 # Pipeline data — Lima Tahun FMIPA
 
+Pembaruan 2 September 2026: `student_origins.py` memproses workbook
+`20260902 Data Asal Sekolah dan Asal Univ Fak MIPA tahun 2021-2026.xlsx`.
+Sebanyak 6.856 rekaman mencakup S1 (4.571), S2 (1.362), S3 (534), dan non-gelar (389).
+Hanya prodi, jenjang, angkatan, SMA, universitas S1, dan universitas S2 dibaca ke keluaran lokal.
+Nomor peserta dan NIU pengganti tidak disimpan atau dipakai untuk mencocokkan individu.
+Untuk visualisasi asal pendidikan, sumber ini berdiri sendiri; jangan menjumlahkan
+seluruh isinya dengan daftar mahasiswa lama.
+Nama institusi dinormalisasi pada kapitalisasi dan spasi; alias tidak digabung berdasarkan dugaan.
+Angkatan 0 pada unduhan institusi berarti gabungan 2021–2026 yang dihitung langsung,
+bukan untuk dijumlahkan dengan baris per-angkatan. Sel 1–2 tetap disamarkan.
+
+`student_programme_trends.py` menyiapkan grafik garis komposisi prodi 2021–2026.
+`students_programme_trends.json` dan CSV memuat S1 (4.571) serta non-gelar (374)
+dari `daftar mahasiswa`, ditambah hanya S2 (1.362) dan S3 (534) dari workbook asal
+pendidikan. Total 6.841 rekaman terdiri dari cakupan jenjang yang tidak tumpang
+tindih, bukan orang unik lintas jenjang. Kelas reguler dan IUP S1 digabung per
+prodi; semua non-gelar roster menjadi satu seri pertukaran dan MBKM.
+Ada 19 seri dalam satu grid 2021–2026. Nilai nol berarti tidak ada rekaman sumber
+pada kombinasi prodi/angkatan itu; nilai null berarti sel kecil disamarkan.
+`students_programme_trends_meta.json` menyertakan sumber dan total angkatan/jenjang
+sebagai penyebut persentase yang tetap utuh saat prodi difilter atau sel disamarkan.
+
+IPK tetap berasal dari daftar mahasiswa S1 2021–2025, karena workbook baru tidak memuat IPK.
+`students_ipk.json` kini memuat kuartil, median, dan whisker pengamatan dalam 1,5 IQR
+per prodi/angkatan serta gabungan yang dihitung dari semua pengamatan, dengan interpolasi
+kuartil linear. Nilai numerik 0–4, termasuk nol, disertakan; kelompok di bawah tiga ditahan.
+`students_ipk_distribution.csv` menyajikan statistik per prodi/angkatan tanpa nilai individu.
+Boxplot dipilih dibanding beeswarm karena visualisasi memerlukan distribusi ringkas dan
+web hanya menerbitkan agregat. Rujukan desain ada di `docs/visualisasi-20260905.md`.
+
 Jalankan dari root aplikasi:
 
 ```bash

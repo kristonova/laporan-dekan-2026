@@ -1,5 +1,12 @@
 # Lima Tahun FMIPA
 
+Pembaruan 5 September 2026: Pilar 5 memakai sumber asal pendidikan per 2 September
+2026 untuk cakupan S1/S2/S3/non-gelar (6.856 rekaman) dan jejaring sekolah/universitas.
+Profil demografi dan IPK tetap memakai daftar mahasiswa lama dengan cakupan tertulis.
+Boxplot IPK bisa dipilih per angkatan; tahapan seleksi dan retensi Posbindu memakai
+batang berskala bersama; label dana riset diperbesar. Rincian ada di
+[catatan visualisasi](docs/visualisasi-20260905.md) dan [pipeline](pipeline/README.md).
+
 Web data story untuk **Laporan Dekan FMIPA UGM 2021–2026**. Proyek ini mengubah data kinerja, akademik, riset, kerja sama, lulusan, kesehatan, dan profil mahasiswa menjadi cerita panjang yang dapat dibaca, dipresentasikan, ditelusuri metodologinya, serta dibuka kembali tanpa jaringan.
 Aplikasi web berbasis narasi data (*data storytelling*) untuk menyajikan **Laporan Dekan FMIPA UGM Periode 2021–2026**. Proyek ini merangkum data kinerja institusi, akademik, riset, kerja sama, profil lulusan, kesehatan sivitas akademika, hingga demografi mahasiswa menjadi sajian interaktif yang nyaman dibaca, siap dipresentasikan, transparan secara metodologi, dan dapat diakses secara *offline*.
 

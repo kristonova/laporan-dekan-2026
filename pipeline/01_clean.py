@@ -815,6 +815,8 @@ def main() -> None:
     clean_tck()
     clean_partnerships(province_lookup)
     clean_students(province_lookup)
+    from student_origins import clean_origins
+    clean_origins()
     clean_tracer()
     clean_posbindu()
     clean_posbindu_history()

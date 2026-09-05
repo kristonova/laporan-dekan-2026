@@ -355,25 +355,38 @@ def student_profile_outputs() -> None:
     outcome = students.groupby(["angkatan", "status"]).size().reset_index(name="n")
     output("students_cohort_outcome.json", records(suppress(outcome).sort_values(["angkatan", "status"])))
 
-    graded = degree.dropna(subset=["ipk"])
+    graded = degree[degree["ipk"].between(0, 4)].copy()
     ipk_year = graded.groupby("angkatan")["ipk"].agg(
         tercatat="size", rerata="mean", median="median",
         p25=lambda values: values.quantile(0.25), p75=lambda values: values.quantile(0.75),
     ).reset_index()
-    ipk_programme = graded.groupby(["angkatan", "prodi"])["ipk"].agg(
-        tercatat="size", median="median"
-    ).reset_index()
+    def distribution(values):
+        q1, q3 = values.quantile(0.25), values.quantile(0.75)
+        iqr = q3 - q1
+        within = values[values.between(q1 - 1.5 * iqr, q3 + 1.5 * iqr)]
+        return {"tercatat": int(len(values)), "median": round(float(values.median()), 2),
+                "p25": round(float(q1), 2), "p75": round(float(q3), 2),
+                "bawah": round(float(within.min()), 2), "atas": round(float(within.max()), 2)}
+
+    ipk_programme = pd.DataFrame([
+        {"angkatan": int(year), "prodi": programme, **distribution(group["ipk"])}
+        for (year, programme), group in graded.groupby(["angkatan", "prodi"])
+    ])
     # A median over one or two students is as identifying as the values it hides.
     ipk_programme = ipk_programme[ipk_programme["tercatat"] >= SMALL_CELL]
     for frame, columns in ((ipk_year, ["rerata", "median", "p25", "p75"]), (ipk_programme, ["median"])):
         for column in columns:
             frame[column] = frame[column].round(2)
     write_json("students_ipk.json", {
+        "metode": "Kotak P25–P75, garis median, whisker nilai terjauh dalam 1,5 IQR. Nilai IPK 0–4 yang tercatat disertakan; titik individu tidak diterbitkan.",
         "tahun": sorted(graded["angkatan"].unique().tolist()),
         "tahun_tanpa_ipk": [year for year in years if year not in set(graded["angkatan"])],
         "per_tahun": records(ipk_year),
         "per_prodi": records(ipk_programme.sort_values(["angkatan", "prodi"])),
+        "gabungan": [{"angkatan": 0, "prodi": programme, **distribution(group["ipk"])}
+                     for programme, group in graded.groupby("prodi") if len(group) >= SMALL_CELL],
     })
+    output("students_ipk_distribution.json", records(ipk_programme.sort_values(["angkatan", "prodi"])))
 
     # --- access -------------------------------------------------------------
     districts = students.groupby("kabupaten").size().reset_index(name="n")
@@ -697,6 +710,10 @@ def main() -> None:
     partnership_outputs()
     academic_outputs()
     student_profile_outputs()
+    from student_origins import aggregate_origins
+    aggregate_origins(output, suppress)
+    from student_programme_trends import aggregate_programme_trends
+    aggregate_programme_trends(output, suppress)
     tracer_outputs()
     health_outputs()
     health_longitudinal_outputs()

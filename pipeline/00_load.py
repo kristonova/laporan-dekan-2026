@@ -826,6 +826,9 @@ def main() -> None:
     for name, (loader, source) in academic_loaders.items():
         record(name, loader(), [source])
 
+    from student_origins import load_origins, SOURCE as ORIGINS_SOURCE
+    record("student_origins", load_origins(), [ORIGINS_SOURCE])
+
     roster, roster_files = load_student_roster()
     record("student_roster", roster, roster_files)
 

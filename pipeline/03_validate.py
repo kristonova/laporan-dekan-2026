@@ -29,7 +29,10 @@ EXPECTED_FILES = {
     # Added with the student roster (six intake cohorts, 2021-2026).
     "students_summary.json", "students_by_programme.json", "students_by_province.json",
     "students_by_pathway.json", "students_background.json", "students_cohort_outcome.json",
-    "students_ipk.json", "students_access.json",
+    "students_ipk.json", "students_access.json", "students_ipk_distribution.json",
+    "students_origins.json", "students_origins_cohorts.json",
+    "students_origins_programmes.json", "students_origins_institutions.json",
+    "students_programme_trends.json", "students_programme_trends_meta.json",
 }
 PRIVATE_KEYS = {
     "name", "nama", "name_backup", "nidn", "nip", "nika", "nim", "niu", "leader", "member", "authors",
@@ -288,6 +291,75 @@ def main() -> None:
     student_years = {row["angkatan"]: row for row in students["per_tahun"]}
     assert students["total"] == sum(row["total"] for row in students["per_tahun"])
 
+    origins = load_json("students_origins.json")
+    assert origins["total"] == 6856
+    assert origins["per_jenjang"] == {"S1": 4571, "S2": 1362, "S3": 534, "NONDEGREE": 389}
+    assert sum(origins["per_jenjang"].values()) == origins["total"]
+    # Programme trends deliberately take only S2/S3 from the origins workbook.
+    # The roster retains ownership of all S1 and non-degree counts.
+    programme_trends = load_json("students_programme_trends.json")
+    programme_meta = load_json("students_programme_trends_meta.json")
+    assert programme_meta["tahun"] == list(range(2021, 2027))
+    assert programme_meta["total"] == 6841
+    assert programme_meta["per_jenjang"] == {"S1": 4571, "S2": 1362, "S3": 534, "Non-gelar": 374}
+    assert programme_meta["per_jenjang"]["S1"] == students["sarjana"]
+    assert programme_meta["per_jenjang"]["Non-gelar"] == students["total"] - students["sarjana"]
+    for level in ["S2", "S3"]:
+        assert programme_meta["per_jenjang"][level] == origins["per_jenjang"][level]
+    expected_cohorts = {
+        2021: {"S1": 760, "S2": 155, "S3": 68, "Non-gelar": 118},
+        2022: {"S1": 717, "S2": 203, "S3": 104, "Non-gelar": 80},
+        2023: {"S1": 743, "S2": 274, "S3": 84, "Non-gelar": 90},
+        2024: {"S1": 695, "S2": 261, "S3": 83, "Non-gelar": 31},
+        2025: {"S1": 812, "S2": 258, "S3": 120, "Non-gelar": 34},
+        2026: {"S1": 844, "S2": 211, "S3": 75, "Non-gelar": 21},
+    }
+    series = {(row["jenjang"], row["prodi"]) for row in programme_trends}
+    assert Counter(level for level, _ in series) == {"S1": 8, "S2": 6, "S3": 4, "Non-gelar": 1}
+    assert len(programme_trends) == 114
+    assert len({(row["angkatan"], row["jenjang"], row["prodi"]) for row in programme_trends}) == 114
+    assert all(not row["prodi"].startswith(("MAGISTER ", "DOKTOR ", "Magister ", "Doktor ")) for row in programme_trends)
+    assert {row["prodi"] for row in programme_trends if row["jenjang"] == "Non-gelar"} == {"Non-gelar (pertukaran & MBKM)"}
+    assert len(programme_meta["per_angkatan_jenjang"]) == 24
+    for cohort in programme_meta["per_angkatan_jenjang"]:
+        year, level = cohort["angkatan"], cohort["jenjang"]
+        assert cohort["n"] == expected_cohorts[year][level]
+        group = [row for row in programme_trends if row["angkatan"] == year and row["jenjang"] == level]
+        published = sum(row["n"] or 0 for row in group)
+        withheld = sum(row["disamarkan"] for row in group)
+        assert published + withheld <= cohort["n"] <= published + withheld * 2
+        assert all((row["n"] is None) == row["disamarkan"] for row in group)
+    assert programme_meta["per_angkatan"] == [
+        {"angkatan": year, "total": sum(levels.values())}
+        for year, levels in expected_cohorts.items()
+    ]
+    assert sum(row["total"] for row in programme_meta["per_angkatan"]) == programme_meta["total"]
+    cohorts = load_json("students_origins_cohorts.json")
+    assert sum(row["n"] for row in cohorts) == origins["total"]
+    assert len(cohorts) == 24
+    for level, count in origins["per_jenjang"].items():
+        assert sum(row["n"] for row in cohorts if row["jenjang"] == level) == count
+    assert len(origins["panel"]) == 28
+    for panel in origins["panel"]:
+        assert panel["tercatat"] + panel["tidak_tercatat"] == panel["total"]
+        assert len(panel["institusi"]) == panel["institusi_unik"]
+        published = sum(row["n"] or 0 for row in panel["institusi"])
+        hidden = sum(row["disamarkan"] for row in panel["institusi"])
+        assert published + hidden <= panel["tercatat"] <= published + hidden * 2
+        if panel["jenjang"] == "S1":
+            assert panel["tercatat"] == panel["total"]
+    # All cohorts must conserve counts, and every box must have ordered statistics.
+    ipk = load_json("students_ipk.json")
+    assert ipk["tahun"] == [2021, 2022, 2023, 2024, 2025]
+    assert ipk["tahun_tanpa_ipk"] == [2026]
+    assert len(ipk["per_prodi"]) == 40 and len(ipk["gabungan"]) == 8
+    assert sum(row["tercatat"] for row in ipk["gabungan"]) == sum(row["tercatat"] for row in ipk["per_prodi"])
+    for row in ipk["per_prodi"] + ipk["gabungan"]:
+        assert row["tercatat"] >= SMALL_CELL
+        assert 0 <= row["bawah"] <= row["p25"] <= row["median"] <= row["p75"] <= row["atas"] <= 4
+    for cohort in ipk["per_tahun"]:
+        assert sum(row["tercatat"] for row in ipk["per_prodi"] if row["angkatan"] == cohort["angkatan"]) == cohort["tercatat"]
+
     # Every published count is either withheld or at least SMALL_CELL people.
     small_cells: list[tuple[str, str, int]] = []
     for path in sorted(DERIVED_DIR.glob("students_*.json")):
@@ -340,6 +412,9 @@ def main() -> None:
             "kunjungan_posbindu": posbindu["kunjungan"],
             "mahasiswa_tercatat": students["total"],
             "mahasiswa_sarjana": students["sarjana"],
+            "asal_pendidikan_semua_jenjang": origins["total"],
+            "asal_pendidikan_per_jenjang": origins["per_jenjang"],
+            "tren_prodi_per_jenjang": programme_meta["per_jenjang"],
         },
         "rekonsiliasi_registrasi": reconciliation,
     }

@@ -1,0 +1,898 @@
+[
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND FISIKA",
+    "n": 14,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND GEOFISIKA",
+    "n": 5,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 14,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND KIMIA",
+    "n": 48,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MATEMATIKA",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND STATISTIKA",
+    "n": 27,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 108,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 75,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 65,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 50,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 133,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 170,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 85,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 74,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 42,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 54,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 23,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 17,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 22,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 19,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 15,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND KIMIA",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MATEMATIKA",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND STATISTIKA",
+    "n": 11,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 108,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 70,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 62,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 47,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 130,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 159,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 82,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 59,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 30,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 63,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KECERDASAN ARTIFISIAL",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 44,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 48,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 27,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 28,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 15,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 42,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND KIMIA",
+    "n": 29,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MATEMATIKA",
+    "n": 9,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND STATISTIKA",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 104,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 69,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 53,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 141,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 159,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 85,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 60,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 9,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 71,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KECERDASAN ARTIFISIAL",
+    "n": 47,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 69,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 44,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 23,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 38,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 12,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 11,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 31,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 96,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 50,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 46,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 143,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 149,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 82,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 57,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 11,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 53,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 74,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KECERDASAN ARTIFISIAL",
+    "n": 41,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 55,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 27,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 17,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 16,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 14,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND DOKTOR ILMU KOMPUTER",
+    "n": 7,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND DOKTOR KIMIA",
+    "n": 6,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 33,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND KIMIA",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 114,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 90,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 75,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 60,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 150,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 170,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 81,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 78,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KECERDASAN ARTIFISIAL",
+    "n": 58,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 43,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 35,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 52,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 35,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 15,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND ILMU KOMPUTER",
+    "n": 20,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MAGISTER KECERDASAN ARTIFISIAL",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MAGISTER MATEMATIKA",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "NONDEGREE",
+    "prodi": "ND MATEMATIKA",
+    "n": null,
+    "disamarkan": true
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 122,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "FISIKA",
+    "n": 87,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "GEOFISIKA",
+    "n": 80,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "ILMU AKTUARIA",
+    "n": 57,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "ILMU KOMPUTER",
+    "n": 143,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "KIMIA",
+    "n": 182,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "MATEMATIKA",
+    "n": 77,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "STATISTIKA",
+    "n": 96,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ELEKTRONIKA DAN INSTRUMENTASI",
+    "n": 8,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER FISIKA",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER ILMU KOMPUTER",
+    "n": 68,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KECERDASAN ARTIFISIAL",
+    "n": 24,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER KIMIA",
+    "n": 45,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "MAGISTER MATEMATIKA",
+    "n": 30,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "DOKTOR FISIKA",
+    "n": 12,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "DOKTOR ILMU KOMPUTER",
+    "n": 33,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "DOKTOR KIMIA",
+    "n": 20,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "DOKTOR MATEMATIKA",
+    "n": 10,
+    "disamarkan": false
+  }
+]

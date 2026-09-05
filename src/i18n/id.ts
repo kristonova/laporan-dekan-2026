@@ -84,6 +84,11 @@ export interface SceneValues {
   posbinduTensionFirst: number;
   posbinduTensionLast: number;
   studentsTotal: number;
+  studentsMasters: number;
+  studentsDoctoral: number;
+  studentsAllNonDegree: number;
+  studentsMasterOrigins: number;
+  studentsDoctorOrigins: number;
   studentsUndergraduate: number;
   studentsProgrammes: number;
   studentsFirstYear: number;
@@ -243,7 +248,7 @@ export const scenes = {
   "6.1": {
     question: "Siapa Saja yang Menempuh Pendidikan di FMIPA UGM?",
     deck: (v) =>
-      `Sepanjang enam angkatan (${v.studentsFirstYear}–${v.studentsLastYear}), FMIPA UGM menjadi rumah belajar bagi ${v.format(v.studentsTotal)} mahasiswa. Sebanyak ${v.format(v.studentsUndergraduate)} orang mendalami sains di ${v.format(v.studentsProgrammes)} program studi sarjana reguler dan internasional, didampingi ${v.format(v.studentsNonDegreeLast)} mahasiswa yang memperkaya wawasan melalui program pertukaran dan non-gelar.`,
+      `Sumber asal pendidikan per 2 September 2026 memuat ${v.format(v.studentsTotal)} rekaman dari enam angkatan (${v.studentsFirstYear}–${v.studentsLastYear}): ${v.format(v.studentsUndergraduate)} S1, ${v.format(v.studentsMasters)} S2, ${v.format(v.studentsDoctoral)} S3, dan ${v.format(v.studentsAllNonDegree)} non-gelar. Cakupan Pilar 5 kini menjangkau pendidikan sarjana hingga doktor.`,
   },
   "6.2": {
     question: "Dari Mana Saja Asal Daerah Mahasiswa FMIPA UGM?",
@@ -266,9 +271,9 @@ export const scenes = {
       `Keberagaman latar belakang keluarga tecermin dari profesi orang tua/wali mahasiswa yang didominasi oleh ${v.studentsGuardianTop} (${v.format(v.studentsGuardianTopShare, 1)}%), disusul pegawai swasta dan aparatur sipil negara. Sebanyak ${v.format(v.studentsGuardianUnreported)} data tidak mencantumkan spesifikasi pekerjaan, sehingga catatan ini berfungsi sebagai potret umum keberagaman, bukan tolok ukur kemampuan ekonomi.`,
   },
   "6.6": {
-    question: "Dari Sekolah Mana Saja Mahasiswa FMIPA Berasal?",
+    question: "Dari Sekolah dan Universitas Mana Mahasiswa FMIPA Berasal?",
     deck: (v) =>
-      `Dalam empat angkatan terakhir, mahasiswa baru datang dari ${v.format(v.studentsSchoolUnique)} SMA/MA di berbagai daerah. Sebanyak ${v.format(v.studentsSchoolDiyShare, 1)}% di antaranya menyelesaikan sekolah di Daerah Istimewa Yogyakarta, bersanding dengan rekan-rekan mereka dari beragam latar belakang sekolah dan keyakinan dari seluruh nusantara.`,
+      `Jejaring pendidikan asal kini mencakup ${v.format(v.studentsSchoolUnique)} nama SMA/MA untuk mahasiswa S1, ${v.format(v.studentsMasterOrigins)} nama universitas S1 untuk mahasiswa magister, dan ${v.format(v.studentsDoctorOrigins)} nama universitas S2 untuk mahasiswa doktor. Sumber baru melengkapi gambaran enam angkatan, termasuk sekolah asal angkatan 2021–2022.`,
   },
   "6.7": {
     question: "Bagaimana Perjalanan Satu Angkatan Mahasiswa Sejak Masuk hingga Lulus?",

@@ -1,0 +1,227 @@
+---
+import ChartFrame from './ChartFrame.astro';
+import { formatReading as format, seriesKey, type ProgrammeReading, type CohortTotal } from '../../lib/programme-trends';
+import { DEGREE_PALETTE, prepareProgrammeComposition } from '../../lib/programme-composition';
+import { withBase } from '../../lib/paths';
+interface Props { data: ProgrammeReading[]; totals: CohortTotal[]; }
+const { data, totals } = Astro.props;
+const chart = prepareProgrammeComposition(data, totals);
+const names = [...new Set(data.map(row => row.prodi))].sort((a, b) => a.localeCompare(b, 'id'));
+const id = 'komposisi-program-studi';
+const title = 'Komposisi Program Studi S1, S2, S3, dan Non-gelar';
+const countLabel = (n: number | null) => n === null ? '—' : format(n, 0);
+const shareLabel = (n: number | null) => n === null ? '—' : `${format(n)}%`;
+const barLabel = (item: typeof chart.programmes[number]) => item.segments.map(s => `${s.jenjang}: ${s.n === null ? 'data tidak lengkap / disamarkan' : `${format(s.n, 0)} rekaman`}`).join('; ');
+const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p => `${p.year}: ${countLabel(p.count)}`).join('; ');
+---
+<section class="programme-composition" data-programme-trends data-readings={JSON.stringify(data)} data-totals={JSON.stringify(totals)} aria-label={title}>
+  <div class="controls" role="group" aria-label="Filter komposisi program studi">
+    <label class="programme-filter">Program studi<select data-programme-filter><option value="all">Semua program studi</option>{names.map(name => <option value={name}>{name}</option>)}</select></label>
+    <label>Tahun angkatan<select data-programme-year>{[...chart.years].reverse().map(year => <option value={year} selected={year === chart.year}>{year}</option>)}</select></label>
+    <label>Jenjang<select data-programme-degree><option value="all">Semua jenjang</option>{DEGREE_PALETTE.map(item => <option value={item.key}>{item.label}</option>)}</select></label>
+    <label>Tampilkan<select data-programme-metric><option value="count">Jumlah</option><option value="share">Proporsi (%)</option></select></label>
+    <button class="reset-filter" type="button" data-programme-reset disabled>Reset filter</button>
+  </div>
+  <ChartFrame {id} {title} hideHeader source="S1 & non-gelar: daftar mahasiswa FMIPA UGM; S2 & S3: Data Asal Sekolah dan Asal Univ Fak MIPA 2021–2026 (2 September 2026)" csvHref={withBase('/data/students_programme_trends.csv')}>
+    <div class="composition-board">
+      <div class="board-heading">
+        <div><h4 data-programme-heading>Angkatan {chart.year}</h4><p class="selection" data-programme-status role="status" aria-live="polite">{countLabel(chart.visibleTotal)} rekaman · {chart.programmes.length} program studi · Semua jenjang</p></div>
+        <ul class="degree-legend" aria-label="Warna jenjang">{DEGREE_PALETTE.map(item => <li data-degree-legend={item.key}><span style={`--degree-color:var(--composition-${item.key.toLowerCase()},${item.color})`} aria-hidden="true" />{item.label}</li>)}</ul>
+      </div>
+      <div class="column-head" aria-hidden="true">
+        <span>Program studi</span><div><span>Komposisi jenjang</span><div class="bar-axis"><span>0</span><span data-programme-mid>{format(chart.maximum / 2)}</span><span data-programme-max>{format(chart.maximum)}</span></div></div>
+        <span class="numeric">Jumlah</span><span class="numeric">Proporsi</span><span class="trend-heading">Tren angkatan<small>{chart.years[0]}–{chart.years.at(-1)}</small></span>
+      </div>
+      <ul class="programme-rows" data-programme-list aria-label="Komposisi per program studi">
+        {chart.programmes.map(item => <li class="programme-row" data-composition-row={item.prodi}>
+          <button class="programme-name" type="button" data-programme-pick={item.prodi} aria-label={`Filter program studi ${item.prodi}`} aria-pressed="false">{item.prodi}</button>
+          <div class="bar-cell"><div class="bar-track" data-programme-bar role="img" aria-label={barLabel(item)} hidden={item.partial}>
+            {DEGREE_PALETTE.map(degree => { const segment = item.segments.find(s => s.jenjang === degree.key); return <span class="bar-segment" data-bar-segment={degree.key} style={`--degree-color:var(--composition-${degree.key.toLowerCase()},${degree.color});width:${(segment?.n ?? 0) / chart.maximum * 100}%`} title={`${degree.label}: ${countLabel(segment?.n ?? null)} rekaman`} />; })}
+            <span class="zero-note" data-programme-zero hidden={item.count !== 0}>0 rekaman</span>
+          </div><span class="partial-note" data-programme-partial hidden={!item.partial}>Data tidak lengkap / disamarkan</span></div>
+          <span class="count numeric"><span class="mobile-label">Jumlah </span><strong data-composition-count>{countLabel(item.count)}</strong></span>
+          <span class="share numeric"><span class="mobile-label">Proporsi </span><span data-composition-share>{shareLabel(item.share)}</span></span>
+          <svg class="sparkline" viewBox="0 0 120 36" role="img" aria-label={`Tren ${item.prodi}. ${trendLabel(item)}`}>
+            <title data-spark-title>Tren {item.prodi}. {trendLabel(item)}</title><line class="spark-baseline" x1="4" x2="116" y1="32" y2="32" />
+            <path data-spark-path d={item.path} /><circle data-spark-point cx={item.selectedPoint.x} cy={item.selectedPoint.y ?? 32} r="3.5" style={item.selectedPoint.y === null ? 'display:none' : undefined} />
+          </svg>
+        </li>)}
+      </ul>
+      <div class="empty-state" data-programme-empty hidden><strong>Belum ada data untuk kombinasi filter ini.</strong><p>Pilih program studi atau jenjang lain, atau gunakan Reset filter.</p></div>
+      <div class="board-note"><span>Diurutkan dari jumlah terbesar.</span><span data-trend-note>Tren {chart.years[0]}–{chart.years.at(-1)} memakai skala yang sama; titik menandai {chart.year}.</span></div>
+    </div>
+  </ChartFrame>
+  <p class="denominator" data-programme-denominator>Proporsi terhadap {format(chart.denominator, 0)} rekaman seluruh jenjang pada angkatan {chart.year}. Filter prodi tidak mengubah penyebut.</p>
+  <details class="programme-table"><summary>Lihat tabel data</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Tabel data komposisi program studi"><table>
+    <caption data-programme-caption>Semua prodi · Semua jenjang · angkatan {chart.year}</caption>
+    <thead><tr><th scope="col">Angkatan</th><th scope="col">Jenjang</th><th scope="col">Program studi</th><th scope="col">Rekaman mahasiswa</th><th scope="col">Proporsi (%)</th></tr></thead>
+    <tbody>{data.map(row => <tr data-programme-row={seriesKey(row)} data-cohort={row.angkatan} hidden={row.angkatan !== chart.year}>
+      <th scope="row">{row.angkatan}</th><td>{row.jenjang}</td><td>{row.prodi}</td><td>{row.n === null || row.disamarkan ? '<3 (disamarkan)' : format(row.n, 0)}</td><td data-programme-share>{row.n === null || row.disamarkan || chart.denominator === 0 ? '—' : shareLabel(row.n / chart.denominator * 100)}</td>
+    </tr>)}</tbody>
+  </table></div></details>
+  <p class="source-note">Rekaman per angkatan, bukan jumlah mahasiswa aktif. S1 mencakup reguler dan IUP. Nol berarti tidak ada rekaman pada sumber; data tidak lengkap atau disamarkan tidak digambar. CSV memuat seluruh prodi, angkatan, dan jenjang.</p>
+  <noscript><p class="source-note">Aktifkan JavaScript untuk menggunakan filter. Tampilan awal menunjukkan seluruh program studi pada angkatan {chart.year}.</p></noscript>
+</section>
+
+<script>
+  import { formatReading as format, seriesKey, type ProgrammeReading, type CohortTotal, type ProgrammeMetric } from '../../lib/programme-trends';
+  import { prepareProgrammeComposition } from '../../lib/programme-composition';
+  const initialized = new WeakSet<HTMLElement>();
+  function initProgrammeTrends() {
+    document.querySelectorAll<HTMLElement>('[data-programme-trends]').forEach(root => {
+      if (initialized.has(root)) return;
+      initialized.add(root);
+      const rows: ProgrammeReading[] = JSON.parse(root.dataset.readings!);
+      const totals: CohortTotal[] = JSON.parse(root.dataset.totals!);
+      const programmeSelect = root.querySelector<HTMLSelectElement>('[data-programme-filter]')!;
+      const yearSelect = root.querySelector<HTMLSelectElement>('[data-programme-year]')!;
+      const degreeSelect = root.querySelector<HTMLSelectElement>('[data-programme-degree]')!;
+      const metricSelect = root.querySelector<HTMLSelectElement>('[data-programme-metric]')!;
+      const reset = root.querySelector<HTMLButtonElement>('[data-programme-reset]')!;
+      const list = root.querySelector<HTMLElement>('[data-programme-list]')!;
+      const chartRows = [...root.querySelectorAll<HTMLElement>('[data-composition-row]')];
+      const tableRows = [...root.querySelectorAll<HTMLTableRowElement>('[data-programme-row]')];
+      const latest = String(Math.max(...totals.map(row => row.angkatan)));
+      const countLabel = (n: number | null) => n === null ? '—' : format(n, 0);
+      const setText = (selector: string, text: string) => { root.querySelector<HTMLElement>(selector)!.textContent = text; };
+      const update = () => {
+        const degree = degreeSelect.value, programme = programmeSelect.value, metric = metricSelect.value as ProgrammeMetric;
+        const chart = prepareProgrammeComposition(rows, totals, degree, Number(yearSelect.value), programme, metric);
+        const degreeLabel = degree === 'all' ? 'Semua jenjang' : degree;
+        setText('[data-programme-heading]', `Angkatan ${chart.year}`);
+        setText('[data-programme-status]', `${chart.visibleTotal === null ? 'Total tidak lengkap' : `${format(chart.visibleTotal, 0)} rekaman`} · ${chart.programmes.length} program studi · ${degreeLabel}`);
+        setText('[data-programme-caption]', `${programme === 'all' ? 'Semua prodi' : programme} · ${degreeLabel} · angkatan ${chart.year}`);
+        setText('[data-programme-denominator]', `Proporsi terhadap ${format(chart.denominator, 0)} rekaman ${degree === 'all' ? 'seluruh jenjang' : degree} pada angkatan ${chart.year}. Filter prodi tidak mengubah penyebut.${chart.denominator === 0 ? ' Proporsi tidak tersedia karena penyebut nol.' : ''}`);
+        setText('[data-programme-mid]', `${format(chart.maximum / 2)}${metric === 'share' ? '%' : ''}`);
+        setText('[data-programme-max]', `${format(chart.maximum)}${metric === 'share' ? '%' : ''}`);
+        setText('[data-trend-note]', `Tren ${metric === 'share' ? 'proporsi' : 'jumlah'} ${chart.years[0]}–${chart.years.at(-1)} memakai skala yang sama; titik menandai ${chart.year}.`);
+        root.querySelector<HTMLElement>('[data-programme-empty]')!.hidden = chart.programmes.length > 0;
+        reset.disabled = programme === 'all' && degree === 'all' && yearSelect.value === latest && metric === 'count';
+        root.querySelectorAll<HTMLElement>('[data-degree-legend]').forEach(item => { item.hidden = degree !== 'all' && item.dataset.degreeLegend !== degree; });
+        chartRows.forEach(element => { element.hidden = true; });
+        chart.programmes.forEach(item => {
+          const element = chartRows.find(row => row.dataset.compositionRow === item.prodi)!;
+          element.hidden = false; list.append(element);
+          element.querySelector<HTMLButtonElement>('[data-programme-pick]')!.setAttribute('aria-pressed', String(programme === item.prodi));
+          element.querySelector<HTMLElement>('[data-composition-count]')!.textContent = countLabel(item.count);
+          element.querySelector<HTMLElement>('[data-composition-share]')!.textContent = item.share === null ? '—' : `${format(item.share)}%`;
+          const bar = element.querySelector<HTMLElement>('[data-programme-bar]')!;
+          bar.hidden = item.partial || (metric === 'share' && item.share === null);
+          bar.setAttribute('aria-label', item.segments.map(s => `${s.jenjang}: ${s.n === null ? 'data tidak lengkap / disamarkan' : `${format(s.n, 0)} rekaman`}`).join('; '));
+          const partial = element.querySelector<HTMLElement>('[data-programme-partial]')!;
+          partial.hidden = !bar.hidden; partial.textContent = item.partial ? 'Data tidak lengkap / disamarkan' : 'Proporsi tidak tersedia';
+          element.querySelector<HTMLElement>('[data-programme-zero]')!.hidden = item.count !== 0;
+          element.querySelectorAll<HTMLElement>('[data-bar-segment]').forEach(segmentElement => {
+            const segment = item.segments.find(s => s.jenjang === segmentElement.dataset.barSegment);
+            segmentElement.style.width = `${((metric === 'share' ? segment?.share : segment?.n) ?? 0) / chart.maximum * 100}%`;
+            segmentElement.title = `${segmentElement.dataset.barSegment}: ${countLabel(segment?.n ?? null)} rekaman`;
+          });
+          element.querySelector<SVGPathElement>('[data-spark-path]')!.setAttribute('d', item.path);
+          const point = element.querySelector<SVGCircleElement>('[data-spark-point]')!;
+          point.setAttribute('cx', String(item.selectedPoint.x)); point.setAttribute('cy', String(item.selectedPoint.y ?? 32)); point.style.display = item.selectedPoint.y === null ? 'none' : '';
+          const trend = `Tren ${item.prodi}. ${item.points.map(p => `${p.year}: ${p.value === null ? 'data tidak tersedia / disamarkan' : `${format(p.value, metric === 'count' ? 0 : 1)}${metric === 'share' ? '%' : ' rekaman'}`}`).join('; ')}`;
+          element.querySelector<SVGElement>('.sparkline')!.setAttribute('aria-label', trend); element.querySelector<SVGTitleElement>('[data-spark-title]')!.textContent = trend;
+        });
+        tableRows.forEach(tr => {
+          const row = rows.find(row => seriesKey(row) === tr.dataset.programmeRow && row.angkatan === Number(tr.dataset.cohort))!;
+          tr.hidden = row.angkatan !== chart.year || (degree !== 'all' && row.jenjang !== degree) || (programme !== 'all' && row.prodi !== programme);
+          tr.querySelector<HTMLElement>('[data-programme-share]')!.textContent = row.n === null || row.disamarkan || chart.denominator === 0 ? '—' : `${format(row.n / chart.denominator * 100)}%`;
+        });
+      };
+      [programmeSelect, yearSelect, degreeSelect, metricSelect].forEach(select => select.addEventListener('change', update));
+      root.querySelectorAll<HTMLButtonElement>('[data-programme-pick]').forEach(button => button.addEventListener('click', () => { programmeSelect.value = programmeSelect.value === button.dataset.programmePick ? 'all' : button.dataset.programmePick!; update(); programmeSelect.focus({ preventScroll: true }); }));
+      reset.addEventListener('click', () => { programmeSelect.value = degreeSelect.value = 'all'; yearSelect.value = latest; metricSelect.value = 'count'; update(); programmeSelect.focus({ preventScroll: true }); });
+      update();
+    });
+  }
+  initProgrammeTrends();
+  document.addEventListener('astro:page-load', initProgrammeTrends);
+</script>
+
+<style>
+  [hidden] { display: none !important; }
+  .programme-composition { font-family: var(--font-ui); font-variant-numeric: tabular-nums; }
+  :global([data-theme="dark"]) .programme-composition { --composition-s1: #7eafce; --composition-s2: #587e98; --composition-s3: #77aaa2; --composition-non-gelar: #929ca5; }
+  .controls { display: grid; grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(130px, 1fr)) auto; gap: 16px; align-items: end; margin-bottom: 28px; }
+  label { display: grid; gap: 8px; min-width: 0; font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+  select { width: 100%; min-width: 0; min-height: 44px; padding: 10px 28px 10px 12px; border: 1px solid var(--border-default); border-radius: 4px; background: var(--surface-card); color: var(--text-primary); font: 400 14px/1.4 var(--font-ui); cursor: pointer; text-overflow: ellipsis; }
+  select:hover { border-color: var(--text-link); }
+  button { font-family: inherit; cursor: pointer; }
+  .reset-filter { min-height: 44px; padding: 10px 4px; border: 0; background: transparent; color: var(--text-link); font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+  .reset-filter:disabled { color: var(--text-secondary); opacity: .55; cursor: default; text-decoration: none; }
+  select:focus-visible, button:focus-visible, summary:focus-visible, .table-scroll:focus-visible { outline: 3px solid var(--ugm-gold); outline-offset: 3px; }
+  .composition-board { border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--surface-card); padding: 24px 28px 16px; color: var(--text-primary); }
+  .board-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 24px; }
+  h4 { margin: 0; color: var(--text-heading); font-size: 22px; font-weight: 700; line-height: 1.3; }
+  .selection { margin: 6px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+  .degree-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 0; margin: 0; list-style: none; }
+  .degree-legend li { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; white-space: nowrap; }
+  .degree-legend li > span { width: 10px; height: 10px; border-radius: 2px; background: var(--degree-color); }
+  .column-head, .programme-row { display: grid; grid-template-columns: minmax(180px, 1.25fr) minmax(150px, 2fr) 64px 70px 120px; gap: 20px; align-items: center; }
+  .column-head { color: var(--text-secondary); font-size: 12px; border-bottom: 1px solid var(--border-default); padding-bottom: 10px; }
+  .bar-axis { display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; }
+  .trend-heading { text-align: center; }
+  .trend-heading small { display: block; font-size: 11px; margin-top: 3px; }
+  .programme-rows { margin: 0; padding: 0; list-style: none; }
+  .programme-row { min-height: 58px; border-bottom: 1px solid var(--border-subtle); }
+  .programme-row:last-child { border-bottom: 0; }
+  .programme-name { min-height: 44px; padding: 8px 0; border: 0; background: transparent; text-align: left; color: var(--text-primary); font-size: 14px; line-height: 1.35; font-weight: 600; }
+  .programme-name:hover, .programme-name[aria-pressed="true"] { color: var(--text-link); text-decoration: underline; text-underline-offset: 3px; }
+  .bar-cell { min-width: 0; }
+  .bar-track { display: flex; height: 20px; align-items: stretch; position: relative; }
+  .bar-segment { display: block; flex: none; background: var(--degree-color); box-shadow: inset -1px 0 var(--surface-card); }
+  .bar-segment:first-child { border-radius: 2px 0 0 2px; }
+  .zero-note, .partial-note { color: var(--text-secondary); font-size: 11px; line-height: 20px; }
+  .numeric { text-align: right; font-size: 13px; white-space: nowrap; }
+  .count strong { font-weight: 700; font-size: 15px; }
+  .share { color: var(--text-secondary); }
+  .mobile-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .sparkline { display: block; width: 120px; height: 36px; color: var(--text-link); overflow: visible; }
+  .spark-baseline { stroke: var(--border-subtle); }
+  .sparkline path { stroke: currentColor; stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .sparkline circle { fill: currentColor; stroke: var(--surface-card); stroke-width: 1.5; }
+  .board-note { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+  .empty-state { padding: 40px 0; color: var(--text-primary); font-size: 14px; }
+  .empty-state p { color: var(--text-secondary); margin: 8px 0 0; }
+  .denominator, .source-note { color: var(--text-secondary); font-size: 12px; line-height: 1.65; margin: 12px 0 0; }
+  .programme-table { margin-top: 16px; border-block: 1px solid var(--border-subtle); }
+  summary { padding: 14px 0; min-height: 44px; color: var(--text-link); font-size: 13px; font-weight: 700; cursor: pointer; }
+  .table-scroll { max-height: 400px; overflow: auto; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
+  caption { text-align: left; padding-bottom: 12px; font-weight: 700; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border-subtle); }
+  th:nth-last-child(-n+2), td:nth-last-child(-n+2) { text-align: right; }
+  thead th { position: sticky; top: 0; background: var(--surface-card); }
+  @media (max-width: 1050px) {
+    .controls { grid-template-columns: minmax(180px, 2fr) repeat(3, minmax(110px, 1fr)); gap: 12px; }
+    .reset-filter { grid-column: 1 / -1; justify-self: end; min-height: 44px; padding: 4px 0; }
+    .column-head, .programme-row { grid-template-columns: minmax(155px, 1.3fr) minmax(100px, 1.6fr) 54px 58px 100px; gap: 12px; }
+    .sparkline { width: 100px; }
+    .composition-board { padding-inline: 20px; }
+  }
+  @media (max-width: 800px) {
+    .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 20px; }
+    .programme-filter { grid-column: 1 / -1; }
+    .reset-filter { grid-column: auto; min-height: 44px; }
+    select { font-size: 16px; }
+    .composition-board { padding: 20px 16px 14px; }
+    .board-heading { display: grid; padding-bottom: 16px; gap: 12px; }
+    .degree-legend { gap: 14px; }
+    .column-head { display: none; }
+    .programme-row { grid-template-columns: minmax(0, 1fr) 110px; grid-template-areas: 'name count' 'bar bar' 'share trend'; gap: 6px 12px; padding: 12px 0; }
+    .programme-row:first-child { border-top: 1px solid var(--border-subtle); }
+    .programme-name { grid-area: name; }
+    .count { grid-area: count; }
+    .mobile-label { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; }
+    .count .mobile-label { display: block; font-size: 11px; margin-bottom: 2px; color: var(--text-secondary); }
+    .bar-cell { grid-area: bar; }
+    .bar-track { height: 18px; }
+    .share { grid-area: share; text-align: left; font-size: 12px; }
+    .share .mobile-label { display: inline; }
+    .sparkline { grid-area: trend; justify-self: end; width: 100px; height: 32px; }
+    .board-note { display: grid; gap: 4px; }
+    table { min-width: 580px; }
+  }
+  @media (forced-colors: active) { .bar-segment { background: CanvasText; border: 1px solid Canvas; forced-color-adjust: none; } .degree-legend li > span { border: 1px solid CanvasText; } }
+  @media print { .controls { display: none; } .programme-row { break-inside: avoid; } .bar-segment, .degree-legend li > span { print-color-adjust: exact; } }
+</style>

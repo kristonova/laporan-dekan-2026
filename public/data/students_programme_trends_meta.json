@@ -1,0 +1,192 @@
+{
+  "tahun": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "total": 6841,
+  "per_jenjang": {
+    "S1": 4571,
+    "S2": 1362,
+    "S3": 534,
+    "Non-gelar": 374
+  },
+  "per_angkatan": [
+    {
+      "angkatan": 2021,
+      "total": 1101
+    },
+    {
+      "angkatan": 2022,
+      "total": 1104
+    },
+    {
+      "angkatan": 2023,
+      "total": 1191
+    },
+    {
+      "angkatan": 2024,
+      "total": 1070
+    },
+    {
+      "angkatan": 2025,
+      "total": 1224
+    },
+    {
+      "angkatan": 2026,
+      "total": 1151
+    }
+  ],
+  "per_angkatan_jenjang": [
+    {
+      "angkatan": 2021,
+      "jenjang": "Non-gelar",
+      "n": 118
+    },
+    {
+      "angkatan": 2021,
+      "jenjang": "S1",
+      "n": 760
+    },
+    {
+      "angkatan": 2021,
+      "jenjang": "S2",
+      "n": 155
+    },
+    {
+      "angkatan": 2021,
+      "jenjang": "S3",
+      "n": 68
+    },
+    {
+      "angkatan": 2022,
+      "jenjang": "Non-gelar",
+      "n": 80
+    },
+    {
+      "angkatan": 2022,
+      "jenjang": "S1",
+      "n": 717
+    },
+    {
+      "angkatan": 2022,
+      "jenjang": "S2",
+      "n": 203
+    },
+    {
+      "angkatan": 2022,
+      "jenjang": "S3",
+      "n": 104
+    },
+    {
+      "angkatan": 2023,
+      "jenjang": "Non-gelar",
+      "n": 90
+    },
+    {
+      "angkatan": 2023,
+      "jenjang": "S1",
+      "n": 743
+    },
+    {
+      "angkatan": 2023,
+      "jenjang": "S2",
+      "n": 274
+    },
+    {
+      "angkatan": 2023,
+      "jenjang": "S3",
+      "n": 84
+    },
+    {
+      "angkatan": 2024,
+      "jenjang": "Non-gelar",
+      "n": 31
+    },
+    {
+      "angkatan": 2024,
+      "jenjang": "S1",
+      "n": 695
+    },
+    {
+      "angkatan": 2024,
+      "jenjang": "S2",
+      "n": 261
+    },
+    {
+      "angkatan": 2024,
+      "jenjang": "S3",
+      "n": 83
+    },
+    {
+      "angkatan": 2025,
+      "jenjang": "Non-gelar",
+      "n": 34
+    },
+    {
+      "angkatan": 2025,
+      "jenjang": "S1",
+      "n": 812
+    },
+    {
+      "angkatan": 2025,
+      "jenjang": "S2",
+      "n": 258
+    },
+    {
+      "angkatan": 2025,
+      "jenjang": "S3",
+      "n": 120
+    },
+    {
+      "angkatan": 2026,
+      "jenjang": "Non-gelar",
+      "n": 21
+    },
+    {
+      "angkatan": 2026,
+      "jenjang": "S1",
+      "n": 844
+    },
+    {
+      "angkatan": 2026,
+      "jenjang": "S2",
+      "n": 211
+    },
+    {
+      "angkatan": 2026,
+      "jenjang": "S3",
+      "n": 75
+    }
+  ],
+  "sumber": [
+    {
+      "jenjang": [
+        "S1",
+        "Non-gelar"
+      ],
+      "berkas": [
+        "Daftar mahasiswa 2021.xlsx",
+        "Daftar mahasiswa 2022.xlsx",
+        "Daftar mahasiswa 2023.xlsx",
+        "Daftar mahasiswa 2024.xlsx",
+        "Daftar mahasiswa 2025.xlsx",
+        "Daftar mahasiswa 2026.xlsx"
+      ]
+    },
+    {
+      "jenjang": [
+        "S2",
+        "S3"
+      ],
+      "berkas": [
+        "20260902 Data Asal Sekolah dan Asal Univ Fak MIPA tahun 2021-2026.xlsx"
+      ],
+      "tanggal": "2 September 2026"
+    }
+  ],
+  "catatan": "Jumlah rekaman per angkatan 2021–2026, bukan jumlah mahasiswa aktif atau orang unik lintas jenjang. S1 reguler dan kelas internasional digabung per prodi; non-gelar mencakup pertukaran dan MBKM dari daftar mahasiswa. Workbook asal pendidikan hanya menyumbang S2 dan S3, sehingga cakupan kedua sumber tidak tumpang tindih. Nol berarti tidak ada rekaman prodi pada angkatan tersebut; bukan penetapan tahun pembukaan prodi. Sel 1–2 disamarkan sebagai null. Penyebut persentase memakai seluruh rekaman dalam jenjang yang dipilih, termasuk sel yang disamarkan, dan tetap sama saat prodi difilter."
+}

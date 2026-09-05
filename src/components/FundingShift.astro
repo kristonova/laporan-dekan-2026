@@ -3,8 +3,8 @@ interface Datum { year: number; amount: number; }
 interface Props { data: Datum[]; }
 const { data } = Astro.props;
 const sorted = [...data].sort((a,b) => a.year - b.year);
-const width = 1040, height = 420;
-const margin = { top: 52, right: 40, bottom: 64, left: 76 };
+const width = 680, height = 390;
+const margin = { top: 48, right: 20, bottom: 54, left: 48 };
 const plotW = width - margin.left - margin.right, plotH = height - margin.top - margin.bottom;
 const barW = Math.min(78, (plotW / Math.max(sorted.length, 1)) * .58);
 const x = (index:number) => margin.left + (index + .5) * (plotW / sorted.length) - barW/2;
@@ -25,7 +25,7 @@ const early = sorted.filter((row) => row.year <= 2021);
     <div class="funding-shift__stage funding-shift__stage--full" data-funding-graphic="full">
       <p><strong>Skala lima tahun</strong><span>Maksimum Rp80 miliar</span></p>
       <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Dana riset 2019 sampai 2025 pada skala maksimum delapan puluh miliar rupiah">
-        <defs><pattern id="funding-running-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="var(--ugm-blue)" /><line x1="0" y1="0" x2="0" y2="8" stroke="#fff" stroke-width="2" opacity=".45" /></pattern></defs>
+        <defs><pattern id="funding-running-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="var(--chart-primary)" /><line x1="0" y1="0" x2="0" y2="8" stroke="#fff" stroke-width="2" opacity=".45" /></pattern></defs>
         {[0,20,40,60,80].map((tick) => <g><line x1={margin.left} x2={width-margin.right} y1={y(tick,80)} y2={y(tick,80)} /><text x={margin.left-12} y={y(tick,80)+4} text-anchor="end">{tick}</text></g>)}
         {sorted.map((row,index) => <g class:list={{ "is-current": row.year === 2025 }}><rect x={x(index)} y={y(row.amount,80)} width={barW} height={margin.top+plotH-y(row.amount,80)} rx="4" /><text class="value" x={x(index)+barW/2} y={y(row.amount,80)-12} text-anchor="middle">{format(row.amount)}</text><text x={x(index)+barW/2} y={height-28} text-anchor="middle">{row.year}</text></g>)}
       </svg>
@@ -59,12 +59,16 @@ const early = sorted.filter((row) => row.year <= 2021);
      where the 2019–2021 bars remain readable, and the three narration cards run
      down the right-hand column beside it. */
   .funding-shift { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: clamp(32px, 6vw, 74px); align-items: start; }
-  .funding-shift__graphic { position: sticky; z-index: var(--z-sticky); top: calc(var(--header-height) + 12px); min-block-size: 34rem; border: 1px solid var(--border-subtle); background: var(--surface-card); }
-  .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity var(--duration-story) var(--ease-story); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--ugm-blue); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
+  .funding-shift__graphic { position: sticky; z-index: var(--z-sticky); top: calc(var(--header-height) + 12px); aspect-ratio: 1.4; min-block-size: 24rem; border: 1px solid var(--border-subtle); background: var(--surface-card); }
+  .funding-shift__stage { position: absolute; inset: 0; padding: 24px; transition: opacity var(--duration-story) var(--ease-story); }.funding-shift__stage > p { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }.funding-shift__stage strong { color: var(--text-primary); }.funding-shift__stage svg { width: 100%; height: auto; margin-block-start: 8px; }.funding-shift__stage line { stroke: var(--grid-line); stroke-width: 1; }.funding-shift__stage text { fill: var(--text-muted); font: 12px var(--font-ui); }.funding-shift__stage text.value { fill: var(--text-primary); font-weight: 700; }.funding-shift__stage rect { fill: var(--chart-primary); }.funding-shift__stage .is-current rect { fill: url(#funding-running-pattern); opacity: .85; }
+  .funding-shift__stage > p { font-size: 15px; gap: 12px; flex-wrap: wrap; }
+  .funding-shift__stage text { font-size: 16px; }
+  .funding-shift__stage text.value { font-size: 17px; }
   .funding-shift[data-stage="early"] .funding-shift__stage--full { opacity: 0; pointer-events: none; }.funding-shift[data-stage="full"] .funding-shift__stage--early { opacity: 0; pointer-events: none; }
   .funding-shift__steps { display: grid; gap: 40vh; padding-block: 8vh 35vh; }.funding-shift__steps article { max-width: 62ch; padding: 28px; border: 1px solid var(--border-default); border-block-start: 4px solid var(--ugm-gold); background: var(--surface-card); box-shadow: var(--shadow-md); }.funding-shift__steps span { color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.funding-shift__steps h3 { margin-block-start: 12px; color: var(--text-primary); font-size: 23px; }.funding-shift__steps p { margin-block-start: 12px; color: var(--text-secondary); font-size: 14px; }
   @media(max-width:1023px){.funding-shift{grid-template-columns:minmax(0,1fr);gap:clamp(24px,4vw,40px)}.funding-shift__steps{gap:34vh;padding-block:6vh 24vh}}
   @media(max-width:767px){.funding-shift__graphic{position:relative;top:auto;min-block-size:0;border:0;background:transparent}.funding-shift__stage{position:relative;padding:18px;border:1px solid var(--border-subtle);background:var(--surface-card);opacity:1!important}.funding-shift__stage--early{display:none}.funding-shift__steps{gap:14px;padding:0}.funding-shift__steps article:first-child{display:none}}
+  @media(max-width:767px){.funding-shift__graphic{aspect-ratio:auto}.funding-shift__stage{overflow-x:auto}.funding-shift__stage svg{min-width:540px}}
   /* Reduced motion keeps the two columns — sticky is not animation. What it
      drops is the scroll-driven swap, so the chart is pinned to the top of its
      column at the full five-year scale and the cards simply stack beside it. */

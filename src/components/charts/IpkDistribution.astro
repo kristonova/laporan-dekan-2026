@@ -1,0 +1,114 @@
+---
+import ChartFrame from './ChartFrame.astro';
+import { withBase } from '../../lib/paths';
+import { textLines } from './_utils';
+interface Reading extends Record<string, unknown> { angkatan: number; prodi: string; tercatat: number; median: number; p25: number; p75: number; bawah: number; atas: number; }
+interface Props { data: { tahun: number[]; per_prodi: Reading[]; gabungan: Reading[] }; extracted: string; }
+const { data, extracted } = Astro.props;
+const latest = data.tahun.at(-1);
+const format = (n: number) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(n);
+const cohorts = [...data.tahun, 0];
+const x = (value: number) => 230 + value / 4 * 540;
+---
+<section class="ipk-distribution" data-ipk-filter aria-label="Distribusi IPK menurut angkatan">
+  <div class="cohort-controls" role="group" aria-label="Pilih angkatan IPK">
+    <span>Angkatan</span>
+    {cohorts.map(year => <button type="button" data-ipk-year={year} aria-pressed={year === latest}>{year || 'Gabungan 2021–2025'}</button>)}
+  </div>
+  <div class="box-key" aria-label="Cara membaca boxplot">
+    <svg width="106" height="28" viewBox="0 0 106 28" aria-hidden="true"><path d="M4 14H102M4 8V20M102 8V20"/><rect x="28" y="4" width="50" height="20"/><path class="median" d="M52 4V24"/></svg>
+    <p><strong>Kotak</strong> = 50% tengah data (P25–P75) · <strong>Garis</strong> = median · <strong>Whisker</strong> = batas pengamatan dalam 1,5 IQR</p>
+  </div>
+  {cohorts.map(year => {
+    const rows = (year ? data.per_prodi.filter(r => r.angkatan === year) : data.gabungan).slice().sort((a,b) => a.prodi.localeCompare(b.prodi));
+    const count = rows.reduce((n,r) => n + r.tercatat, 0);
+    const label = year ? `angkatan ${year}` : 'gabungan angkatan 2021–2025';
+    return <div data-ipk-panel={year} hidden={year !== latest}>
+      <p class="ipk-status" role="status"><strong>{year ? `Angkatan ${year}` : 'Gabungan 2021–2025'}</strong> · {format(count)} IPK tercatat · {rows.length} program studi S1</p>
+      {year === 0 && <p class="pooled-note">Gabungan dihitung dari seluruh IPK tercatat, bukan rata-rata median angkatan. Tahap studi berbeda; pilih satu angkatan untuk perbandingan antarprodi.</p>}
+      <ChartFrame id={`ipk-${year || 'gabungan'}`} title={`Distribusi IPK S1, ${label}`} hideHeader minPlotWidth={820}
+        source="Daftar mahasiswa S1 FMIPA UGM 2021–2025" extracted={extracted} csvHref={withBase('/data/students_ipk_distribution.csv')}
+        tableRows={rows} tableColumns={[{key:'prodi',label:'Program studi'},{key:'tercatat',label:'IPK tercatat'},{key:'bawah',label:'Whisker bawah'},{key:'p25',label:'P25'},{key:'median',label:'Median'},{key:'p75',label:'P75'},{key:'atas',label:'Whisker atas'}]}
+        note="Skala IPK 0–4 tetap untuk seluruh angkatan. Nilai nol yang tercatat di sumber disertakan. Nilai individu di luar whisker tidak ditampilkan; setiap kotak dihitung dari seluruh IPK valid dalam kelompok. Unduhan memuat semua angkatan.">
+        <svg class="ipk-desktop-plot" viewBox={`0 0 1000 ${68 + rows.length * 62}`} role="img" aria-label={`Boxplot IPK S1 ${label}. Kotak menunjukkan kuartil dan median; rincian tersedia di tabel.`}>
+          {[0,1,2,3,4].map(tick => <g class="axis"><line x1={x(tick)} x2={x(tick)} y1="35" y2={48+rows.length*62}/><text x={x(tick)} y="22" text-anchor="middle">{tick}</text></g>)}
+          <text x="212" y="22" text-anchor="end" class="column-head">Program studi</text><text x="815" y="22" class="column-head">Median</text><text x="960" y="22" text-anchor="end" class="column-head">n</text>
+          {rows.map((row, index) => {
+            const cy = 66 + index * 62;
+            const lines = textLines(row.prodi, 25);
+            const tip = `${row.prodi}, ${label}: median ${format(row.median)}; P25 ${format(row.p25)}; P75 ${format(row.p75)}; whisker ${format(row.bawah)}–${format(row.atas)}; ${row.tercatat} IPK.`;
+            return <g class="box-row" tabindex="0" aria-label={tip} data-tooltip={tip}>
+              <title>{tip}</title>
+              <line class="row-rule" x1="0" x2="980" y1={cy+30} y2={cy+30}/>
+              <text class="programme" x="212" y={cy - (lines.length-1)*8 + 5} text-anchor="end">{lines.map((line,i) => <tspan x="212" dy={i ? 16 : 0}>{line}</tspan>)}</text>
+              <path class="whisker" d={`M${x(row.bawah)} ${cy}H${x(row.atas)}M${x(row.bawah)} ${cy-8}V${cy+8}M${x(row.atas)} ${cy-8}V${cy+8}`}/>
+              <rect class="box" x={x(row.p25)} y={cy-12} width={Math.max(1,x(row.p75)-x(row.p25))} height="24" rx="2"/>
+              <path class="median" d={`M${x(row.median)} ${cy-12}V${cy+12}`}/>
+              <text class="median-label" x="815" y={cy+5}>{format(row.median)}</text><text class="n-label" x="960" y={cy+5} text-anchor="end">{format(row.tercatat)}</text>
+            </g>;
+          })}
+        </svg>
+        <div class="ipk-mobile-rows">
+          <div class="mobile-axis" aria-hidden="true">{[0,1,2,3,4].map(v => <span>{v}</span>)}</div>
+          {rows.map(row => <div class="mobile-reading">
+            <div class="mobile-reading-label"><strong>{row.prodi}</strong><span>Median {format(row.median)} · n = {format(row.tercatat)}</span></div>
+            <div class="mobile-box-track" role="img" aria-label={`${row.prodi}: P25 ${format(row.p25)}, median ${format(row.median)}, P75 ${format(row.p75)}, whisker ${format(row.bawah)}–${format(row.atas)}.`}>
+              <span class="mobile-whisker" style={`left:${row.bawah/4*100}%;width:${(row.atas-row.bawah)/4*100}%`} />
+              <span class="mobile-box" style={`left:${row.p25/4*100}%;width:${(row.p75-row.p25)/4*100}%`} />
+              <span class="mobile-median" style={`left:${row.median/4*100}%`} />
+            </div>
+          </div>)}
+        </div>
+      </ChartFrame>
+    </div>;
+  })}
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ipk-filter]').forEach(root => {
+    root.querySelectorAll<HTMLButtonElement>('[data-ipk-year]').forEach(button => button.addEventListener('click', () => {
+      root.querySelectorAll<HTMLButtonElement>('[data-ipk-year]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      root.querySelectorAll<HTMLElement>('[data-ipk-panel]').forEach(panel => { panel.hidden = panel.dataset.ipkPanel !== button.dataset.ipkYear; });
+    }));
+  });
+</script>
+<style>
+  .ipk-distribution { --ipk-accent: var(--text-link); }
+  [hidden] { display: none !important; }
+  .cohort-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 20px; }
+  .cohort-controls > span { font-size: 14px; font-weight: 700; margin-right: 6px; }
+  button { padding: 10px 16px; min-height: 44px; font: 600 14px var(--font-ui); border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-secondary); border-radius: 4px; cursor: pointer; }
+  button[aria-pressed='true'] { background: var(--ugm-blue); border-color: var(--ugm-blue); color: white; }
+  button:focus-visible { outline: 3px solid var(--ugm-gold); outline-offset: 3px; }
+  .box-key { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-block: 1px solid var(--border-subtle); }
+  .box-key svg { flex-shrink: 0; }
+  .box-key path, .whisker { stroke: var(--ipk-accent); stroke-width: 2; fill: none; }
+  .box-key rect, .box { fill: var(--ipk-accent); fill-opacity: .18; stroke: var(--ipk-accent); stroke-width: 1.5; }
+  .box-key .median, .median { stroke: var(--ipk-accent); stroke-width: 3; }
+  .box-key p, .pooled-note { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
+  .ipk-status { font-size: 14px; margin-block: 20px; color: var(--text-secondary); }
+  .pooled-note { margin-bottom: 18px; }
+  svg { font-family: var(--font-ui); }
+  .axis line, .row-rule { stroke: var(--border-subtle); }
+  .axis text, .column-head, .n-label { fill: var(--text-muted); font-size: 14px; }
+  .programme { font-size: 15px; font-weight: 600; fill: var(--text-primary); }
+  .median-label { font-size: 16px; font-weight: 700; fill: var(--ipk-accent); }
+  .box-row:focus { outline: none; }
+  .box-row:focus .box, .box-row:hover .box { fill-opacity: .4; stroke-width: 3; }
+  .ipk-mobile-rows { display: none; }
+  @media(max-width:600px) {
+    .ipk-distribution :global(.chart-frame__plot-inner) { min-inline-size: 0; }
+    .ipk-distribution :global(.chart-frame__plot-inner > .ipk-desktop-plot) { display: none; }
+    .ipk-mobile-rows { display: block; }
+    .mobile-axis { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }
+    .mobile-reading { padding: 16px 0; border-bottom: 1px solid var(--border-subtle); }
+    .mobile-reading-label { display: grid; gap: 5px; color: var(--text-primary); font-size: 14px; }
+    .mobile-reading-label > span { font-size: 12px; color: var(--text-secondary); }
+    .mobile-box-track { position: relative; height: 32px; margin-top: 8px; border-inline: 1px solid var(--border-subtle); background: repeating-linear-gradient(90deg, transparent, transparent calc(25% - 1px), var(--border-subtle) calc(25% - 1px), var(--border-subtle) 25%); }
+    .mobile-whisker { position: absolute; top: 15px; height: 2px; background: var(--ipk-accent); }
+    .mobile-whisker::before, .mobile-whisker::after { content: ''; position: absolute; top: -6px; height: 14px; width: 2px; background: var(--ipk-accent); }
+    .mobile-whisker::after { right: 0; }
+    .mobile-box { position: absolute; top: 6px; height: 20px; min-width: 1px; background: color-mix(in srgb, var(--ipk-accent) 18%, var(--surface-card)); border: 1.5px solid var(--ipk-accent); }
+    .mobile-median { position: absolute; top: 6px; height: 20px; border-left: 3px solid var(--ipk-accent); }
+  }
+  @media(max-width: 500px) { .box-key { align-items: start; gap: 10px; } .box-key svg { width: 72px; } }
+</style>

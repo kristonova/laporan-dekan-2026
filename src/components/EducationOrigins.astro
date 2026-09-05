@@ -1,0 +1,68 @@
+---
+import ChartFrame from './charts/ChartFrame.astro';
+import { withBase } from '../lib/paths';
+interface Institution extends Record<string, unknown> { institusi: string; n: number | null; disamarkan: boolean; }
+interface Panel { jenjang: string; asal: string; label: string; angkatan: number; total: number; tercatat: number; tidak_tercatat: number; institusi_unik: number; institusi: Institution[]; }
+interface Props { data: { tahun: number[]; tanggal: string; panel: Panel[] }; }
+const { data } = Astro.props;
+const types = data.panel.filter(p => !p.angkatan);
+const format = (n: number) => new Intl.NumberFormat('id-ID').format(n);
+---
+<section data-education-origins class="origins" aria-label="Penelusuran institusi asal mahasiswa">
+  <div class="origin-controls">
+    <label>Jenjang dan pendidikan sebelumnya<select data-origin-type>{types.map(p => <option value={`${p.jenjang}-${p.asal}`}>{p.label}</option>)}</select></label>
+    <label>Angkatan<select data-origin-year><option value="0">Semua angkatan · 2021–2026</option>{data.tahun.map(y => <option value={y}>{y}</option>)}</select></label>
+  </div>
+  {data.panel.map(p => {
+    const top = p.institusi.filter(r => r.n !== null).slice(0,12);
+    const max = top[0]?.n || 1;
+    return <div data-origin-panel={`${p.jenjang}-${p.asal}`} data-origin-cohort={p.angkatan} hidden={p.jenjang !== 'S1' || p.angkatan !== 0}>
+      <div class="origin-summary" role="status">
+        <div><strong>{format(p.total)}</strong><span>rekaman mahasiswa {p.jenjang}</span></div>
+        <div><strong>{format(p.tercatat)}</strong><span>institusi asal tercatat</span></div>
+        <div><strong>{format(p.institusi_unik)}</strong><span>nama institusi berbeda</span></div>
+      </div>
+      <p class="origin-context">{p.label} · {p.angkatan || '2021–2026'}. Menampilkan hingga 12 institusi dengan jumlah terbesar; {format(p.tidak_tercatat)} rekaman tidak mencantumkan institusi asal.</p>
+      <ChartFrame id={`asal-${p.jenjang}-${p.asal}-${p.angkatan}`} title={p.label} hideHeader
+        source="Data Asal Sekolah dan Asal Univ Fak MIPA 2021–2026" extracted={data.tanggal} csvHref={withBase('/data/students_origins_institutions.csv')}
+        tableRows={p.institusi} tableColumns={[{key:'institusi',label:'Institusi asal'},{key:'n',label:'Rekaman mahasiswa',format:v=>v === null ? '<3 (disamarkan)' : format(Number(v))}]}
+        note="Jumlah 1–2 disamarkan dan tidak digambar. Tabel memuat seluruh institusi pada pilihan ini; CSV memuat semua pilihan (angkatan 0 = gabungan, jangan dijumlahkan lagi). Kapitalisasi dan spasi diseragamkan; nama berbeda belum tentu institusi berbeda.">
+        <ol class="origin-bars">
+          {top.map((row,i) => <li><span class="rank">{i+1}</span><span class="institution">{row.institusi}</span><span class="origin-track" aria-hidden="true"><span style={`width:${(row.n ?? 0)/max*100}%`} /></span><strong>{format(row.n ?? 0)}</strong></li>)}
+        </ol>
+        {!top.length && <p>Belum ada kelompok dengan sedikitnya tiga rekaman untuk pilihan ini.</p>}
+      </ChartFrame>
+    </div>;
+  })}
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-education-origins]').forEach(root => {
+    const type = root.querySelector<HTMLSelectElement>('[data-origin-type]')!;
+    const year = root.querySelector<HTMLSelectElement>('[data-origin-year]')!;
+    const update = () => root.querySelectorAll<HTMLElement>('[data-origin-panel]').forEach(panel => {
+      panel.hidden = panel.dataset.originPanel !== type.value || panel.dataset.originCohort !== year.value;
+    });
+    type.addEventListener('change', update); year.addEventListener('change', update); update();
+  });
+</script>
+<style>
+  .origins { --origin-accent: var(--text-link); }
+  [hidden] { display: none !important; }
+  .origin-controls { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-bottom: 24px; }
+  label { display: grid; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+  select { min-height: 46px; padding: 10px 36px 10px 12px; max-width: 100%; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-primary); border-radius: 4px; font: 14px var(--font-ui); }
+  select:focus-visible { outline: 3px solid var(--ugm-gold); outline-offset: 3px; }
+  .origin-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding-block: 22px; border-block: 1px solid var(--border-subtle); }
+  .origin-summary div { display: grid; gap: 6px; }
+  .origin-summary strong { font: 700 30px/1.2 var(--font-ui); color: var(--origin-accent); }
+  .origin-summary span, .origin-context { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .origin-context { margin: 20px 0; }
+  ol { list-style: none; padding: 0; margin: 0; }
+  li { display: grid; grid-template-columns: 24px minmax(200px, .95fr) minmax(100px, 1fr) 40px; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+  .rank { color: var(--text-muted); font-size: 12px; }
+  .institution { font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text-primary); }
+  li > strong { text-align: right; font-size: 15px; color: var(--origin-accent); }
+  .origin-track { height: 17px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+  .origin-track > span { display: block; height: 100%; background: var(--origin-accent); }
+  @media(max-width:600px) { .origin-controls, label { width: 100%; } li { grid-template-columns: 20px 1fr 35px; gap: 8px 12px; } .origin-track { grid-column: 2; grid-row: 2; height: 10px; } li > strong { grid-column: 3; grid-row: 1; } .origin-summary strong { font-size: 24px; } }
+</style>

@@ -1,0 +1,800 @@
+[
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 108,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 75,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 65,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 50,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 133,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 170,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 85,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 74,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 0,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 42,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 54,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 0,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 23,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 17,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 22,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 19,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2021,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 118,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 108,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 70,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 62,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 47,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 130,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 159,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 82,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 59,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 0,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 30,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 63,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 44,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 48,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 27,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 28,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 15,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2022,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 80,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 104,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 69,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 53,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 141,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 159,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 85,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 60,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 9,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 71,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 47,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 69,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 44,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 23,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 38,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 12,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 11,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2023,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 90,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 96,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 50,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 46,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 143,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 149,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 82,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 57,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 11,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 53,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 74,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 41,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 55,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 27,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 17,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 16,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 14,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2024,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 31,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 114,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 90,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 75,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 60,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 150,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 170,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 72,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 81,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 78,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 58,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 43,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 35,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 18,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 52,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 35,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 15,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2025,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 34,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 122,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Fisika",
+    "n": 87,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Geofisika",
+    "n": 80,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Ilmu Aktuaria",
+    "n": 57,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Ilmu Komputer",
+    "n": 143,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Kimia",
+    "n": 182,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Matematika",
+    "n": 77,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S1",
+    "prodi": "Statistika",
+    "n": 96,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Elektronika dan Instrumentasi",
+    "n": 8,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Fisika",
+    "n": 36,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Ilmu Komputer",
+    "n": 68,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Kecerdasan Artifisial",
+    "n": 24,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Kimia",
+    "n": 45,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S2",
+    "prodi": "Matematika",
+    "n": 30,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "Fisika",
+    "n": 12,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "Ilmu Komputer",
+    "n": 33,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "Kimia",
+    "n": 20,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "S3",
+    "prodi": "Matematika",
+    "n": 10,
+    "disamarkan": false
+  },
+  {
+    "angkatan": 2026,
+    "jenjang": "Non-gelar",
+    "prodi": "Non-gelar (pertukaran & MBKM)",
+    "n": 21,
+    "disamarkan": false
+  }
+]

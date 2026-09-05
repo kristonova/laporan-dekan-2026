@@ -1,0 +1,402 @@
+[
+  {
+    "angkatan": 2021,
+    "prodi": "Elektronika dan Instrumentasi",
+    "tercatat": 107,
+    "median": 3.74,
+    "p25": 3.53,
+    "p75": 3.84,
+    "bawah": 3.23,
+    "atas": 3.94
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Fisika",
+    "tercatat": 74,
+    "median": 3.39,
+    "p25": 3.29,
+    "p75": 3.5,
+    "bawah": 3.11,
+    "atas": 3.79
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Geofisika",
+    "tercatat": 65,
+    "median": 3.55,
+    "p25": 3.42,
+    "p75": 3.65,
+    "bawah": 3.1,
+    "atas": 3.89
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Ilmu Aktuaria",
+    "tercatat": 50,
+    "median": 3.62,
+    "p25": 3.49,
+    "p75": 3.75,
+    "bawah": 3.27,
+    "atas": 3.94
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Ilmu Komputer",
+    "tercatat": 133,
+    "median": 3.71,
+    "p25": 3.3,
+    "p75": 3.84,
+    "bawah": 2.55,
+    "atas": 3.97
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Kimia",
+    "tercatat": 166,
+    "median": 3.45,
+    "p25": 3.26,
+    "p75": 3.58,
+    "bawah": 2.87,
+    "atas": 3.94
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Matematika",
+    "tercatat": 85,
+    "median": 3.08,
+    "p25": 2.65,
+    "p75": 3.35,
+    "bawah": 1.72,
+    "atas": 4.0
+  },
+  {
+    "angkatan": 2021,
+    "prodi": "Statistika",
+    "tercatat": 74,
+    "median": 3.53,
+    "p25": 3.35,
+    "p75": 3.66,
+    "bawah": 3.15,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Elektronika dan Instrumentasi",
+    "tercatat": 106,
+    "median": 3.62,
+    "p25": 3.35,
+    "p75": 3.74,
+    "bawah": 2.91,
+    "atas": 3.89
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Fisika",
+    "tercatat": 68,
+    "median": 3.39,
+    "p25": 3.22,
+    "p75": 3.54,
+    "bawah": 2.81,
+    "atas": 3.9
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Geofisika",
+    "tercatat": 61,
+    "median": 3.42,
+    "p25": 3.23,
+    "p75": 3.58,
+    "bawah": 2.76,
+    "atas": 3.9
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Ilmu Aktuaria",
+    "tercatat": 47,
+    "median": 3.56,
+    "p25": 3.38,
+    "p75": 3.73,
+    "bawah": 2.93,
+    "atas": 3.95
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Ilmu Komputer",
+    "tercatat": 128,
+    "median": 3.73,
+    "p25": 3.39,
+    "p75": 3.85,
+    "bawah": 2.78,
+    "atas": 3.97
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Kimia",
+    "tercatat": 153,
+    "median": 3.47,
+    "p25": 3.29,
+    "p75": 3.6,
+    "bawah": 2.93,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Matematika",
+    "tercatat": 78,
+    "median": 3.18,
+    "p25": 2.74,
+    "p75": 3.4,
+    "bawah": 1.8,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2022,
+    "prodi": "Statistika",
+    "tercatat": 56,
+    "median": 3.7,
+    "p25": 3.51,
+    "p75": 3.81,
+    "bawah": 3.09,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Elektronika dan Instrumentasi",
+    "tercatat": 99,
+    "median": 3.71,
+    "p25": 3.51,
+    "p75": 3.82,
+    "bawah": 3.19,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Fisika",
+    "tercatat": 66,
+    "median": 3.29,
+    "p25": 3.07,
+    "p75": 3.51,
+    "bawah": 2.51,
+    "atas": 3.9
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Geofisika",
+    "tercatat": 72,
+    "median": 3.44,
+    "p25": 3.28,
+    "p75": 3.55,
+    "bawah": 2.88,
+    "atas": 3.79
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Ilmu Aktuaria",
+    "tercatat": 51,
+    "median": 3.3,
+    "p25": 3.04,
+    "p75": 3.51,
+    "bawah": 2.58,
+    "atas": 3.92
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Ilmu Komputer",
+    "tercatat": 136,
+    "median": 3.69,
+    "p25": 3.46,
+    "p75": 3.83,
+    "bawah": 2.95,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Kimia",
+    "tercatat": 148,
+    "median": 3.42,
+    "p25": 3.17,
+    "p75": 3.64,
+    "bawah": 2.54,
+    "atas": 3.98
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Matematika",
+    "tercatat": 84,
+    "median": 2.77,
+    "p25": 2.44,
+    "p75": 3.27,
+    "bawah": 1.34,
+    "atas": 3.99
+  },
+  {
+    "angkatan": 2023,
+    "prodi": "Statistika",
+    "tercatat": 58,
+    "median": 3.48,
+    "p25": 3.09,
+    "p75": 3.73,
+    "bawah": 2.59,
+    "atas": 3.86
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Elektronika dan Instrumentasi",
+    "tercatat": 95,
+    "median": 3.67,
+    "p25": 3.55,
+    "p75": 3.76,
+    "bawah": 3.27,
+    "atas": 3.9
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Fisika",
+    "tercatat": 48,
+    "median": 3.21,
+    "p25": 2.89,
+    "p75": 3.38,
+    "bawah": 2.29,
+    "atas": 3.99
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Geofisika",
+    "tercatat": 72,
+    "median": 3.29,
+    "p25": 3.17,
+    "p75": 3.51,
+    "bawah": 2.81,
+    "atas": 3.77
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Ilmu Aktuaria",
+    "tercatat": 45,
+    "median": 3.41,
+    "p25": 3.14,
+    "p75": 3.67,
+    "bawah": 2.46,
+    "atas": 3.9
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Ilmu Komputer",
+    "tercatat": 140,
+    "median": 3.69,
+    "p25": 3.32,
+    "p75": 3.8,
+    "bawah": 2.66,
+    "atas": 3.97
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Kimia",
+    "tercatat": 146,
+    "median": 3.36,
+    "p25": 3.11,
+    "p75": 3.57,
+    "bawah": 2.44,
+    "atas": 3.91
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Matematika",
+    "tercatat": 81,
+    "median": 2.74,
+    "p25": 2.19,
+    "p75": 3.13,
+    "bawah": 1.52,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2024,
+    "prodi": "Statistika",
+    "tercatat": 56,
+    "median": 3.44,
+    "p25": 3.16,
+    "p75": 3.6,
+    "bawah": 2.8,
+    "atas": 3.94
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Elektronika dan Instrumentasi",
+    "tercatat": 113,
+    "median": 3.44,
+    "p25": 3.28,
+    "p75": 3.59,
+    "bawah": 2.85,
+    "atas": 3.92
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Fisika",
+    "tercatat": 90,
+    "median": 3.05,
+    "p25": 2.77,
+    "p75": 3.38,
+    "bawah": 2.17,
+    "atas": 3.96
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Geofisika",
+    "tercatat": 75,
+    "median": 3.03,
+    "p25": 2.81,
+    "p75": 3.23,
+    "bawah": 2.37,
+    "atas": 3.78
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Ilmu Aktuaria",
+    "tercatat": 60,
+    "median": 3.2,
+    "p25": 2.93,
+    "p75": 3.55,
+    "bawah": 2.13,
+    "atas": 3.99
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Ilmu Komputer",
+    "tercatat": 150,
+    "median": 3.49,
+    "p25": 3.13,
+    "p75": 3.69,
+    "bawah": 2.46,
+    "atas": 3.98
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Kimia",
+    "tercatat": 169,
+    "median": 3.22,
+    "p25": 2.98,
+    "p75": 3.43,
+    "bawah": 2.44,
+    "atas": 3.91
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Matematika",
+    "tercatat": 71,
+    "median": 2.95,
+    "p25": 2.65,
+    "p75": 3.37,
+    "bawah": 1.58,
+    "atas": 3.93
+  },
+  {
+    "angkatan": 2025,
+    "prodi": "Statistika",
+    "tercatat": 79,
+    "median": 3.22,
+    "p25": 2.84,
+    "p75": 3.54,
+    "bawah": 2.23,
+    "atas": 3.93
+  }
+]
