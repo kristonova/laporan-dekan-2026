@@ -2,7 +2,7 @@
   {
     "year": 2020,
     "department": "Belum terpetakan",
-    "count": 38,
+    "count": 27,
     "mapping": "unmapped",
     "is_partial": false
   },
@@ -30,14 +30,14 @@
   {
     "year": 2020,
     "department": "Matematika",
-    "count": 41,
+    "count": 40,
     "mapping": "scopus_id_majority",
     "is_partial": false
   },
   {
     "year": 2021,
     "department": "Belum terpetakan",
-    "count": 44,
+    "count": 32,
     "mapping": "unmapped",
     "is_partial": false
   },
@@ -51,7 +51,7 @@
   {
     "year": 2021,
     "department": "Ilmu Komputer dan Elektronika",
-    "count": 87,
+    "count": 86,
     "mapping": "scopus_id_majority",
     "is_partial": false
   },
@@ -67,13 +67,6 @@
     "department": "Matematika",
     "count": 53,
     "mapping": "scopus_id_majority",
-    "is_partial": false
-  },
-  {
-    "year": 2022,
-    "department": "Belum terpetakan",
-    "count": 18,
-    "mapping": "unmapped",
     "is_partial": false
   },
   {
@@ -100,15 +93,8 @@
   {
     "year": 2022,
     "department": "Matematika",
-    "count": 73,
+    "count": 74,
     "mapping": "scopus_id_majority,source",
-    "is_partial": false
-  },
-  {
-    "year": 2023,
-    "department": "Belum terpetakan",
-    "count": 15,
-    "mapping": "unmapped",
     "is_partial": false
   },
   {
@@ -121,14 +107,14 @@
   {
     "year": 2023,
     "department": "Ilmu Komputer dan Elektronika",
-    "count": 95,
+    "count": 97,
     "mapping": "scopus_id_majority,source",
     "is_partial": false
   },
   {
     "year": 2023,
     "department": "Kimia",
-    "count": 132,
+    "count": 133,
     "mapping": "scopus_id_majority,source",
     "is_partial": false
   },
@@ -141,15 +127,8 @@
   },
   {
     "year": 2024,
-    "department": "Belum terpetakan",
-    "count": 21,
-    "mapping": "unmapped",
-    "is_partial": false
-  },
-  {
-    "year": 2024,
     "department": "Fisika",
-    "count": 127,
+    "count": 125,
     "mapping": "scopus_id_majority,source",
     "is_partial": false
   },
@@ -163,49 +142,84 @@
   {
     "year": 2024,
     "department": "Kimia",
-    "count": 190,
+    "count": 189,
     "mapping": "scopus_id_majority,source",
     "is_partial": false
   },
   {
     "year": 2024,
     "department": "Matematika",
-    "count": 85,
-    "mapping": "scopus_id_majority,source",
+    "count": 80,
+    "mapping": "source",
     "is_partial": false
   },
   {
     "year": 2025,
     "department": "Belum terpetakan",
-    "count": 21,
+    "count": 8,
     "mapping": "unmapped",
-    "is_partial": true
+    "is_partial": false
   },
   {
     "year": 2025,
     "department": "Fisika",
-    "count": 123,
+    "count": 137,
     "mapping": "scopus_id_majority,source",
-    "is_partial": true
+    "is_partial": false
   },
   {
     "year": 2025,
     "department": "Ilmu Komputer dan Elektronika",
-    "count": 100,
+    "count": 141,
     "mapping": "scopus_id_majority,source",
-    "is_partial": true
+    "is_partial": false
   },
   {
     "year": 2025,
     "department": "Kimia",
-    "count": 148,
+    "count": 155,
     "mapping": "scopus_id_majority,source",
-    "is_partial": true
+    "is_partial": false
   },
   {
     "year": 2025,
     "department": "Matematika",
-    "count": 89,
+    "count": 98,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": false
+  },
+  {
+    "year": 2026,
+    "department": "Belum terpetakan",
+    "count": 13,
+    "mapping": "unmapped",
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "department": "Fisika",
+    "count": 117,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "department": "Ilmu Komputer dan Elektronika",
+    "count": 59,
+    "mapping": "scopus_id_majority",
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "department": "Kimia",
+    "count": 140,
+    "mapping": "scopus_id_majority,source",
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "department": "Matematika",
+    "count": 39,
     "mapping": "scopus_id_majority,source",
     "is_partial": true
   }

@@ -1,0 +1,212 @@
+[
+  {
+    "year": 2020,
+    "route": "Gold",
+    "n": 154,
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "route": "Hybrid gold",
+    "n": 18,
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "route": "Bronze",
+    "n": 9,
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "route": "Green",
+    "n": 9,
+    "is_partial": false
+  },
+  {
+    "year": 2020,
+    "route": "Tertutup",
+    "n": 171,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "route": "Gold",
+    "n": 203,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "route": "Hybrid gold",
+    "n": 41,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "route": "Bronze",
+    "n": 11,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "route": "Green",
+    "n": 6,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "route": "Tertutup",
+    "n": 151,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "route": "Gold",
+    "n": 207,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "route": "Hybrid gold",
+    "n": 59,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "route": "Bronze",
+    "n": 16,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "route": "Green",
+    "n": 7,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "route": "Tertutup",
+    "n": 181,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "route": "Gold",
+    "n": 166,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "route": "Hybrid gold",
+    "n": 42,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "route": "Bronze",
+    "n": 2,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "route": "Green",
+    "n": 3,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "route": "Tertutup",
+    "n": 192,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "route": "Gold",
+    "n": 211,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "route": "Hybrid gold",
+    "n": 47,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "route": "Bronze",
+    "n": 22,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "route": "Green",
+    "n": 5,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "route": "Tertutup",
+    "n": 229,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "route": "Gold",
+    "n": 228,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "route": "Hybrid gold",
+    "n": 35,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "route": "Bronze",
+    "n": 20,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "route": "Green",
+    "n": 8,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "route": "Tertutup",
+    "n": 248,
+    "is_partial": false
+  },
+  {
+    "year": 2026,
+    "route": "Gold",
+    "n": 139,
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "route": "Hybrid gold",
+    "n": 27,
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "route": "Bronze",
+    "n": 6,
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "route": "Green",
+    "n": 5,
+    "is_partial": true
+  },
+  {
+    "year": 2026,
+    "route": "Tertutup",
+    "n": 191,
+    "is_partial": true
+  }
+]

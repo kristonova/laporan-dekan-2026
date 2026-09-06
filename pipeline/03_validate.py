@@ -26,6 +26,8 @@ EXPECTED_FILES = {
     "tracer_waiting_time.json", "tracer_sectors.json", "tracer_summary.json", "hpu_posbindu.json",
     # Added with the 2022-2025 Posbindu backfill.
     "hpu_posbindu_tahunan.json",
+    # Added with the 30 August 2026 SciVal refresh (2020-2026).
+    "research_quality.json", "open_access.json", "collab_share.json",
     # Added with the student roster (six intake cohorts, 2021-2026).
     "students_summary.json", "students_by_programme.json", "students_by_province.json",
     "students_by_pathway.json", "students_background.json", "students_cohort_outcome.json",
@@ -84,7 +86,7 @@ def walk_values(value, path="root"):
 def main() -> None:
     manifest = json.loads((LOADED_DIR / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["citations"]["rows_loaded"] == 25_300
-    assert manifest["publications"]["rows_loaded"] == 2_726
+    assert manifest["publications"]["rows_loaded"] == 3_069
     assert manifest["people"]["rows_loaded"] == 4_813
 
     missing_outputs = EXPECTED_FILES - {path.name for path in DERIVED_DIR.glob("*.json")}
@@ -99,9 +101,41 @@ def main() -> None:
     assert sum(value for year, value in citation_lookup.items() if 2021 <= year <= 2025) == 46_930
 
     publications = pd.read_csv(CLEAN_DIR / "publications.csv")
-    assert len(publications) == 2_726
-    assert publications["year"].between(2020, 2025).all()
-    assert int(publications["year"].between(2021, 2025).sum()) == 2_353
+    assert len(publications) == 3_069
+    assert publications["year"].between(2020, 2026).all()
+    # The five-year window the value model reports on, unchanged in definition
+    # but recounted against the SciVal export.
+    assert int(publications["year"].between(2021, 2025).sum()) == 2_340
+
+    # The curated-department join has to stay ahead of the Scopus-ID fallback:
+    # dropping it silently would leave attribution to the majority rule alone.
+    mapping_counts = publications["mapping"].value_counts()
+    assert int(mapping_counts.get("source", 0)) == 1_677
+    mapped_share = float(publications["department"].ne("Belum terpetakan").mean())
+    assert mapped_share >= 0.97, f"Publikasi terpetakan hanya {mapped_share:.1%}"
+
+    # FWCI is a ratio against the world average for the same field and year, so
+    # a faculty-wide mean far from 1 means the column was misread, not that the
+    # faculty changed.
+    fwci_mean = float(publications["fwci"].dropna().mean())
+    assert 0.5 <= fwci_mean <= 1.5, f"Rata-rata FWCI {fwci_mean:.2f} di luar rentang wajar"
+
+    open_access = load_json("open_access.json")
+    assert sum(int(row["n"]) for row in open_access) == len(publications)
+    assert {row["route"] for row in open_access} <= {"Gold", "Hybrid gold", "Bronze", "Green", "Tertutup"}
+
+    collab_share = load_json("collab_share.json")
+    share_lookup = {int(row["year"]): row for row in collab_share}
+    assert sum(int(row["total"]) for row in collab_share) == len(publications)
+    assert share_lookup[2021]["share"] == 20.9
+    assert share_lookup[2025]["share"] == 26.9
+
+    research_quality = load_json("research_quality.json")
+    assert len(research_quality) == 27
+    # Two thirds of publications carry several ASJC fields, so these areas
+    # deliberately sum past the publication count.
+    assert sum(float(row["output"]) for row in research_quality) > len(publications)
+    assert all(0 < float(row["fwci"]) < 3 for row in research_quality)
 
     funding = load_json("funding_by_year.json")
     funding_total = {int(row["year"]): float(row["amount"]) for row in funding if row["type"] == "Total"}
@@ -126,7 +160,7 @@ def main() -> None:
     assert institution["lecturer_doctoral"] == 138
 
     collaborations = load_json("collab_countries.json")
-    assert len(collaborations) == 61
+    assert len(collaborations) == 62
     assert all(row["country"] != "Indonesia" for row in collaborations)
 
     value_model = load_json("value_model.json")

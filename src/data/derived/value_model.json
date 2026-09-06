@@ -4,7 +4,7 @@
     "funding_rp": 210922923473.0,
     "research_n": 1269,
     "outreach_n": 1481,
-    "publications_n": 2353,
+    "publications_n": 2340,
     "citations_n": 46930,
     "mappable_outreach_n": 921,
     "raw_location_labels_n": 126
@@ -23,7 +23,7 @@
     {
       "id": "publications",
       "label": "Publikasi",
-      "value": 2353
+      "value": 2340
     },
     {
       "id": "impact",

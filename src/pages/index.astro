@@ -48,6 +48,9 @@ import citationsRaw from "../data/derived/citations_by_year.json";
 import publicationsRaw from "../data/derived/publications_by_year_dept.json";
 import topicsRaw from "../data/derived/topics.json";
 import countriesRaw from "../data/derived/collab_countries.json";
+import collabShareRaw from "../data/derived/collab_share.json";
+import researchQualityRaw from "../data/derived/research_quality.json";
+import openAccessRaw from "../data/derived/open_access.json";
 import lecturersRaw from "../data/derived/lecturers_positions.json";
 import sintaRaw from "../data/derived/sinta_by_dept.json";
 import fundingRaw from "../data/derived/funding_by_year.json";
@@ -99,9 +102,12 @@ const getTckRow = (no: string) => {
 };
 const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
 const dataUrl = (file: string) => withBase(`/data/${file}`);
-const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string };
+const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string; scival: string };
 
-const publicationYears = [2020, 2021, 2022, 2023, 2024, 2025];
+/* SciVal's 30 August 2026 snapshot closes 2025 and opens 2026, so the running
+   year moves one step. The citation series above keeps 2025 as its running year:
+   it comes from the P2M export, which stops there. */
+const publicationYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
 const departmentKey: Record<string, string> = {
   "Fisika": "fisika",
   "Ilmu Komputer dan Elektronika": "ike",
@@ -140,7 +146,101 @@ const programmeSeriesColor: Record<string, string> = {
   "Ilmu Aktuaria": SEQ[250],
 };
 const programmeColor = (prodi: string) => programmeSeriesColor[prodi] ?? ACCENT.slate;
-const topicNodes: any[] = (topicsRaw as any[]).map((row) => ({ label: row.cluster, value: row.n, group: row.dept, color: deptColors[row.dept] ?? DEPT.unmapped, detail: row.topic }));
+const publicationTotal = (publicationsRaw as any[]).reduce((sum, row) => sum + row.count, 0);
+const publicationUnmapped = (publicationsRaw as any[]).filter((row) => row.department === "Belum terpetakan").reduce((sum, row) => sum + row.count, 0);
+const publicationMappedShare = ((publicationTotal - publicationUnmapped) / publicationTotal) * 100;
+const publicationFirstYear = publicationYears[0];
+const publicationLastYear = publicationYears[publicationYears.length - 1];
+
+/* Prominence is SciVal's worldwide measure of how fast a topic is moving, on a
+   0-100 percentile. Shown beside the topic name so a large tile that is going
+   nowhere reads differently from a small one on a rising field. */
+const topicNodes: any[] = (topicsRaw as any[]).map((row) => ({ label: row.cluster, value: row.n, group: row.dept, color: deptColors[row.dept] ?? DEPT.unmapped, detail: row.prominence === null ? row.topic : `${row.topic} · prominensi ${format(row.prominence, 1)}` }));
+
+/* ASJC subject areas arrive in English from SciVal; the report is Indonesian.
+   Unlisted names fall through unchanged, the same contract as countryNameId. */
+const subjectAreaId: Record<string, string> = {
+  "Engineering": "Teknik",
+  "Computer Science": "Ilmu Komputer",
+  "Physics and Astronomy": "Fisika dan Astronomi",
+  "Materials Science": "Ilmu Material",
+  "Chemistry": "Kimia",
+  "Mathematics": "Matematika",
+  "Environmental Science": "Ilmu Lingkungan",
+  "Chemical Engineering": "Teknik Kimia",
+  "Biochemistry, Genetics and Molecular Biology": "Biokimia, Genetika, dan Biologi Molekuler",
+  "Energy": "Energi",
+  "Earth and Planetary Sciences": "Ilmu Kebumian dan Keplanetan",
+  "Decision Sciences": "Ilmu Keputusan",
+  "Medicine": "Kedokteran",
+  "Agricultural and Biological Sciences": "Ilmu Pertanian dan Biologi",
+  "Pharmacology, Toxicology and Pharmaceutics": "Farmakologi, Toksikologi, dan Farmasi",
+  "Multidisciplinary": "Multidisiplin",
+  "Social Sciences": "Ilmu Sosial",
+  "Business, Management and Accounting": "Bisnis, Manajemen, dan Akuntansi",
+  "Economics, Econometrics and Finance": "Ekonomi, Ekonometrika, dan Keuangan",
+  "Health Professions": "Profesi Kesehatan",
+  "Immunology and Microbiology": "Imunologi dan Mikrobiologi",
+  "Dentistry": "Kedokteran Gigi",
+  "Arts and Humanities": "Seni dan Humaniora",
+  "Neuroscience": "Neurosains",
+  "Psychology": "Psikologi",
+  "Veterinary": "Kedokteran Hewan",
+  "Nursing": "Keperawatan",
+};
+
+/* Field-Weighted Citation Impact is already normalised against the world average
+   for the same field and year, so 1,00 is the reference line and the bars are
+   read against it rather than against each other. */
+/* Two decimals always, unlike the prose formatter: every bar is read against
+   the 1,00 reference line, so the decimals have to line up. */
+const fwciFormat = (value: number) => new Intl.NumberFormat("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+/* Same reason for the citations-per-publication annotation: a column of
+   "7,7 / 6,4 / 9" reads as a typo where "9,0" reads as a value. */
+const oneDecimal = (value: number) => new Intl.NumberFormat("id-ID", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
+const researchQuality: any[] = (researchQualityRaw as any[]).slice(0, 12).map((row) => ({
+  label: subjectAreaId[row.subject_area] ?? row.subject_area,
+  value: row.fwci,
+  valueLabel: fwciFormat(row.fwci),
+  color: row.fwci >= 1 ? UGM_BLUE : ACCENT.slate,
+  annotation: `${format(row.output)} publikasi · ${format(row.citations)} sitasi · ${oneDecimal(row.cpp)} sitasi/publikasi`,
+}));
+const researchQualityAbove = (researchQualityRaw as any[]).filter((row) => row.fwci >= 1).length;
+const researchLead = [...researchQuality].sort((a, b) => b.value - a.value)[0];
+
+const openAccessRoutes = ["Gold", "Hybrid gold", "Bronze", "Green", "Tertutup"];
+/* Route names are colour words, so the fills have to agree with them: a series
+   labelled "Green" drawn in blue reads as a mistake. The three publisher-side
+   routes take the warm ramp in order of how permanent the access is, the
+   repository route takes the one green in the palette, and paywalled takes the
+   same grey the report uses for "not mapped" everywhere else. Patterns carry
+   the distinction where hue alone would not, so the warm three stay separable
+   for a reader who cannot tell them apart by colour. */
+const openAccessSeries = [
+  { key: "Gold", label: "Gold", color: ACCENT.amber, pattern: "solid" },
+  { key: "Hybrid gold", label: "Hybrid gold", color: ACCENT.orange, pattern: "dots" },
+  { key: "Bronze", label: "Bronze", color: ACCENT.crimson, pattern: "cross" },
+  { key: "Green", label: "Green", color: ACCENT.teal, pattern: "diagonal" },
+  { key: "Tertutup", label: "Tertutup (berbayar)", color: DEPT.unmapped, pattern: "solid" },
+] as any;
+const openAccess: any[] = publicationYears.map((year) => {
+  const row: Record<string, any> = { year };
+  openAccessRoutes.forEach((route) => { row[route] = 0; });
+  (openAccessRaw as any[]).filter((item) => item.year === year).forEach((item) => { row[item.route] += item.n; });
+  return row;
+});
+const openAccessOpenShare = (year: number) => {
+  const row = openAccess.find((item) => item.year === year);
+  if (!row) return 0;
+  const total = openAccessRoutes.reduce((sum, route) => sum + row[route], 0);
+  return total ? ((total - row["Tertutup"]) / total) * 100 : 0;
+};
+
+const openAccessGreenLatest = (openAccessRaw as any[]).find((row) => row.year === 2025 && row.route === "Green")?.n ?? 0;
+
+const collabShare: any[] = collabShareRaw as any[];
+const collabFrom = collabShare.find((row) => row.year === 2021) ?? collabShare[0];
+const collabTo = collabShare.find((row) => row.year === 2025) ?? collabShare[collabShare.length - 1];
 
 const countries: any[] = (countriesRaw as any[]).slice(0, 9).map((row) => ({ country: countryNameId(row.country), iso3: row.iso3, n: row.n }));
 
@@ -795,6 +895,25 @@ const sceneValues: SceneValues = {
   studentsSchoolUnique: schoolOrigin.institusi_unik,
   studentsCohortGraduated: cohortFirst("Lulus"),
   studentsCohortWithdrew: cohortFirst("Mengundurkan diri"),
+  publicationsMappedShare: publicationMappedShare,
+  publicationsUnmapped: publicationUnmapped,
+  publicationsFirstYear: publicationFirstYear,
+  publicationsLastYear: publicationLastYear,
+  topicClusters: (topicsRaw as any[]).length,
+  collabCountries: (countriesRaw as any[]).length,
+  collabFirstYear: collabFrom.year,
+  collabFirstShare: collabFrom.share,
+  collabLastYear: collabTo.year,
+  collabLastShare: collabTo.share,
+  researchAreas: (researchQualityRaw as any[]).length,
+  researchAreasAtWorld: researchQualityAbove,
+  researchLeadArea: researchLead.label,
+  researchLeadFwci: researchLead.value,
+  openAccessFirstYear: collabFrom.year,
+  openAccessFirstShare: openAccessOpenShare(collabFrom.year),
+  openAccessLastYear: collabTo.year,
+  openAccessLastShare: openAccessOpenShare(collabTo.year),
+  openAccessGreenLatest: openAccessGreenLatest,
   format,
 };
 const deck = (key: keyof typeof scenes) => deckOf(key, sceneValues);
@@ -863,19 +982,29 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="publikasi-departemen" number="2.2" pillar="Reputasi Akademik" question={scenes["2.2"].question} deck={deck("2.2")} tone="paper" wide>
-      <StackedBarChart data={publications} xKey="year" series={publicationSeries} title={scenes["2.2"].question} hideHeader yLabel="Publikasi" provisionalX={2025} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.p2m} csvHref={dataUrl("publications_by_year_dept.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="attention"><p>Sebanyak <strong>94,2% artikel ilmiah (2020–2025)</strong> berhasil dipetakan ke departemen masing-masing berdasarkan identifikasi ID Scopus para penulis. Sebanyak 157 artikel selebihnya terus ditelusuri untuk melengkapi gambaran utuh produktivitas fakultas.</p></Insight>
+      <StackedBarChart data={publications} xKey="year" series={publicationSeries} title={scenes["2.2"].question} hideHeader yLabel="Publikasi" provisionalX={2026} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("publications_by_year_dept.csv")} valueFormatter={(value:number) => format(value)} />
+      <Insight tone="attention"><p>Sebanyak <strong>{format(publicationMappedShare, 1)}% artikel ilmiah ({publicationFirstYear}–{publicationLastYear})</strong> berhasil dipetakan ke departemen masing-masing: sebagian besar melalui penetapan departemen pada basis data fakultas, sisanya melalui identifikasi ID Scopus para penulis. Sebanyak {format(publicationUnmapped)} artikel selebihnya terus ditelusuri untuk melengkapi gambaran utuh produktivitas fakultas.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="mutu-sitasi" number="2.2p" pillar="Reputasi Akademik" question={scenes["2.2p"].question} deck={deck("2.2p")} wide>
+      <HorizontalBarChart data={researchQuality} title={scenes["2.2p"].question} hideHeader axisLabel="Field-Weighted Citation Impact (FWCI)" target={1} targetLabel="Rata-rata dunia" source="SciVal / Scopus · klasifikasi ASJC" extracted={snapshot.scival} csvHref={dataUrl("research_quality.csv")} valueFormatter={fwciFormat} />
+      <Insight tone="info"><p>FWCI membandingkan sitasi sebuah artikel dengan rata-rata dunia untuk bidang dan tahun yang sama, sehingga angka 1,00 berarti setara rata-rata global. Dari {format((researchQualityRaw as any[]).length)} bidang ilmu yang tercatat, <strong>{format(researchQualityAbove)} bidang</strong> berada pada atau di atas rata-rata dunia. Satu artikel dapat tercatat pada beberapa bidang sekaligus, sehingga jumlah publikasi antarbidang tidak dapat dijumlahkan.</p></Insight>
     </StoryScene>
 
     <StoryScene id="topik-riset" number="2.3" pillar="Reputasi Akademik" question={scenes["2.3"].question} deck={deck("2.3")} wide>
-      <Treemap data={topicNodes} title={scenes["2.3"].question} hideHeader maxNodes={110} height={640} valueLabel="publikasi" categoryLabel="Topik" source="SciVal topic clusters" extracted={snapshot.p2m} csvHref={dataUrl("topics.csv")} note="Setiap bidang kotak mewakili satu klaster topik riset SciVal; luas kotak sebanding dengan jumlah publikasi, dan warna menunjukkan departemen pengampu." />
+      <Treemap data={topicNodes} title={scenes["2.3"].question} hideHeader maxNodes={110} height={640} valueLabel="publikasi" categoryLabel="Topik" source="SciVal topic clusters" extracted={snapshot.scival} csvHref={dataUrl("topics.csv")} note="Setiap kotak mewakili satu klaster topik riset SciVal; luas kotak sebanding dengan jumlah publikasi, dan warna menunjukkan departemen pengampu. Angka prominensi menunjukkan posisi persentil klaster tersebut secara global: makin tinggi, makin cepat topik itu bergerak di dunia." />
     </StoryScene>
 
     <StoryScene id="kolaborasi" number="2.4" pillar="Reputasi Akademik" question={scenes["2.4"].question} deck={deck("2.4")} tone="paper" wide>
-      <ChartFrame source="SciVal / Scopus · batas Natural Earth 1:110m" updated="2020–2025" downloadHref={dataUrl("collab_countries.csv")} downloadName="collab_countries.csv" note={`Menampilkan sembilan negara mitra kolaborasi terbesar dari total ${(countriesRaw as any[]).length} negara yang tercatat dalam publikasi bersama peneliti FMIPA UGM.`}>
-        <WorldCollaboration countries={countries} total={(countriesRaw as any[]).length} />
+      <ChartFrame source="SciVal / Scopus · batas Natural Earth 1:110m" updated={`${publicationFirstYear}–${publicationLastYear}`} downloadHref={dataUrl("collab_countries.csv")} downloadName="collab_countries.csv" note={`Menampilkan sembilan negara mitra kolaborasi terbesar dari total ${(countriesRaw as any[]).length} negara yang tercatat dalam publikasi bersama peneliti FMIPA UGM.`}>
+        <WorldCollaboration countries={countries} total={(countriesRaw as any[]).length} from={collabFrom} to={collabTo} />
         <table slot="table"><caption>Daftar Negara Mitra Kolaborasi Riset Utama</caption><thead><tr><th>Negara</th><th>Jumlah Publikasi Bersama</th></tr></thead><tbody>{countries.map((row) => <tr><th scope="row">{row.country}</th><td>{format(row.n)}</td></tr>)}</tbody></table>
       </ChartFrame>
+    </StoryScene>
+
+    <StoryScene id="akses-terbuka" number="2.4p" pillar="Reputasi Akademik" question={scenes["2.4p"].question} deck={deck("2.4p")} wide>
+      <StackedBarChart data={openAccess} xKey="year" series={openAccessSeries} normalized title={scenes["2.4p"].question} hideHeader yLabel="Proporsi publikasi" provisionalX={2026} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("open_access.csv")} valueFormatter={(value:number) => format(value)} />
+      <Insight tone="attention"><p>Porsi publikasi yang dapat diakses bebas bergerak di kisaran separuh keluaran fakultas: {format(openAccessOpenShare(2021), 1)}% pada 2021 dan {format(openAccessOpenShare(2025), 1)}% pada 2025. Jalur <em>gold</em> mendominasi, sedangkan jalur <em>green</em> berupa salinan di repositori masih sangat sedikit — ruang perbaikan yang berada langsung di tangan fakultas.</p></Insight>
     </StoryScene>
 
     <StoryScene id="orang-riset" number="2.5" pillar="Reputasi Akademik" question={scenes["2.5"].question} deck={deck("2.5")}>
@@ -903,7 +1032,7 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="sdg" number="3.3" pillar="Kontribusi terhadap Bangsa" question={scenes["3.3"].question} deck={deck("3.3")}>
-      <SDGGrid items={sdgItems} modes={[{ key: "research", label: "Riset" }, { key: "publication", label: "Publikasi" }]} defaultMode="research" valueLabel="rekaman" title={scenes["3.3"].question} hideHeader source="CSV riset FMIPA + SciVal" extracted={snapshot.p2m} csvHref={dataUrl("sdg_matrix.csv")} />
+      <SDGGrid items={sdgItems} modes={[{ key: "research", label: "Riset" }, { key: "publication", label: "Publikasi" }]} defaultMode="research" valueLabel="rekaman" title={scenes["3.3"].question} hideHeader source="CSV riset FMIPA + SciVal" extracted={snapshot.scival} csvHref={dataUrl("sdg_matrix.csv")} />
     </StoryScene>
 
     <StoryScene id="diseminasi" number="3.4" pillar="Kontribusi terhadap Bangsa" question={scenes["3.4"].question} deck={deck("3.4")} tone="paper">

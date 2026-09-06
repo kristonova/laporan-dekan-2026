@@ -10,8 +10,8 @@ batang berskala bersama; label dana riset diperbesar. Rincian ada di
 Web data story untuk **Laporan Dekan FMIPA UGM 2021–2026**. Proyek ini mengubah data kinerja, akademik, riset, kerja sama, lulusan, kesehatan, dan profil mahasiswa menjadi cerita panjang yang dapat dibaca, dipresentasikan, ditelusuri metodologinya, serta dibuka kembali tanpa jaringan.
 Aplikasi web berbasis narasi data (*data storytelling*) untuk menyajikan **Laporan Dekan FMIPA UGM Periode 2021–2026**. Proyek ini merangkum data kinerja institusi, akademik, riset, kerja sama, profil lulusan, kesehatan sivitas akademika, hingga demografi mahasiswa menjadi sajian interaktif yang nyaman dibaca, siap dipresentasikan, transparan secara metodologi, dan dapat diakses secara *offline*.
 
-Snapshot utama saat ini adalah **31 Agustus 2026**. Data P2M ditarik pada 19 Agustus 2026 dan data LENTERA pada 20 Agustus 2026. Semua tanggal berasal dari satu konstanta pipeline, bukan teks yang ditulis ulang di tiap komponen.
-Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data P2M ditarik pada 19 Agustus 2026 dan data LENTERA pada 20 Agustus 2026). Seluruh tanggal dikelola terpusat melalui satu konstanta *pipeline*, sehingga penyajian angka dan konteks waktu selalu konsisten di setiap bagian.
+Snapshot utama saat ini adalah **31 Agustus 2026**. Data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, dan data LENTERA pada 20 Agustus 2026. Semua tanggal berasal dari satu konstanta pipeline, bukan teks yang ditulis ulang di tiap komponen.
+Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, dan data LENTERA pada 20 Agustus 2026). Seluruh tanggal dikelola terpusat melalui satu konstanta *pipeline*, sehingga penyajian angka dan konteks waktu selalu konsisten di setiap bagian.
 
 ## Cerita yang dibangun
 ## Konsep & Struktur Narasi
@@ -32,8 +32,8 @@ Laporan ini dirancang bukan sekadar sebagai *dashboard* kumpulan angka mentah, m
 | **4. Tantangan & Kesenjangan** | Memotret capaian yang belum merata, perbedaan data antarsumber, dan ruang yang perlu ditingkatkan | Sorotan kritis (*insights*), status capaian target, anomali data, serta kartu catatan celah data (*data gaps*) di sepanjang alur baca |
 | **5. Resolusi & Estafet** | Mengubah evaluasi masa lalu menjadi pijakan kerja kepengurusan berikutnya | Babak "Estafet" yang merangkum agenda akselerasi dan fondasi data bagi kepemimpinan selanjutnya |
 
-Cerita utama terdiri dari **35 scene bernomor dan satu cold open**. Naskah ringkas untuk deck tidak disalin manual dari halaman panjang: kalimat yang memuat angka bergerak dihitung dari dataset yang sama agar presentasi dan laporan tidak saling menyimpang.
-Narasi utama tersusun atas **35 adegan (*scene*) tematik dan satu adegan pembuka (*cold open*)**. Seluruh naskah ringkas pada slide presentasi (*deck*) dihitung dan digenerasi langsung dari sumber data yang sama dengan laporan utama, sehingga tidak ada perbedaan angka di antara keduanya.
+Cerita utama terdiri dari **37 scene bernomor dan satu cold open**. Naskah ringkas untuk deck tidak disalin manual dari halaman panjang: kalimat yang memuat angka bergerak dihitung dari dataset yang sama agar presentasi dan laporan tidak saling menyimpang.
+Narasi utama tersusun atas **37 adegan (*scene*) tematik dan satu adegan pembuka (*cold open*)**. Seluruh naskah ringkas pada slide presentasi (*deck*) dihitung dan digenerasi langsung dari sumber data yang sama dengan laporan utama, sehingga tidak ada perbedaan angka di antara keduanya.
 
 ## Pengalaman pembaca
 ## Halaman & Antarmuka Pengguna
@@ -57,7 +57,7 @@ Pada deck, gunakan `←`/`→`, `Page Up`/`Page Down`, atau `Space` untuk berpin
 ## Keadaan proyek terkini
 ## Ringkasan Fitur & Kondisi Terkini
 
-- Lima pilar sudah terhubung ke 35 scene bernomor, satu cold open, dan deck 36 slide.
+- Lima pilar sudah terhubung ke 37 scene bernomor, satu cold open, dan deck 36 slide.
 - Pilar terbaru, **Mahasiswa & Akses Pendidikan**, memotret 4.945 mahasiswa pada enam angkatan 2021–2026: program studi, wilayah asal, gender, jalur masuk, latar wali, sekolah asal, status akhir, dan IPK.
 - Halaman Data & Metodologi mencatat 40 dataset publik atau referensi GeoJSON yang dapat ditelusuri ke scene pemakainya.
 - Dua belas komponen grafik yang dapat digunakan ulang mencakup garis/area, batang, stacked bar, bullet, slope, dot matrix, trend rows, bubble, risk profile, grid SDG, choropleth, dan point map.
@@ -65,7 +65,7 @@ Pada deck, gunakan `←`/`→`, `Page Up`/`Page Down`, atau `Space` untuk berpin
 - Tema terang/gelap, progres membaca, `prefers-reduced-motion`, indikator fokus, *forced colors*, layout responsif, dan gaya cetak sudah tersedia.
 - Build produksi menghasilkan situs statis dan service worker dengan cache ber-versi untuk seluruh output build.
 - Deployment GitHub Pages dikonfigurasi melalui workflow pada setiap push ke `main`.
-- **Cakupan Narasi:** 5 pilar strategis telah terhubung ke 35 adegan narasi, 1 adegan pembuka, dan 36 slide presentasi.
+- **Cakupan Narasi:** 5 pilar strategis telah terhubung ke 37 adegan narasi, 1 adegan pembuka, dan 36 slide presentasi.
 - **Pilar Mahasiswa & Akses Pendidikan:** Menganalisis data 4.945 mahasiswa dari 6 angkatan (2021–2026), meliputi sebaran prodi, daerah asal, gender, jalur masuk, latar belakang orang tua/wali, sekolah asal, status kelulusan, dan distribusi IPK.
 - **Katalog Data Terbuka:** Halaman Metodologi mengelola 40 dataset publik dan referensi batas wilayah GeoJSON yang terhubung langsung ke visualisasi terkait.
 - **Pustaka Visualisasi:** Menyediakan 12 tipe komponen visualisasi data modular (*reusable*), mulai dari grafik garis/area, diagram batang, *stacked bar*, *bullet chart*, *slope chart*, *dot matrix*, deret tren (*trend rows*), *bubble chart*, matriks profil risiko, kisi capaian SDG, peta tematik *choropleth*, hingga *point map*.
@@ -208,13 +208,17 @@ Jika semua tahap perlu dijalankan sekaligus, gunakan `npm run verify`.
 
 | Sumber Data | Lokasi Relatif (di Direktori Induk) | Digunakan Untuk |
 | --- | --- | --- |
-| Ekspor P2M, 14 jenis dataset dalam 23 berkas CSV | `data ugm/p2m/` | Sitasi, publikasi, riset, PkM, SDM, jurnal, dan media |
+| Ekspor P2M, 13 jenis dataset dalam 21 berkas CSV | `data ugm/p2m/` | Sitasi, riset, PkM, SDM, jurnal, dan media |
+| Ekspor SciVal langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi 2020–2026 beserta FWCI, akses terbuka, topik, dan SDG; rekap mutu sitasi 27 bidang ilmu ASJC |
+| Salinan P2M `publication_scival_exported_*.csv` | `data ugm/p2m/` | Penetapan departemen hasil kurasi fakultas untuk 1.682 publikasi |
 | `TCK 2026.xlsx` | `target_capaian_kinerja/tck_2026/` | 42 indikator kinerja dan rincian departemen |
 | Workbook LENTERA | `data ugm/kerjasama/` | Dokumen kerja sama 2021–2026 |
 | Tabel akademik dan tracer study | `data ugm/akademik/` | Penerimaan, mahasiswa aktif, lulusan, prestasi, beasiswa, akreditasi, exchange, dan tracer study |
 | Enam daftar mahasiswa per angkatan | `data ugm/akademik/daftar mahasiswa/` | Profil mahasiswa 2021–2026, akses, latar, status akhir, dan IPK |
 | Rekap Posbindu | `data ugm/health promotion university posbindu/` | Agregat Health Promoting University |
-| Ekspor P2M (14 jenis dataset dalam 23 berkas CSV) | `data ugm/p2m/` | Sitasi, publikasi, riset, pengabdian (PkM), SDM dosen & tendik, jurnal, dan eksposur media |
+| Ekspor P2M (13 jenis dataset dalam 21 berkas CSV) | `data ugm/p2m/` | Sitasi, riset, pengabdian (PkM), SDM dosen & tendik, jurnal, dan eksposur media |
+| Ekspor SciVal Langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi periode 2020–2026 lengkap dengan FWCI, status akses terbuka, klaster topik, dan penandaan SDG; serta rekapitulasi mutu sitasi 27 bidang ilmu ASJC |
+| Salinan P2M `publication_scival_exported_*.csv` | `data ugm/p2m/` | Penetapan departemen hasil kurasi fakultas untuk 1.682 publikasi, dipertahankan karena ekspor SciVal tidak memuat kolom departemen |
 | `TCK 2026.xlsx` | `target_capaian_kinerja/tck_2026/` | 42 indikator capaian kinerja dan rincian capaian departemen |
 | Buku Kerja LENTERA | `data ugm/kerjasama/` | Rekapitulasi dokumen kerja sama dan kemitraan 2021–2026 |
 | Tabel Akademik & Tracer Study | `data ugm/akademik/` | Penerimaan mahasiswa, mahasiswa aktif, lulusan, prestasi, beasiswa, akreditasi, pertukaran pelajar, dan hasil *tracer study* |

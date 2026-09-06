@@ -51,8 +51,36 @@ def sinta_score(value: object) -> float | None:
     return float(str(value).replace(".", ""))
 
 
+# SciVal labels a publication with every open access route that applies, so
+# "Gold|Green" is common. The chart needs one route per publication, and the
+# strongest guarantee of lasting public access wins: gold and hybrid gold are
+# permanent and publisher-side, bronze is publisher-side but revocable, green is
+# a repository copy. An empty field means the article sits behind a paywall.
+def open_access_route(value: object) -> str:
+    text = str(value or "").strip()
+    if not text or text.lower() == "nan":
+        return "Tertutup"
+    for route in ("Hybrid gold", "Gold", "Bronze", "Green"):
+        if route in text:
+            return route
+    return "Tertutup"
+
+
 def clean_publications(lecturers: pd.DataFrame) -> None:
+    """Attribute each publication to a department, then drop person-level fields.
+
+    Two layers, in that order. The faculty curated a department for 1,682 of the
+    publications carried by the older P2M mirror; that judgement is kept wherever
+    the EID survives into the SciVal refresh, because it was checked by hand and
+    the majority rule disagrees with it on roughly a fifth of those rows.
+    Everything the mirror never saw - the 2026 output and the 2025 backfill -
+    falls back to the majority department among the authors' Scopus IDs, and
+    stays unmapped when that majority ties or no author is a current lecturer.
+    """
     publication = pd.read_csv(LOADED_DIR / "publications.csv", low_memory=False)
+    lookup = pd.read_csv(LOADED_DIR / "publication_department_lookup.csv", low_memory=False)
+    curated = dict(zip(lookup["eid"].astype(str).str.strip(), lookup["department"]))
+
     scopus_department: dict[str, str] = {}
     for _, row in lecturers.iterrows():
         department = str(row.get("department") or "").strip()
@@ -62,9 +90,9 @@ def clean_publications(lecturers: pd.DataFrame) -> None:
             scopus_department[normalize_identifier(identifier)] = department
 
     def assign_department(row: pd.Series) -> pd.Series:
-        direct = str(row.get("department") or "").strip()
-        if direct and direct.lower() != "nan":
-            return pd.Series([direct, "source"])
+        direct = curated.get(str(row.get("eid") or "").strip())
+        if direct and str(direct).strip().lower() != "nan":
+            return pd.Series([str(direct).strip(), "source"])
         candidates = [scopus_department.get(normalize_identifier(identifier)) for identifier in split_pipe(row.get("scopus_authors_ids"))]
         counts = Counter(value for value in candidates if value)
         if counts:
@@ -75,11 +103,39 @@ def clean_publications(lecturers: pd.DataFrame) -> None:
 
     publication[["department_clean", "mapping"]] = publication.apply(assign_department, axis=1)
     publication["year"] = safe_year(publication["year"], 1990, 2030)
+    publication["open_access"] = publication["open_access"].map(open_access_route)
+    for column in ("citations", "fwci", "citescore_percentile", "topic_cluster_prominence"):
+        publication[column] = pd.to_numeric(publication[column], errors="coerce")
     keep = [
-        "Id", "title", "year", "publication_type", "country_region", "sdgs", "topic_cluster", "topic_name",
+        "eid", "title", "year", "publication_type", "country_region", "sdgs", "topic_cluster", "topic_name",
+        "topic_cluster_prominence", "citations", "fwci", "citescore_percentile", "open_access",
         "department_clean", "mapping",
     ]
     publication[keep].rename(columns={"department_clean": "department"}).to_csv(CLEAN_DIR / "publications.csv", index=False)
+
+
+def clean_subject_areas() -> None:
+    """Keep the 27 top-level ASJC areas and drop the 231 subcategories.
+
+    A publication carries several ASJC fields at once - two thirds of them do -
+    so these totals deliberately sum past the publication count. Only SciVal can
+    deduplicate the researcher counts behind them, which is why this report is
+    read instead of being derived from the publication rows.
+    """
+    frame = pd.read_csv(LOADED_DIR / "scival_subject_areas.csv", low_memory=False)
+    # The loader turned SciVal's "-" placeholder into NA, and only the top-level
+    # rows carry it in the Subcategory column.
+    top_level = frame[frame["Subcategory"].isna()]
+    clean = pd.DataFrame({
+        "subject_area": top_level["Subject Area"].astype(str).str.strip(),
+        "output": pd.to_numeric(top_level["Scholarly Output"], errors="coerce"),
+        "growth": pd.to_numeric(top_level["Scholarly Output (growth %)"], errors="coerce"),
+        "citations": pd.to_numeric(top_level["Citations"], errors="coerce"),
+        "researchers": pd.to_numeric(top_level["Researchers"], errors="coerce"),
+        "cpp": pd.to_numeric(top_level["Citations per Publication"], errors="coerce"),
+        "fwci": pd.to_numeric(top_level["Field-weighted Citation Impact"], errors="coerce"),
+    })
+    clean.dropna(subset=["output", "fwci"]).to_csv(CLEAN_DIR / "scival_subject_areas.csv", index=False)
 
 
 # --- TCK 2026 ---------------------------------------------------------------
@@ -747,6 +803,7 @@ def main() -> None:
 
     lecturers = pd.read_csv(LOADED_DIR / "lecturers.csv", low_memory=False)
     clean_publications(lecturers)
+    clean_subject_areas()
     lecturer_clean = pd.DataFrame({
         "department": lecturers["department"].fillna("Belum terpetakan").replace("", "Belum terpetakan"),
         "position": lecturers["functional_position"].map(position_group),

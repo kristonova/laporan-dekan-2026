@@ -117,6 +117,25 @@ export interface SceneValues {
   studentsCohortGraduated: number;
   studentsCohortWithdrew: number;
   posbinduTopRiskShare: number;
+  publicationsMappedShare: number;
+  publicationsUnmapped: number;
+  publicationsFirstYear: number;
+  publicationsLastYear: number;
+  topicClusters: number;
+  collabCountries: number;
+  collabFirstYear: number;
+  collabFirstShare: number;
+  collabLastYear: number;
+  collabLastShare: number;
+  researchAreas: number;
+  researchAreasAtWorld: number;
+  researchLeadArea: string;
+  researchLeadFwci: number;
+  openAccessFirstYear: number;
+  openAccessFirstShare: number;
+  openAccessLastYear: number;
+  openAccessLastShare: number;
+  openAccessGreenLatest: number;
   format: (value: number, digits?: number) => string;
 }
 
@@ -148,15 +167,28 @@ export const scenes = {
   },
   "2.2": {
     question: "Bagaimana Produktivitas Publikasi Tersebar di Empat Departemen?",
-    deck: "Sebanyak 94,2% artikel ilmiah periode 2020–2025 berhasil dipetakan ke departemen masing-masing berdasarkan identifikasi ID Scopus para penulis. Sebanyak 157 artikel selebihnya terus ditelusuri untuk melengkapi potret utuh produktivitas fakultas.",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.publicationsMappedShare, 1)}% artikel ilmiah periode ${v.publicationsFirstYear}–${v.publicationsLastYear} berhasil dipetakan ke departemen masing-masing: sebagian besar melalui penetapan pada basis data fakultas, sisanya melalui identifikasi ID Scopus para penulis. Sebanyak ${v.format(v.publicationsUnmapped)} artikel selebihnya terus ditelusuri untuk melengkapi potret utuh produktivitas fakultas.`,
+  },
+  "2.2p": {
+    question: "Seberapa Kuat Gema Sitasi Karya FMIPA Dibanding Rata-rata Dunia?",
+    deck: (v) =>
+      `Jumlah karya tumbuh, tetapi gema sitasinya belum sepenuhnya menyusul: dari ${v.format(v.researchAreas)} bidang ilmu yang tercatat, ${v.format(v.researchAreasAtWorld)} bidang berada pada atau di atas rata-rata dunia. Di antara bidang dengan keluaran terbesar, ${v.researchLeadArea} memimpin dengan FWCI ${v.format(v.researchLeadFwci, 2)}. Mutu sitasi inilah agenda yang menuntut perhatian sejajar dengan agenda jumlah.`,
   },
   "2.3": {
     question: "Topik Sains Apa Saja yang Menjadi Ujung Tombak Riset FMIPA?",
-    deck: "Sebanyak 528 klaster topik memperlihatkan peta riset fakultas yang kaya dan lintas disiplin—mulai dari sains material, energi baru terbarukan, kecerdasan buatan, hingga biosains dan teknologi pemantauan lingkungan.",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.topicClusters)} klaster topik memperlihatkan peta riset fakultas yang kaya dan lintas disiplin—mulai dari sains material, energi baru terbarukan, kecerdasan buatan, hingga biosains dan teknologi pemantauan lingkungan.`,
   },
   "2.4": {
     question: "Seberapa Luas Jejak Kolaborasi Riset Peneliti FMIPA di Kancah Dunia?",
-    deck: "Jejaring kolaborasi para ilmuwan FMIPA kini menjangkau peneliti di 61 negara. Proporsi publikasi bersama mitra internasional melonjak dari 18,4% pada 2021 menjadi 27,7% pada 2025.",
+    deck: (v) =>
+      `Jejaring kolaborasi para ilmuwan FMIPA kini menjangkau peneliti di ${v.format(v.collabCountries)} negara. Proporsi publikasi bersama mitra internasional naik dari ${v.format(v.collabFirstShare, 1)}% pada ${v.collabFirstYear} menjadi ${v.format(v.collabLastShare, 1)}% pada ${v.collabLastYear}.`,
+  },
+  "2.4p": {
+    question: "Seberapa Terbuka Akses Publik terhadap Karya Ilmiah FMIPA?",
+    deck: (v) =>
+      `Sekitar separuh keluaran fakultas dapat dibaca tanpa berbayar: ${v.format(v.openAccessFirstShare, 1)}% pada ${v.openAccessFirstYear} dan ${v.format(v.openAccessLastShare, 1)}% pada ${v.openAccessLastYear}, hampir seluruhnya melalui jalur gold di sisi penerbit. Salinan repositori (green) hanya ${v.format(v.openAccessGreenLatest)} artikel pada ${v.openAccessLastYear}—padahal jalur inilah yang paling terkendali oleh fakultas sendiri.`,
   },
   "2.5": {
     question: "Bagaimana Komposisi dan Kematangan Kepakaran Dosen FMIPA?",

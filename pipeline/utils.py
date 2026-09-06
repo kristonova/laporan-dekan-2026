@@ -14,6 +14,9 @@ APP_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE_ROOT = APP_ROOT.parent
 DATA_ROOT = WORKSPACE_ROOT / "data ugm"
 SOURCE_DIR = DATA_ROOT / "p2m"
+# Direct SciVal exports live beside the P2M database dumps. They carry the
+# richer bibliometrics (FWCI, open access, prominence) the P2M mirror drops.
+SCIVAL_DIR = SOURCE_DIR / "from_scival"
 ACADEMIC_DIR = DATA_ROOT / "akademik"
 PARTNERSHIP_DIR = DATA_ROOT / "kerjasama"
 HEALTH_DIR = DATA_ROOT / "health promotion university posbindu"
@@ -32,6 +35,9 @@ SNAPSHOT_LABEL = "31 Agustus 2026"
 # Historical P2M exports and the LENTERA workbook were pulled on their own dates.
 SNAPSHOT_P2M = "19 Agustus 2026"
 SNAPSHOT_LENTERA = "20 Agustus 2026"
+# SciVal reports its own "date last updated"; publication counts, topics,
+# collaboration, and SDG tags carry this date rather than the P2M pull date.
+SNAPSHOT_SCIVAL = "30 Agustus 2026"
 
 
 def ensure_directories() -> None:

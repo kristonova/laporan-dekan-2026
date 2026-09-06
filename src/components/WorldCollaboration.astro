@@ -1,9 +1,11 @@
 ---
 import worldRaw from "../data/geo/world-countries.json";
 import { withBase } from "../lib/paths";
+import { decimal } from "../lib/format";
 
 interface Country { country: string; iso3?: string; n: number; }
-interface Props { countries: Country[]; total?: number; }
+interface Reading { year: number; share: number; }
+interface Props { countries: Country[]; total?: number; from: Reading; to: Reading; }
 type Position = [number, number];
 type Polygon = Position[][];
 interface WorldFeature {
@@ -14,7 +16,9 @@ interface WorldFeature {
 }
 interface WorldCollection { features: WorldFeature[]; }
 
-const { countries, total = 62 } = Astro.props;
+const { countries, total = 62, from, to } = Astro.props;
+/* The two readings are passed in from collab_share.json rather than written
+   here: they used to be literals and drifted the moment SciVal was refreshed. */
 const coordinates: Record<string, [number, number]> = {
   "Jepang": [139.7, 35.7], "Japan": [139.7, 35.7],
   "Korea Selatan": [127.8, 36.4], "South Korea": [127.8, 36.4],
@@ -83,9 +87,9 @@ const worldGeoJsonUrl = withBase("/data/world-countries.geojson");
   </div>
   <div class="world-network__trend">
     <p>Kolaborasi Internasional</p>
-    <div class="world-network__reading"><strong>18,4%</strong><span>2021</span></div>
+    <div class="world-network__reading"><strong>{decimal(from.share)}%</strong><span>{from.year}</span></div>
     <i aria-hidden="true">→</i>
-    <div class="world-network__reading"><strong>27,7%</strong><span>2025</span></div>
+    <div class="world-network__reading"><strong>{decimal(to.share)}%</strong><span>{to.year}</span></div>
   </div>
 </div>
 

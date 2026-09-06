@@ -1,0 +1,58 @@
+[
+  {
+    "year": 2020,
+    "total": 361,
+    "recorded": 361,
+    "international": 77,
+    "share": 21.3,
+    "is_partial": false
+  },
+  {
+    "year": 2021,
+    "total": 412,
+    "recorded": 412,
+    "international": 86,
+    "share": 20.9,
+    "is_partial": false
+  },
+  {
+    "year": 2022,
+    "total": 470,
+    "recorded": 468,
+    "international": 103,
+    "share": 21.9,
+    "is_partial": false
+  },
+  {
+    "year": 2023,
+    "total": 405,
+    "recorded": 404,
+    "international": 92,
+    "share": 22.7,
+    "is_partial": false
+  },
+  {
+    "year": 2024,
+    "total": 514,
+    "recorded": 514,
+    "international": 124,
+    "share": 24.1,
+    "is_partial": false
+  },
+  {
+    "year": 2025,
+    "total": 539,
+    "recorded": 539,
+    "international": 145,
+    "share": 26.9,
+    "is_partial": false
+  },
+  {
+    "year": 2026,
+    "total": 368,
+    "recorded": 368,
+    "international": 122,
+    "share": 33.2,
+    "is_partial": true
+  }
+]

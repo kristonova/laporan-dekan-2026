@@ -1,0 +1,245 @@
+[
+  {
+    "subject_area": "Engineering",
+    "output": 823.0,
+    "growth": 31.3,
+    "citations": 6306.0,
+    "researchers": 163.0,
+    "cpp": 7.7,
+    "fwci": 0.9
+  },
+  {
+    "subject_area": "Computer Science",
+    "output": 681.0,
+    "growth": 91.8,
+    "citations": 4340.0,
+    "researchers": 129.0,
+    "cpp": 6.4,
+    "fwci": 0.77
+  },
+  {
+    "subject_area": "Physics and Astronomy",
+    "output": 677.0,
+    "growth": 20.5,
+    "citations": 3473.0,
+    "researchers": 160.0,
+    "cpp": 5.1,
+    "fwci": 0.82
+  },
+  {
+    "subject_area": "Materials Science",
+    "output": 665.0,
+    "growth": 26.4,
+    "citations": 5961.0,
+    "researchers": 110.0,
+    "cpp": 9.0,
+    "fwci": 0.98
+  },
+  {
+    "subject_area": "Chemistry",
+    "output": 653.0,
+    "growth": 89.2,
+    "citations": 4752.0,
+    "researchers": 90.0,
+    "cpp": 7.3,
+    "fwci": 0.67
+  },
+  {
+    "subject_area": "Mathematics",
+    "output": 402.0,
+    "growth": 97.6,
+    "citations": 1328.0,
+    "researchers": 118.0,
+    "cpp": 3.3,
+    "fwci": 0.51
+  },
+  {
+    "subject_area": "Environmental Science",
+    "output": 302.0,
+    "growth": 260.9,
+    "citations": 2228.0,
+    "researchers": 92.0,
+    "cpp": 7.4,
+    "fwci": 0.88
+  },
+  {
+    "subject_area": "Chemical Engineering",
+    "output": 293.0,
+    "growth": 51.6,
+    "citations": 3203.0,
+    "researchers": 81.0,
+    "cpp": 10.9,
+    "fwci": 0.9
+  },
+  {
+    "subject_area": "Biochemistry, Genetics and Molecular Biology",
+    "output": 223.0,
+    "growth": 35.3,
+    "citations": 1732.0,
+    "researchers": 79.0,
+    "cpp": 7.8,
+    "fwci": 0.66
+  },
+  {
+    "subject_area": "Energy",
+    "output": 188.0,
+    "growth": 65.0,
+    "citations": 1437.0,
+    "researchers": 83.0,
+    "cpp": 7.6,
+    "fwci": 0.64
+  },
+  {
+    "subject_area": "Earth and Planetary Sciences",
+    "output": 166.0,
+    "growth": 61.9,
+    "citations": 1032.0,
+    "researchers": 65.0,
+    "cpp": 6.2,
+    "fwci": 1.11
+  },
+  {
+    "subject_area": "Decision Sciences",
+    "output": 161.0,
+    "growth": 45.0,
+    "citations": 662.0,
+    "researchers": 73.0,
+    "cpp": 4.1,
+    "fwci": 0.5
+  },
+  {
+    "subject_area": "Medicine",
+    "output": 156.0,
+    "growth": 156.3,
+    "citations": 1483.0,
+    "researchers": 70.0,
+    "cpp": 9.5,
+    "fwci": 1.07
+  },
+  {
+    "subject_area": "Agricultural and Biological Sciences",
+    "output": 148.0,
+    "growth": 200.0,
+    "citations": 978.0,
+    "researchers": 82.0,
+    "cpp": 6.6,
+    "fwci": 0.81
+  },
+  {
+    "subject_area": "Pharmacology, Toxicology and Pharmaceutics",
+    "output": 142.0,
+    "growth": -23.8,
+    "citations": 847.0,
+    "researchers": 52.0,
+    "cpp": 6.0,
+    "fwci": 0.7
+  },
+  {
+    "subject_area": "Multidisciplinary",
+    "output": 127.0,
+    "growth": 314.3,
+    "citations": 910.0,
+    "researchers": 80.0,
+    "cpp": 7.2,
+    "fwci": 0.6
+  },
+  {
+    "subject_area": "Social Sciences",
+    "output": 85.0,
+    "growth": 220.0,
+    "citations": 607.0,
+    "researchers": 66.0,
+    "cpp": 7.1,
+    "fwci": 1.01
+  },
+  {
+    "subject_area": "Business, Management and Accounting",
+    "output": 43.0,
+    "growth": -20.0,
+    "citations": 299.0,
+    "researchers": 32.0,
+    "cpp": 7.0,
+    "fwci": 1.01
+  },
+  {
+    "subject_area": "Economics, Econometrics and Finance",
+    "output": 36.0,
+    "growth": -37.5,
+    "citations": 190.0,
+    "researchers": 20.0,
+    "cpp": 5.3,
+    "fwci": 0.37
+  },
+  {
+    "subject_area": "Health Professions",
+    "output": 28.0,
+    "growth": -66.7,
+    "citations": 265.0,
+    "researchers": 28.0,
+    "cpp": 9.5,
+    "fwci": 0.99
+  },
+  {
+    "subject_area": "Immunology and Microbiology",
+    "output": 17.0,
+    "growth": 700.0,
+    "citations": 81.0,
+    "researchers": 17.0,
+    "cpp": 4.8,
+    "fwci": 0.46
+  },
+  {
+    "subject_area": "Dentistry",
+    "output": 16.0,
+    "growth": 0.0,
+    "citations": 150.0,
+    "researchers": 15.0,
+    "cpp": 9.4,
+    "fwci": 1.02
+  },
+  {
+    "subject_area": "Arts and Humanities",
+    "output": 14.0,
+    "growth": 100.0,
+    "citations": 108.0,
+    "researchers": 15.0,
+    "cpp": 7.7,
+    "fwci": 1.25
+  },
+  {
+    "subject_area": "Neuroscience",
+    "output": 7.0,
+    "growth": 0.0,
+    "citations": 22.0,
+    "researchers": 9.0,
+    "cpp": 3.1,
+    "fwci": 0.28
+  },
+  {
+    "subject_area": "Psychology",
+    "output": 7.0,
+    "growth": null,
+    "citations": 12.0,
+    "researchers": 7.0,
+    "cpp": 1.7,
+    "fwci": 0.51
+  },
+  {
+    "subject_area": "Veterinary",
+    "output": 7.0,
+    "growth": 0.0,
+    "citations": 56.0,
+    "researchers": 4.0,
+    "cpp": 8.0,
+    "fwci": 1.1
+  },
+  {
+    "subject_area": "Nursing",
+    "output": 4.0,
+    "growth": null,
+    "citations": 10.0,
+    "researchers": 4.0,
+    "cpp": 2.5,
+    "fwci": 0.23
+  }
+]

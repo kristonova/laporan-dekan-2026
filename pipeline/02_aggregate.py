@@ -18,6 +18,7 @@ from utils import (
     SNAPSHOT_LABEL,
     SNAPSHOT_LENTERA,
     SNAPSHOT_P2M,
+    SNAPSHOT_SCIVAL,
     number,
     records,
     split_pipe,
@@ -43,6 +44,10 @@ def output(filename: str, rows: list[dict] | dict) -> None:
                 frame[column] = frame[column].map(lambda value: json.dumps(value, ensure_ascii=False) if isinstance(value, (list, dict)) else value)
         frame.to_csv(csv_path, index=False)
 
+
+# Publisher-side and permanent first, repository copy last, paywalled at the
+# end - the order the stacked bars read in.
+OPEN_ACCESS_ORDER = ["Gold", "Hybrid gold", "Bronze", "Green", "Tertutup"]
 
 DEPARTMENT_LABELS = {
     "dike": "Ilmu Komputer dan Elektronika",
@@ -103,6 +108,7 @@ def snapshot_output() -> None:
         "tck": SNAPSHOT_LABEL,
         "p2m": SNAPSHOT_P2M,
         "lentera": SNAPSHOT_LENTERA,
+        "scival": SNAPSHOT_SCIVAL,
     })
 
 
@@ -736,11 +742,14 @@ def main() -> None:
     publications = pd.read_csv(CLEAN_DIR / "publications.csv", low_memory=False)
     publications["year"] = pd.to_numeric(publications["year"], errors="coerce").astype("Int64")
     publication_group = publications.groupby(["year", "department"], dropna=False).agg(
-        count=("Id", "size"),
+        count=("eid", "size"),
         mapping=("mapping", lambda values: ",".join(sorted(set(values.dropna().astype(str))))),
     ).reset_index()
     publication_group["year"] = publication_group["year"].astype(int)
-    publication_group["is_partial"] = publication_group["year"].eq(2025)
+    # 2025 is complete in the 30 August 2026 SciVal snapshot; 2026 is the year
+    # still being indexed. The citation series above keeps 2025 as its running
+    # year because it comes from the P2M export, which stops there.
+    publication_group["is_partial"] = publication_group["year"].eq(2026)
     publication_rows = records(publication_group.sort_values(["year", "department"]))
     output("publications_by_year_dept.json", publication_rows)
 
@@ -752,8 +761,13 @@ def main() -> None:
         topic_names = group["topic_name"].dropna().astype(str)
         top_topic = topic_names.value_counts().index[0] if not topic_names.empty else str(cluster)
         samples = group["title"].dropna().astype(str).drop_duplicates().head(3).tolist()
+        # Prominence is a property of the cluster, not of any one paper, so every
+        # row in a cluster repeats it; the median absorbs the few rows SciVal
+        # left blank without shifting the value.
+        prominence = group["topic_cluster_prominence"].dropna()
         topic_rows.append({
             "cluster": str(cluster), "topic": top_topic, "dept": dominant, "n": int(len(group)), "sample": samples,
+            "prominence": None if prominence.empty else round(float(prominence.median()), 1),
             "dept_counts": dict(departments),
         })
     topic_rows.sort(key=lambda row: (-row["n"], row["cluster"]))
@@ -780,6 +794,40 @@ def main() -> None:
         for country, total in sorted(country_totals.items(), key=lambda item: (-item[1], item[0]))
     ]
     output("collab_countries.json", country_rows)
+
+    # The share of output written with at least one partner abroad. The story
+    # used to state this as two numbers typed into the component; it is computed
+    # here so a refreshed export moves the sentence with the chart.
+    collab_share_rows: list[dict] = []
+    for year, group in publications.dropna(subset=["year"]).groupby("year"):
+        partners = group["country_region"].map(lambda value: [name for name in split_pipe(value) if name != "Indonesia"])
+        recorded = group["country_region"].notna().sum()
+        international = int(partners.map(bool).sum())
+        collab_share_rows.append({
+            "year": int(year),
+            "total": int(len(group)),
+            "recorded": int(recorded),
+            "international": international,
+            "share": round(100 * international / len(group), 1) if len(group) else 0.0,
+            "is_partial": int(year) == 2026,
+        })
+    output("collab_share.json", sorted(collab_share_rows, key=lambda row: row["year"]))
+
+    # One open access route per publication per year; see open_access_route() in
+    # 01_clean.py for how a multi-label record is reduced to a single route.
+    open_access_rows: list[dict] = []
+    for (year, route), size in publications.dropna(subset=["year"]).groupby(["year", "open_access"]).size().items():
+        open_access_rows.append({"year": int(year), "route": str(route), "n": int(size), "is_partial": int(year) == 2026})
+    open_access_rows.sort(key=lambda row: (row["year"], OPEN_ACCESS_ORDER.index(row["route"])))
+    output("open_access.json", open_access_rows)
+
+    # Subject-area totals come from SciVal's own report rather than from the
+    # publication rows: two thirds of publications carry several ASJC fields, so
+    # these outputs deliberately sum past the 3,069 publications, and only SciVal
+    # can deduplicate the researcher counts behind them.
+    subject_areas = pd.read_csv(CLEAN_DIR / "scival_subject_areas.csv")
+    subject_areas = subject_areas.sort_values(["output", "subject_area"], ascending=[False, True])
+    output("research_quality.json", records(subject_areas))
 
     lecturers = pd.read_csv(CLEAN_DIR / "lecturers.csv")
     lecturer_group = lecturers.groupby(["position", "department"], dropna=False).size().reset_index(name="n")

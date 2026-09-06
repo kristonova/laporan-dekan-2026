@@ -1,0 +1,36 @@
+year,route,n,is_partial
+2020,Gold,154,False
+2020,Hybrid gold,18,False
+2020,Bronze,9,False
+2020,Green,9,False
+2020,Tertutup,171,False
+2021,Gold,203,False
+2021,Hybrid gold,41,False
+2021,Bronze,11,False
+2021,Green,6,False
+2021,Tertutup,151,False
+2022,Gold,207,False
+2022,Hybrid gold,59,False
+2022,Bronze,16,False
+2022,Green,7,False
+2022,Tertutup,181,False
+2023,Gold,166,False
+2023,Hybrid gold,42,False
+2023,Bronze,2,False
+2023,Green,3,False
+2023,Tertutup,192,False
+2024,Gold,211,False
+2024,Hybrid gold,47,False
+2024,Bronze,22,False
+2024,Green,5,False
+2024,Tertutup,229,False
+2025,Gold,228,False
+2025,Hybrid gold,35,False
+2025,Bronze,20,False
+2025,Green,8,False
+2025,Tertutup,248,False
+2026,Gold,139,True
+2026,Hybrid gold,27,True
+2026,Bronze,6,True
+2026,Green,5,True
+2026,Tertutup,191,True

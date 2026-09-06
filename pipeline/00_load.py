@@ -14,6 +14,7 @@ from utils import (
     LOADED_DIR,
     MAPPINGS_DIR,
     PARTNERSHIP_DIR,
+    SCIVAL_DIR,
     TCK_2026_DIR,
     cell,
     deduplicate,
@@ -29,7 +30,6 @@ from utils import (
 
 DATASETS = {
     "citations": "citation_exported_*.csv",
-    "publications": "publication_scival_exported_*.csv",
     "people": "people_exported_*.csv",
     "research": "research_exported_*.csv",
     "community_service": "community_service_exported_*.csv",
@@ -44,7 +44,108 @@ DATASETS = {
     "media": "media_exposure_exported_*.csv",
 }
 
-EXPECTED_MULTIPART = {"citations": 25_300, "publications": 2_726, "people": 4_813}
+EXPECTED_MULTIPART = {"citations": 25_300, "people": 4_813}
+
+SCIVAL_PUBLICATIONS = "Publications_in_Faculty_of_Mathematics_and_Natural_Sciences_UGM_2020_-_2026.csv"
+SCIVAL_SUBJECT_AREAS = "Publications_by_Subject_Area.csv"
+# Every SciVal report opens with a metadata block of a different height and
+# closes with one Elsevier copyright line, so the header row is named per file
+# rather than guessed. Row counts are asserted for the same reason the
+# multipart exports are: a re-export under a different filter must fail loudly.
+SCIVAL_HEADER_ROW = {SCIVAL_PUBLICATIONS: 17, SCIVAL_SUBJECT_AREAS: 13}
+SCIVAL_EXPECTED_ROWS = {SCIVAL_PUBLICATIONS: 3_069, SCIVAL_SUBJECT_AREAS: 258}
+# All_Topics_by_Scholarly_Output.csv is supplied too but not read: every
+# prominence percentile it carries is already on each publication row, and
+# nothing in the report needs its worldwide publication-share columns.
+
+# The direct export renames every column and drops the curated department the
+# P2M mirror carried. Columns are mapped back onto that mirror's snake_case
+# schema so 01_clean.py and 02_aggregate.py keep reading the same names.
+# Author names and the per-role author IDs are deliberately never read; only
+# the combined Scopus ID list is, and 01_clean.py drops even that before
+# anything reaches the published aggregates.
+SCIVAL_PUBLICATION_COLUMNS = {
+    "Title": "title",
+    "EID": "eid",
+    "Year": "year",
+    "Full date": "date",
+    "Number of Authors": "number_of_authors",
+    "Scopus Author Ids": "scopus_authors_ids",
+    "Scopus Source title": "scopus_source_title",
+    "Publisher": "publisher",
+    "Source type": "source_type",
+    "Publication type": "publication_type",
+    "Language": "language",
+    "ISSN": "issn",
+    "DOI": "doi",
+    "Citations": "citations",
+    "Field-Weighted Citation Impact": "fwci",
+    "Views": "views",
+    "SNIP (publication year)": "snip",
+    "SJR (publication year)": "sjr",
+    "CiteScore (publication year)": "citescore",
+    "CiteScore percentile (publication year) *": "citescore_percentile",
+    "Open Access": "open_access",
+    "Institutions": "institutions",
+    "Number of Institutions": "number_of_institutions",
+    "Sector": "sector",
+    "Country/Region": "country_region",
+    "Number of Countries/Regions": "number_of_country_region",
+    "All Science Journal Classification (ASJC) field name": "subject_area",
+    "Sustainable Development Goals (2025)": "sdgs",
+    "Topic Cluster name": "topic_cluster",
+    "Topic Cluster number": "topic_cluster_number",
+    "Topic Cluster Prominence Percentile": "topic_cluster_prominence",
+    "Topic name": "topic_name",
+    "Topic number": "topic_number",
+    "Topic Prominence Percentile": "topic_prominence",
+    "Publication link to Topic strength": "publication_link_to_topic_strength",
+}
+
+
+def read_scival(filename: str) -> pd.DataFrame:
+    """Read one SciVal report without its metadata header or copyright footer.
+
+    SciVal writes a bare ``-`` wherever a metric is unavailable. Those become NA
+    here so no downstream caller has to special-case the string; left in, ``-``
+    reads as a real country in the collaboration counts.
+    """
+    path = SCIVAL_DIR / filename
+    if not path.exists():
+        raise FileNotFoundError(f"Berkas SciVal tidak ditemukan: {path}")
+    frame = pd.read_csv(path, skiprows=SCIVAL_HEADER_ROW[filename], low_memory=False)
+    first = frame.columns[0]
+    frame = frame[~frame[first].astype(str).str.contains("Elsevier B.V.", na=False)]
+    frame = frame.replace(r"^\s*-\s*$", pd.NA, regex=True)
+    expected = SCIVAL_EXPECTED_ROWS[filename]
+    if len(frame) != expected:
+        raise AssertionError(f"{filename}: {len(frame)} baris; seharusnya {expected}")
+    return frame.reset_index(drop=True)
+
+
+def load_scival_publications() -> pd.DataFrame:
+    frame = read_scival(SCIVAL_PUBLICATIONS)
+    missing = [column for column in SCIVAL_PUBLICATION_COLUMNS if column not in frame.columns]
+    if missing:
+        raise AssertionError(f"Kolom SciVal hilang dari ekspor publikasi: {missing}")
+    return frame[list(SCIVAL_PUBLICATION_COLUMNS)].rename(columns=SCIVAL_PUBLICATION_COLUMNS)
+
+
+def load_department_lookup() -> tuple[pd.DataFrame, list[str]]:
+    """Carry the faculty-curated department forward past the SciVal refresh.
+
+    The direct SciVal export has no department column at all. The older
+    publication_scival_exported_* mirror carried one on 1,682 of its rows,
+    assigned by the faculty rather than inferred. Those pairs become the first
+    mapping layer in 01_clean.py, ahead of the Scopus-ID majority fallback, so a
+    fresher publication list does not cost the report its hand-checked
+    attribution.
+    """
+    frame, files = read_parts("publication_scival_exported_*.csv")
+    pairs = frame.dropna(subset=["eid", "department"])[["eid", "department"]]
+    pairs = pairs.drop_duplicates(subset=["eid"], keep="last").reset_index(drop=True)
+    return pairs, [path.name for path in files]
+
 
 TCK_WORKBOOK = TCK_2026_DIR / "TCK 2026.xlsx"
 # Positional columns of the TCK sheet. Its header spans two merged rows, so the
@@ -808,6 +909,13 @@ def main() -> None:
         if name in EXPECTED_MULTIPART and loaded_rows != EXPECTED_MULTIPART[name]:
             raise AssertionError(f"{name}: {loaded_rows} baris; seharusnya {EXPECTED_MULTIPART[name]}")
 
+    publications = load_scival_publications()
+    record("publications", publications, [SCIVAL_PUBLICATIONS])
+    record("scival_subject_areas", read_scival(SCIVAL_SUBJECT_AREAS), [SCIVAL_SUBJECT_AREAS])
+
+    department_lookup, department_lookup_files = load_department_lookup()
+    record("publication_department_lookup", department_lookup, department_lookup_files)
+
     tck = load_tck()
     record("tck_2026_indikator", tck, [TCK_WORKBOOK.name, "tck_pillar.csv", "tck_meta.csv", "tck_2026_anggaran.json"])
 
@@ -854,7 +962,8 @@ def main() -> None:
 
     (LOADED_DIR / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
-        f"Loaded {len(DATASETS)} historical datasets, {len(tck)} TCK indicators, "
+        f"Loaded {len(DATASETS)} historical datasets, {len(publications)} SciVal publications, "
+        f"{len(department_lookup)} curated department pairs, {len(tck)} TCK indicators, "
         f"{len(partnerships)} cooperation documents, {len(academic_loaders)} academic tables, "
         f"{len(roster)} student records across {len(roster_files)} cohorts, "
         f"{len(visits)} anonymised Posbindu visits for 2026, "
