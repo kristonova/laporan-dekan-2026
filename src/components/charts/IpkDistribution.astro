@@ -1,114 +1,200 @@
 ---
 import ChartFrame from './ChartFrame.astro';
 import { withBase } from '../../lib/paths';
-import { textLines } from './_utils';
-interface Reading extends Record<string, unknown> { angkatan: number; prodi: string; tercatat: number; median: number; p25: number; p75: number; bawah: number; atas: number; }
-interface Props { data: { tahun: number[]; per_prodi: Reading[]; gabungan: Reading[] }; extracted: string; }
+import { cohortColors, layoutBeeswarm, programmePoints, type IpkGroup } from '../../lib/ipk-beeswarm';
+interface Reading extends Record<string, unknown> { angkatan: number; prodi: string; tercatat: number; median: number; p25: number; p75: number; }
+interface Props { data: { tahun: number[]; per_prodi: Reading[]; gabungan: Reading[]; sebaran: IpkGroup[] }; extracted: string; }
 const { data, extracted } = Astro.props;
-const latest = data.tahun.at(-1);
 const format = (n: number) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(n);
-const cohorts = [...data.tahun, 0];
-const x = (value: number) => 230 + value / 4 * 540;
+const grade = (n: number) => n.toFixed(2).replace('.', ',');
+const rows = data.gabungan.slice().sort((a, b) => a.prodi.localeCompare(b.prodi));
+const total = rows.reduce((sum, row) => sum + row.tercatat, 0);
+const period = `${data.tahun[0]}–${data.tahun.at(-1)}`;
 ---
-<section class="ipk-distribution" data-ipk-filter aria-label="Distribusi IPK menurut angkatan">
+<section class="ipk-distribution" data-ipk-filter data-period={period} data-summary={JSON.stringify({ per_prodi: data.per_prodi, gabungan: rows })} aria-label="Distribusi IPK menurut angkatan">
   <div class="cohort-controls" role="group" aria-label="Pilih angkatan IPK">
-    <span>Angkatan</span>
-    {cohorts.map(year => <button type="button" data-ipk-year={year} aria-pressed={year === latest}>{year || 'Gabungan 2021–2025'}</button>)}
+    <span class="filter-label">Angkatan</span>
+    <button type="button" data-ipk-year="0" aria-pressed="true">Semua angkatan</button>
+    {data.tahun.map(year => <button type="button" data-ipk-year={year} aria-pressed="false" style={`--cohort-color:${cohortColors[year]}`}><span class="cohort-dot" aria-hidden="true"></span>{year}</button>)}
   </div>
-  <div class="box-key" aria-label="Cara membaca boxplot">
-    <svg width="106" height="28" viewBox="0 0 106 28" aria-hidden="true"><path d="M4 14H102M4 8V20M102 8V20"/><rect x="28" y="4" width="50" height="20"/><path class="median" d="M52 4V24"/></svg>
-    <p><strong>Kotak</strong> = 50% tengah data (P25–P75) · <strong>Garis</strong> = median · <strong>Whisker</strong> = batas pengamatan dalam 1,5 IQR</p>
+  <div class="swarm-key">
+    <p><span class="sample-dot" aria-hidden="true"></span><strong>1 titik = 1 mahasiswa</strong><span class="key-divider">/</span>Warna menunjukkan angkatan</p>
+    <span class="key-hint">Arahkan kursor atau sentuh titik untuk melihat IPK</span>
   </div>
-  {cohorts.map(year => {
-    const rows = (year ? data.per_prodi.filter(r => r.angkatan === year) : data.gabungan).slice().sort((a,b) => a.prodi.localeCompare(b.prodi));
-    const count = rows.reduce((n,r) => n + r.tercatat, 0);
-    const label = year ? `angkatan ${year}` : 'gabungan angkatan 2021–2025';
-    return <div data-ipk-panel={year} hidden={year !== latest}>
-      <p class="ipk-status" role="status"><strong>{year ? `Angkatan ${year}` : 'Gabungan 2021–2025'}</strong> · {format(count)} IPK tercatat · {rows.length} program studi S1</p>
-      {year === 0 && <p class="pooled-note">Gabungan dihitung dari seluruh IPK tercatat, bukan rata-rata median angkatan. Tahap studi berbeda; pilih satu angkatan untuk perbandingan antarprodi.</p>}
-      <ChartFrame id={`ipk-${year || 'gabungan'}`} title={`Distribusi IPK S1, ${label}`} hideHeader minPlotWidth={820}
-        source="Daftar mahasiswa S1 FMIPA UGM 2021–2025" extracted={extracted} csvHref={withBase('/data/students_ipk_distribution.csv')}
-        tableRows={rows} tableColumns={[{key:'prodi',label:'Program studi'},{key:'tercatat',label:'IPK tercatat'},{key:'bawah',label:'Whisker bawah'},{key:'p25',label:'P25'},{key:'median',label:'Median'},{key:'p75',label:'P75'},{key:'atas',label:'Whisker atas'}]}
-        note="Skala IPK 0–4 tetap untuk seluruh angkatan. Nilai nol yang tercatat di sumber disertakan. Nilai individu di luar whisker tidak ditampilkan; setiap kotak dihitung dari seluruh IPK valid dalam kelompok. Unduhan memuat semua angkatan.">
-        <svg class="ipk-desktop-plot" viewBox={`0 0 1000 ${68 + rows.length * 62}`} role="img" aria-label={`Boxplot IPK S1 ${label}. Kotak menunjukkan kuartil dan median; rincian tersedia di tabel.`}>
-          {[0,1,2,3,4].map(tick => <g class="axis"><line x1={x(tick)} x2={x(tick)} y1="35" y2={48+rows.length*62}/><text x={x(tick)} y="22" text-anchor="middle">{tick}</text></g>)}
-          <text x="212" y="22" text-anchor="end" class="column-head">Program studi</text><text x="815" y="22" class="column-head">Median</text><text x="960" y="22" text-anchor="end" class="column-head">n</text>
-          {rows.map((row, index) => {
-            const cy = 66 + index * 62;
-            const lines = textLines(row.prodi, 25);
-            const tip = `${row.prodi}, ${label}: median ${format(row.median)}; P25 ${format(row.p25)}; P75 ${format(row.p75)}; whisker ${format(row.bawah)}–${format(row.atas)}; ${row.tercatat} IPK.`;
-            return <g class="box-row" tabindex="0" aria-label={tip} data-tooltip={tip}>
-              <title>{tip}</title>
-              <line class="row-rule" x1="0" x2="980" y1={cy+30} y2={cy+30}/>
-              <text class="programme" x="212" y={cy - (lines.length-1)*8 + 5} text-anchor="end">{lines.map((line,i) => <tspan x="212" dy={i ? 16 : 0}>{line}</tspan>)}</text>
-              <path class="whisker" d={`M${x(row.bawah)} ${cy}H${x(row.atas)}M${x(row.bawah)} ${cy-8}V${cy+8}M${x(row.atas)} ${cy-8}V${cy+8}`}/>
-              <rect class="box" x={x(row.p25)} y={cy-12} width={Math.max(1,x(row.p75)-x(row.p25))} height="24" rx="2"/>
-              <path class="median" d={`M${x(row.median)} ${cy-12}V${cy+12}`}/>
-              <text class="median-label" x="815" y={cy+5}>{format(row.median)}</text><text class="n-label" x="960" y={cy+5} text-anchor="end">{format(row.tercatat)}</text>
-            </g>;
-          })}
-        </svg>
-        <div class="ipk-mobile-rows">
-          <div class="mobile-axis" aria-hidden="true">{[0,1,2,3,4].map(v => <span>{v}</span>)}</div>
-          {rows.map(row => <div class="mobile-reading">
-            <div class="mobile-reading-label"><strong>{row.prodi}</strong><span>Median {format(row.median)} · n = {format(row.tercatat)}</span></div>
-            <div class="mobile-box-track" role="img" aria-label={`${row.prodi}: P25 ${format(row.p25)}, median ${format(row.median)}, P75 ${format(row.p75)}, whisker ${format(row.bawah)}–${format(row.atas)}.`}>
-              <span class="mobile-whisker" style={`left:${row.bawah/4*100}%;width:${(row.atas-row.bawah)/4*100}%`} />
-              <span class="mobile-box" style={`left:${row.p25/4*100}%;width:${(row.p75-row.p25)/4*100}%`} />
-              <span class="mobile-median" style={`left:${row.median/4*100}%`} />
-            </div>
-          </div>)}
-        </div>
-      </ChartFrame>
-    </div>;
-  })}
+  <p class="ipk-status" role="status" aria-live="polite"><strong data-ipk-label>Semua angkatan · {period}</strong><span><b data-ipk-count>{format(total)}</b> IPK tercatat · {rows.length} program studi S1</span></p>
+  <ChartFrame id="ipk-beeswarm" title={`Beeswarm IPK S1 per program studi, ${period}`} hideHeader
+    source={`Daftar mahasiswa S1 FMIPA UGM ${period}`} extracted={extracted} csvHref={withBase('/data/students_ipk_distribution.csv')}
+    tableRows={rows} tableColumns={[{key:'prodi',label:'Program studi'},{key:'median',label:'Median',format:value => grade(Number(value))},{key:'tercatat',label:'IPK tercatat'},{key:'p25',label:'P25'},{key:'p75',label:'P75'}]}
+    note="Skala IPK 0–4 tetap untuk seluruh angkatan. Semua nilai tercatat ditampilkan, termasuk nol dan nilai ekstrem. Susunan vertikal titik hanya mencegah tumpang tindih. Median dihitung dari seluruh IPK pada pilihan angkatan. Unduhan CSV memuat ringkasan semua angkatan.">
+    <div class="swarm-header" aria-hidden="true"><span>Program studi</span><div class="swarm-axis">{[0,1,2,3,4].map(tick => <span>{tick}</span>)}</div><span class="stats-header"><span>Median</span><span>n</span></span></div>
+    <div class="swarm-rows">
+      {rows.map(row => {
+        const swarm = layoutBeeswarm(programmePoints(data.sebaran, row.prodi), 720);
+        const tip = `${row.prodi}: median ${grade(row.median)}; ${format(row.tercatat)} IPK tercatat.`;
+        return <div class="swarm-row" data-ipk-programme={row.prodi}>
+          <h4 class="programme-name">{row.prodi}</h4>
+          <svg class="swarm-plot" viewBox={`0 0 ${swarm.width} ${swarm.height}`} role="img" tabindex="0" aria-label={tip}>
+            <title>{tip} Warna titik menunjukkan angkatan; gunakan filter untuk membandingkan.</title>
+            {[0,1,2,3,4].map(tick => <line class="grid-line" data-grid-tick={tick} x1={8+tick/4*704} x2={8+tick/4*704} y1="0" y2={swarm.height}/>)}
+            {swarm.points.map(point => <circle class="swarm-dot" cx={point.x} cy={point.y} r={swarm.radius} fill={cohortColors[point.angkatan]}
+              data-ipk={point.ipk} data-cohort={point.angkatan} data-order={point.order}
+              data-reading={`${row.prodi} · Angkatan ${point.angkatan} · IPK ${grade(point.ipk)}`} />)}
+          </svg>
+          <div class="row-stats"><strong data-row-median><span class="mobile-stat-label">Median </span><span>{grade(row.median)}</span></strong><span data-row-count><span class="mobile-stat-label">n = </span><span>{format(row.tercatat)}</span></span></div>
+          <div class="mobile-axis" aria-hidden="true">{[0,1,2,3,4].map(tick => <span>{tick}</span>)}</div>
+        </div>;
+      })}
+    </div>
+    <p class="axis-caption">Indeks Prestasi Kumulatif (IPK)</p>
+  </ChartFrame>
+  <p class="pooled-note">Setiap angkatan berada pada tahap studi yang berbeda. Pilih satu angkatan untuk membandingkan antarprogram studi pada tahap kuliah yang sama.</p>
+  <div class="ipk-tooltip" role="tooltip" hidden></div>
 </section>
 <script>
+  import { layoutBeeswarm, type IpkPoint } from '../../lib/ipk-beeswarm';
+  interface Reading { angkatan: number; prodi: string; tercatat: number; median: number; p25: number; p75: number; }
+  const format = (n: number) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(n);
+  const grade = (n: number) => n.toFixed(2).replace('.', ',');
   document.querySelectorAll<HTMLElement>('[data-ipk-filter]').forEach(root => {
-    root.querySelectorAll<HTMLButtonElement>('[data-ipk-year]').forEach(button => button.addEventListener('click', () => {
-      root.querySelectorAll<HTMLButtonElement>('[data-ipk-year]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-      root.querySelectorAll<HTMLElement>('[data-ipk-panel]').forEach(panel => { panel.hidden = panel.dataset.ipkPanel !== button.dataset.ipkYear; });
-    }));
+    const summary = JSON.parse(root.dataset.summary!) as { per_prodi: Reading[]; gabungan: Reading[] };
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-ipk-year]')];
+    const tooltip = root.querySelector<HTMLElement>('.ipk-tooltip')!;
+    const rows = [...root.querySelectorAll<HTMLElement>('[data-ipk-programme]')].map(element => {
+      const svg = element.querySelector<SVGSVGElement>('svg')!;
+      const circles = [...svg.querySelectorAll<SVGCircleElement>('.swarm-dot')];
+      const points: IpkPoint[] = circles.map(circle => ({ ipk: Number(circle.dataset.ipk), angkatan: Number(circle.dataset.cohort), order: Number(circle.dataset.order) }));
+      const lookup = new Map(circles.map(circle => [`${circle.dataset.cohort}:${circle.dataset.order}`, circle]));
+      return { element, svg, circles, points, lookup, width: 0 };
+    });
+    let selected = 0;
+    const hideTooltip = () => { tooltip.hidden = true; };
+    const draw = (force = false) => {
+      rows.forEach(row => {
+        const width = Math.round(row.svg.getBoundingClientRect().width);
+        if (width <= 0 || (!force && width === row.width)) return;
+        row.width = width;
+        const visible = row.points.filter(point => !selected || point.angkatan === selected);
+        const swarm = layoutBeeswarm(visible, width, width < 440 ? 1.65 : 2.4);
+        row.svg.setAttribute('viewBox', `0 0 ${width} ${swarm.height}`);
+        row.svg.querySelectorAll<SVGLineElement>('[data-grid-tick]').forEach(line => {
+          const x = String(8 + Number(line.dataset.gridTick) / 4 * (width - 16));
+          line.setAttribute('x1', x); line.setAttribute('x2', x); line.setAttribute('y2', String(swarm.height));
+        });
+        row.circles.forEach(circle => { circle.style.display = selected && Number(circle.dataset.cohort) !== selected ? 'none' : ''; });
+        swarm.points.forEach(point => {
+          const circle = row.lookup.get(`${point.angkatan}:${point.order}`)!;
+          circle.setAttribute('cx', String(point.x)); circle.setAttribute('cy', String(point.y)); circle.setAttribute('r', String(swarm.radius));
+        });
+      });
+    };
+    const update = () => {
+      hideTooltip();
+      const readings = selected ? summary.per_prodi.filter(row => row.angkatan === selected) : summary.gabungan;
+      root.querySelector('[data-ipk-label]')!.textContent = selected ? `Angkatan ${selected}` : `Semua angkatan · ${root.dataset.period}`;
+      root.querySelector('[data-ipk-count]')!.textContent = format(readings.reduce((sum, row) => sum + row.tercatat, 0));
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.ipkYear) === selected)));
+      const tableRows = root.querySelectorAll<HTMLTableRowElement>('tbody tr');
+      rows.forEach((row, index) => {
+        const reading = readings.find(item => item.prodi === row.element.dataset.ipkProgramme)!;
+        row.element.querySelector('[data-row-median] > span:last-child')!.textContent = grade(reading.median);
+        row.element.querySelector('[data-row-count] > span:last-child')!.textContent = format(reading.tercatat);
+        const tip = `${reading.prodi}, ${selected ? `angkatan ${selected}` : 'semua angkatan'}: median ${grade(reading.median)}; ${format(reading.tercatat)} IPK tercatat.`;
+        row.svg.setAttribute('aria-label', tip);
+        row.svg.querySelector('title')!.textContent = tip;
+        [reading.prodi, grade(reading.median), format(reading.tercatat), format(reading.p25), format(reading.p75)].forEach((value, cell) => { tableRows[index].cells[cell].textContent = value; });
+      });
+      root.querySelector('table caption')!.textContent = `Ringkasan IPK per program studi: ${selected ? `angkatan ${selected}` : 'semua angkatan'}`;
+      draw(true);
+    };
+    buttons.forEach(button => button.addEventListener('click', () => { selected = Number(button.dataset.ipkYear); update(); }));
+    const showPoint = (event: PointerEvent) => {
+      const svg = (event.target as Element).closest<SVGSVGElement>('.swarm-plot');
+      if (!svg) { hideTooltip(); return; }
+      const box = svg.getBoundingClientRect();
+      const x = (event.clientX - box.left) * svg.viewBox.baseVal.width / box.width;
+      const y = (event.clientY - box.top) * svg.viewBox.baseVal.height / box.height;
+      let nearest: SVGCircleElement | undefined;
+      let distance = 12 ** 2;
+      svg.querySelectorAll<SVGCircleElement>('.swarm-dot').forEach(circle => {
+        if (circle.style.display === 'none') return;
+        const d = (circle.cx.baseVal.value - x) ** 2 + (circle.cy.baseVal.value - y) ** 2;
+        if (d < distance) { distance = d; nearest = circle; }
+      });
+      if (!nearest) { hideTooltip(); return; }
+      tooltip.textContent = nearest.dataset.reading!;
+      tooltip.hidden = false;
+      const rect = tooltip.getBoundingClientRect();
+      tooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - rect.width - 8, event.clientX + 14))}px`;
+      tooltip.style.top = `${Math.max(8, event.clientY - rect.height - 14)}px`;
+    };
+    root.addEventListener('pointermove', showPoint);
+    root.addEventListener('pointerdown', showPoint);
+    root.addEventListener('pointerleave', hideTooltip);
+    root.addEventListener('keydown', event => { if (event.key === 'Escape') hideTooltip(); });
+    window.addEventListener('scroll', hideTooltip, { passive: true });
+    let frame = 0;
+    const observer = new ResizeObserver(() => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => draw()); });
+    observer.observe(root);
+    draw();
   });
 </script>
 <style>
-  .ipk-distribution { --ipk-accent: var(--text-link); }
+  .ipk-distribution { --ipk-label-width: 180px; --ipk-stats-width: 110px; }
   [hidden] { display: none !important; }
   .cohort-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 20px; }
-  .cohort-controls > span { font-size: 14px; font-weight: 700; margin-right: 6px; }
-  button { padding: 10px 16px; min-height: 44px; font: 600 14px var(--font-ui); border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-secondary); border-radius: 4px; cursor: pointer; }
-  button[aria-pressed='true'] { background: var(--ugm-blue); border-color: var(--ugm-blue); color: white; }
-  button:focus-visible { outline: 3px solid var(--ugm-gold); outline-offset: 3px; }
-  .box-key { display: flex; gap: 16px; align-items: center; padding: 16px 0; border-block: 1px solid var(--border-subtle); }
-  .box-key svg { flex-shrink: 0; }
-  .box-key path, .whisker { stroke: var(--ipk-accent); stroke-width: 2; fill: none; }
-  .box-key rect, .box { fill: var(--ipk-accent); fill-opacity: .18; stroke: var(--ipk-accent); stroke-width: 1.5; }
-  .box-key .median, .median { stroke: var(--ipk-accent); stroke-width: 3; }
-  .box-key p, .pooled-note { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin: 0; }
-  .ipk-status { font-size: 14px; margin-block: 20px; color: var(--text-secondary); }
-  .pooled-note { margin-bottom: 18px; }
-  svg { font-family: var(--font-ui); }
-  .axis line, .row-rule { stroke: var(--border-subtle); }
-  .axis text, .column-head, .n-label { fill: var(--text-muted); font-size: 14px; }
-  .programme { font-size: 15px; font-weight: 600; fill: var(--text-primary); }
-  .median-label { font-size: 16px; font-weight: 700; fill: var(--ipk-accent); }
-  .box-row:focus { outline: none; }
-  .box-row:focus .box, .box-row:hover .box { fill-opacity: .4; stroke-width: 3; }
-  .ipk-mobile-rows { display: none; }
-  @media(max-width:600px) {
-    .ipk-distribution :global(.chart-frame__plot-inner) { min-inline-size: 0; }
-    .ipk-distribution :global(.chart-frame__plot-inner > .ipk-desktop-plot) { display: none; }
-    .ipk-mobile-rows { display: block; }
-    .mobile-axis { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 12px; }
-    .mobile-reading { padding: 16px 0; border-bottom: 1px solid var(--border-subtle); }
-    .mobile-reading-label { display: grid; gap: 5px; color: var(--text-primary); font-size: 14px; }
-    .mobile-reading-label > span { font-size: 12px; color: var(--text-secondary); }
-    .mobile-box-track { position: relative; height: 32px; margin-top: 8px; border-inline: 1px solid var(--border-subtle); background: repeating-linear-gradient(90deg, transparent, transparent calc(25% - 1px), var(--border-subtle) calc(25% - 1px), var(--border-subtle) 25%); }
-    .mobile-whisker { position: absolute; top: 15px; height: 2px; background: var(--ipk-accent); }
-    .mobile-whisker::before, .mobile-whisker::after { content: ''; position: absolute; top: -6px; height: 14px; width: 2px; background: var(--ipk-accent); }
-    .mobile-whisker::after { right: 0; }
-    .mobile-box { position: absolute; top: 6px; height: 20px; min-width: 1px; background: color-mix(in srgb, var(--ipk-accent) 18%, var(--surface-card)); border: 1.5px solid var(--ipk-accent); }
-    .mobile-median { position: absolute; top: 6px; height: 20px; border-left: 3px solid var(--ipk-accent); }
+  .filter-label { font-size: 13px; font-weight: 700; margin-right: 10px; color: var(--text-secondary); }
+  .cohort-controls button { display: inline-flex; gap: 9px; align-items: center; justify-content: center; padding: 10px 16px; min-height: 44px; font: 600 13px var(--font-ui); border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-secondary); border-radius: 7px; cursor: pointer; transition: background .15s, border-color .15s; }
+  .cohort-controls button:hover { border-color: var(--text-link); background: color-mix(in srgb, var(--text-link) 8%, var(--surface-card)); }
+  .cohort-controls button[aria-pressed='true'] { background: var(--ugm-blue); border-color: var(--ugm-blue); color: white; }
+  .cohort-controls button:focus-visible, .swarm-plot:focus-visible { outline: 3px solid var(--ugm-gold); outline-offset: 3px; }
+  .cohort-dot, .sample-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--cohort-color, var(--text-muted)); flex-shrink: 0; }
+  .cohort-dot { box-shadow: 0 0 0 2px rgb(255 255 255 / 70%); }
+  .swarm-key { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 20px; padding-block: 16px; border-block: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 12px; }
+  .swarm-key p { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin: 0; }
+  .sample-dot { width: 6px; height: 6px; }
+  .key-divider { margin-inline: 4px; color: var(--border-default); }
+  .key-hint { color: var(--text-muted); font-size: 11px; }
+  .ipk-status { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin: 24px 0; font-size: 13px; color: var(--text-secondary); }
+  .ipk-status > strong { color: var(--text-primary); font-size: 14px; }
+  .ipk-status b { font-weight: 600; }
+  .swarm-header, .swarm-row { display: grid; grid-template-columns: var(--ipk-label-width) minmax(0, 1fr) var(--ipk-stats-width); gap: 24px; align-items: center; }
+  .swarm-header { padding-bottom: 12px; color: var(--text-muted); font-size: 11px; }
+  .swarm-axis, .mobile-axis { display: flex; justify-content: space-between; padding-inline: 5px; font-variant-numeric: tabular-nums; }
+  .stats-header, .row-stats { display: grid; grid-template-columns: 1fr 1fr; text-align: right; gap: 16px; }
+  .swarm-row { border-top: 1px solid var(--border-subtle); padding-block: 9px; }
+  .swarm-row:last-child { border-bottom: 1px solid var(--border-subtle); }
+  .programme-name { margin: 0; font: 600 14px/1.45 var(--font-ui); color: var(--text-primary); }
+  .swarm-plot { display: block; width: 100%; height: auto; overflow: visible; }
+  .grid-line { stroke: var(--border-subtle); stroke-width: 1; stroke-dasharray: 2 5; }
+  .swarm-dot { opacity: .86; }
+  .swarm-dot:hover { opacity: 1; stroke: var(--text-primary); stroke-width: 1; }
+  :global([data-theme='dark']) .swarm-dot, :global(.theme-dark) .swarm-dot,
+  :global([data-theme='dark']) .cohort-dot, :global(.theme-dark) .cohort-dot { opacity: 1; filter: brightness(1.35); }
+  .row-stats { font: 13px var(--font-ui); font-variant-numeric: tabular-nums; color: var(--text-muted); }
+  .row-stats strong { color: var(--text-link); font-size: 16px; font-weight: 700; }
+  .axis-caption { margin: 14px 0 0; padding-left: calc(var(--ipk-label-width) + 24px); padding-right: calc(var(--ipk-stats-width) + 24px); text-align: center; font-size: 11px; color: var(--text-muted); }
+  .pooled-note { max-width: 85ch; margin: 20px 0 0; font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+  .mobile-axis, .mobile-stat-label { display: none; }
+  .ipk-tooltip { position: fixed; z-index: 1000; max-width: min(320px, calc(100vw - 16px)); pointer-events: none; padding: 10px 13px; border-radius: 6px; background: var(--ugm-blue-deep); color: white; box-shadow: 0 5px 18px rgb(11 31 46 / 18%); font: 600 12px/1.5 var(--font-ui); }
+  @media(max-width: 800px) {
+    .ipk-distribution { --ipk-label-width: 140px; --ipk-stats-width: 90px; }
+    .swarm-header, .swarm-row { column-gap: 14px; }
   }
-  @media(max-width: 500px) { .box-key { align-items: start; gap: 10px; } .box-key svg { width: 72px; } }
+  @media(max-width: 600px) {
+    .filter-label { flex-basis: 100%; }
+    .cohort-controls { gap: 8px 6px; }
+    .cohort-controls button { padding-inline: 12px; }
+    .swarm-header { display: none; }
+    .swarm-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; padding-block: 18px 12px; }
+    .programme-name { grid-column: 1; grid-row: 1; font-size: 13px; }
+    .row-stats { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 4px; font-size: 11px; }
+    .row-stats strong { font-size: 13px; }
+    .mobile-stat-label { display: inline; font-size: 10px; font-weight: 400; color: var(--text-muted); }
+    .swarm-plot { grid-column: 1 / -1; grid-row: 2; }
+    .mobile-axis { display: flex; grid-column: 1 / -1; font-size: 10px; color: var(--text-muted); }
+    .axis-caption { padding-inline: 0; }
+    .ipk-status { flex-direction: column; }
+    .key-hint { font-size: 11px; }
+  }
+  @media(prefers-reduced-motion: reduce) { .cohort-controls button { transition: none; } }
 </style>

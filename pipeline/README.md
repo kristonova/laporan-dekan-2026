@@ -27,8 +27,13 @@ IPK tetap berasal dari daftar mahasiswa S1 2021–2025, karena workbook baru tid
 per prodi/angkatan serta gabungan yang dihitung dari semua pengamatan, dengan interpolasi
 kuartil linear. Nilai numerik 0–4, termasuk nol, disertakan; kelompok di bawah tiga ditahan.
 `students_ipk_distribution.csv` menyajikan statistik per prodi/angkatan tanpa nilai individu.
-Boxplot dipilih dibanding beeswarm karena visualisasi memerlukan distribusi ringkas dan
-web hanya menerbitkan agregat. Rujukan desain ada di `docs/visualisasi-20260905.md`.
+Pembaruan 6 September 2026: grafik memakai beeswarm dengan satu titik per IPK dan warna
+tetap menurut angkatan. `students_ipk.json` menambahkan `sebaran`, yaitu daftar nilai asli
+yang diurutkan per prodi/angkatan, tanpa nama, NIM, urutan sumber, atau atribut pribadi lain.
+Kelompok kurang dari tiga tetap ditahan. Nilai nol dan ekstrem tidak dihilangkan atau
+diambil sampelnya. Susunan vertikal menghindari tabrakan titik tanpa menggeser IPK pada
+sumbu horizontal. Tabel dan median mengikuti filter; CSV tetap berupa ringkasan statistik.
+Keputusan boxplot di `docs/visualisasi-20260905.md` merupakan catatan desain sebelumnya.
 
 Jalankan dari root aplikasi:
 

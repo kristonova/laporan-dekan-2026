@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build browser-ready aggregates. The browser never receives person-level source rows."""
+"""Build browser-ready data without source identifiers or linked personal rows."""
 
 from __future__ import annotations
 
@@ -378,13 +378,19 @@ def student_profile_outputs() -> None:
         for column in columns:
             frame[column] = frame[column].round(2)
     write_json("students_ipk.json", {
-        "metode": "Kotak P25–P75, garis median, whisker nilai terjauh dalam 1,5 IQR. Nilai IPK 0–4 yang tercatat disertakan; titik individu tidak diterbitkan.",
+        "metode": "Beeswarm: satu titik per IPK tercatat, warna menurut angkatan. Posisi horizontal menunjukkan IPK asli 0–4; posisi vertikal hanya menghindari tumpang tindih. Nilai diurutkan dalam prodi/angkatan tanpa identitas atau kaitan dengan atribut pribadi lain. Median gabungan dihitung dari seluruh pengamatan.",
         "tahun": sorted(graded["angkatan"].unique().tolist()),
         "tahun_tanpa_ipk": [year for year in years if year not in set(graded["angkatan"])],
         "per_tahun": records(ipk_year),
         "per_prodi": records(ipk_programme.sort_values(["angkatan", "prodi"])),
         "gabungan": [{"angkatan": 0, "prodi": programme, **distribution(group["ipk"])}
                      for programme, group in graded.groupby("prodi") if len(group) >= SMALL_CELL],
+        # Only the grades needed by the beeswarm leave the local roster. Sorting
+        # removes source row order; no identifiers or other student attributes travel.
+        "sebaran": [{"angkatan": int(year), "prodi": programme,
+                     "nilai": sorted(float(value) for value in group["ipk"])}
+                    for (year, programme), group in graded.groupby(["angkatan", "prodi"])
+                    if len(group) >= SMALL_CELL],
     })
     output("students_ipk_distribution.json", records(ipk_programme.sort_values(["angkatan", "prodi"])))
 

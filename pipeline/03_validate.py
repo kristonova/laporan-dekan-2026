@@ -348,7 +348,7 @@ def main() -> None:
         assert published + hidden <= panel["tercatat"] <= published + hidden * 2
         if panel["jenjang"] == "S1":
             assert panel["tercatat"] == panel["total"]
-    # All cohorts must conserve counts, and every box must have ordered statistics.
+    # All cohorts must conserve counts and have ordered summary statistics.
     ipk = load_json("students_ipk.json")
     assert ipk["tahun"] == [2021, 2022, 2023, 2024, 2025]
     assert ipk["tahun_tanpa_ipk"] == [2026]
@@ -359,6 +359,26 @@ def main() -> None:
         assert 0 <= row["bawah"] <= row["p25"] <= row["median"] <= row["p75"] <= row["atas"] <= 4
     for cohort in ipk["per_tahun"]:
         assert sum(row["tercatat"] for row in ipk["per_prodi"] if row["angkatan"] == cohort["angkatan"]) == cohort["tercatat"]
+
+    # The beeswarm must contain actual observations, including zeros and tails,
+    # with no identifiers, source row order, sampling, or synthetic interpolation.
+    source_grades = pd.read_csv(CLEAN_DIR / "students.csv", usecols=["jenjang", "angkatan", "prodi", "ipk"])
+    source_grades = source_grades[(source_grades["jenjang"] == "Sarjana") & source_grades["ipk"].between(0, 4)]
+    expected_groups = {(int(year), programme): sorted(group["ipk"].tolist())
+                       for (year, programme), group in source_grades.groupby(["angkatan", "prodi"])
+                       if len(group) >= SMALL_CELL}
+    assert len(ipk["sebaran"]) == len(expected_groups)
+    observed_groups = set()
+    for group in ipk["sebaran"]:
+        assert set(group) == {"angkatan", "prodi", "nilai"}
+        key = (group["angkatan"], group["prodi"])
+        assert key not in observed_groups
+        observed_groups.add(key)
+        assert group["nilai"] == expected_groups[key]
+        summary = next(row for row in ipk["per_prodi"] if (row["angkatan"], row["prodi"]) == key)
+        assert len(group["nilai"]) == summary["tercatat"]
+        assert round(float(pd.Series(group["nilai"]).median()), 2) == summary["median"]
+    assert observed_groups == set(expected_groups)
 
     # Every published count is either withheld or at least SMALL_CELL people.
     small_cells: list[tuple[str, str, int]] = []

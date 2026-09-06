@@ -3,7 +3,7 @@
 Pembaruan 5 September 2026: Pilar 5 memakai sumber asal pendidikan per 2 September
 2026 untuk cakupan S1/S2/S3/non-gelar (6.856 rekaman) dan jejaring sekolah/universitas.
 Profil demografi dan IPK tetap memakai daftar mahasiswa lama dengan cakupan tertulis.
-Boxplot IPK bisa dipilih per angkatan; tahapan seleksi dan retensi Posbindu memakai
+Beeswarm IPK menampilkan satu titik per mahasiswa dengan warna angkatan dan filter semua/per angkatan; tahapan seleksi dan retensi Posbindu memakai
 batang berskala bersama; label dana riset diperbesar. Rincian ada di
 [catatan visualisasi](docs/visualisasi-20260905.md) dan [pipeline](pipeline/README.md).
 
