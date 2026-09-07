@@ -1,0 +1,5 @@
+department,dosen,tanpa_jabatan,rasio,ambang,melampaui_ambang,tersertifikasi,tersertifikasi_dari,rasio_sertifikasi
+Fisika,51,3,5.88,10.0,False,43,51,84.31
+Ilmu Komputer dan Elektronika,60,3,5.0,10.0,False,46,60,76.67
+Kimia,43,2,4.65,10.0,False,39,43,90.7
+Matematika,53,7,13.21,10.0,True,41,53,77.36

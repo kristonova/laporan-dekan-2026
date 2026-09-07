@@ -88,6 +88,10 @@ import studentBackgroundRaw from "../data/derived/students_background.json";
 import studentOutcomeRaw from "../data/derived/students_cohort_outcome.json";
 import studentIpkRaw from "../data/derived/students_ipk.json";
 import studentAccessRaw from "../data/derived/students_access.json";
+import partnershipRevenueRaw from "../data/derived/partnership_revenue.json";
+import professorTenureRaw from "../data/derived/professor_tenure.json";
+import lecturerRatioRaw from "../data/derived/lecturer_ratio.json";
+import schoolMouRaw from "../data/derived/school_mou.json";
 
 const citations: any[] = (citationsRaw as any[]).filter((row) => row.year >= 2019 && row.year <= 2025);
 const citationTotal = (citationsRaw as any[]).reduce((sum, row) => sum + row.citations, 0);
@@ -103,6 +107,103 @@ const getTckRow = (no: string) => {
 const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
 const dataUrl = (file: string) => withBase(`/data/${file}`);
 const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string; scival: string };
+
+/* --- Datasets added with the September 2026 delivery ---------------------- */
+
+const BILLION = 1_000_000_000;
+const revenue = partnershipRevenueRaw as any;
+/* Contract value is charted in billions: the raw rupiah figures run to twelve
+   digits, which no axis can label legibly. */
+const revenueByYear = (revenue.per_tahun as any[]).map((row) => ({
+  year: row.tahun,
+  nominal: row.nominal / BILLION,
+  dpi: row.dpi / BILLION,
+  is_partial: row.is_partial,
+}));
+const revenueByDept: any[] = (revenue.per_departemen as any[]).map((row) => ({
+  label: row.departemen,
+  value: row.nominal / BILLION,
+  valueLabel: `Rp${format(row.nominal / BILLION, 2)} M`,
+  annotation: `${format(row.porsi, 1)}% nilai · ${format(row.n)} kontrak`,
+  // The unattributed rows are coloured as unmapped, the same encoding the
+  // outreach map uses, so the reader recognises "source did not say" on sight.
+  color: row.departemen === "Tidak berdepartemen" ? DEPT.unmapped : undefined,
+}));
+/* Contract value, the fee it returns, and that fee as a share are three
+   quantities an order of magnitude apart: on one shared axis the DPI line would
+   sit flat on the baseline. TrendRows with scale="row" gives each its own range,
+   so the shape of all three stays readable in one panel. */
+const revenueYears = revenueByYear.map((row) => row.year);
+const revenueTrendRows: any[] = [
+  { label: "Nilai kontrak (Rp miliar)", values: revenueByYear.map((row) => row.nominal), color: ACCENT.navy },
+  { label: "DPI untuk fakultas (Rp miliar)", values: revenueByYear.map((row) => row.dpi), color: ACCENT.orange },
+  { label: "Rasio DPI (%)", values: (revenue.per_tahun as any[]).map((row) => row.rasio_dpi), color: ACCENT.teal },
+];
+const revenuePeak = [...revenueByYear].sort((a, b) => b.nominal - a.nominal)[0];
+const revenueFirst = revenueByYear[0];
+const revenueLast = revenueByYear[revenueByYear.length - 1];
+
+const tenure = professorTenureRaw as any;
+/* One dot per professor, split by whether the appointment falls inside the
+   2021-2026 deanship. The source workbook labels that column itself. */
+const tenureGroups: any[] = [
+  { label: "Diangkat 2021–2026", count: tenure.periode_ini, color: DEPT.fisika,
+    description: `${format((tenure.periode_ini / tenure.total) * 100, 1)}% dari seluruh Guru Besar` },
+  { label: "Sebelum 2021", count: tenure.sebelumnya, color: SEQ[250],
+    description: "Diangkat pada periode kepemimpinan sebelumnya" },
+];
+const tenureYears = (tenure.per_tahun as any[]).filter((row) => row.year >= 2021).map((row) => row.year);
+const TENURE_SERIES = [
+  { key: "fisika", label: "Fisika", source: "Fisika", color: DEPT.fisika, pattern: "solid" },
+  { key: "ike", label: "Ilmu Komputer & Elektronika", source: "Ilmu Komputer dan Elektronika", color: DEPT.ike, pattern: "diagonal" },
+  { key: "kimia", label: "Kimia", source: "Kimia", color: DEPT.kimia, pattern: "dots" },
+  { key: "matematika", label: "Matematika", source: "Matematika", color: DEPT.matematika, pattern: "cross" },
+];
+const tenureSeries = TENURE_SERIES.map(({ source, ...rest }) => rest) as any;
+const tenureByYear = tenureYears.map((year) => {
+  const row: Record<string, any> = { year };
+  TENURE_SERIES.forEach((series) => {
+    row[series.key] = (tenure.per_tahun_departemen as any[])
+      .find((item) => item.year === year && item.department === series.source)?.n ?? 0;
+  });
+  return row;
+});
+const tenurePeak = [...(tenure.per_tahun as any[])].filter((row) => row.year >= 2021)
+  .sort((a, b) => b.n - a.n)[0];
+
+const lecturerRatio = lecturerRatioRaw as any;
+/* Bullet chart: the bar is the department's share of lecturers without an
+   academic position, the marker is the 10% ceiling the source workbook states
+   in its closing note. */
+const ratioRows: any[] = (lecturerRatio.per_departemen as any[]).map((row) => ({
+  label: row.department,
+  actual: row.rasio,
+  target: row.ambang,
+  // Fewer lecturers without a position is better, so the bullet reads downward
+  // and the marker is a ceiling rather than a goal to reach.
+  direction: "down",
+  status: row.melampaui_ambang ? "meleset" : "tercapai",
+  actualLabel: `${format(row.rasio, 2)}%`,
+  note: `${format(row.tanpa_jabatan)} dari ${format(row.dosen)} dosen belum memiliki jabatan akademik`,
+}));
+const ratioBreached = (lecturerRatio.per_departemen as any[]).filter((row) => row.melampaui_ambang);
+const certificationRows: any[] = (lecturerRatio.per_departemen as any[])
+  .map((row) => ({
+    label: row.department,
+    value: row.rasio_sertifikasi,
+    valueLabel: `${format(row.rasio_sertifikasi, 1)}%`,
+    annotation: `${format(row.tersertifikasi)} dari ${format(row.tersertifikasi_dari)} dosen`,
+  }))
+  .sort((a, b) => b.value - a.value);
+
+const schoolMou = schoolMouRaw as any;
+const schoolMouGroups: any[] = [
+  { label: "Sudah menjadi sekolah asal", count: schoolMou.sudah_menjadi_asal, color: DEPT.kimia,
+    description: "Tercatat sebagai asal mahasiswa S1 pada angkatan 2021–2026" },
+  { label: "Jejaring baru", count: schoolMou.jejaring_baru, color: SEQ[250],
+    description: "Belum pernah tercatat sebagai sekolah asal" },
+];
+
 
 /* SciVal's 30 August 2026 snapshot closes 2025 and opens 2026, so the running
    year moves one step. The citation series above keeps 2025 as its running year:
@@ -255,7 +356,7 @@ const departmentCounts: Record<string, number> = {};
 const professorCount = positionCounts.get("Guru Besar") ?? 0;
 const teachingStaffCount = positionCounts.get("Tenaga Pengajar") ?? 0;
 const professorShare = institutionRaw.lecturers ? (professorCount / institutionRaw.lecturers) * 100 : 0;
-const lecturerSources = institutionRaw.lecturer_sources;
+const lecturerSource = institutionRaw.lecturer_source;
 const sinta: any[] = (sintaRaw as any[]).map((row) => ({ label: row.dept ?? row.department, value: row.median, valueLabel: format(row.median), color: deptColors[row.dept ?? row.department], annotation: `${format(row.n)} dosen · total ${format(row.total)}` }));
 
 const funding: any[] = (fundingRaw as any[]).filter((row) => row.type === "Total" && row.year >= 2019 && row.year <= 2025).map((row) => ({ year: row.year, amount: row.amount / 1_000_000_000 }));
@@ -411,15 +512,18 @@ const graduateSeries = [
   { key: "doktor", label: "Doktor", color: ACCENT.orange, pattern: "diagonal" },
 ] as any;
 const graduateLatest = (graduatesRaw as any[]).filter((row) => row.jenjang === "Sarjana").sort((a, b) => b.tahun - a.tahun)[0];
-/* Years where at least one level is missing from the source workbook. Drawing
-   them as a plain short bar would read as a fall in graduations; they are
-   capped and labelled instead so the reader sees an open figure, not a drop. */
-const graduateGapYears = graduates
+/* Every level now reports a figure for every year in the series: the two
+   postgraduate workbooks delivered in September 2026 filled 2025/2026, which
+   PROFIL LULUSAN.xlsx had left blank, so the gap band the chart used to draw is
+   gone with it. The check stays because a future refresh could reopen a hole,
+   and a plain short bar would then read as a fall in graduations. */
+const graduateIncompleteYears = graduates
   .filter((row) => graduateLevels.some((level) => !row[level.toLowerCase()]))
   .map((row) => row.year);
-const graduateGapNote = graduateGapYears.length > 0
-  ? `Data lulusan Magister dan Doktor tahun akademik ${graduates.find((row) => row.year === graduateGapYears[0])?.year ?? ""} masih dalam proses konsolidasi; visualisasi tahun tersebut diberi arsiran khusus dan belum dibandingkan langsung dengan tahun sebelumnya.`
-  : undefined;
+const graduateLatestYear = graduateYears[graduateYears.length - 1];
+const graduateLatestRows = (graduatesRaw as any[]).filter((row) => row.tahun === graduateLatestYear);
+const graduateLatestTotal = graduateLatestRows.reduce((total, row) => total + (row.lulusan ?? 0), 0);
+const graduateLatestOf = (level: string) => graduateLatestRows.find((row) => row.jenjang === level);
 
 const achievementYears = [...new Set((achievementsRaw as any[]).map((row) => row.tahun))].sort((a, b) => a - b);
 const achievements: any[] = achievementYears.map((year) => ({
@@ -819,6 +923,16 @@ const ipkYears = studentIpk.tahun as number[];
 const ipkStart = ipkYears[0];
 const ipkEnd = ipkYears[ipkYears.length - 1];
 const sceneValues: SceneValues = {
+  revenueContracts: revenue.kontrak,
+  revenueTotal: revenue.nominal / BILLION,
+  revenueDpi: revenue.dpi / BILLION,
+  professorsThisPeriod: tenure.periode_ini,
+  professorsThisPeriodShare: (tenure.periode_ini / tenure.total) * 100,
+  lecturersWithoutPosition: lecturerRatio.tanpa_jabatan,
+  lecturersWithoutPositionShare: lecturerRatio.rasio,
+  lecturersCertifiedShare: lecturerRatio.rasio_sertifikasi,
+  mouSchools: schoolMou.sekolah,
+  mouNewSchools: schoolMou.jejaring_baru,
   lecturers: institutionRaw.lecturers,
   professors: professorCount,
   professorShare,
@@ -956,7 +1070,9 @@ const pillarSummary = [
         <InstitutionPortrait lecturers={institutionRaw.lecturers} academicStaff={institutionRaw.academic_staff} departmentsCount={institutionRaw.departments} studyProgrammes={institutionRaw.study_programmes} studyProgrammesByLevel={institutionRaw.study_programmes_by_level} laboratories={institutionRaw.laboratories} {departmentCounts} />
         <table slot="table"><caption>Komposisi dan Struktur Organisasi FMIPA UGM</caption><tbody><tr><th scope="row">Dosen</th><td>{institutionRaw.lecturers}</td></tr><tr><th scope="row">Tenaga kependidikan</th><td>{institutionRaw.academic_staff}</td></tr><tr><th scope="row">Departemen akademik</th><td>{institutionRaw.departments}</td></tr><tr><th scope="row">Program studi</th><td>{institutionRaw.study_programmes}</td></tr><tr><th scope="row">Laboratorium</th><td>{institutionRaw.laboratories}</td></tr><tr><th scope="row">Mahasiswa sarjana aktif</th><td>{activeStudentTotal}</td></tr></tbody></table>
       </ChartFrame>
-      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana aktif</strong> terdaftar di sembilan angkatan. Dari {format(accreditation.prodi_nasional)} program studi yang terakreditasi nasional, <strong>{format(accreditation.prodi_unggul)} program studi berpredikat Unggul atau A</strong>, dan {format(accreditation.prodi_internasional)} program studi telah terakreditasi internasional.</p></Insight>
+      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana aktif</strong> terdaftar di sembilan angkatan. Seluruh {format(accreditation.prodi_nasional)} program studi kini berpredikat <strong>Unggul</strong> pada akreditasi nasional, dan {format(accreditation.prodi_internasional)} program studi telah mengantongi akreditasi internasional.</p></Insight>
+      <Insight tone="critical" label="Verifikasi Data"><p>Berkas akreditasi per September 2026 mencantumkan predikat Unggul pada seluruh {format(accreditation.prodi_nasional)} baris rincian program studi, namun sel ringkasan di berkas yang sama serta indikator TCK #3 masih tertulis {format(getTckRow("3").capaian_tw3)} prodi karena belum dihitung ulang setelah empat kenaikan peringkat pada 2025–2026 (Doktor Ilmu Komputer, Magister Kecerdasan Artifisial, Magister Elektronika dan Instrumentasi, serta S1 Aktuaria). Angka {format(accreditation.prodi_nasional)} mengikuti baris rincian dan masih menunggu konfirmasi tertulis fakultas.</p></Insight>
+      <Insight tone="attention" label="Selisih Antarsumber"><p>Jumlah tenaga kependidikan berbeda di tiga sumber: ekstrak SIMASTER per 3 September 2026 mencatat <strong>{format(institutionRaw.academic_staff)} orang</strong>, basis data P2M mencatat {format(institutionRaw.academic_staff_alternatif.p2m_2026)} orang karena tidak pernah menonaktifkan pegawai yang telah purna tugas, sedangkan Laporan Dekan 2025 memuat {format(institutionRaw.academic_staff_alternatif.laporan_dekan_2025)} orang. Laporan ini memakai angka SIMASTER sebagai catatan kepegawaian resmi.</p></Insight>
     </StoryScene>
 
     <StoryScene id="target-2026" number="1.2" question={scenes["1.2"].question} deck={deck("1.2")} tone="paper" wide>
@@ -1015,8 +1131,9 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="orang-riset" number="2.5" pillar="Reputasi Akademik" question={scenes["2.5"].question} deck={deck("2.5")}>
-      <DotMatrix groups={lecturerGroups} title={scenes["2.5"].question} hideHeader columns={20} unitValue={1} unitLabel="dosen" source="TCK 2026 (SIMASTER) untuk Guru Besar dan Tenaga Pengajar; data kepegawaian FMIPA untuk jabatan lainnya" extracted={`jabatan resmi ${lecturerSources.jabatan_resmi}, roster ${lecturerSources.roster_dasar}`} csvHref={dataUrl("lecturers_positions.csv")} />
-      <Insight tone="info"><p>Jumlah <strong>{format(professorCount)} Guru Besar</strong> dan {format(teachingStaffCount)} Tenaga Pengajar bersumber dari daftar nama SIMASTER pada lampiran rincian TCK 2026. Jabatan Asisten Ahli, Lektor, dan Lektor Kepala merujuk pada basis data kepegawaian internal fakultas per Januari 2026. Oleh karena itu, angka {format(institutionRaw.lecturers)} dosen merupakan batas minimum terverifikasi: indikator TCK #24 mencatat {format(getTckRow("24").capaian_dinilai)} dosen bergelar S3, sedangkan data gabungan baru mengenali {format(institutionRaw.lecturer_doctoral)} orang di antaranya—sisanya belum terdata lengkap jabatannya dalam basis data internal.</p></Insight>
+      <DotMatrix groups={lecturerGroups} title={scenes["2.5"].question} hideHeader columns={20} unitValue={1} unitLabel="dosen" source="Data kepegawaian SIMASTER FMIPA UGM" extracted={lecturerSource} csvHref={dataUrl("lecturers_positions.csv")} />
+      <Insight tone="info"><p>Seluruh komposisi jabatan fungsional kini bersumber dari satu ekstrak kepegawaian SIMASTER ({lecturerSource}), menggantikan penggabungan dua sumber yang sebelumnya terpaksa dilakukan karena data kepegawaian resmi belum tersedia. Dari <strong>{format(institutionRaw.lecturers)} dosen</strong>, sebanyak {format(professorCount)} orang ({format(professorShare, 1)}%) telah menyandang jabatan Guru Besar dan {format(institutionRaw.lecturer_doctoral)} orang bergelar S3.</p></Insight>
+      <Insight tone="attention" label="Selisih Antarsumber"><p>Dokumen TCK 2026 disusun per 31 Agustus 2026, tiga hari lebih awal dari ekstrak kepegawaian ini, sehingga dua angka berbeda tipis dan keduanya ditampilkan apa adanya: indikator #27 mencatat {format(getTckRow("27").capaian_dinilai)} Tenaga Pengajar sementara SIMASTER mencatat {format(teachingStaffCount)}, dan indikator #24 mencatat {format(getTckRow("24").capaian_dinilai)} dosen bergelar S3 sementara SIMASTER mengenali {format(institutionRaw.lecturer_doctoral)}. Jumlah Guru Besar identik pada kedua sumber ({format(professorCount)} orang).</p></Insight>
     </StoryScene>
 
     <StoryScene id="reputasi-belum" number="2.6" pillar="Reputasi Akademik" question={scenes["2.6"].question} deck={deck("2.6")} tone="paper">
@@ -1061,6 +1178,16 @@ const pillarSummary = [
         <PointMap points={partnershipPoints} title="Sebaran Provinsi Mitra Dalam Negeri" hideHeader accumulate showSmallMultiples pointLabel="dokumen kerja sama" source="LENTERA UGM · batas Peta Nusa" extracted={snapshot.lentera} csvHref={dataUrl("partnership_points.csv")} />
       </SceneBlock>
       <Insight tone="positive"><p>Kemitraan strategis tumbuh signifikan dari {format(partnerships[0]?.domestik + partnerships[0]?.internasional)} naskah kerja sama pada {partnerships[0]?.year} menjadi <strong>{format(partnerships[partnerships.length - 1]?.domestik + partnerships[partnerships.length - 1]?.internasional)} dokumen pada {partnerships[partnerships.length - 1]?.year}</strong>. Dari total {format(partnershipCoverage.total)} dokumen kerja sama, sebanyak {format(partnershipCoverage.terpetakan)} dokumen telah terpetakan lokasinya di dalam negeri, {format(partnershipCoverage.internasional)} dokumen merupakan kemitraan luar negeri, dan {format(partnershipCoverage.lokasi_kosong)} dokumen dalam proses pemutakhiran data alamat mitra.</p></Insight>
+    </StoryScene>
+    <StoryScene id="nilai-kerja-sama" number="3.5′" pillar="Kontribusi terhadap Bangsa" question={scenes["3.5p"].question} deck={deck("3.5p")} wide>
+      <SceneBlock title="Nilai Kontrak Kerja Sama dan Dana Pengembangan Institusi" lede={`Nilai kontrak adalah penerimaan kerja sama berbasis penagihan (billing), berbeda dari perolehan hibah riset pada Adegan 3.1 dan tidak boleh dijumlahkan dengan angka tersebut. Tahun ${revenueLast.year} masih berjalan.`}>
+        <TrendRows data={revenueTrendRows} periods={revenueYears} title="Nilai Kontrak, DPI, dan Rasionya per Tahun" hideHeader axisLabel="Skala tiap baris mengikuti rentangnya sendiri" source="Penerimaan dan DPI Kerja Sama FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("partnership_revenue_by_year.csv")} valueFormatter={(value:number) => format(value, 2)} />
+      </SceneBlock>
+      <SceneBlock title="Konsentrasi Nilai Kontrak per Departemen" lede="Empat baris bernilai besar tidak mencantumkan departemen pada berkas sumber; baris tersebut ditampilkan sebagai kategori tersendiri, bukan dibagi berdasarkan perkiraan.">
+        <HorizontalBarChart data={revenueByDept} title="Nilai Kontrak Kerja Sama per Departemen" hideHeader sort="descending" axisLabel="Rp miliar" source="Penerimaan dan DPI Kerja Sama FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("partnership_revenue_by_dept.csv")} valueFormatter={(value:number) => `Rp${format(value, 2)} M`} />
+      </SceneBlock>
+      <Insight tone="positive"><p>Sepanjang {revenueFirst.year}–{revenueLast.year} tercatat <strong>{format(revenue.kontrak)} kontrak kerja sama senilai Rp{format(revenue.nominal / BILLION, 2)} miliar</strong>, dengan puncak Rp{format(revenuePeak.nominal, 2)} miliar pada {revenuePeak.year}. Dari nilai tersebut, Rp{format(revenue.dpi / BILLION, 2)} miliar ({format(revenue.rasio_dpi, 2)}%) kembali ke fakultas sebagai Dana Pengembangan Institusi.</p></Insight>
+      <Insight tone="attention" label="Konsentrasi dan Cakupan"><p>Departemen Fisika menyumbang {format(revenueByDept[0].porsi ?? 0, 1)}% nilai kontrak, sebagian besar dari kerja sama survei dan pengolahan data geofisika bersama sektor energi. Sementara itu, <strong>Rp{format(revenue.tanpa_departemen.nominal / BILLION, 2)} miliar ({format(revenue.tanpa_departemen.porsi, 1)}%)</strong> pada {format(revenue.tanpa_departemen.kontrak)} baris tidak memuat keterangan departemen di berkas sumber. Kontrak lintas tahun dicatat pada tahun berkas asalnya, dan dua nomor penagihan muncul ganda—seluruhnya didokumentasikan pada halaman <a href={withBase("/data")}>Data &amp; Metodologi</a>.</p></Insight>
     </StoryScene>
 
     <StoryScene id="kontribusi-belum" number="3.6" pillar="Kontribusi terhadap Bangsa" question={scenes["3.6"].question} deck={deck("3.6")}>
@@ -1119,8 +1246,9 @@ const pillarSummary = [
 
     <StoryScene id="profil-lulusan" number="4.7" pillar="Employability" question={scenes["4.7"].question} deck={deck("4.7")} wide>
       <SceneBlock title="Jumlah Lulusan per Jenjang dan Tahun Akademik">
-        <StackedBarChart data={graduates} xKey="year" series={graduateSeries} gaps={graduateGapYears} gapLabel="Magister & Doktor belum tercatat" note={graduateGapNote} title="Jumlah Lulusan per Jenjang dan Tahun Akademik" hideHeader yLabel="Lulusan" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("graduates_profile.csv")} valueFormatter={(value:number) => format(value)} />
+        <StackedBarChart data={graduates} xKey="year" series={graduateSeries} gaps={graduateIncompleteYears} gapLabel="Belum tercatat" title="Jumlah Lulusan per Jenjang dan Tahun Akademik" hideHeader yLabel="Lulusan" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("graduates_profile.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
+      <Insight tone="positive"><p>Tahun akademik 2025/2026 melengkapi seri lulusan pada seluruh jenjang dengan total <strong>{format(graduateLatestTotal)} lulusan</strong>: {format(graduateLatestOf("Sarjana")?.lulusan ?? 0)} sarjana, {format(graduateLatestOf("Magister")?.lulusan ?? 0)} magister, dan {format(graduateLatestOf("Doktor")?.lulusan ?? 0)} doktor. Rerata IPK lulusan doktor {format(graduateLatestOf("Doktor")?.ipk_rerata ?? 0, 2)} dan magister {format(graduateLatestOf("Magister")?.ipk_rerata ?? 0, 2)}, dihitung dengan pembobotan jumlah wisudawan pada empat periode wisuda.</p></Insight>
       <SceneBlock title="Prestasi Mahasiswa menurut Tingkat Kompetisi">
         <StackedBarChart data={achievements} xKey="year" series={achievementSeries} title="Prestasi Mahasiswa menurut Tingkat Kompetisi" hideHeader yLabel="Prestasi" source="Data kemahasiswaan FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("student_achievements.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
@@ -1132,6 +1260,27 @@ const pillarSummary = [
     <StoryScene id="karier" number="5.1" pillar="Kesejahteraan" question={scenes["5.1"].question} deck={deck("5.1")} tone="paper" wide>
       <BulletChart data={career} title={scenes["5.1"].question} hideHeader maxPercent={200} source="TCK 2026 FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
       <Insight tone="attention"><p>Sebanyak {format(getTckRow("23").capaian_dinilai)} dosen telah meraih rekognisi kepakaran internasional dari target Triwulan III ({format(getTckRow("23").target_dinilai)} orang). Di samping itu, program sertifikasi kompetensi dan profesi dosen telah diikuti oleh {format(getTckRow("25").capaian_dinilai)} orang dan terus diakselerasi menuju target akhir tahun ({format(getTckRow("25").target_dinilai)} orang).</p></Insight>
+    </StoryScene>
+    <StoryScene id="regenerasi-guru-besar" number="5.1′" pillar="Kesejahteraan" question={scenes["5.1p"].question} deck={deck("5.1p")} wide>
+      <SceneBlock title="Guru Besar menurut Periode Pengangkatan" lede="Setiap titik mewakili satu Guru Besar aktif, dikelompokkan berdasarkan tanggal mulai tugas (TMT) jabatan.">
+        <DotMatrix groups={tenureGroups} columns={18} unitValue={1} unitLabel="Guru Besar" title="Guru Besar menurut Periode Pengangkatan" hideHeader source="Data Guru Besar SIMASTER FMIPA UGM" extracted={lecturerSource} csvHref={dataUrl("lecturers_positions.csv")} />
+      </SceneBlock>
+      <SceneBlock title="Pengangkatan Guru Besar per Tahun dan Departemen" lede="Dihitung berdasarkan tahun TMT jabatan Guru Besar sepanjang periode kepemimpinan 2021–2026.">
+        <StackedBarChart data={tenureByYear} xKey="year" series={tenureSeries} title="Pengangkatan Guru Besar per Tahun dan Departemen" hideHeader yLabel="Guru Besar" source="Data Guru Besar SIMASTER FMIPA UGM" extracted={lecturerSource} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <Insight tone="positive"><p>Sebanyak <strong>{format(tenure.periode_ini)} dari {format(tenure.total)} Guru Besar</strong> ({format((tenure.periode_ini / tenure.total) * 100, 1)}%) menerima jabatannya pada periode kepemimpinan {tenure.tahun_awal}–2026, dengan puncak {format(tenurePeak.n)} pengangkatan pada {tenurePeak.year}. Berkas sumber menandai kolom periode ini secara eksplisit sebagai “Periode Dekanat 2021-2026”.</p></Insight>
+      <Insight tone="info"><p>Jabatan Guru Besar mencakup dua jenjang angka kredit (850 dan 1050) yang dihitung sebagai satu jabatan fungsional, sesuai penamaan pada basis data kepegawaian.</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="rasio-jabatan" number="5.1″" pillar="Kesejahteraan" question={scenes["5.1q"].question} deck={deck("5.1q")} wide>
+      <SceneBlock title="Rasio Dosen Tanpa Jabatan Akademik terhadap Ambang 10%" lede="Catatan pada berkas sumber menetapkan batas maksimal 10% dosen tanpa jabatan akademik di setiap departemen. Semakin rendah rasio, semakin baik.">
+        <BulletChart data={ratioRows} title="Rasio Dosen Tanpa Jabatan Akademik per Departemen" hideHeader maxPercent={20} targetLabel="Ambang maksimal 10%" axisLabel="Persentase dosen tanpa jabatan akademik" source="Data Rasio Dosen Belum Memiliki Jabatan Akademik SIMASTER" extracted={lecturerSource} csvHref={dataUrl("lecturer_ratio_by_dept.csv")} />
+      </SceneBlock>
+      <SceneBlock title="Cakupan Sertifikasi Dosen per Departemen" lede="Sertifikasi pendidik profesional (Serdos) dihitung dari nomor sertifikat yang tercatat pada rekapitulasi kepegawaian.">
+        <HorizontalBarChart data={certificationRows} title="Cakupan Sertifikasi Dosen per Departemen" hideHeader sort="descending" max={100} axisLabel="Persentase dosen tersertifikasi" source="Rekap Dosen Bersertifikasi FMIPA UGM" extracted={lecturerSource} csvHref={dataUrl("lecturer_ratio_by_dept.csv")} valueFormatter={(value:number) => `${format(value, 1)}%`} />
+      </SceneBlock>
+      <Insight tone="attention" label="Perlu Akselerasi"><p>Pada tingkat fakultas, <strong>{format(lecturerRatio.tanpa_jabatan)} dari {format(lecturerRatio.dosen)} dosen ({format(lecturerRatio.rasio, 2)}%)</strong> belum memiliki jabatan akademik—masih di bawah ambang {format(lecturerRatio.ambang)}%. Namun Departemen {ratioBreached[0]?.department} berada di angka {format(ratioBreached[0]?.rasio ?? 0, 2)}% ({format(ratioBreached[0]?.tanpa_jabatan ?? 0)} dari {format(ratioBreached[0]?.dosen ?? 0)} dosen), melampaui ambang tersebut dan menjadi agenda percepatan usulan jabatan fungsional.</p></Insight>
+      <Insight tone="info"><p>Sebanyak <strong>{format(lecturerRatio.tersertifikasi)} dosen ({format(lecturerRatio.rasio_sertifikasi, 1)}%)</strong> telah mengantongi sertifikat pendidik profesional. Cakupan tertinggi berada di Departemen {certificationRows[0]?.label} ({format(certificationRows[0]?.value ?? 0, 1)}%).</p></Insight>
     </StoryScene>
 
     <StoryScene id="inklusif" number="5.2" pillar="Kesejahteraan" question={scenes["5.2"].question} deck={deck("5.2")}>
@@ -1231,6 +1380,13 @@ const pillarSummary = [
         <StackedBarChart data={religionMix} xKey="year" series={religionSeries} normalized title="Komposisi Agama per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa S1 & non-gelar FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_background.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <Insight tone="info" label="Cakupan Basis Data"><p>Pembaruan data mencatat sekolah asal untuk <strong>{format(schoolOrigin.tercatat)} dari {format(schoolOrigin.total)} mahasiswa S1</strong> pada keenam angkatan, termasuk angkatan 2021–2022. Jejaring pascasarjana memuat {format(masterOrigin.institusi_unik)} perguruan tinggi S1 asal mahasiswa magister dan {format(doctorOrigin.institusi_unik)} perguruan tinggi S2 asal mahasiswa doktor. Sumber data tidak memuat provinsi institusi, sehingga persebaran geografis sekolah tidak diasumsikan dari nama institusi.</p></Insight>
+    </StoryScene>
+    <StoryScene id="jejaring-mou-sekolah" number="6.6′" pillar="Mahasiswa & Akses" question={scenes["6.6p"].question} deck={deck("6.6p")} tone="paper" wide>
+      <SceneBlock title="Sekolah Penanda Tangan MoU Juli 2026 terhadap Jejaring Sekolah Asal" lede="Setiap titik mewakili satu sekolah. Warna menunjukkan apakah sekolah tersebut sudah tercatat sebagai asal mahasiswa S1 angkatan 2021–2026 atau merupakan jejaring baru.">
+        <DotMatrix groups={schoolMouGroups} columns={22} unitValue={1} unitLabel="sekolah" title="Sekolah Penanda Tangan MoU menurut Status Jejaring" hideHeader source="Daftar Peserta MoU FMIPA UGM (29–31 Juli 2026) dan pangkalan data asal pendidikan mahasiswa" extracted={snapshot.label} csvHref={dataUrl("school_mou_status.csv")} />
+      </SceneBlock>
+      <Insight tone="positive"><p>Penandatanganan nota kesepahaman pada 29–31 Juli 2026 menjangkau <strong>{format(schoolMou.sekolah)} sekolah</strong> dalam tiga sesi. Sebanyak {format(schoolMou.sudah_menjadi_asal)} di antaranya sudah tercatat sebagai sekolah asal mahasiswa FMIPA, sementara <strong>{format(schoolMou.jejaring_baru)} sekolah</strong> merupakan jejaring baru yang belum pernah mengirimkan mahasiswa pada enam angkatan terakhir.</p></Insight>
+      <Insight tone="attention" label="Batas Ketelitian Pencocokan"><p>Nama sekolah ditulis bebas pada kedua sumber, sehingga pencocokan dilakukan melalui penyeragaman awalan dan ejaan yang seluruh aturannya tercatat pada <code>pipeline/mappings/sekolah_mou_alias.csv</code>. Angka {format(schoolMou.sudah_menjadi_asal)} sekolah adalah <strong>perkiraan batas bawah</strong>, bukan hitungan pasti. Nama peserta, jabatan, dan narahubung pada berkas sumber tidak pernah dibaca oleh pipeline.</p></Insight>
     </StoryScene>
 
     <StoryScene id="perjalanan-angkatan" number="6.7" pillar="Mahasiswa & Akses" question={scenes["6.7"].question} deck={deck("6.7")} wide>

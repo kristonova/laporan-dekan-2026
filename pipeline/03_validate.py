@@ -47,6 +47,9 @@ PRIVATE_KEYS = {
     # Personal columns carried by the student roster workbooks.
     "wali", "nama_wali", "alamat_wali", "no_hp_wali", "alamat_ktp", "alamat_domisili",
     "email_ugm", "no_hp", "golongan_darah", "nim_mahasiswa",
+    # Attendee columns carried by the July 2026 school memorandum workbook.
+    # "peserta" alone is not listed: the Posbindu aggregates use it as a count.
+    "nama_sekolah_pic", "jabatan_peserta", "nama_kepala_sekolah", "nama_guru",
 }
 # Counts below this are withheld in the student aggregates; see SMALL_CELL in
 # 02_aggregate.py. The threshold is re-asserted here so a future change to the
@@ -157,9 +160,10 @@ def main() -> None:
     assert sinta_lookup["Matematika"]["median"] == 317
 
     institution = load_json("institution_snapshot.json")
-    assert institution["lecturers"] == 206
-    assert institution["lecturer_doctoral"] == 157
-    assert institution["lecturer_certified"] == 152
+    assert institution["lecturers"] == 207
+    assert institution["academic_staff"] == 120
+    assert institution["lecturer_doctoral"] == 168
+    assert institution["lecturer_certified"] == 169
     # The P2M study_programme export is missing Magister Elektronika dan
     # Instrumentasi; the accreditation workbook is what the count comes from.
     assert institution["study_programmes"] == 18
@@ -191,24 +195,78 @@ def main() -> None:
     # Indicator 27 counts down: fewer teaching-only lecturers is better.
     assert by_no["27"]["arah"] == "turun" and by_no["27"]["status_kuartal"] == "tercapai"
 
-    # --- Jabatan fungsional: scene 2.5 must agree with the TCK indicators ---
-    # Guru Besar and Tenaga Pengajar are taken from the SIMASTER detail
-    # workbooks, so the dot matrix and the indicator table cannot disagree.
+    # --- Jabatan fungsional: SIMASTER against the TCK indicators ------------
+    # One SIMASTER extract (3 September 2026) now supplies every staffing
+    # figure. It agrees with the TCK workbook on Guru Besar and differs on two
+    # other indicators; the differences are real and are reported rather than
+    # asserted away, because TCK was compiled on 31 August 2026 from the same
+    # system three days earlier.
     positions = Counter()
     for row in load_json("lecturers_positions.json"):
         positions[row["position"]] += int(row["n"])
     assert positions["Guru Besar"] == by_no["30"]["capaian_dinilai"] == 54
-    assert positions["Tenaga Pengajar"] == by_no["27"]["capaian_dinilai"] == 16
     assert sum(positions.values()) == institution["lecturers"]
+    # No lecturer may land in the catch-all bucket: position_group raises on an
+    # unrecognised spelling, so its appearance here would mean a silent regression.
+    assert "Belum terisi" not in positions, positions
 
-    reconciliation = json.loads((CLEAN_DIR / "lecturers_reconciliation.json").read_text(encoding="utf-8"))
-    # Every professor SIMASTER lists must resolve to a person; an unmatched one
-    # would mean the count above was assembled from two different populations.
-    assert "Guru Besar" not in reconciliation["tck_tanpa_padanan"], reconciliation["tck_tanpa_padanan"]
-    assert reconciliation["roster_gabungan"] == institution["lecturers"]
-    # 160 dosen hold an S3 per indicator 24, but four of them are absent from
-    # the roster entirely, so the published figure is knowingly lower.
-    assert institution["lecturer_doctoral"] + 3 == by_no["24"]["capaian_dinilai"] == 160
+    staffing_vs_tck = {
+        "tenaga_pengajar": {
+            "simaster": positions["Tenaga Pengajar"],
+            "tck_27": by_no["27"]["capaian_dinilai"],
+        },
+        "dosen_s3": {
+            "simaster": institution["lecturer_doctoral"],
+            "tck_24": by_no["24"]["capaian_dinilai"],
+        },
+        "tenaga_kependidikan": {
+            "simaster": institution["academic_staff"],
+            "p2m": institution["academic_staff_alternatif"]["p2m_2026"],
+            "laporan_dekan_2025": institution["academic_staff_alternatif"]["laporan_dekan_2025"],
+        },
+    }
+    # Drift beyond a couple of people would mean the two systems no longer
+    # describe the same population, which is a different problem from a
+    # three-day lag and must stop the build.
+    assert abs(positions["Tenaga Pengajar"] - by_no["27"]["capaian_dinilai"]) <= 2, staffing_vs_tck
+
+    # --- Datasets added with the September 2026 delivery --------------------
+    tenure = load_json("professor_tenure.json")
+    assert tenure["total"] == positions["Guru Besar"] == 54
+    assert tenure["periode_ini"] + tenure["sebelumnya"] == tenure["total"]
+    assert tenure["periode_ini"] == 33
+    assert sum(row["n"] for row in tenure["per_tahun"]) == tenure["total"]
+
+    ratio = load_json("lecturer_ratio.json")
+    assert ratio["dosen"] == institution["lecturers"]
+    assert ratio["tanpa_jabatan"] == positions["Tenaga Pengajar"]
+    assert ratio["tersertifikasi"] == institution["lecturer_certified"]
+    assert sum(row["dosen"] for row in ratio["per_departemen"]) == ratio["dosen"]
+    # Matematika is the one department above the 10% ceiling. If a refresh ever
+    # clears it, this assertion is the prompt to rewrite the scene rather than
+    # leave a chart claiming a breach that no longer exists.
+    breached = [row["department"] for row in ratio["per_departemen"] if row["melampaui_ambang"]]
+    assert breached == ["Matematika"], breached
+
+    revenue = load_json("partnership_revenue.json")
+    assert revenue["kontrak"] == 86
+    assert round(revenue["nominal"]) == 202_449_854_491
+    assert sum(row["n"] for row in revenue["per_tahun"]) == revenue["kontrak"]
+    assert round(sum(row["nominal"] for row in revenue["per_departemen"])) == round(revenue["nominal"])
+    # A third of the value sits on rows the workbook filed without a department.
+    # It is published as its own category; folding it into a department would
+    # invent an attribution the source never made.
+    assert revenue["tanpa_departemen"]["kontrak"] == 4
+    assert revenue["tanpa_departemen"]["porsi"] > 30
+    # Cooperation revenue and research grants are different measures on similar
+    # scales. Nothing in the report may add them, so they stay separate files.
+    assert "funding" not in revenue
+
+    mou = load_json("school_mou.json")
+    assert mou["sudah_menjadi_asal"] + mou["jejaring_baru"] == mou["sekolah"]
+    assert mou["sekolah"] <= mou["baris"], "sekolah unik tidak boleh melebihi jumlah baris"
+    assert len(mou["sesi"]) == 3
+
 
     # Percentage indicators without a denominator must not publish a TW3 percentage.
     mismatched = {str(row["no"]) for row in tck if row["unit_mismatch"]}
@@ -252,11 +310,34 @@ def main() -> None:
     assert sum(row["prestasi"] for row in achievements) == 1_600
 
     scholarships = load_json("scholarships.json")
-    assert scholarships["total"] == 684
+    assert scholarships["total"] == 703
+
+    graduates = load_json("graduates_profile.json")
+    by_level_year = {(row["jenjang"], row["tahun"]): row for row in graduates}
+    # PROFIL LULUSAN.xlsx left 2025/2026 blank for both postgraduate levels; the
+    # two dedicated workbooks delivered in September 2026 fill it, so no level
+    # is missing a year any more and scene 4.7 no longer draws a gap band.
+    for level in ("Sarjana", "Magister", "Doktor"):
+        for year in range(2022, 2027):
+            assert (level, year) in by_level_year, f"lulusan {level} {year} hilang"
+    assert by_level_year[("Magister", 2026)]["lulusan"] == 265
+    assert by_level_year[("Doktor", 2026)]["lulusan"] == 74
+
 
     accreditation = load_json("accreditation.json")
     assert accreditation["prodi_nasional"] == 18
-    assert accreditation["prodi_unggul"] == by_no["3"]["capaian_tw3"] == 15
+    # Every one of the 18 detail rows now reads "Unggul". The workbook's own
+    # summary cell still says 15 and TCK indicator #3 still reports 15, because
+    # neither was recomputed after the four 2025/2026 upgrades. The detail rows
+    # are the data; the stale scalars are carried into the report as an anomaly
+    # for the faculty to confirm, not silently reconciled.
+    assert accreditation["prodi_unggul"] == 18
+    akreditasi_selisih = {
+        "rincian": accreditation["prodi_unggul"],
+        "ringkasan_workbook": 15,
+        "tck_3": by_no["3"]["capaian_tw3"],
+    }
+    assert all(row["nilai"] == "Unggul" for row in accreditation["daftar"] if row["lingkup"] == "Nasional")
     assert accreditation["prodi_internasional"] == by_no["2a"]["capaian_tw3"] + by_no["2b"]["capaian_tw3"] == 15
 
     tracer = load_json("tracer_summary.json")
@@ -481,12 +562,20 @@ def main() -> None:
         "tck_status": dict(statuses),
         "tck_unit_mismatch": sorted(mismatched),
         "anomali_kuartal": quarter_anomalies,
+        "anomali_akreditasi": akreditasi_selisih,
+        "selisih_kepegawaian": staffing_vs_tck,
+        "billing_ganda_kerja_sama": revenue["billing_ganda"],
         "verified_anchors": {
             "citations_all_time": sum(citation_lookup.values()),
             "citations_2021_2025": sum(value for year, value in citation_lookup.items() if 2021 <= year <= 2025),
             "funding_2024_rp": funding_total[2024],
             "outreach_missing_location": int(outreach["location_status"].eq("missing").sum()),
             "kerja_sama_2021_2026": coverage["total"],
+            "nilai_kontrak_kerja_sama_rp": revenue["nominal"],
+            "dpi_kerja_sama_rp": revenue["dpi"],
+            "guru_besar_periode_ini": tenure["periode_ini"],
+            "dosen_tanpa_jabatan": ratio["tanpa_jabatan"],
+            "sekolah_mou_2026": mou["sekolah"],
             "mahasiswa_aktif_s1": sum(row["mahasiswa"] for row in active),
             "responden_tracer": tracer["responden"],
             "kunjungan_posbindu": posbindu["kunjungan"],

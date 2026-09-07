@@ -138,6 +138,18 @@ export interface SceneValues {
   openAccessLastYear: number;
   openAccessLastShare: number;
   openAccessGreenLatest: number;
+  // Added with the September 2026 delivery: cooperation revenue, professor
+  // regeneration, the vacant-position ratio, and the school memorandum network.
+  revenueContracts: number;
+  revenueTotal: number;
+  revenueDpi: number;
+  professorsThisPeriod: number;
+  professorsThisPeriodShare: number;
+  lecturersWithoutPosition: number;
+  lecturersWithoutPositionShare: number;
+  lecturersCertifiedShare: number;
+  mouSchools: number;
+  mouNewSchools: number;
   format: (value: number, digits?: number) => string;
 }
 
@@ -222,6 +234,11 @@ export const scenes = {
     deck: (v) =>
       `Sepanjang periode 2021–2026, FMIPA UGM menjalin ${v.format(v.partnershipTotal)} naskah kerja sama resmi. Sebanyak ${v.format(v.partnershipInternational)} dokumen di antaranya merupakan kolaborasi internasional yang menghubungkan fakultas dengan berbagai institusi mitra di ${v.format(v.partnershipCountries)} negara.`,
   },
+  "3.5p": {
+    question: "Berapa Nilai Ekonomi Kerja Sama dan Kontribusinya bagi Fakultas?",
+    deck: (v) =>
+      `Kemitraan tidak berhenti pada naskah perjanjian: sepanjang 2022–2026 tercatat ${v.format(v.revenueContracts)} kontrak kerja sama senilai ${v.format(v.revenueTotal, 2)} miliar rupiah, dengan ${v.format(v.revenueDpi, 2)} miliar rupiah kembali ke fakultas sebagai Dana Pengembangan Institusi.`,
+  },
   "3.6": {
     question: "Program Apa yang Menjadi Prioritas Akselerasi pada Pilar Kontribusi?",
     deck: (v) =>
@@ -269,6 +286,16 @@ export const scenes = {
     deck: (v) =>
       `Tata kelola SDM dan pengembangan karier staf menunjukkan capaian positif: ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator kinerja telah memenuhi target, didukung oleh kelancaran usulan kenaikan jabatan fungsional dosen serta perolehan rekognisi kepakaran internasional.`,
   },
+  "5.1p": {
+    question: "Bagaimana Regenerasi Guru Besar Berlangsung Selama Lima Tahun?",
+    deck: (v) =>
+      `Regenerasi kepakaran berjalan pesat: ${v.format(v.professorsThisPeriod)} dari ${v.format(v.professors)} Guru Besar aktif (${v.format(v.professorsThisPeriodShare, 1)}%) menerima jabatannya pada periode kepemimpinan 2021–2026.`,
+  },
+  "5.1q": {
+    question: "Sejauh Mana Jabatan Akademik dan Sertifikasi Dosen Terpenuhi?",
+    deck: (v) =>
+      `Sebanyak ${v.format(v.lecturersWithoutPosition)} dari ${v.format(v.lecturers)} dosen (${v.format(v.lecturersWithoutPositionShare, 2)}%) belum memiliki jabatan akademik—masih di bawah ambang 10%—sementara ${v.format(v.lecturersCertifiedShare, 1)}% dosen telah mengantongi sertifikat pendidik profesional.`,
+  },
   "5.2": {
     question: "Bagaimana Kesiapan Fasilitas Kampus Inklusif dan Ramah Disabilitas?",
     deck: (v) =>
@@ -308,6 +335,11 @@ export const scenes = {
     question: "Dari Sekolah dan Perguruan Tinggi Mana Saja Mahasiswa Berasal?",
     deck: (v) =>
       `Jejaring institusi asal mahasiswa kini mencakup ${v.format(v.studentsSchoolUnique)} SMA/MA bagi mahasiswa sarjana, ${v.format(v.studentsMasterOrigins)} universitas asal bagi mahasiswa magister, serta ${v.format(v.studentsDoctorOrigins)} perguruan tinggi asal bagi mahasiswa doktor. Pemutakhiran basis data ini melengkapi informasi asal pendidikan untuk seluruh angkatan 2021–2026.`,
+  },
+  "6.6p": {
+    question: "Seberapa Luas Jejaring Sekolah Mitra yang Baru Dibangun?",
+    deck: (v) =>
+      `Penandatanganan nota kesepahaman pada Juli 2026 menjangkau ${v.format(v.mouSchools)} sekolah, dan ${v.format(v.mouNewSchools)} di antaranya merupakan jejaring baru yang belum pernah mengirimkan mahasiswa pada enam angkatan terakhir.`,
   },
   "6.7": {
     question: "Bagaimana Perjalanan Kemajuan Studi Mahasiswa dari Masuk hingga Lulus?",

@@ -1,6 +1,6 @@
 {
-  "lecturers": 206,
-  "academic_staff": 164,
+  "lecturers": 207,
+  "academic_staff": 120,
   "departments": 4,
   "study_programmes": 18,
   "study_programmes_by_level": {
@@ -9,10 +9,11 @@
     "Doktor": 4
   },
   "laboratories": 16,
-  "lecturer_doctoral": 157,
-  "lecturer_certified": 152,
-  "lecturer_sources": {
-    "jabatan_resmi": "31 Agustus 2026",
-    "roster_dasar": "27 Januari 2026"
+  "lecturer_doctoral": 168,
+  "lecturer_certified": 169,
+  "lecturer_source": "SIMASTER, 3 September 2026",
+  "academic_staff_alternatif": {
+    "p2m_2026": 164,
+    "laporan_dekan_2025": 129
   }
 }

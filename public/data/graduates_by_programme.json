@@ -96,6 +96,30 @@
     "lulusan": 5
   },
   {
+    "jenjang": "Doktor",
+    "tahun": 2026,
+    "prodi": "Doktor Fisika",
+    "lulusan": 15
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2026,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 31
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2026,
+    "prodi": "Doktor Kimia",
+    "lulusan": 19
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2026,
+    "prodi": "Doktor Matematika",
+    "lulusan": 9
+  },
+  {
     "jenjang": "Magister",
     "tahun": 2022,
     "prodi": "Magister Fisika",
@@ -202,6 +226,42 @@
     "tahun": 2025,
     "prodi": "Magister Matematika",
     "lulusan": 41
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Elektronika dan Instrumentasi",
+    "lulusan": 5
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Fisika",
+    "lulusan": 47
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 64
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Kecerdasan Artifisial",
+    "lulusan": 39
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Kimia",
+    "lulusan": 66
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "prodi": "Magister Matematika",
+    "lulusan": 44
   },
   {
     "jenjang": "Sarjana",

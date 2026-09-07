@@ -1,0 +1,42 @@
+[
+  {
+    "tahun": 2022,
+    "nominal": 9490894500.0,
+    "dpi": 645728197.4493356,
+    "n": 9,
+    "rasio_dpi": 6.8,
+    "is_partial": false
+  },
+  {
+    "tahun": 2023,
+    "nominal": 13375145600.0,
+    "dpi": 927931240.0,
+    "n": 11,
+    "rasio_dpi": 6.94,
+    "is_partial": false
+  },
+  {
+    "tahun": 2024,
+    "nominal": 82673517651.0,
+    "dpi": 4222307833.89,
+    "n": 25,
+    "rasio_dpi": 5.11,
+    "is_partial": false
+  },
+  {
+    "tahun": 2025,
+    "nominal": 65875000836.0,
+    "dpi": 3547557200.5,
+    "n": 27,
+    "rasio_dpi": 5.39,
+    "is_partial": false
+  },
+  {
+    "tahun": 2026,
+    "nominal": 31035295904.0,
+    "dpi": 1025650760.0,
+    "n": 14,
+    "rasio_dpi": 3.3,
+    "is_partial": true
+  }
+]

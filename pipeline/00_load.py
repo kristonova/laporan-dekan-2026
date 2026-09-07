@@ -5,18 +5,20 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import pandas as pd
 
 from utils import (
     ACADEMIC_DIR,
+    DEKAN_2026_DIR,
     HEALTH_DIR,
     LOADED_DIR,
     MAPPINGS_DIR,
     PARTNERSHIP_DIR,
     SCIVAL_DIR,
+    SDM_DIR,
     TCK_2026_DIR,
-    TCK_RINCIAN_DIR,
     cell,
     deduplicate,
     digits_only,
@@ -246,6 +248,113 @@ def load_partnerships() -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
+REVENUE_WORKBOOK = "Penerimaan dan DPI Kerjasama Fakultas MIPA 2021-2026.xlsx"
+# Two layouts share these sheets: 2022 and 2023 label the activity "Nama
+# Kegiatan" and carry no partner column, while 2024 onward add "Mitra" and
+# rename it "Judul Kegiatan". Columns are therefore resolved by header label,
+# never by position.
+REVENUE_FIELDS = {
+    "mitra": ("Mitra",),
+    "kegiatan": ("Judul Kegiatan", "Nama Kegiatan"),
+    "departemen": ("Departemen",),
+    "tahun_kontrak": ("Tahun",),
+    "billing": ("Billing",),
+    "nominal_kontrak": ("Nominal Kontrak",),
+    "dpi": ("DPI FMIPA",),
+}
+# The workbook writes Geofisika as a bracketed variant of Fisika and abbreviates
+# Ilmu Komputer dan Elektronika; both are folded onto the canonical names so the
+# revenue split lines up with every other department chart in the report.
+REVENUE_DEPARTMENTS = {
+    "Fisika": "Fisika",
+    "Fisika (Geofisika)": "Fisika",
+    "IKE": "Ilmu Komputer dan Elektronika",
+    "Kimia": "Kimia",
+    "Matematika": "Matematika",
+}
+
+
+def load_partnership_revenue() -> pd.DataFrame:
+    """Contract value and the institutional development fee it returns to the faculty.
+
+    This is billing-based cooperation revenue, a different measure from the
+    research grant totals in research_exported_*.csv, and the two must never be
+    summed. Four large rows carry no department at all — two 2024 rows sharing
+    one billing number, plus one row each in 2025 and 2026 — and they are kept
+    as "Tidak berdepartemen" rather than dropped or attributed by guesswork.
+    Multi-year contracts ("2024-2025") are counted in the sheet they were filed
+    under; the Tahun cell is preserved so that choice stays auditable.
+    """
+    path = DEKAN_2026_DIR / REVENUE_WORKBOOK
+    rows: list[dict] = []
+    for sheet in workbook_sheets(path):
+        if not re.fullmatch(r"20\d{2}", sheet):
+            continue
+        grid = read_workbook(path, sheet)
+        header_row = next((index for index, row in grid.iterrows() if text_cell(row, 0) == "No"), None)
+        if header_row is None:
+            raise AssertionError(f"{REVENUE_WORKBOOK} sheet {sheet}: baris header 'No' tidak ditemukan")
+        header = grid.iloc[header_row]
+        labels = {text_cell(header, index): index for index in range(grid.shape[1])}
+        columns: dict[str, int | None] = {}
+        for name, candidates in REVENUE_FIELDS.items():
+            columns[name] = next((labels[label] for label in candidates if label in labels), None)
+        for name in ("departemen", "nominal_kontrak", "dpi"):
+            if columns[name] is None:
+                raise AssertionError(f"{REVENUE_WORKBOOK} sheet {sheet}: kolom {name} hilang")
+
+        for _, row in grid.iloc[header_row + 1 :].iterrows():
+            # The sheet closes with a TOTAL line that has no number in column 0.
+            if numeric_cell(row, 0) is None:
+                continue
+            raw_department = text_cell(row, columns["departemen"])
+            if raw_department and raw_department not in REVENUE_DEPARTMENTS:
+                raise AssertionError(f"{REVENUE_WORKBOOK} sheet {sheet}: departemen tak dikenal {raw_department!r}")
+            rows.append({
+                "tahun": int(sheet),
+                "tahun_kontrak": text_cell(row, columns["tahun_kontrak"]) if columns["tahun_kontrak"] is not None else "",
+                "mitra": text_cell(row, columns["mitra"]) if columns["mitra"] is not None else "",
+                "kegiatan": text_cell(row, columns["kegiatan"]) if columns["kegiatan"] is not None else "",
+                "departemen": REVENUE_DEPARTMENTS.get(raw_department, "Tidak berdepartemen"),
+                "billing": text_cell(row, columns["billing"]) if columns["billing"] is not None else "",
+                "nominal_kontrak": numeric_cell(row, columns["nominal_kontrak"]) or 0.0,
+                "dpi": numeric_cell(row, columns["dpi"]) or 0.0,
+            })
+    return pd.DataFrame(rows)
+
+
+SCHOOL_MOU_WORKBOOK = "Daftar Peserta MoU FMIPA UGM_No PKS FMIPA UGM.xlsx"
+
+
+def load_school_mou() -> pd.DataFrame:
+    """Schools that signed a memorandum with the faculty in July 2026.
+
+    Only the school name leaves this function. The workbook also lists every
+    attending teacher by name and position and names the faculty staff who
+    hosted them; none of that is needed to count a partnership, so it is never
+    read. The three sheets are the three signing days and overlap heavily — the
+    same school appears on more than one — so the day is kept and the union is
+    taken downstream rather than the rows being summed.
+    """
+    path = PARTNERSHIP_DIR / SCHOOL_MOU_WORKBOOK
+    rows: list[dict] = []
+    for sheet in workbook_sheets(path):
+        grid = read_workbook(path, sheet)
+        header_row = next(
+            (index for index, row in grid.iterrows() if text_cell(row, 1) == "Nama Sekolah"), None
+        )
+        if header_row is None:
+            raise AssertionError(f"{SCHOOL_MOU_WORKBOOK} sheet {sheet}: baris header 'Nama Sekolah' tidak ditemukan")
+        for _, row in grid.iloc[header_row + 1 :].iterrows():
+            school = re.sub(r"\s+", " ", text_cell(row, 1)).strip()
+            if len(school) < 4:
+                continue
+            rows.append({"sesi": sheet, "sekolah": school})
+    if not rows:
+        raise AssertionError(f"{SCHOOL_MOU_WORKBOOK}: tidak ada baris sekolah yang terbaca")
+    return pd.DataFrame(rows)
+
+
 def load_admissions() -> pd.DataFrame:
     """Applicant / admitted / registered counts per undergraduate programme."""
     grid = read_workbook(ACADEMIC_DIR / "PROFIL MABA.xlsx", "sarjana")
@@ -342,15 +451,40 @@ ROSTER_COLUMNS = {
 ROSTER_ROW_KEY = "NIM"
 
 
+# A roster file is named either for its cohort ("Daftar mahasiswa 2026") or for
+# the day it was exported ("Daftar mahasiswa 20260907"), and the second form is
+# a re-export of the first, not another cohort. The 7 September 2026 file, for
+# instance, holds the same 865 students as the 2026 file with the guardian
+# occupation column filled in further. Loading both would count that intake
+# twice, so only the newest export per cohort is read.
+ROSTER_FILE_PATTERN = re.compile(r"^Daftar mahasiswa (?P<cohort>20\d{2})(?P<stamp>\d{4})?$")
+
+
+def select_roster_files(paths: list[Path]) -> list[Path]:
+    """Keep the most recent export of each intake cohort."""
+    if not paths:
+        raise FileNotFoundError(f"Tidak ada berkas daftar mahasiswa di {ROSTER_DIR}")
+    newest: dict[int, tuple[str, Path]] = {}
+    for path in paths:
+        match = ROSTER_FILE_PATTERN.match(path.stem)
+        if match is None:
+            raise ValueError(f"Nama berkas daftar mahasiswa tidak dikenali: {path.name}")
+        cohort = int(match.group("cohort"))
+        # An undated file is the original; any dated one supersedes it.
+        stamp = match.group("stamp") or "0000"
+        if cohort not in newest or stamp > newest[cohort][0]:
+            newest[cohort] = (stamp, path)
+    return [path for _, (_, path) in sorted(newest.items())]
+
+
+
 def load_student_roster() -> tuple[pd.DataFrame, list[str]]:
     """Per-cohort student rosters, stripped of every personal column at load.
 
     Returns the frame plus the file names that produced it, because this is the
     one loader that reads a whole directory instead of a single workbook.
     """
-    paths = sorted(ROSTER_DIR.glob("Daftar mahasiswa *.xlsx"))
-    if not paths:
-        raise FileNotFoundError(f"Tidak ada berkas daftar mahasiswa di {ROSTER_DIR}")
+    paths = select_roster_files(sorted(ROSTER_DIR.glob("Daftar mahasiswa *.xlsx")))
 
     frames: list[pd.DataFrame] = []
     for path in paths:
@@ -419,7 +553,97 @@ def load_graduates() -> pd.DataFrame:
     frame = pd.DataFrame(rows)
     block = frame.groupby(["jenjang", "tahun"]).agg(lulusan=("lulusan", "sum"), total=("total_lulusan", "max"))
     empty = block[(block["lulusan"] == 0) & block["total"].isna()].index
-    return frame[~frame.set_index(["jenjang", "tahun"]).index.isin(empty)].reset_index(drop=True)
+    frame = frame[~frame.set_index(["jenjang", "tahun"]).index.isin(empty)].reset_index(drop=True)
+    return pd.concat([frame, load_postgraduate_graduates()], ignore_index=True)
+
+
+# The two postgraduate workbooks delivered in September 2026 for academic year
+# 2025/2026 — the year PROFIL LULUSAN.xlsx left blank. Each holds four stacked
+# blocks in a fixed order, every block a "Periode Wisuda" label row, a row of
+# programme names, and the four graduation periods of the year.
+POSTGRADUATE_FILES = {
+    "Magister": ("Profil Lulusan Magister.xls", "Magister"),
+    "Doktor": ("Profil Lulusan Doktor.xls", "Doktor"),
+}
+POSTGRADUATE_BLOCKS = ("ipk_rerata", "lama_studi", "toefl", "lulusan")
+POSTGRADUATE_YEAR = 2026
+POSTGRADUATE_ACADEMIC_YEAR = "2025/2026"
+
+
+def read_postgraduate_blocks(filename: str, sheet: str) -> dict[str, dict[str, list[float | None]]]:
+    """Pull the four metric blocks out of one postgraduate workbook.
+
+    Blocks are located by their "Periode Wisuda" label rather than by a fixed
+    offset: the two workbooks have different programme counts and therefore
+    different block heights, and a future year may add a programme.
+    """
+    grid = read_workbook(DEKAN_2026_DIR / filename, sheet)
+    starts = [index for index, row in grid.iterrows() if text_cell(row, 0) == "Periode Wisuda"]
+    if len(starts) != len(POSTGRADUATE_BLOCKS):
+        raise AssertionError(f"{filename}: {len(starts)} blok 'Periode Wisuda'; seharusnya {len(POSTGRADUATE_BLOCKS)}")
+
+    blocks: dict[str, dict[str, list[float | None]]] = {}
+    for name, start in zip(POSTGRADUATE_BLOCKS, starts):
+        programmes = [
+            (text_cell(grid.iloc[start + 1], index), index)
+            for index in range(2, grid.shape[1])
+            if text_cell(grid.iloc[start + 1], index)
+        ]
+        if not programmes:
+            raise AssertionError(f"{filename}: blok {name} tidak memuat nama program studi")
+        values: dict[str, list[float | None]] = {programme: [] for programme, _ in programmes}
+        # Four graduation periods; the Rerata/Total row that follows them is
+        # recomputed here instead, weighted by graduates rather than by period.
+        for offset in range(2, 6):
+            row = grid.iloc[start + offset]
+            for programme, index in programmes:
+                values[programme].append(numeric_cell(row, index))
+        blocks[name] = values
+    return blocks
+
+
+def load_postgraduate_graduates() -> pd.DataFrame:
+    """Magister and Doktor graduates for 2025/2026, per programme.
+
+    Faculty-level IPK, study length, and TOEFL are weighted by the number of
+    graduates in each period. The workbooks carry their own "Rerata" row, but it
+    averages the four periods unweighted, so a period with two graduates counts
+    as much as one with thirty-six.
+    """
+    rows: list[dict] = []
+    for level, (filename, sheet) in POSTGRADUATE_FILES.items():
+        blocks = read_postgraduate_blocks(filename, sheet)
+        counts = blocks["lulusan"]
+        total = sum(value for values in counts.values() for value in values if value)
+
+        weighted: dict[str, float | None] = {}
+        for metric in ("ipk_rerata", "lama_studi", "toefl"):
+            numerator = 0.0
+            denominator = 0.0
+            for programme, values in blocks[metric].items():
+                for value, count in zip(values, counts[programme]):
+                    if value is None or not count:
+                        continue
+                    numerator += value * count
+                    denominator += count
+            weighted[metric] = None if denominator == 0 else numerator / denominator
+
+        for programme, values in counts.items():
+            graduates = sum(value for value in values if value)
+            rows.append({
+                "jenjang": level,
+                "tahun": POSTGRADUATE_YEAR,
+                "tahun_ajaran": POSTGRADUATE_ACADEMIC_YEAR,
+                "prodi": programme,
+                "lulusan": graduates,
+                "ipk_rerata": None if weighted["ipk_rerata"] is None else round(weighted["ipk_rerata"], 2),
+                # Kept as text because PROFIL LULUSAN.xlsx writes this column as
+                # text for every other year ("4 th 7 bln" for Sarjana).
+                "lama_studi": "" if weighted["lama_studi"] is None else f"{weighted['lama_studi']:.2f}",
+                "toefl": None if weighted["toefl"] is None else round(weighted["toefl"], 1),
+                "total_lulusan": float(total),
+            })
+    return pd.DataFrame(rows)
 
 
 def load_achievements() -> pd.DataFrame:
@@ -451,7 +675,10 @@ def load_achievements() -> pd.DataFrame:
 
 def load_scholarships() -> pd.DataFrame:
     """Scholarship recipients per scheme and undergraduate programme."""
-    grid = read_workbook(ACADEMIC_DIR / "24.Penerima Beasiswa.xlsx", "Rekapitulasi")
+    # Only the Rekapitulasi sheet is read. The workbook's second sheet holds a
+    # per-student row with name, NIU, and NIM, which has no business leaving the
+    # source directory.
+    grid = read_workbook(DEKAN_2026_DIR / "PENERIMA BEASISWA.xlsx", "Rekapitulasi")
     programmes = [(text_cell(grid.iloc[4], index), index) for index in range(2, 10)]
     rows: list[dict] = []
     for _, row in grid.iloc[5:].iterrows():
@@ -469,15 +696,18 @@ PERIOD_PATTERN = re.compile(r"^\d{4}\s*-\s*\d{4}$")
 def load_accreditation() -> pd.DataFrame:
     """National and international accreditation status per study programme.
 
-    Both sheets end with a Rekap block whose numbered rows would otherwise parse
-    as programmes; a real entry always carries a YYYY-YYYY validity period, so
-    that is what separates the two.
+    The September 2026 workbook replaced the older one and changed both sheets:
+    the national sheet lost its trailing Rekap block, and the international
+    sheet became one flat list instead of SARJANA/PASCASARJANA sections split
+    by their own recap tables. A real entry is still identified the same way —
+    a numbered row carrying a YYYY-YYYY validity period — so the Rekap rows the
+    old layout appended cannot slip in if the faculty restores them.
     """
-    path = ACADEMIC_DIR / "13-14.Akreditasi sarjana dan pascasarjana.xlsx"
+    path = DEKAN_2026_DIR / "AKREDITASI PRODI MIPA.xlsx"
     rows: list[dict] = []
 
     national = read_workbook(path, "AKREDITASI NASIONAL")
-    for _, row in national.iloc[3:].iterrows():
+    for _, row in national.iterrows():
         if not text_cell(row, 0).isdigit() or not PERIOD_PATTERN.match(text_cell(row, 4)):
             continue
         rows.append({
@@ -491,86 +721,160 @@ def load_accreditation() -> pd.DataFrame:
         })
 
     international = read_workbook(path, "AKREDITASI INTERNASIONAL")
-    group = ""
-    for _, row in international.iloc[1:].iterrows():
+    for _, row in international.iterrows():
         first = text_cell(row, 0)
-        if first.upper() in {"SARJANA", "PASCASARJANA"}:
-            group = first.title()
-            continue
         if first.lower() == "rekap":
             break
         if not first.isdigit() or not PERIOD_PATTERN.match(text_cell(row, 3)):
             continue
+        prodi = text_cell(row, 1)
         rows.append({
             "lingkup": "Internasional",
-            "jenjang_grup": group,
+            "jenjang_grup": "Sarjana" if prodi.upper().startswith("S1") else "Pascasarjana",
             "departemen": "",
-            "prodi": text_cell(row, 1),
+            "prodi": prodi,
             "lembaga": text_cell(row, 2),
             "periode": text_cell(row, 3),
             "nilai": "",
         })
+
+    frame = pd.DataFrame(rows)
+    national_rows = frame[frame["lingkup"] == "Nasional"]
+    if len(national_rows) != 18:
+        raise AssertionError(f"Akreditasi nasional memuat {len(national_rows)} prodi; seharusnya 18")
+    if int((frame["lingkup"] == "Internasional").sum()) != 15:
+        raise AssertionError("Akreditasi internasional seharusnya memuat 15 prodi")
+    return frame
+
+
+DEPARTMENTS = {"Fisika", "Kimia", "Matematika", "Ilmu Komputer dan Elektronika"}
+
+# The SIMASTER personnel workbooks. All three share one layout: a blank first
+# row, the header on row 1, and data from row 2 — so the header row is located
+# by its "No." label instead of assumed, and a re-export that gains a title row
+# fails loudly here rather than silently shifting every column.
+SDM_LECTURERS_FILE = "Data Dosen - 3 Sept 2026.xlsx"
+SDM_STAFF_FILE = "Data Tendik - 3 Sept 2026.xlsx"
+SDM_PROFESSORS_FILE = "Data Guru Besar - 3 Sept 2026.xlsx"
+SDM_CERTIFICATION_FILE = "Rekap Dosen bersertifikasi.xlsx"
+
+# Names, NIP/NIKA, NIDN, and NUPTK stay out of the loaded frames entirely.
+# Nothing downstream joins these workbooks on a person — each one already
+# carries the department beside the attribute — so unlike the old two-source
+# merge there is no reason for an identifier to exist even in work/loaded/.
+SDM_LECTURER_COLUMNS = {
+    "golongan": 6, "jabatan_fungsional": 9, "tmt_jabatan": 10,
+    "jabatan_struktural": 11, "pendidikan": 13, "kategori": 14, "departemen": 15,
+}
+SDM_STAFF_COLUMNS = {
+    "golongan": 6, "jabatan_fungsional": 9, "jabatan_struktural": 11,
+    "pendidikan": 13, "kategori": 14, "departemen": 15,
+}
+
+
+def sdm_header_row(grid: pd.DataFrame, label: str) -> int:
+    row = next((index for index, values in grid.iterrows() if text_cell(values, 0) == "No."), None)
+    if row is None:
+        raise AssertionError(f"{label}: baris header 'No.' tidak ditemukan")
+    return int(row)
+
+
+def read_sdm_roster(filename: str, sheet: str, columns: dict[str, int], expected_category: str) -> pd.DataFrame:
+    """Read one SIMASTER roster, keeping only non-identifying attributes.
+
+    Every workbook ends where the numbered rows end; a row without a number in
+    column 0 is a footnote or a rekap line, never a person.
+    """
+    grid = read_workbook(SDM_DIR / filename, sheet)
+    header = sdm_header_row(grid, filename)
+    rows: list[dict] = []
+    for _, row in grid.iloc[header + 1 :].iterrows():
+        if numeric_cell(row, 0) is None:
+            continue
+        record = {name: text_cell(row, index) for name, index in columns.items()}
+        if record["departemen"] not in DEPARTMENTS and record["departemen"] != "Kantor Administrasi Fakultas":
+            raise AssertionError(f"{filename}: departemen tak dikenal {record['departemen']!r}")
+        if record["kategori"] != expected_category:
+            raise AssertionError(f"{filename}: kategori pegawai {record['kategori']!r}, seharusnya {expected_category!r}")
+        if "tmt_jabatan" in record:
+            parsed = excel_date(cell(row, columns["tmt_jabatan"]))
+            record["tmt_jabatan"] = None if parsed is None else parsed.date().isoformat()
+        rows.append(record)
     return pd.DataFrame(rows)
 
 
-# The three TCK detail workbooks that name individual lecturers, with the row the
-# roster starts on and the positional columns worth keeping. Each sheet was laid
-# out by hand, so none of them agree on where the header ends or which column
-# holds the department.
-TCK_STAFF_ROSTERS = {
-    "Guru Besar": {
-        "file": "30.Jumlah Guru Besar .xlsx",
-        "first_row": 5, "name": 1, "nip": 2, "nidn": 3, "department": 4,
-        # The sheet continues past the active roster with a block of retired
-        # professors; only rows marked Aktif count towards indicator 30.
-        "status": 7, "status_keep": "Aktif",
-    },
-    "Tenaga Pengajar": {
-        "file": "27.Jumlah dosen tetap tenaga pengajar.xlsx",
-        "first_row": 1, "name": 1, "nip": 2, "nidn": None, "department": 4,
-    },
-    "S3": {
-        "file": "24.Jumlah dosen tetap berkualifikasi akademik S3.xlsx",
-        "first_row": 3, "name": 1, "nip": 2, "nidn": None, "department": 5,
-    },
-}
-DEPARTMENTS = {"Fisika", "Kimia", "Matematika", "Ilmu Komputer dan Elektronika"}
+def load_sdm_lecturers() -> pd.DataFrame:
+    """The 207-strong lecturer roster: jabatan fungsional, golongan, and degree."""
+    frame = read_sdm_roster(SDM_LECTURERS_FILE, "data Dosen", SDM_LECTURER_COLUMNS, "Dosen")
+    if not set(frame["departemen"]) <= DEPARTMENTS:
+        raise AssertionError("Roster dosen memuat unit non-departemen")
+    return frame
 
 
-def load_tck_staff_positions() -> pd.DataFrame:
-    """Nominative jabatan fungsional rosters from the TCK 2026 detail workbooks.
+def load_sdm_staff() -> pd.DataFrame:
+    """Tenaga kependidikan, including the faculty administration office."""
+    return read_sdm_roster(SDM_STAFF_FILE, "Data tendik", SDM_STAFF_COLUMNS, "Tenaga Kependidikan")
 
-    The P2M lecturer export is a research-management dump whose
-    functional_position column has not been maintained since January 2026: it
-    reports 42 Guru Besar where SIMASTER reports 54. These sheets are the
-    university's own record, so they become the authority for Guru Besar and
-    Tenaga Pengajar in 01_clean.py. Names and NIP/NIDN are kept only as far as
-    work/loaded/ so the two sources can be joined on an identifier; the clean
-    stage drops them before anything reaches src/data/derived/.
 
-    Each sheet also ends in a Rekap block whose cells land in the department
-    column ("-", "persen", a stray 120), so a row is only accepted when that
-    column holds one of the four real departments.
+def load_sdm_professors() -> pd.DataFrame:
+    """Guru Besar with the TMT that dates each appointment.
+
+    The workbook's last column is annotated "Periode Dekanat 2021-2026" by the
+    faculty itself, so splitting the roster on that period is the source's own
+    framing rather than one imposed here.
     """
+    grid = read_workbook(SDM_DIR / SDM_PROFESSORS_FILE, "data Dosen")
+    header = sdm_header_row(grid, SDM_PROFESSORS_FILE)
     rows: list[dict] = []
-    for position, spec in TCK_STAFF_ROSTERS.items():
-        grid = read_workbook(TCK_RINCIAN_DIR / spec["file"])
-        for _, row in grid.iloc[spec["first_row"]:].iterrows():
-            department = text_cell(row, spec["department"])
-            if department not in DEPARTMENTS:
-                continue
-            if spec.get("status") is not None and text_cell(row, spec["status"]) != spec["status_keep"]:
-                continue
-            name = text_cell(row, spec["name"])
-            if len(name) < 5:
-                continue
-            rows.append({
-                "position": position,
-                "name": name,
-                "nip": digits_only(text_cell(row, spec["nip"])),
-                "nidn": digits_only(text_cell(row, spec["nidn"])) if spec["nidn"] is not None else "",
-                "department": department,
-            })
+    for _, row in grid.iloc[header + 1 :].iterrows():
+        if numeric_cell(row, 0) is None:
+            continue
+        tmt = excel_date(cell(row, 4))
+        department = text_cell(row, 5)
+        if department not in DEPARTMENTS:
+            raise AssertionError(f"{SDM_PROFESSORS_FILE}: departemen tak dikenal {department!r}")
+        rows.append({
+            "jabatan_fungsional": text_cell(row, 3),
+            "tmt_jabatan": None if tmt is None else tmt.date().isoformat(),
+            "tahun_tmt": None if tmt is None else int(tmt.year),
+            "departemen": department,
+        })
+    return pd.DataFrame(rows)
+
+
+# Departments are abbreviated differently in the certification recap than in
+# every other SIMASTER sheet; the mapping is spelled out rather than guessed.
+SDM_CERTIFICATION_DEPARTMENTS = {
+    "ILKOM": "Ilmu Komputer dan Elektronika",
+    "Fisika": "Fisika",
+    "Kimia": "Kimia",
+    "Matematika": "Matematika",
+}
+
+
+def load_sdm_certification() -> pd.DataFrame:
+    """Serdos status per lecturer, reduced to department plus a boolean.
+
+    Uncertified rows carry the sentence "Belum tersertifikasi dosen" in the
+    certificate-number column instead of a number, so that is what separates
+    the two states. NUPTK and the certificate number are dropped on read.
+    """
+    grid = read_workbook(SDM_DIR / SDM_CERTIFICATION_FILE, "MIPA")
+    header = next((index for index, row in grid.iterrows() if text_cell(row, 0) == "NO."), None)
+    if header is None:
+        raise AssertionError(f"{SDM_CERTIFICATION_FILE}: baris header 'NO.' tidak ditemukan")
+    rows: list[dict] = []
+    for _, row in grid.iloc[header + 1 :].iterrows():
+        if numeric_cell(row, 0) is None:
+            continue
+        raw = text_cell(row, 4)
+        department = SDM_CERTIFICATION_DEPARTMENTS.get(raw)
+        if department is None:
+            raise AssertionError(f"{SDM_CERTIFICATION_FILE}: departemen tak dikenal {raw!r}")
+        rows.append({
+            "departemen": department,
+            "tersertifikasi": not text_cell(row, 3).lower().startswith("belum"),
+        })
     return pd.DataFrame(rows)
 
 
@@ -982,23 +1286,33 @@ def main() -> None:
     tck = load_tck()
     record("tck_2026_indikator", tck, [TCK_WORKBOOK.name, "tck_pillar.csv", "tck_meta.csv", "tck_2026_anggaran.json"])
 
-    tck_staff = load_tck_staff_positions()
-    record("tck_staff_positions", tck_staff, [spec["file"] for spec in TCK_STAFF_ROSTERS.values()])
+    sdm_lecturers = load_sdm_lecturers()
+    record("sdm_lecturers", sdm_lecturers, [SDM_LECTURERS_FILE])
+    record("sdm_staff", load_sdm_staff(), [SDM_STAFF_FILE])
+    record("sdm_professors", load_sdm_professors(), [SDM_PROFESSORS_FILE])
+    record("sdm_certification", load_sdm_certification(), [SDM_CERTIFICATION_FILE])
 
     partnerships = load_partnerships()
     record("partnerships", partnerships, [path.name for path in sorted(PARTNERSHIP_DIR.glob("*DATA LENTERA*.xlsx"))])
+
+    revenue = load_partnership_revenue()
+    record("partnership_revenue", revenue, [REVENUE_WORKBOOK])
+    record("school_mou", load_school_mou(), [SCHOOL_MOU_WORKBOOK])
 
     academic_loaders = {
         "admissions": (load_admissions, "PROFIL MABA.xlsx"),
         "active_students": (load_active_students, "7. Profil Mahasiswa S1.xlsx"),
         "graduates": (load_graduates, "PROFIL LULUSAN.xlsx"),
         "achievements": (load_achievements, "PRESTASI MAHASISWA.xlsx"),
-        "scholarships": (load_scholarships, "24.Penerima Beasiswa.xlsx"),
-        "accreditation": (load_accreditation, "13-14.Akreditasi sarjana dan pascasarjana.xlsx"),
+        "scholarships": (load_scholarships, "PENERIMA BEASISWA.xlsx"),
+        "accreditation": (load_accreditation, "AKREDITASI PRODI MIPA.xlsx"),
         "exchange": (load_exchange, "mahasiswa Exchange.xlsx"),
     }
+    extra_sources = {
+        "graduates": [filename for filename, _ in POSTGRADUATE_FILES.values()],
+    }
     for name, (loader, source) in academic_loaders.items():
-        record(name, loader(), [source])
+        record(name, loader(), [source, *extra_sources.get(name, [])])
 
     from student_origins import load_origins, SOURCE as ORIGINS_SOURCE
     record("student_origins", load_origins(), [ORIGINS_SOURCE])
@@ -1030,7 +1344,8 @@ def main() -> None:
     print(
         f"Loaded {len(DATASETS)} historical datasets, {len(publications)} SciVal publications, "
         f"{len(department_lookup)} curated department pairs, {len(tck)} TCK indicators, "
-        f"{len(partnerships)} cooperation documents, {len(academic_loaders)} academic tables, "
+        f"{len(partnerships)} cooperation documents, {len(revenue)} cooperation contracts, "
+        f"{len(sdm_lecturers)} lecturers from SIMASTER, {len(academic_loaders)} academic tables, "
         f"{len(roster)} student records across {len(roster_files)} cohorts, "
         f"{len(visits)} anonymised Posbindu visits for 2026, "
         f"and {len(history)} for 2022-2025."

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import json
 import re
 from collections import Counter
 
@@ -13,7 +12,6 @@ from utils import (
     CLEAN_DIR,
     LOADED_DIR,
     MAPPINGS_DIR,
-    digits_only,
     ensure_directories,
     safe_year,
     split_pipe,
@@ -41,139 +39,113 @@ def position_group(value: object) -> str:
     return "Belum terisi"
 
 
-# --- Reconciling the P2M roster with the SIMASTER rosters -------------------
-# The P2M lecturer export stopped being maintained in January 2026: it reports
-# 42 Guru Besar where the TCK 2026 detail workbooks (SIMASTER, TW3, 31 August
-# 2026) name 54, and it carries no Tenaga Pengajar at all where SIMASTER names
-# 16. TCK therefore wins for those two ranks; Asisten Ahli, Lektor, and Lektor
-# Kepala have no fresher source and stay as P2M recorded them.
+# --- SIMASTER staffing ------------------------------------------------------
+# Until September 2026 there was no personnel extract in `data ugm` at all, so
+# jabatan fungsional had to be reconstructed by overlaying the TCK 2026 detail
+# workbooks onto a P2M research-management roster whose position column stopped
+# being maintained in January 2026. The SIMASTER extract dated 3 September 2026
+# replaced both. Everything below reads that one source; there is no longer a
+# name-matching step, and therefore no reconciliation report to audit.
 
-DEGREE_TOKENS = re.compile(
-    r"\b(prof|dr|drs|dra|ir|si|sc|su|ma|mt|st|kom|cs|eng|nat|rer|techn|phd|ph|"
-    r"apt|dea|msc|mkom|skom|mcs|meng|mhd|bsc|med|mm|mp|msi|ssi)\b",
-    re.I,
+
+def clean_sdm_lecturers(roster: pd.DataFrame) -> pd.DataFrame:
+    """One row per lecturer: department, functional position, and doctorate.
+
+    Golongan is a rank inside a jabatan, not a jabatan of its own: SIMASTER
+    writes "Guru Besar (850)" and "Guru Besar (1050)" for the same functional
+    position, and likewise for Lektor and Lektor Kepala. position_group folds
+    them, and an unrecognised spelling stops the build rather than quietly
+    landing in a "Belum terisi" bucket that would look like real data.
+    """
+    position = roster["jabatan_fungsional"].map(position_group)
+    unresolved = sorted(set(roster.loc[position.eq("Belum terisi"), "jabatan_fungsional"].dropna()))
+    if unresolved:
+        raise AssertionError(f"Jabatan fungsional tidak dikenali: {unresolved}")
+    return pd.DataFrame({
+        "department": roster["departemen"],
+        "position": position,
+        "doctoral": roster["pendidikan"].fillna("").str.strip().eq("S-3"),
+        "golongan": roster["golongan"].fillna("").str.strip(),
+    })
+
+
+def clean_sdm_professors(roster: pd.DataFrame) -> pd.DataFrame:
+    """Guru Besar split by whether the appointment falls in the 2021-2026 deanship.
+
+    The source workbook annotates its own last column "Periode Dekanat
+    2021-2026", so the split is the faculty's framing rather than one imposed
+    here.
+    """
+    year = pd.to_numeric(roster["tahun_tmt"], errors="coerce")
+    if year.isna().any():
+        raise AssertionError("Ada Guru Besar tanpa TMT jabatan yang terbaca")
+    return pd.DataFrame({
+        "department": roster["departemen"],
+        "year": year.astype(int),
+        "periode": year.between(2021, 2026).map({True: "Periode 2021-2026", False: "Sebelum 2021"}),
+    })
+
+
+
+# --- Cooperation revenue and the school memorandum network ------------------
+
+# A school is written freely in both sources, so the two are compared on a
+# reduced key rather than the raw string: upper case, punctuation removed, the
+# school-type prefix dropped ("SMAN 1 JEPARA" and "SMA NEGERI 1 JEPARA" are the
+# same school), and the word NEGERI removed wherever it survives. Nothing more
+# aggressive is applied here - dropping KOTA or KAB would merge a city school
+# with the regency school of the same number. Pairs the key cannot reconcile go
+# in pipeline/mappings/sekolah_mou_alias.csv, one documented row at a time, so
+# every match stays auditable.
+SCHOOL_PREFIX = re.compile(
+    r"^(SMA|SMAN|SMAS|SMU|SMUN|MAN|MAS|MA|SMK|SMKN|SMKS|SMTA|SEKOLAH MENENGAH ATAS)\b"
 )
 
 
-def name_key(value: object) -> str:
-    """Reduce a name to comparable tokens: no titles, no degrees, order-free.
-
-    The two sources spell the same person differently — "Reza M. I. Pulungan"
-    against "MHD. Reza M.I. Pulungan", "Harsojo Sabarman" against "Harsojo" —
-    so the key keeps only alphabetic tokens longer than two characters and
-    sorts them.
-    """
-    text = str(value or "").lower().split(",")[0]
-    text = re.sub(r"[^a-z ]", " ", text)
-    text = DEGREE_TOKENS.sub(" ", text)
-    return " ".join(sorted(token for token in text.split() if len(token) > 2))
+def school_key(value: object, aliases: dict[str, str] | None = None) -> str:
+    text = re.sub(r"\s+", " ", str(value or "")).strip().upper()
+    if aliases and text in aliases:
+        return aliases[text]
+    text = re.sub(r"[^A-Z0-9 ]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    text = SCHOOL_PREFIX.sub("", text).strip()
+    text = re.sub(r"\bNEGERI\b", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
 
 
-def resolve_person(record: dict, by_nidn: dict, by_name: dict, by_squashed: dict, tokens: dict) -> int | None:
-    """Find the P2M row a TCK roster entry refers to, most reliable key first.
-
-    NIDN is exact and settles 53 of the 54 professors on its own. The name
-    fallbacks exist for the rest: the workbooks disagree on spacing ("Endang
-    Tri Wahyuni" against "Endang Triwahyuni") and on how many given names they
-    print, so a squashed key and a unique token-subset match follow.
-    """
-    nidn = digits_only(record.get("nidn"))
-    if nidn and nidn in by_nidn:
-        return by_nidn[nidn]
-    key = name_key(record["name"])
-    if key in by_name:
-        return by_name[key]
-    squashed = key.replace(" ", "")
-    if squashed in by_squashed:
-        return by_squashed[squashed]
-    parts = set(key.split())
-    candidates = [index for index, other in tokens.items() if other and (other <= parts or parts <= other)]
-    return candidates[0] if len(candidates) == 1 else None
-
-
-def merge_staff_positions(lecturers: pd.DataFrame, roster: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
-    """Overlay the SIMASTER rosters onto the P2M roster and report what did not join.
-
-    Returns the reconciled frame plus an audit dict: a refreshed export must
-    make any drift visible rather than silently changing a headline number.
-    """
-    by_nidn = {}
-    by_name: dict[str, int] = {}
-    by_squashed: dict[str, int] = {}
-    tokens: dict[int, set[str]] = {}
-    for index, row in lecturers.iterrows():
-        nidn = digits_only(row.get("nidn"))
-        if nidn:
-            by_nidn.setdefault(nidn, index)
-        key = name_key(row.get("name_backup"))
-        by_name.setdefault(key, index)
-        by_squashed.setdefault(key.replace(" ", ""), index)
-        tokens[index] = set(key.split())
-
-    position = lecturers["functional_position"].map(position_group)
-    department = lecturers["department"].fillna("Belum terpetakan").replace("", "Belum terpetakan")
-    doctoral = lecturers["degree"].fillna("").str.contains(r"(?:\bDr\.|Ph\.?D|D\.Eng|Doktor)", regex=True, case=False)
-    certified = pd.to_numeric(lecturers["certification"], errors="coerce").fillna(0).gt(0)
-
-    matched_by_rank: dict[str, set[int]] = {}
-    unmatched: dict[str, list[dict]] = {}
-    appended: list[dict] = []
-    for rank in ("Guru Besar", "Tenaga Pengajar", "S3"):
-        entries = roster[roster["position"] == rank].to_dict(orient="records")
-        hit: set[int] = set()
-        miss: list[dict] = []
-        for entry in entries:
-            index = resolve_person(entry, by_nidn, by_name, by_squashed, tokens)
-            if index is None:
-                miss.append(entry)
-                continue
-            hit.add(index)
-            if rank == "S3":
-                doctoral.at[index] = True
-            else:
-                position.at[index] = rank
-                department.at[index] = entry["department"]
-        matched_by_rank[rank] = hit
-        unmatched[rank] = miss
-
-    # A professor SIMASTER no longer lists as active has retired; keeping the
-    # P2M row would publish a Guru Besar count above the university's own.
-    retired = [
-        index for index in lecturers.index
-        if position.at[index] == "Guru Besar" and index not in matched_by_rank["Guru Besar"]
-    ]
-
-    s3_keys = {name_key(entry["name"]) for entry in roster[roster["position"] == "S3"].to_dict(orient="records")}
-    for rank in ("Guru Besar", "Tenaga Pengajar"):
-        for entry in unmatched[rank]:
-            appended.append({
-                "department": entry["department"],
-                "position": rank,
-                "doctoral": name_key(entry["name"]) in s3_keys,
-                "certified": False,
-                "source": "tck",
-            })
-
-    kept = pd.DataFrame({
-        "department": department,
-        "position": position,
-        "doctoral": doctoral,
-        "certified": certified,
-        "source": "p2m",
-    }).drop(index=retired)
-    merged = pd.concat([kept, pd.DataFrame(appended)], ignore_index=True)
-
-    audit = {
-        "roster_p2m": int(len(lecturers)),
-        "roster_gabungan": int(len(merged)),
-        "purna_tugas_dikeluarkan": int(len(retired)),
-        "ditambahkan_dari_tck": int(len(appended)),
-        "tck_tanpa_padanan": {
-            rank: [{"nama": entry["name"], "departemen": entry["department"]} for entry in entries]
-            for rank, entries in unmatched.items() if entries
-        },
+def load_school_aliases() -> dict[str, str]:
+    path = MAPPINGS_DIR / "sekolah_mou_alias.csv"
+    if not path.exists():
+        return {}
+    table = pd.read_csv(path, dtype=str).fillna("")
+    return {
+        row["raw"].strip().upper(): row["kunci"].strip().upper()
+        for _, row in table.iterrows()
+        if row["raw"].strip() and row["kunci"].strip()
     }
-    return merged, audit
+
+
+def clean_partnership_revenue(revenue: pd.DataFrame) -> pd.DataFrame:
+    """Contract value per cooperation agreement, with the money left as recorded.
+
+    Nothing is imputed. Rows the workbook filed without a department keep the
+    "Tidak berdepartemen" label 00_load.py gave them, because four of them carry
+    a third of the total value and quietly folding them into a department would
+    invent an attribution the source does not make.
+    """
+    frame = pd.DataFrame({
+        "tahun": pd.to_numeric(revenue["tahun"], errors="raise").astype(int),
+        "tahun_kontrak": revenue["tahun_kontrak"].fillna("").astype(str).str.strip(),
+        "departemen": revenue["departemen"].fillna("Tidak berdepartemen"),
+        "billing": revenue["billing"].fillna("").astype(str).str.strip().str.replace(r"\.0$", "", regex=True),
+        "nominal_kontrak": pd.to_numeric(revenue["nominal_kontrak"], errors="coerce").fillna(0).clip(lower=0),
+        "dpi": pd.to_numeric(revenue["dpi"], errors="coerce").fillna(0).clip(lower=0),
+    })
+    overshoot = frame[frame["dpi"] > frame["nominal_kontrak"]]
+    if len(overshoot):
+        raise AssertionError(f"DPI melebihi nilai kontrak pada {len(overshoot)} baris")
+    return frame
+
 
 
 def sinta_score(value: object) -> float | None:
@@ -945,17 +917,27 @@ def main() -> None:
     citations["number_of_citation"] = pd.to_numeric(citations["number_of_citation"], errors="coerce").fillna(0).clip(lower=0)
     citations[["Id", "year", "number_of_citation"]].dropna(subset=["year"]).to_csv(CLEAN_DIR / "citations.csv", index=False)
 
+    # The P2M lecturer export is still read, but only to map publications onto
+    # departments through their Scopus author ids. It is no longer the staffing
+    # roster; SIMASTER is.
     lecturers = pd.read_csv(LOADED_DIR / "lecturers.csv", low_memory=False)
     clean_publications(lecturers)
     clean_subject_areas()
-    tck_staff = pd.read_csv(
-        LOADED_DIR / "tck_staff_positions.csv", low_memory=False, dtype={"nip": "string", "nidn": "string"}
+
+    sdm_lecturers = pd.read_csv(LOADED_DIR / "sdm_lecturers.csv", low_memory=False)
+    clean_sdm_lecturers(sdm_lecturers).to_csv(CLEAN_DIR / "lecturers.csv", index=False)
+    clean_sdm_professors(pd.read_csv(LOADED_DIR / "sdm_professors.csv", low_memory=False)).to_csv(
+        CLEAN_DIR / "professors.csv", index=False
     )
-    lecturer_clean, lecturer_audit = merge_staff_positions(lecturers, tck_staff)
-    lecturer_clean.to_csv(CLEAN_DIR / "lecturers.csv", index=False)
-    (CLEAN_DIR / "lecturers_reconciliation.json").write_text(
-        json.dumps(lecturer_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+
+    certification = pd.read_csv(LOADED_DIR / "sdm_certification.csv", low_memory=False)
+    pd.DataFrame({
+        "department": certification["departemen"],
+        "certified": certification["tersertifikasi"].astype(bool),
+    }).to_csv(CLEAN_DIR / "lecturer_certification.csv", index=False)
+
+    revenue = pd.read_csv(LOADED_DIR / "partnership_revenue.csv", low_memory=False)
+    clean_partnership_revenue(revenue).to_csv(CLEAN_DIR / "partnership_revenue.csv", index=False)
 
     research = pd.read_csv(LOADED_DIR / "research.csv", low_memory=False)
     research_clean = pd.DataFrame({
@@ -1005,8 +987,16 @@ def main() -> None:
     sdg_lookup = pd.read_csv(LOADED_DIR / "sdg_lookup.csv", low_memory=False)
     sdg_lookup.to_csv(CLEAN_DIR / "sdg_lookup.csv", index=False)
 
-    staff = pd.read_csv(LOADED_DIR / "academic_staff.csv", low_memory=False)
-    pd.DataFrame({"department": staff["department"].fillna("Belum terpetakan").replace("", "Belum terpetakan")}).to_csv(CLEAN_DIR / "academic_staff.csv", index=False)
+    # academic_staff_exported_*.csv from P2M counts 164 people against
+    # SIMASTER's 120 because it never retired departed staff. The SIMASTER
+    # extract replaces it; the P2M file is still loaded, so the gap stays
+    # visible in work/loaded/ and is reported on the methodology page.
+    staff = pd.read_csv(LOADED_DIR / "sdm_staff.csv", low_memory=False)
+    pd.DataFrame({
+        "department": staff["departemen"].fillna("Belum terpetakan").replace("", "Belum terpetakan"),
+        "education": staff["pendidikan"].fillna("").str.strip(),
+        "golongan": staff["golongan"].fillna("").str.strip(),
+    }).to_csv(CLEAN_DIR / "academic_staff.csv", index=False)
 
     media = pd.read_csv(LOADED_DIR / "media.csv", low_memory=False)
     pd.DataFrame({
@@ -1019,6 +1009,27 @@ def main() -> None:
     clean_students(province_lookup)
     from student_origins import clean_origins
     clean_origins()
+
+    aliases = load_school_aliases()
+    mou = pd.read_csv(LOADED_DIR / "school_mou.csv", low_memory=False)
+    mou_clean = pd.DataFrame({
+        "sesi": mou["sesi"],
+        "sekolah": mou["sekolah"].astype(str).str.strip(),
+    })
+    mou_clean["kunci"] = mou_clean["sekolah"].map(lambda value: school_key(value, aliases))
+    mou_clean = mou_clean[mou_clean["kunci"].str.len() > 0]
+    mou_clean.to_csv(CLEAN_DIR / "school_mou.csv", index=False)
+
+    # The feeder side of the comparison: secondary schools the S1 intake
+    # actually came from, on the same reduced key.
+    origins = pd.read_csv(CLEAN_DIR / "student_origins.csv", low_memory=False)
+    schools = origins[origins["jenjang"].eq("S1")].dropna(subset=["sma"])
+    feeders = schools.groupby("sma").size().reset_index(name="n").rename(columns={"sma": "sekolah"})
+    feeders["kunci"] = feeders["sekolah"].map(lambda value: school_key(value, aliases))
+    feeders = feeders[feeders["kunci"].str.len() > 0]
+    feeders.groupby("kunci", as_index=False).agg(
+        sekolah=("sekolah", "first"), n=("n", "sum")
+    ).to_csv(CLEAN_DIR / "student_origin_schools.csv", index=False)
     clean_tracer()
     clean_posbindu()
     clean_posbindu_history()

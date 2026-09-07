@@ -351,7 +351,7 @@
     {
       "angkatan": 2026,
       "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
-      "n": 34,
+      "n": 35,
       "disamarkan": false
     },
     {
@@ -363,13 +363,13 @@
     {
       "angkatan": 2026,
       "pekerjaan_wali": "Tidak bekerja",
-      "n": 3,
+      "n": 5,
       "disamarkan": false
     },
     {
       "angkatan": 2026,
       "pekerjaan_wali": "Tidak dilaporkan",
-      "n": 194,
+      "n": 191,
       "disamarkan": false
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "pekerjaan_wali": "Tidak dilaporkan",
-      "n": 885,
+      "n": 882,
       "disamarkan": false
     },
     {
@@ -407,7 +407,7 @@
     },
     {
       "pekerjaan_wali": "Petani, nelayan & pekerja lepas",
-      "n": 301,
+      "n": 302,
       "disamarkan": false
     },
     {
@@ -427,7 +427,7 @@
     },
     {
       "pekerjaan_wali": "Tidak bekerja",
-      "n": 84,
+      "n": 86,
       "disamarkan": false
     },
     {
@@ -1417,5 +1417,5 @@
       "disamarkan": false
     }
   ],
-  "wali_tidak_dilaporkan": 885
+  "wali_tidak_dilaporkan": 882
 }

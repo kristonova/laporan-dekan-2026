@@ -1,0 +1,37 @@
+[
+  {
+    "departemen": "Fisika",
+    "nominal": 132472506158.0,
+    "dpi": 8478443288.019336,
+    "n": 73,
+    "porsi": 65.43
+  },
+  {
+    "departemen": "Tidak berdepartemen",
+    "nominal": 65486333410.0,
+    "dpi": 1627322697.0,
+    "n": 4,
+    "porsi": 32.35
+  },
+  {
+    "departemen": "Matematika",
+    "nominal": 2262177423.0,
+    "dpi": 112664745.06,
+    "n": 3,
+    "porsi": 1.12
+  },
+  {
+    "departemen": "Ilmu Komputer dan Elektronika",
+    "nominal": 1228166000.0,
+    "dpi": 83736011.25,
+    "n": 4,
+    "porsi": 0.61
+  },
+  {
+    "departemen": "Kimia",
+    "nominal": 1000671500.0,
+    "dpi": 67008490.51,
+    "n": 2,
+    "porsi": 0.49
+  }
+]

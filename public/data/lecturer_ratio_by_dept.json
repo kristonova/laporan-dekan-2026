@@ -1,0 +1,46 @@
+[
+  {
+    "department": "Fisika",
+    "dosen": 51,
+    "tanpa_jabatan": 3,
+    "rasio": 5.88,
+    "ambang": 10.0,
+    "melampaui_ambang": false,
+    "tersertifikasi": 43,
+    "tersertifikasi_dari": 51,
+    "rasio_sertifikasi": 84.31
+  },
+  {
+    "department": "Ilmu Komputer dan Elektronika",
+    "dosen": 60,
+    "tanpa_jabatan": 3,
+    "rasio": 5.0,
+    "ambang": 10.0,
+    "melampaui_ambang": false,
+    "tersertifikasi": 46,
+    "tersertifikasi_dari": 60,
+    "rasio_sertifikasi": 76.67
+  },
+  {
+    "department": "Kimia",
+    "dosen": 43,
+    "tanpa_jabatan": 2,
+    "rasio": 4.65,
+    "ambang": 10.0,
+    "melampaui_ambang": false,
+    "tersertifikasi": 39,
+    "tersertifikasi_dari": 43,
+    "rasio_sertifikasi": 90.7
+  },
+  {
+    "department": "Matematika",
+    "dosen": 53,
+    "tanpa_jabatan": 7,
+    "rasio": 13.21,
+    "ambang": 10.0,
+    "melampaui_ambang": true,
+    "tersertifikasi": 41,
+    "tersertifikasi_dari": 53,
+    "rasio_sertifikasi": 77.36
+  }
+]

@@ -1,60 +1,47 @@
 # Lima Tahun FMIPA
 
-Pembaruan 5 September 2026: Pilar 5 memakai sumber asal pendidikan per 2 September
-2026 untuk cakupan S1/S2/S3/non-gelar (6.856 rekaman) dan jejaring sekolah/universitas.
-Profil demografi dan IPK tetap memakai daftar mahasiswa lama dengan cakupan tertulis.
-Beeswarm IPK menampilkan satu titik per mahasiswa dengan warna angkatan dan filter semua/per angkatan; tahapan seleksi dan retensi Posbindu memakai
-batang berskala bersama; label dana riset diperbesar. Rincian ada di
+Pembaruan 7 September 2026: kiriman data baru menambahkan ekstrak kepegawaian
+SIMASTER, berkas akreditasi terbaru, profil lulusan pascasarjana 2025/2026,
+penerimaan kerja sama beserta Dana Pengembangan Institusi, dan daftar sekolah
+penanda tangan MoU Juli 2026. Komposisi jabatan dosen kini berasal dari satu
+sumber tunggal — penggabungan dua sumber yang sebelumnya terpaksa dilakukan
+sudah dibongkar. Empat adegan baru ditambahkan (3.5′, 5.1′, 5.1″, dan 6.6′),
+sehingga cerita utama menjadi 41 adegan dan deck menjadi 40 slide. Rincian ada di
 [catatan visualisasi](docs/visualisasi-20260905.md) dan [pipeline](pipeline/README.md).
 
-Web data story untuk **Laporan Dekan FMIPA UGM 2021–2026**. Proyek ini mengubah data kinerja, akademik, riset, kerja sama, lulusan, kesehatan, dan profil mahasiswa menjadi cerita panjang yang dapat dibaca, dipresentasikan, ditelusuri metodologinya, serta dibuka kembali tanpa jaringan.
+
 Aplikasi web berbasis narasi data (*data storytelling*) untuk menyajikan **Laporan Dekan FMIPA UGM Periode 2021–2026**. Proyek ini merangkum data kinerja institusi, akademik, riset, kerja sama, profil lulusan, kesehatan sivitas akademika, hingga demografi mahasiswa menjadi sajian interaktif yang nyaman dibaca, siap dipresentasikan, transparan secara metodologi, dan dapat diakses secara *offline*.
 
-Snapshot utama saat ini adalah **31 Agustus 2026**. Data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, dan data LENTERA pada 20 Agustus 2026. Semua tanggal berasal dari satu konstanta pipeline, bukan teks yang ditulis ulang di tiap komponen.
-Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, dan data LENTERA pada 20 Agustus 2026). Seluruh tanggal dikelola terpusat melalui satu konstanta *pipeline*, sehingga penyajian angka dan konteks waktu selalu konsisten di setiap bagian.
+Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, data LENTERA pada 20 Agustus 2026, serta data kepegawaian SIMASTER dan tabel akademik pendamping per 3 September 2026). Seluruh tanggal dikelola terpusat melalui satu konstanta *pipeline*, sehingga penyajian angka dan konteks waktu selalu konsisten di setiap bagian.
 
-## Cerita yang dibangun
 ## Konsep & Struktur Narasi
 
-Laporan ini tidak dimulai sebagai dashboard. Pembaca dibawa dari satu temuan utama menuju konteks, bukti, ketegangan, lalu agenda tindak lanjut.
 Laporan ini dirancang bukan sekadar sebagai *dashboard* kumpulan angka mentah, melainkan alur cerita bertahap yang memandu pembaca dari temuan kunci, pembuktian data, dinamika capaian, hingga agenda strategis ke depan.
 
 | Tahap Narasi | Peran dalam Narasi | Wujud Implementasi |
 | --- | --- | --- |
-| **1. Hook** | Membuka dengan angka yang langsung memberi skala perubahan | Cold open menampilkan lompatan sitasi dalam lima tahun |
-| **2. Orientasi** | Menjawab “FMIPA berada di posisi mana sekarang?” | Potret institusi, 42 indikator TCK 2026, dan model transformasi nilai |
-| **3. Bukti utama** | Membawa pembaca menelusuri perubahan, bukan hanya angka akhir | Lima pilar: Reputasi Akademik, Kontribusi terhadap Bangsa, Employability & Lulusan, Tata Kelola & Kesejahteraan, serta Mahasiswa & Akses Pendidikan |
-| **4. Ketegangan** | Menunjukkan capaian yang belum merata, konflik angka, dan data yang belum tersedia | Insight, status target, anomali sumber, serta kartu *data gap* ditampilkan di dalam alur |
-| **5. Resolusi** | Mengubah laporan masa lalu menjadi pijakan kerja berikutnya | Bagian estafet merangkum agenda akselerasi dan fondasi data untuk kepemimpinan selanjutnya |
 | **1. Hook** | Membuka laporan dengan angka kunci yang memperlihatkan skala perubahan | Adegan pembuka (*cold open*) yang menyorot lonjakan sitasi dalam 5 tahun terakhir |
 | **2. Orientasi** | Menjawab pertanyaan: *"Di mana posisi FMIPA saat ini?"* | Gambaran umum institusi, capaian 42 indikator Target Capaian Kinerja (TCK) 2026, dan model transformasi nilai |
 | **3. Bukti Utama** | Mengajak pembaca menelusuri proses perubahan, bukan sekadar angka akhir | Lima pilar tematik: Reputasi Akademik, Kontribusi terhadap Bangsa, Daya Serap Lulusan (*Employability*), Tata Kelola & Kesejahteraan, serta Mahasiswa & Akses Pendidikan |
 | **4. Tantangan & Kesenjangan** | Memotret capaian yang belum merata, perbedaan data antarsumber, dan ruang yang perlu ditingkatkan | Sorotan kritis (*insights*), status capaian target, anomali data, serta kartu catatan celah data (*data gaps*) di sepanjang alur baca |
 | **5. Resolusi & Estafet** | Mengubah evaluasi masa lalu menjadi pijakan kerja kepengurusan berikutnya | Babak "Estafet" yang merangkum agenda akselerasi dan fondasi data bagi kepemimpinan selanjutnya |
 
-Cerita utama terdiri dari **37 scene bernomor dan satu cold open**. Naskah ringkas untuk deck tidak disalin manual dari halaman panjang: kalimat yang memuat angka bergerak dihitung dari dataset yang sama agar presentasi dan laporan tidak saling menyimpang.
-Narasi utama tersusun atas **37 adegan (*scene*) tematik dan satu adegan pembuka (*cold open*)**. Seluruh naskah ringkas pada slide presentasi (*deck*) dihitung dan digenerasi langsung dari sumber data yang sama dengan laporan utama, sehingga tidak ada perbedaan angka di antara keduanya.
+Narasi utama tersusun atas **41 adegan (*scene*) tematik dan satu adegan pembuka (*cold open*)**. Seluruh naskah ringkas pada slide presentasi (*deck*) dihitung dan digenerasi langsung dari sumber data yang sama dengan laporan utama, sehingga tidak ada perbedaan angka di antara keduanya.
 
-## Pengalaman pembaca
 ## Halaman & Antarmuka Pengguna
 
 | Rute | Format Tampilan | Kegunaan Utama |
 | --- | --- | --- |
-| `/` | Cerita panjang tiga bagian, lima pilar, grafik, insight, dan catatan metodologi | Membaca laporan lengkap secara mandiri |
-| `/presentasi` | Deck layar penuh berisi 36 slide, catatan presenter, navigasi keyboard/klik, layar penuh, dan tata cetak | Presentasi rapat atau forum pimpinan |
-| `/data` | Katalog 40 dataset, sumber, definisi, konflik angka, anomali, kualitas data, dan agenda penguatan | Audit metodologi dan unduh data agregat |
 | `/` | Laporan interaktif panjang (*longform*): 3 babak, 5 pilar, visualisasi grafik, ulasan analitis, dan catatan metodologi | Membaca laporan lengkap secara mendalam dan mandiri |
-| `/presentasi` | Slide presentasi (*deck*) 36 slide layar penuh, dilengkapi catatan presenter (*speaker notes*), pintasan keyboard, dan format siap cetak | Presentasi rapat kerja, sidang senat, atau forum pimpinan |
-| `/data` | Katalog 40 dataset, definisi variabel, rekam jejak anomali/konflik data, audit kualitas, dan tautan unduh data agregat | Audit metodologi, verifikasi sumber, dan keterbukaan data |
+| `/presentasi` | Slide presentasi (*deck*) 40 slide layar penuh, dilengkapi catatan presenter (*speaker notes*), pintasan keyboard, dan format siap cetak | Presentasi rapat kerja, sidang senat, atau forum pimpinan |
+| `/data` | Katalog 59 dataset, definisi variabel, rekam jejak anomali/konflik data, audit kualitas, dan tautan unduh data agregat | Audit metodologi, verifikasi sumber, dan keterbukaan data |
 
-Pada deck, gunakan `←`/`→`, `Page Up`/`Page Down`, atau `Space` untuk berpindah; `Home`/`End` untuk menuju awal/akhir; `P` untuk catatan presenter; dan `F` untuk layar penuh. Klik sisi kiri atau kanan slide juga memindahkan halaman.
 ### Pintasan Navigasi Slide Presentasi (`/presentasi`)
 - **Pindah slide:** Tombol panah `←` / `→`, `Page Up` / `Page Down`, atau `Spasi` (bisa juga dengan mengklik sisi kiri/kanan layar).
 - **Awal / Akhir:** Tombol `Home` / `End`.
 - **Catatan Presenter:** Tekan `P` untuk membuka atau menutup catatan pembicara.
 - **Layar Penuh:** Tekan `F` untuk masuk ke mode layar penuh (*fullscreen*).
 
-## Keadaan proyek terkini
 ## Ringkasan Fitur & Kondisi Terkini
 
 - Lima pilar sudah terhubung ke 37 scene bernomor, satu cold open, dan deck 36 slide.
@@ -65,16 +52,15 @@ Pada deck, gunakan `←`/`→`, `Page Up`/`Page Down`, atau `Space` untuk berpin
 - Tema terang/gelap, progres membaca, `prefers-reduced-motion`, indikator fokus, *forced colors*, layout responsif, dan gaya cetak sudah tersedia.
 - Build produksi menghasilkan situs statis dan service worker dengan cache ber-versi untuk seluruh output build.
 - Deployment GitHub Pages dikonfigurasi melalui workflow pada setiap push ke `main`.
-- **Cakupan Narasi:** 5 pilar strategis telah terhubung ke 37 adegan narasi, 1 adegan pembuka, dan 36 slide presentasi.
+- **Cakupan Narasi:** 5 pilar strategis telah terhubung ke 41 adegan narasi, 1 adegan pembuka, dan 40 slide presentasi.
 - **Pilar Mahasiswa & Akses Pendidikan:** Menganalisis data 4.945 mahasiswa dari 6 angkatan (2021–2026), meliputi sebaran prodi, daerah asal, gender, jalur masuk, latar belakang orang tua/wali, sekolah asal, status kelulusan, dan distribusi IPK.
-- **Katalog Data Terbuka:** Halaman Metodologi mengelola 40 dataset publik dan referensi batas wilayah GeoJSON yang terhubung langsung ke visualisasi terkait.
+- **Katalog Data Terbuka:** Halaman Metodologi mengelola 59 dataset publik dan referensi batas wilayah GeoJSON yang terhubung langsung ke visualisasi terkait.
 - **Pustaka Visualisasi:** Menyediakan 12 tipe komponen visualisasi data modular (*reusable*), mulai dari grafik garis/area, diagram batang, *stacked bar*, *bullet chart*, *slope chart*, *dot matrix*, deret tren (*trend rows*), *bubble chart*, matriks profil risiko, kisi capaian SDG, peta tematik *choropleth*, hingga *point map*.
 - **Aksesibilitas & Keterbacaan:** Semua grafik dirancang agar tetap informatif tanpa harus diinteraksi/hover, ramah bagi pembaca layar (*screen reader*), serta dilengkapi opsi tabel data alternatif atau berkas unduhan.
 - **Desain Adaptif:** Mendukung tema gelap/terang, indikator progres membaca, penyesuaian gerak (*reduced motion*), indikator fokus keyboard, mode kontras tinggi (*forced colors*), tata letak responsif di berbagai ukuran layar, serta gaya khusus cetak (*print stylesheet*).
 - **Akses Tanpa Internet (Offline-Ready):** Proses *build* menghasilkan berkas statis murni yang dilengkapi *Service Worker* dan sistem *cache versioning* otomatis untuk seluruh aset keluaran.
 - **Otomatisasi Deployment:** Konfigurasi GitHub Actions akan otomatis melakukan kompilasi dan pembaruan rilis ke GitHub Pages setiap kali ada pembaruan pada cabang `main`.
 
-## Dari sumber data menjadi cerita
 ## Alur Pengolahan Data (*Pipeline*)
 
 ```mermaid
@@ -98,10 +84,8 @@ flowchart LR
   D --> J[03_validate.py<br/>Validasi mutu dan privasi data]
 ```
 
-Data mentah sengaja berada **satu tingkat di atas repositori aplikasi**. `pipeline/work/` hanya menjadi ruang kerja lokal dan diabaikan Git. Hanya agregat untuk build dan unduhan yang telah disanitasi yang masuk ke repositori.
 Sumber data mentah sengaja diletakkan di **luar repositori (satu tingkat di direktori induk)** guna menjaga kerahasiaan data privat. Folder `pipeline/work/` hanya berfungsi sebagai area kerja lokal dan diabaikan oleh Git. Repositori ini hanya menyimpan data hasil agregasi untuk kebutuhan kompilasi web serta berkas unduhan publik yang sudah disanitasi.
 
-## Mulai cepat
 ## Panduan Menjalankan Proyek
 
 Untuk mengembangkan tampilan dengan data turunan yang sudah ada di repositori, Anda hanya memerlukan Node.js **22.12+**:
@@ -117,7 +101,6 @@ npm install
 npm run dev
 ```
 
-Buka URL lokal yang ditampilkan Astro. Tiga rute utama langsung tersedia tanpa menjalankan ulang pipeline Python.
 Buka tautan lokal yang ditampilkan di terminal (biasanya `http://localhost:4321`). Tiga rute utama dapat langsung diakses tanpa perlu menjalankan skrip Python.
 
 Build dan preview produksi:
@@ -128,10 +111,8 @@ npm run build
 npm run preview
 ```
 
-### Menyiapkan pipeline data
 ### 2. Menyiapkan dan Menjalankan Pipeline Data (Opsional)
 
-Untuk membentuk ulang dataset, siapkan Python **3.11+**, sumber resmi di direktori induk, dan virtual environment proyek:
 Jika Anda perlu memproses ulang data dari berkas sumber aslinya, siapkan Python versi **3.11 ke atas**, pastikan folder data mentah tersedia di direktori induk, lalu pasang dependensi *virtual environment*:
 
 ```bash
@@ -147,22 +128,12 @@ python -m venv .venv
 .venv/bin/python -m pip install -r pipeline/requirements.txt
 ```
 
-`npm run data` dan `npm run validate:data` memilih interpreter `.venv` secara otomatis, jadi virtual environment tidak perlu diaktifkan manual.
 > Skrip `npm run data` dan `npm run validate:data` akan otomatis menggunakan interpreter Python dari folder `.venv`, sehingga Anda tidak perlu mengaktifkan *virtual environment* secara manual.
 
-## Perintah proyek
 ## Daftar Perintah Proyek
 
 | Perintah | Deskripsi Fungsi |
 | --- | --- |
-| `npm run dev` | Menjalankan Astro development server |
-| `npm start` | Alias untuk development server |
-| `npm run data` | Menjalankan `00_load.py`, `01_clean.py`, dan `02_aggregate.py` secara berurutan |
-| `npm run validate:data` | Memeriksa integritas, angka jangkar, mutu, privasi, dan keluaran wajib |
-| `npm run check` | Menjalankan type-check Astro/TypeScript |
-| `npm run build` | Type-check, membangun situs statis, lalu membuat service worker berisi precache aktual |
-| `npm run preview` | Menjalankan preview dari output `dist/` |
-| `npm run verify` | Menjalankan pipeline, validasi data, build, pemeriksaan tautan/fragmen, dan audit precache |
 | `npm run dev` | Menjalankan server pengembangan lokal Astro |
 | `npm start` | Perintah alternatif (*alias*) untuk menjalankan server pengembangan |
 | `npm run data` | Menjalankan tahapan *pipeline* pengolahan data (`00_load.py`, `01_clean.py`, dan `02_aggregate.py`) secara berurutan |
@@ -172,14 +143,12 @@ python -m venv .venv
 | `npm run preview` | Menjalankan server lokal untuk meninjau hasil *build* pada folder `dist/` |
 | `npm run verify` | Menjalankan pengujian menyeluruh: *pipeline* data, validasi data, *build*, pengecekan tautan/fragmen, dan audit *precache* |
 
-Verifikasi penuh sebelum rilis:
 Untuk menjalankan verifikasi menyeluruh sebelum melakukan rilis:
 
 ```bash
 npm run verify
 ```
 
-## Memperbarui data
 ## Alur Pembaruan Data
 
 1. Timpa berkas sumber di direktori induk dengan versi terbaru. Pertahankan nama berkas dan struktur sheet yang dibaca pipeline.
@@ -200,22 +169,12 @@ npm run build
 node pipeline/check-build.mjs
 ```
 
-Jika semua tahap perlu dijalankan sekaligus, gunakan `npm run verify`.
 *Jika ingin menjalankan seluruh tahapan di atas sekaligus secara otomatis, gunakan perintah `npm run verify`.*
 
-### Sumber yang dibaca pipeline
 ### Berkas Sumber yang Dibaca Pipeline
 
 | Sumber Data | Lokasi Relatif (di Direktori Induk) | Digunakan Untuk |
 | --- | --- | --- |
-| Ekspor P2M, 13 jenis dataset dalam 21 berkas CSV | `data ugm/p2m/` | Sitasi, riset, PkM, SDM, jurnal, dan media |
-| Ekspor SciVal langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi 2020–2026 beserta FWCI, akses terbuka, topik, dan SDG; rekap mutu sitasi 27 bidang ilmu ASJC |
-| Salinan P2M `publication_scival_exported_*.csv` | `data ugm/p2m/` | Penetapan departemen hasil kurasi fakultas untuk 1.682 publikasi |
-| `TCK 2026.xlsx` | `target_capaian_kinerja/tck_2026/` | 42 indikator kinerja dan rincian departemen |
-| Workbook LENTERA | `data ugm/kerjasama/` | Dokumen kerja sama 2021–2026 |
-| Tabel akademik dan tracer study | `data ugm/akademik/` | Penerimaan, mahasiswa aktif, lulusan, prestasi, beasiswa, akreditasi, exchange, dan tracer study |
-| Enam daftar mahasiswa per angkatan | `data ugm/akademik/daftar mahasiswa/` | Profil mahasiswa 2021–2026, akses, latar, status akhir, dan IPK |
-| Rekap Posbindu | `data ugm/health promotion university posbindu/` | Agregat Health Promoting University |
 | Ekspor P2M (13 jenis dataset dalam 21 berkas CSV) | `data ugm/p2m/` | Sitasi, riset, pengabdian (PkM), SDM dosen & tendik, jurnal, dan eksposur media |
 | Ekspor SciVal Langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi periode 2020–2026 lengkap dengan FWCI, status akses terbuka, klaster topik, dan penandaan SDG; serta rekapitulasi mutu sitasi 27 bidang ilmu ASJC |
 | Salinan P2M `publication_scival_exported_*.csv` | `data ugm/p2m/` | Penetapan departemen hasil kurasi fakultas untuk 1.682 publikasi, dipertahankan karena ekspor SciVal tidak memuat kolom departemen |
@@ -224,11 +183,15 @@ Jika semua tahap perlu dijalankan sekaligus, gunakan `npm run verify`.
 | Tabel Akademik & Tracer Study | `data ugm/akademik/` | Penerimaan mahasiswa, mahasiswa aktif, lulusan, prestasi, beasiswa, akreditasi, pertukaran pelajar, dan hasil *tracer study* |
 | Rekapitulasi Mahasiswa (6 Angkatan) | `data ugm/akademik/daftar mahasiswa/` | Profil demografi mahasiswa 2021–2026: jalur masuk, asal daerah & sekolah, latar belakang wali, status kelulusan, dan IPK |
 | Rekapitulasi Posbindu HPU | `data ugm/health promotion university posbindu/` | Agregasi data kesehatan sivitas akademika (*Health Promoting University*) |
+| Ekstrak Kepegawaian SIMASTER (4 berkas, 3 September 2026) | `data ugm/Laporan Dekan 2026/SDM/` | Komposisi jabatan fungsional 207 dosen, 120 tenaga kependidikan, TMT pengangkatan Guru Besar, rasio dosen tanpa jabatan akademik, dan status sertifikasi pendidik |
+| `AKREDITASI PRODI MIPA.xlsx` | `data ugm/Laporan Dekan 2026/` | Status akreditasi nasional 18 prodi dan akreditasi internasional 15 prodi |
+| `PENERIMA BEASISWA.xlsx` | `data ugm/Laporan Dekan 2026/` | Rekapitulasi 703 penerima beasiswa pada 79 skema |
+| `Profil Lulusan Magister.xls` dan `Profil Lulusan Doktor.xls` | `data ugm/Laporan Dekan 2026/` | Lulusan, IPK, lama studi, dan TOEFL pascasarjana tahun akademik 2025/2026 |
+| `Penerimaan dan DPI Kerjasama Fakultas MIPA 2021-2026.xlsx` | `data ugm/Laporan Dekan 2026/` | Nilai kontrak kerja sama dan Dana Pengembangan Institusi 2022–2026 |
+| `Daftar Peserta MoU FMIPA UGM_No PKS FMIPA UGM.xlsx` | `data ugm/kerjasama/` | Sekolah penanda tangan nota kesepahaman 29–31 Juli 2026 (hanya nama sekolah yang dibaca) |
 
-Excel dan CSV dibaca langsung. Tidak ada tahap konversi manual sebelum pipeline dijalankan.
 > Berkas Excel dan CSV dibaca langsung oleh skrip pemrosesan tanpa memerlukan konversi manual sebelumnya.
 
-## Prinsip data dan privasi
 ## Prinsip Tata Kelola Data & Privasi
 
 - **Sumber tetap terpisah.** TCK 2026 diperlakukan sebagai snapshot berjalan, sedangkan seri historis tetap mempertahankan periode dan definisinya sendiri.
@@ -245,15 +208,14 @@ Excel dan CSV dibaca langsung. Tidak ada tahap konversi manual sebelum pipeline 
 - **Integritas Satuan & Data:** Nilai keuangan dinormalisasi ke satuan miliar rupiah tanpa perkiraan bebas. Indikator persentase yang tidak mencantumkan angka penyebut pada kolom triwulan tertentu (misalnya pada beberapa indikator TW3) dievaluasi menggunakan basis TW2, sedangkan angka pembilangnya disimpan tersendiri sebagai data cacah (`_cacah`).
 - **Transparansi terhadap Anomali:** Realisasi non-kumulatif, perbedaan data antarsumber, status pemeringkatan gedung hijau, data kegiatan tanpa lokasi, maupun celah data (*data gaps* seperti K3L dan PPKS) diulas secara terbuka dalam narasi, bukan disembunyikan atau diubah sepihak.
 - **Akurasi Pemetaan Spasial:** Visualisasi peta menggunakan titik pusat (*centroid*) resmi provinsi. Sebanyak 619 kegiatan PkM yang tidak memiliki keterangan lokasi tetap dicatat secara transparan sebagai "tidak terpetakan".
-- **Perlindungan Data Pribadi (Anonimisasi Penuh):** Informasi identitas sensitif seperti Nama, NIM/NIP/NIU, alamat, nomor kontak, data wali, tanggal lahir, dan rekam medis individual Posbindu langsung dihapus sebelum berkas keluaran disimpan.
+- **Perlindungan Data Pribadi (Anonimisasi Penuh):** Informasi identitas sensitif seperti Nama, NIP/NIKA/NIDN/NUPTK, NIM/NIU, alamat, nomor kontak, data wali, tanggal lahir, rekam medis individual Posbindu, serta nama dan jabatan peserta penandatanganan MoU sekolah langsung dihapus sebelum berkas keluaran disimpan.
+- **Satu Sumber untuk Satu Fakta:** Sejak ekstrak SIMASTER 3 September 2026 tersedia, seluruh angka kepegawaian berasal dari satu berkas resmi. Penggabungan dua sumber yang sebelumnya dipakai (daftar nama pada rincian TCK ditumpangkan pada roster riset P2M) sudah dibongkar, dan selisih yang tersisa terhadap dokumen TCK dilaporkan terbuka, bukan diselaraskan diam-diam.
 - **Penyamaran Sel Kecil (*Small-Cell Suppression*):** Untuk mencegah identifikasi individu, kelompok data mahasiswa berjumlah 1 atau 2 orang disamarkan nilainya menjadi `null` (berstatus *disamarkan*), bukan diganti angka nol. Skrip validasi akan otomatis menggagalkan proses jika ditemukan data beranggotakan kurang dari 3 orang yang lolos tanpa penyamaran.
 - **Standardisasi yang Dapat Diaudit:** Seluruh kamus standardisasi (jalur masuk, pekerjaan wali, bidang kerja alumni, klasifikasi risiko Posbindu, kode provinsi, dan metadata TCK) terdokumentasi rapi di folder `pipeline/mappings/`.
 - **Atribusi Data Wilayah:** Data batas wilayah provinsi menggunakan [Peta Nusa / Laravel Nusa](https://github.com/AlfianAliM/Indonesia-GeoJSON) berlisensi MIT. Batas wilayah internasional menggunakan data [Natural Earth 1:110m](https://github.com/nvkelso/natural-earth-vector) yang berada dalam domain publik.
 
-Rincian transformasi dan keputusan per tahap tersedia di [pipeline/README.md](pipeline/README.md). Versi yang dibaca pembaca umum tersedia pada halaman `/data`.
 Panduan teknis mengenai tahapan transformasi data dapat dipelajari lebih lanjut di [pipeline/README.md](pipeline/README.md). Penjelasan metodologi bagi pembaca umum tersedia langsung di halaman `/data`.
 
-## Struktur repositori
 ## Struktur Repositori
 
 ```text
@@ -297,13 +259,10 @@ Panduan teknis mengenai tahapan transformasi data dapat dipelajari lebih lanjut 
 └── astro.config.mjs               # Konfigurasi Astro static-site generator dan path situs
 ```
 
-## Deployment dan offline
 ## Penerbitan (*Deployment*) & Akses Offline
 
-Push ke `main` menjalankan `.github/workflows/deploy.yml` dan menerbitkan `dist/` ke GitHub Pages. Di GitHub Actions, base path project site dihitung dari owner dan nama repositori. Repositori khusus `<owner>.github.io` tetap memakai root.
 Setiap pengiriman (*push*) kode ke cabang `main` akan memicu workflow `.github/workflows/deploy.yml` untuk mengompilasi dan menerbitkan folder `dist/` ke GitHub Pages. Di lingkungan GitHub Actions, jalur dasar (*base path*) dihitung secara otomatis berdasarkan nama akun dan repositori.
 
-Untuk host lain, atur URL publik dan subpath saat build:
 ### Konfigurasi Host Mandiri (*Custom Host / Domain*)
 
 Jika ingin memasang aplikasi di server web atau subdirektori lain, tentukan URL publik dan *subpath* saat menjalankan *build*:
@@ -324,10 +283,8 @@ $env:PUBLIC_BASE_PATH = "/laporan-dekan-2026"
 npm run build
 ```
 
-Untuk domain sendiri di root, isi `PUBLIC_SITE_URL` dan biarkan `PUBLIC_BASE_PATH` kosong. Host statis lain cukup menerima isi `dist/`.
 *Jika aplikasi dipasang pada root domain utama, isi `PUBLIC_SITE_URL` dan biarkan `PUBLIC_BASE_PATH` kosong.*
 
-Service worker dibuat ulang dari isi `dist/` setelah setiap build. Untuk rapat tanpa jaringan, buka `/presentasi` sekali saat masih online dan tunggu halaman selesai dimuat agar cache versi terbaru terpasang.
 ### Penggunaan Saat Presentasi Tanpa Internet (*Offline*)
 
 > Repositori sumber boleh privat, tetapi situs GitHub Pages dan seluruh isi `public/` tetap dapat diakses publik. Jangan menaruh data individu, credential, atau materi internal di `public/` maupun `src/data/derived/`.
@@ -336,11 +293,9 @@ Service worker dibuat ulang dari isi `dist/` setelah setiap build. Untuk rapat t
 2. Tunggu beberapa saat hingga halaman dan aset selesai dimuat agar seluruh materi tersimpan ke dalam *cache*.
 3. Halaman presentasi siap digunakan kapan saja meskipun tanpa jaringan internet.
 
-## Batas interpretasi
 > [!WARNING]
 > Meskipun repositori kode dapat disetel privat, hasil terbitan di GitHub Pages dan seluruh isi folder `public/` bersifat terbuka untuk umum. Pastikan **tidak ada data pribadi (PII), kredensial, maupun dokumen internal sensitif** yang tersimpan di dalam `public/` ataupun `src/data/derived/`.
 
-Laporan ini adalah snapshot pertanggungjawaban, bukan sistem transaksi waktu nyata. Seri 2025 yang bergantung pada pemutakhiran Scopus masih dapat bertambah; TCK 2026 bersifat provisional; dan beberapa metrik memiliki periode, penyebut, atau basis populasi berbeda. Batas tersebut sengaja diletakkan dekat dengan grafik serta dirangkum kembali di `/data` agar pembaca tidak memperoleh kepastian yang tidak didukung sumber.
 ## Batasan & Catatan Interpretasi Data
 
 Laporan ini merupakan potret pertanggungjawaban berkala (*periodic snapshot*), bukan sistem basis data transaksi waktu nyata (*real-time database*). Dalam membaca data ini, harap perhatikan beberapa konteks berikut:

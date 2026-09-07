@@ -40,6 +40,16 @@
     "lama_studi": "48.18"
   },
   {
+    "jenjang": "Doktor",
+    "tahun": 2026,
+    "tahun_ajaran": "2025/2026",
+    "lulusan": 74,
+    "total_tercatat": 74.0,
+    "ipk_rerata": 3.95,
+    "cumlaude": null,
+    "lama_studi": "51.45"
+  },
+  {
     "jenjang": "Magister",
     "tahun": 2022,
     "tahun_ajaran": "2021/2022",
@@ -78,6 +88,16 @@
     "ipk_rerata": 3.74,
     "cumlaude": null,
     "lama_studi": "25.32"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2026,
+    "tahun_ajaran": "2025/2026",
+    "lulusan": 265,
+    "total_tercatat": 265.0,
+    "ipk_rerata": 3.78,
+    "cumlaude": null,
+    "lama_studi": "25.44"
   },
   {
     "jenjang": "Sarjana",

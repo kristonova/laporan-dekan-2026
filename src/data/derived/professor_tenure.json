@@ -1,0 +1,271 @@
+{
+  "total": 54,
+  "periode_ini": 33,
+  "sebelumnya": 21,
+  "tahun_awal": 2021,
+  "tahun_akhir": 2025,
+  "per_periode": [
+    {
+      "periode": "Periode 2021-2026",
+      "department": "Fisika",
+      "n": 9
+    },
+    {
+      "periode": "Periode 2021-2026",
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 7
+    },
+    {
+      "periode": "Periode 2021-2026",
+      "department": "Kimia",
+      "n": 11
+    },
+    {
+      "periode": "Periode 2021-2026",
+      "department": "Matematika",
+      "n": 6
+    },
+    {
+      "periode": "Sebelum 2021",
+      "department": "Fisika",
+      "n": 5
+    },
+    {
+      "periode": "Sebelum 2021",
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 2
+    },
+    {
+      "periode": "Sebelum 2021",
+      "department": "Kimia",
+      "n": 9
+    },
+    {
+      "periode": "Sebelum 2021",
+      "department": "Matematika",
+      "n": 5
+    }
+  ],
+  "per_tahun": [
+    {
+      "year": 2003,
+      "n": 1
+    },
+    {
+      "year": 2006,
+      "n": 1
+    },
+    {
+      "year": 2008,
+      "n": 5
+    },
+    {
+      "year": 2009,
+      "n": 1
+    },
+    {
+      "year": 2010,
+      "n": 2
+    },
+    {
+      "year": 2011,
+      "n": 1
+    },
+    {
+      "year": 2013,
+      "n": 1
+    },
+    {
+      "year": 2014,
+      "n": 2
+    },
+    {
+      "year": 2015,
+      "n": 1
+    },
+    {
+      "year": 2016,
+      "n": 1
+    },
+    {
+      "year": 2019,
+      "n": 3
+    },
+    {
+      "year": 2020,
+      "n": 2
+    },
+    {
+      "year": 2021,
+      "n": 3
+    },
+    {
+      "year": 2022,
+      "n": 8
+    },
+    {
+      "year": 2023,
+      "n": 7
+    },
+    {
+      "year": 2024,
+      "n": 13
+    },
+    {
+      "year": 2025,
+      "n": 2
+    }
+  ],
+  "per_tahun_departemen": [
+    {
+      "year": 2003,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2006,
+      "department": "Kimia",
+      "n": 1
+    },
+    {
+      "year": 2008,
+      "department": "Kimia",
+      "n": 5
+    },
+    {
+      "year": 2009,
+      "department": "Kimia",
+      "n": 1
+    },
+    {
+      "year": 2010,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 1
+    },
+    {
+      "year": 2010,
+      "department": "Kimia",
+      "n": 1
+    },
+    {
+      "year": 2011,
+      "department": "Fisika",
+      "n": 1
+    },
+    {
+      "year": 2013,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2014,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 1
+    },
+    {
+      "year": 2014,
+      "department": "Kimia",
+      "n": 1
+    },
+    {
+      "year": 2015,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2016,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2019,
+      "department": "Fisika",
+      "n": 2
+    },
+    {
+      "year": 2019,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2020,
+      "department": "Fisika",
+      "n": 2
+    },
+    {
+      "year": 2021,
+      "department": "Fisika",
+      "n": 1
+    },
+    {
+      "year": 2021,
+      "department": "Kimia",
+      "n": 2
+    },
+    {
+      "year": 2022,
+      "department": "Fisika",
+      "n": 1
+    },
+    {
+      "year": 2022,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 2
+    },
+    {
+      "year": 2022,
+      "department": "Kimia",
+      "n": 4
+    },
+    {
+      "year": 2022,
+      "department": "Matematika",
+      "n": 1
+    },
+    {
+      "year": 2023,
+      "department": "Fisika",
+      "n": 3
+    },
+    {
+      "year": 2023,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 2
+    },
+    {
+      "year": 2023,
+      "department": "Kimia",
+      "n": 2
+    },
+    {
+      "year": 2024,
+      "department": "Fisika",
+      "n": 3
+    },
+    {
+      "year": 2024,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 2
+    },
+    {
+      "year": 2024,
+      "department": "Kimia",
+      "n": 3
+    },
+    {
+      "year": 2024,
+      "department": "Matematika",
+      "n": 5
+    },
+    {
+      "year": 2025,
+      "department": "Fisika",
+      "n": 1
+    },
+    {
+      "year": 2025,
+      "department": "Ilmu Komputer dan Elektronika",
+      "n": 1
+    }
+  ]
+}

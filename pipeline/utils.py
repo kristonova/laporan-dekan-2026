@@ -22,10 +22,14 @@ PARTNERSHIP_DIR = DATA_ROOT / "kerjasama"
 HEALTH_DIR = DATA_ROOT / "health promotion university posbindu"
 TCK_DIR = WORKSPACE_ROOT / "target_capaian_kinerja"
 TCK_2026_DIR = TCK_DIR / "tck_2026"
-# Per-indicator detail workbooks behind the TCK summary sheet. Three of them are
-# nominative staff rosters straight out of SIMASTER, which makes them the only
-# current source for jabatan fungsional the P2M database no longer tracks.
+# Per-indicator detail workbooks behind the TCK summary sheet.
 TCK_RINCIAN_DIR = TCK_2026_DIR / "RINCIAN TCK"
+# The September 2026 delivery. Its SDM/ subfolder is the official SIMASTER
+# personnel extract: until it arrived, jabatan fungsional had to be stitched
+# together from the TCK detail workbooks and a P2M roster that stopped being
+# maintained in January 2026. It is now the single source for staffing.
+DEKAN_2026_DIR = DATA_ROOT / "Laporan Dekan 2026"
+SDM_DIR = DEKAN_2026_DIR / "SDM"
 WORK_DIR = APP_ROOT / "pipeline" / "work"
 LOADED_DIR = WORK_DIR / "loaded"
 CLEAN_DIR = WORK_DIR / "cleaned"
@@ -42,6 +46,10 @@ SNAPSHOT_LENTERA = "20 Agustus 2026"
 # SciVal reports its own "date last updated"; publication counts, topics,
 # collaboration, and SDG tags carry this date rather than the P2M pull date.
 SNAPSHOT_SCIVAL = "30 Agustus 2026"
+# SIMASTER personnel extract and the September 2026 academic tables that came
+# with it (accreditation, scholarships, postgraduate graduate profiles).
+SNAPSHOT_SDM = "3 September 2026"
+SNAPSHOT_DEKAN_2026 = "7 September 2026"
 
 
 def ensure_directories() -> None:

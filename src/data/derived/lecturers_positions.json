@@ -2,7 +2,7 @@
   {
     "position": "Asisten Ahli",
     "department": "Fisika",
-    "n": 4
+    "n": 3
   },
   {
     "position": "Asisten Ahli",
@@ -17,12 +17,7 @@
   {
     "position": "Asisten Ahli",
     "department": "Matematika",
-    "n": 8
-  },
-  {
-    "position": "Belum terisi",
-    "department": "Ilmu Komputer dan Elektronika",
-    "n": 1
+    "n": 7
   },
   {
     "position": "Guru Besar",
@@ -47,12 +42,12 @@
   {
     "position": "Lektor",
     "department": "Fisika",
-    "n": 20
+    "n": 16
   },
   {
     "position": "Lektor",
     "department": "Ilmu Komputer dan Elektronika",
-    "n": 24
+    "n": 20
   },
   {
     "position": "Lektor",
@@ -67,22 +62,22 @@
   {
     "position": "Lektor Kepala",
     "department": "Fisika",
-    "n": 11
+    "n": 15
   },
   {
     "position": "Lektor Kepala",
     "department": "Ilmu Komputer dan Elektronika",
-    "n": 7
+    "n": 12
   },
   {
     "position": "Lektor Kepala",
     "department": "Kimia",
-    "n": 6
+    "n": 8
   },
   {
     "position": "Lektor Kepala",
     "department": "Matematika",
-    "n": 6
+    "n": 8
   },
   {
     "position": "Tenaga Pengajar",
@@ -97,7 +92,7 @@
   {
     "position": "Tenaga Pengajar",
     "department": "Kimia",
-    "n": 3
+    "n": 2
   },
   {
     "position": "Tenaga Pengajar",

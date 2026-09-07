@@ -1,5 +1,36 @@
 # Pipeline data — Lima Tahun FMIPA
 
+Pembaruan 7 September 2026: kiriman `data ugm/Laporan Dekan 2026/` menambahkan
+lima loader baru dan mengganti tiga sumber lama.
+
+- **Kepegawaian jadi satu sumber.** `load_tck_staff_positions` dan seluruh
+  mesin pencocokan nama di `01_clean.py` dihapus. `load_sdm_lecturers`,
+  `load_sdm_staff`, `load_sdm_professors`, dan `load_sdm_certification` membaca
+  ekstrak SIMASTER per 3 September 2026: 207 dosen, 120 tenaga kependidikan,
+  54 Guru Besar dengan TMT, dan status sertifikasi. Tidak ada satu pun kolom
+  identitas (nama, NIP/NIKA, NIDN, NUPTK) yang dibaca — tiap berkas sudah
+  memuat departemen di sebelah atributnya, sehingga tidak ada yang perlu
+  dijoin pada individu.
+- **Akreditasi dan beasiswa diarahkan ulang** ke `AKREDITASI PRODI MIPA.xlsx`
+  dan `PENERIMA BEASISWA.xlsx`. Sheet internasional yang baru berbentuk daftar
+  datar, jadi `jenjang_grup` diturunkan dari awalan nama prodi.
+- **Lulusan pascasarjana 2025/2026** dibaca dari dua berkas `.xls` terpisah
+  (`load_postgraduate_graduates`). Empat blok bertumpuk dicari lewat label
+  "Periode Wisuda", bukan offset tetap. IPK, lama studi, dan TOEFL dihitung
+  ulang dengan **pembobotan jumlah wisudawan**; baris `Rerata` di sumber
+  merata-ratakan empat periode tanpa bobot sehingga tidak dipakai.
+- **Penerimaan kerja sama** (`load_partnership_revenue`) memakai resolusi kolom
+  berdasarkan label karena lembar 2022–2023 dan 2024–2026 berbeda tata letak.
+  Empat baris tanpa departemen (32% nilai) disimpan sebagai kategori sendiri.
+- **MoU sekolah** (`load_school_mou`) hanya membaca kolom nama sekolah; kolom
+  nama peserta, jabatan, dan narahubung tidak pernah disentuh.
+- **Berkas roster ganda.** `select_roster_files` menyaring
+  `Daftar mahasiswa *.xlsx` sehingga hanya ekspor terbaru per angkatan dibaca.
+  Berkas `Daftar mahasiswa 20260907.xlsx` adalah ekspor ulang angkatan 2026
+  (865 mahasiswa yang sama, kolom Pekerjaan Wali lebih lengkap); tanpa saringan
+  ini angkatan 2026 terhitung dua kali dan total melonjak 4.945 → 5.810.
+
+
 Pembaruan 2 September 2026: `student_origins.py` memproses workbook
 `20260902 Data Asal Sekolah dan Asal Univ Fak MIPA tahun 2021-2026.xlsx`.
 Sebanyak 6.856 rekaman mencakup S1 (4.571), S2 (1.362), S3 (534), dan non-gelar (389).
@@ -72,6 +103,7 @@ Urutan tahap:
 | `posbindu_risiko.csv` | Kategori klinis sumber → tiga pita risiko (Normal, Waspada, Berisiko) |
 | `posbindu_ambang.csv` | Ambang klinis per indikator dan jenis kelamin, dibaca berurutan dan yang pertama cocok dipakai |
 | `posbindu_ambang_tensi.csv` | Ambang tekanan darah, yang butuh sistolik dan diastolik sekaligus |
+| `sekolah_mou_alias.csv` | Padanan nama sekolah antara daftar MoU dan daftar asal mahasiswa, satu baris beralasan per padanan |
 
 ## Keputusan yang disengaja
 
@@ -84,5 +116,7 @@ Urutan tahap:
 - **Kategori Posbindu 2022–2025 dihitung ulang, bukan ditebak.** Sumber lama hanya mencatat angka; berkas 2026 mencatat angka sekaligus interpretasinya. Ambang dibaca balik dari pasangan tersebut dan diverifikasi terhadap label 2026 itu sendiri: tekanan darah, lingkar perut, asam urat, kolesterol, dan gula darah cocok 100%, IMT 273 dari 278 (lima sisanya baris yang labelnya bertentangan dengan angkanya sendiri di berkas asli). Ambangnya tinggal di `mappings/`, bukan di kode.
 - **Dua sumber Posbindu disatukan per bulan, bukan per baris.** Digitasi arsip analog memegang 12 sesi bertanggal pasti; registri memegang bulan-bulan yang tidak pernah didigitasi — termasuk seluruh 2025. Registri hanya diterima untuk bulan yang tidak dicakup digitasi, sehingga kedua sumber tidak pernah menggambarkan sesi yang sama dan tidak ada pencocokan nama yang perlu dipercaya.
 - **Terukur dan dinilai dibedakan.** Lingkar perut dan asam urat berambang beda per jenis kelamin, yang tidak pernah dicatat lembar digitasi. Kunjungan tanpa gender dihitung terukur tetapi tidak dinilai; keduanya diekspor agar penyebut persentase tetap jujur.
+- **Nilai kerja sama dan dana riset dipisah permanen.** Keduanya berskala mirip (Rp82,67 miliar kontrak 2024 versus Rp74,91 miliar hibah riset 2024) sehingga mudah tertukar. Pemeriksaan silang menunjukkan kontrak-kontrak besar itu tidak ada di dataset riset P2M, jadi keduanya saling melengkapi; `03_validate.py` menahan agar tidak pernah digabung ke satu berkas.
+- **Pencocokan sekolah dinyatakan sebagai perkiraan.** Nama sekolah ditulis bebas di kedua sumber. Kunci pencocokan hanya membuang awalan jenis sekolah dan kata NEGERI — tidak membuang KOTA atau KAB, yang akan menyatukan sekolah kota dan kabupaten bernomor sama. Sisanya ditangani satu per satu di `mappings/sekolah_mou_alias.csv`, dan angka irisan dilaporkan sebagai batas bawah.
 
 `build-service-worker.mjs` dijalankan setelah build untuk memasukkan seluruh output ber-hash ke precache. `check-build.mjs` memeriksa tautan internal, fragmen, nilai non-finit, format tahun, dan keberadaan setiap URL precache.

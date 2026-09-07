@@ -15,6 +15,10 @@ Doktor,2025,Doktor Fisika,15
 Doktor,2025,Doktor Ilmu Komputer,14
 Doktor,2025,Doktor Kimia,13
 Doktor,2025,Doktor Matematika,5
+Doktor,2026,Doktor Fisika,15
+Doktor,2026,Doktor Ilmu Komputer,31
+Doktor,2026,Doktor Kimia,19
+Doktor,2026,Doktor Matematika,9
 Magister,2022,Magister Fisika,44
 Magister,2022,Magister Ilmu Komputer,45
 Magister,2022,Magister Kimia,36
@@ -33,6 +37,12 @@ Magister,2025,Magister Ilmu Komputer,63
 Magister,2025,Magister Kecerdasan Artifisial,11
 Magister,2025,Magister Kimia,42
 Magister,2025,Magister Matematika,41
+Magister,2026,Magister Elektronika dan Instrumentasi,5
+Magister,2026,Magister Fisika,47
+Magister,2026,Magister Ilmu Komputer,64
+Magister,2026,Magister Kecerdasan Artifisial,39
+Magister,2026,Magister Kimia,66
+Magister,2026,Magister Matematika,44
 Sarjana,2022,S1 Elektronika dan Instrumentasi,61
 Sarjana,2022,S1 Fisika,71
 Sarjana,2022,S1 Geofisika,37

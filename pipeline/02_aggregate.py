@@ -12,6 +12,7 @@ import pandas as pd
 
 from utils import (
     CLEAN_DIR,
+    LOADED_DIR,
     MAPPINGS_DIR,
     PUBLIC_DATA_DIR,
     SNAPSHOT,
@@ -240,6 +241,149 @@ def gendered_counts(frame: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
     # counts do not always add up to n. The gap is reported, never imputed.
     grouped["tanpa_gender"] = grouped["n"] - grouped["perempuan"] - grouped["laki"]
     return grouped
+
+
+def staffing_outputs() -> None:
+    """Professor tenure, the vacant-position ratio, and certification coverage.
+
+    All three read the SIMASTER extract of 3 September 2026 and are reported per
+    department, because the faculty-level figures hide the only department that
+    breaches the ceiling.
+    """
+    professors = pd.read_csv(CLEAN_DIR / "professors.csv")
+    by_period = professors.groupby(["periode", "department"]).size().reset_index(name="n")
+    by_year = professors.groupby("year").size().reset_index(name="n")
+    by_year_dept = professors.groupby(["year", "department"]).size().reset_index(name="n")
+    within = professors[professors["periode"] == "Periode 2021-2026"]
+    write_json("professor_tenure.json", {
+        "total": int(len(professors)),
+        "periode_ini": int(len(within)),
+        "sebelumnya": int(len(professors) - len(within)),
+        "tahun_awal": int(within["year"].min()),
+        "tahun_akhir": int(within["year"].max()),
+        "per_periode": records(by_period.sort_values(["periode", "department"])),
+        "per_tahun": records(by_year.sort_values("year")),
+        "per_tahun_departemen": records(by_year_dept.sort_values(["year", "department"])),
+    })
+
+    # The source workbook states the ceiling in its own closing note: a
+    # department may not leave more than 10% of its lecturers without an
+    # academic position.
+    ceiling = 10.0
+    lecturers = pd.read_csv(CLEAN_DIR / "lecturers.csv")
+    certification = pd.read_csv(CLEAN_DIR / "lecturer_certification.csv")
+    totals = lecturers.groupby("department").size()
+    teaching = lecturers[lecturers["position"] == "Tenaga Pengajar"].groupby("department").size()
+    certified = certification[certification["certified"]].groupby("department").size()
+    certified_totals = certification.groupby("department").size()
+
+    rows = []
+    for department in sorted(totals.index):
+        total = int(totals[department])
+        without = int(teaching.get(department, 0))
+        has_cert = int(certified.get(department, 0))
+        cert_total = int(certified_totals.get(department, 0))
+        rows.append({
+            "department": department,
+            "dosen": total,
+            "tanpa_jabatan": without,
+            "rasio": round(without / total * 100, 2),
+            "ambang": ceiling,
+            "melampaui_ambang": bool(without / total * 100 > ceiling),
+            "tersertifikasi": has_cert,
+            "tersertifikasi_dari": cert_total,
+            "rasio_sertifikasi": round(has_cert / cert_total * 100, 2) if cert_total else None,
+        })
+    faculty_without = int((lecturers["position"] == "Tenaga Pengajar").sum())
+    faculty_certified = int(certification["certified"].sum())
+    write_json("lecturer_ratio.json", {
+        "ambang": ceiling,
+        "dosen": int(len(lecturers)),
+        "tanpa_jabatan": faculty_without,
+        "rasio": round(faculty_without / len(lecturers) * 100, 2),
+        "tersertifikasi": faculty_certified,
+        "rasio_sertifikasi": round(faculty_certified / len(certification) * 100, 2),
+        "per_departemen": rows,
+    })
+    output("lecturer_ratio_by_dept.json", rows)
+
+
+def partnership_revenue_outputs() -> None:
+    """Cooperation contract value and the development fee it returns to FMIPA.
+
+    Kept deliberately separate from funding_by_year.json: that series counts
+    research grants recorded in P2M, this one counts billed cooperation
+    contracts. They are close in magnitude and must never be added together.
+    """
+    # Billing numbers are identifiers, not quantities: read as text so the
+    # 16-digit ones do not come back as floats.
+    revenue = pd.read_csv(CLEAN_DIR / "partnership_revenue.csv", dtype={"billing": "string"})
+    per_year = revenue.groupby("tahun").agg(
+        nominal=("nominal_kontrak", "sum"), dpi=("dpi", "sum"), n=("nominal_kontrak", "size")
+    ).reset_index()
+    per_year["rasio_dpi"] = (per_year["dpi"] / per_year["nominal"] * 100).round(2)
+    # 2026 is the running year: the workbook was compiled in September.
+    per_year["is_partial"] = per_year["tahun"].eq(2026)
+    output("partnership_revenue_by_year.json", records(per_year.sort_values("tahun")))
+
+    per_department = revenue.groupby("departemen").agg(
+        nominal=("nominal_kontrak", "sum"), dpi=("dpi", "sum"), n=("nominal_kontrak", "size")
+    ).reset_index()
+    total = float(revenue["nominal_kontrak"].sum())
+    per_department["porsi"] = (per_department["nominal"] / total * 100).round(2)
+    per_department = per_department.sort_values(["nominal", "departemen"], ascending=[False, True])
+    output("partnership_revenue_by_dept.json", records(per_department))
+
+    unassigned = revenue[revenue["departemen"] == "Tidak berdepartemen"]
+    billing = revenue[revenue["billing"].astype(str).str.strip().ne("")]
+    duplicates = billing.groupby(["tahun", "billing"]).size().reset_index(name="n")
+    write_json("partnership_revenue.json", {
+        "kontrak": int(len(revenue)),
+        "nominal": total,
+        "dpi": float(revenue["dpi"].sum()),
+        "rasio_dpi": round(revenue["dpi"].sum() / total * 100, 2),
+        "tahun_awal": int(revenue["tahun"].min()),
+        "tahun_akhir": int(revenue["tahun"].max()),
+        "tanpa_departemen": {
+            "kontrak": int(len(unassigned)),
+            "nominal": float(unassigned["nominal_kontrak"].sum()),
+            "porsi": round(unassigned["nominal_kontrak"].sum() / total * 100, 2),
+        },
+        "billing_ganda": records(duplicates[duplicates["n"] > 1]),
+        "per_tahun": records(per_year.sort_values("tahun")),
+        "per_departemen": records(per_department),
+    })
+
+
+def school_mou_outputs() -> None:
+    """Schools that signed a memorandum in July 2026, against the feeder network.
+
+    The three sheets are three signing days that overlap heavily, so the union
+    is what counts, not the row total. Matching against the schools students
+    actually come from is approximate: both sources type the name freely, and
+    pipeline/mappings/sekolah_mou_alias.csv records every normalisation applied
+    so the estimate can be audited rather than taken on trust.
+    """
+    mou = pd.read_csv(CLEAN_DIR / "school_mou.csv")
+    schools = mou.drop_duplicates(subset=["kunci"])
+    origins = pd.read_csv(CLEAN_DIR / "student_origin_schools.csv")
+    feeders = set(origins["kunci"])
+
+    matched = schools[schools["kunci"].isin(feeders)]
+    per_session = mou.groupby("sesi").size().reset_index(name="n")
+    write_json("school_mou.json", {
+        "sekolah": int(len(schools)),
+        "baris": int(len(mou)),
+        "sesi": records(per_session),
+        "sudah_menjadi_asal": int(len(matched)),
+        "jejaring_baru": int(len(schools) - len(matched)),
+        "sekolah_asal_tercatat": int(len(feeders)),
+    })
+    output("school_mou_status.json", [
+        {"status": "Sudah menjadi sekolah asal", "n": int(len(matched))},
+        {"status": "Jejaring baru", "n": int(len(schools) - len(matched))},
+    ])
+
 
 
 def student_profile_outputs() -> None:
@@ -721,6 +865,9 @@ def main() -> None:
     tck_outputs()
     partnership_outputs()
     academic_outputs()
+    staffing_outputs()
+    partnership_revenue_outputs()
+    school_mou_outputs()
     student_profile_outputs()
     from student_origins import aggregate_origins
     aggregate_origins(output, suppress)
@@ -913,6 +1060,8 @@ def main() -> None:
     output("media_by_year.json", records(media_group.sort_values("year")))
 
     staff = pd.read_csv(CLEAN_DIR / "academic_staff.csv")
+    certification = pd.read_csv(CLEAN_DIR / "lecturer_certification.csv")
+    p2m_staff = pd.read_csv(LOADED_DIR / "academic_staff.csv", low_memory=False)
     departments = pd.read_csv(CLEAN_DIR / "departments.csv")
     laboratories = pd.read_csv(CLEAN_DIR / "laboratories.csv")
     # The accreditation workbook, not the P2M study_programme export, is the
@@ -934,12 +1083,18 @@ def main() -> None:
         "study_programmes": int(len(national)), "study_programmes_by_level": by_level,
         "laboratories": int(len(laboratories)),
         "lecturer_doctoral": int(lecturers["doctoral"].astype(str).str.lower().eq("true").sum()),
-        "lecturer_certified": int(lecturers["certified"].astype(str).str.lower().eq("true").sum()),
-        # Scene 2.5 mixes two snapshots on purpose; the UI reads its source line
-        # from here so the dates cannot drift out of step with the numbers.
-        "lecturer_sources": {
-            "jabatan_resmi": "31 Agustus 2026",
-            "roster_dasar": "27 Januari 2026",
+        "lecturer_certified": int(certification["certified"].astype(str).str.lower().eq("true").sum()),
+        # One SIMASTER extract now supplies every staffing number on the page,
+        # so there is a single date to print rather than the two the earlier
+        # merge of TCK and P2M rosters forced scene 2.5 to disclose.
+        "lecturer_source": "SIMASTER, 3 September 2026",
+        # The P2M export the tenaga kependidikan count used to come from is kept
+        # beside the SIMASTER figure. It never retired departed staff, and
+        # Laporan Dekan 2025 published a third number again; the methodology
+        # page shows all three rather than presenting 120 as uncontested.
+        "academic_staff_alternatif": {
+            "p2m_2026": int(len(p2m_staff)),
+            "laporan_dekan_2025": 129,
         },
     }
     write_json("institution_snapshot.json", institution)

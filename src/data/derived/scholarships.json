@@ -1,38 +1,38 @@
 {
-  "total": 684,
-  "skema": 67,
+  "total": 703,
+  "skema": 79,
   "per_prodi": [
     {
       "prodi": "Kimia",
-      "penerima": 207
+      "penerima": 195
     },
     {
       "prodi": "Geofisika",
-      "penerima": 97
-    },
-    {
-      "prodi": "Matemat",
-      "penerima": 87
+      "penerima": 88
     },
     {
       "prodi": "Fisika",
-      "penerima": 84
+      "penerima": 81
+    },
+    {
+      "prodi": "IlKomp",
+      "penerima": 77
     },
     {
       "prodi": "Elins",
       "penerima": 74
     },
     {
-      "prodi": "IlKomp",
-      "penerima": 69
+      "prodi": "Matemat",
+      "penerima": 74
     },
     {
       "prodi": "Statistika",
-      "penerima": 54
+      "penerima": 67
     },
     {
       "prodi": "Aktuaria",
-      "penerima": 12
+      "penerima": 47
     }
   ],
   "per_skema": [
@@ -41,27 +41,39 @@
       "penerima": 141
     },
     {
-      "beasiswa": "Kartu Indonesia Pintar Kuliah (KIP-K) Tahun 2021",
-      "penerima": 140
-    },
-    {
       "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2024",
-      "penerima": 108
+      "penerima": 112
     },
     {
       "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2023",
-      "penerima": 96
-    },
-    {
-      "beasiswa": "Beasiswa Anak Pegawai UGM Semester Gasal 2024/2025",
-      "penerima": 28
-    },
-    {
-      "beasiswa": "Beasiswa Anak Pegawai UGM Semester Genap 2024/2025",
-      "penerima": 24
+      "penerima": 100
     },
     {
       "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2025",
+      "penerima": 40
+    },
+    {
+      "beasiswa": "Beasiswa Anak Pegawai UGM Semester Genap 2025/2026",
+      "penerima": 27
+    },
+    {
+      "beasiswa": "Kartu Indonesia Pintar (KIP) Kuliah Tahun 2025 (non Eligible)",
+      "penerima": 25
+    },
+    {
+      "beasiswa": "Beasiswa Mahasiswa  UGM Angkatan 2025",
+      "penerima": 21
+    },
+    {
+      "beasiswa": "Beasiswa Mahasiswa  UGM Angkatan 2025 GASAL 2026/2027",
+      "penerima": 17
+    },
+    {
+      "beasiswa": "Pendukung Pendidikan Mahasiswa UGM",
+      "penerima": 15
+    },
+    {
+      "beasiswa": "Bank Indonesia 2026 Skema Reguler",
       "penerima": 13
     },
     {
@@ -69,32 +81,20 @@
       "penerima": 10
     },
     {
-      "beasiswa": "Dato Low Tuck Kwong Purnomo Yusgiantoro 2024",
+      "beasiswa": "BEASISWA PENDIDIKAN “BAYAN PEDULI” PROGRAM 2025",
       "penerima": 8
     },
     {
-      "beasiswa": "BPI 2023 Puslapdik Sarjana",
+      "beasiswa": "BSI Scholarship Talenta 2025",
+      "penerima": 8
+    },
+    {
+      "beasiswa": "Karya Salemba Empat Tahun 2025",
+      "penerima": 8
+    },
+    {
+      "beasiswa": "BEASISWA UGM ANGKATAN 2024",
       "penerima": 7
-    },
-    {
-      "beasiswa": "Dato Low Tuck Kwong Kategori Aktivis 2024",
-      "penerima": 7
-    },
-    {
-      "beasiswa": "BEASISWA PENDIDIKAN “BAYAN PEDULI” PROGRAM 2024",
-      "penerima": 6
-    },
-    {
-      "beasiswa": "Program Bantuan Riset Bagi Talenta Riset dan Inovasi (BARISTA) 2024 BRIN",
-      "penerima": 6
-    },
-    {
-      "beasiswa": "Tanoto Teladan 2022",
-      "penerima": 6
-    },
-    {
-      "beasiswa": "Tanoto Teladan 2025",
-      "penerima": 4
     }
   ]
 }

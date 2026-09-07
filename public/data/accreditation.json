@@ -1,6 +1,6 @@
 {
   "prodi_nasional": 18,
-  "prodi_unggul": 15,
+  "prodi_unggul": 18,
   "prodi_internasional": 15,
   "per_lembaga": [
     {
@@ -60,8 +60,8 @@
       "departemen": "Ilmu Komputer dan Elektronika",
       "prodi": "Doktor Ilmu Komputer",
       "lembaga": "BAN-PT",
-      "periode": "2020-2025",
-      "nilai": "A"
+      "periode": "2025-2030",
+      "nilai": "Unggul"
     },
     {
       "lingkup": "Nasional",
@@ -69,8 +69,8 @@
       "departemen": "Ilmu Komputer dan Elektronika",
       "prodi": "Magister Kecerdasan Artifisial",
       "lembaga": "LAM INFOKOM",
-      "periode": "2023-2028",
-      "nilai": "B"
+      "periode": "2026-2031",
+      "nilai": "Unggul"
     },
     {
       "lingkup": "Nasional",
@@ -78,8 +78,8 @@
       "departemen": "Ilmu Komputer dan Elektronika",
       "prodi": "Magister Elektronika dan Instrumentasi",
       "lembaga": "LAM INFOKOM",
-      "periode": "2024-2029",
-      "nilai": "B"
+      "periode": "2026-2031",
+      "nilai": "Unggul"
     },
     {
       "lingkup": "Nasional",
@@ -142,7 +142,7 @@
       "prodi": "S1 Aktuaria",
       "lembaga": "BAN-PT",
       "periode": "2022-2027",
-      "nilai": "B"
+      "nilai": "Unggul"
     },
     {
       "lingkup": "Nasional",
@@ -240,7 +240,7 @@
       "departemen": "",
       "prodi": "S1 Geofisika",
       "lembaga": "ASIIN",
-      "periode": "2024-2025",
+      "periode": "2024-2029",
       "nilai": ""
     },
     {
@@ -249,7 +249,7 @@
       "departemen": "",
       "prodi": "S1 Fisika",
       "lembaga": "ASIIN",
-      "periode": "2024-2025",
+      "periode": "2024-2029",
       "nilai": ""
     },
     {
@@ -285,7 +285,7 @@
       "departemen": "",
       "prodi": "Magister Fisika",
       "lembaga": "ASIIN",
-      "periode": "2024-2025",
+      "periode": "2024-2029",
       "nilai": ""
     },
     {
@@ -294,7 +294,7 @@
       "departemen": "",
       "prodi": "Doktor Fisika",
       "lembaga": "ASIIN",
-      "periode": "2024-2025",
+      "periode": "2024-2029",
       "nilai": ""
     },
     {
