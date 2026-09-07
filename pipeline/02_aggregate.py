@@ -913,14 +913,34 @@ def main() -> None:
     output("media_by_year.json", records(media_group.sort_values("year")))
 
     staff = pd.read_csv(CLEAN_DIR / "academic_staff.csv")
-    programmes = pd.read_csv(CLEAN_DIR / "study_programmes.csv")
     departments = pd.read_csv(CLEAN_DIR / "departments.csv")
     laboratories = pd.read_csv(CLEAN_DIR / "laboratories.csv")
+    # The accreditation workbook, not the P2M study_programme export, is the
+    # authority for how many programmes the faculty runs: the export is missing
+    # Magister Elektronika dan Instrumentasi and so counts 17 against its 18.
+    accreditation = pd.read_csv(CLEAN_DIR / "accreditation.csv").fillna("")
+    national = accreditation[accreditation["lingkup"] == "Nasional"]
+    levels = {"S1 ": "Sarjana", "Magister ": "Magister", "Doktor ": "Doktor"}
+    by_level = {label: 0 for label in levels.values()}
+    for prodi in national["prodi"]:
+        for prefix, label in levels.items():
+            if str(prodi).startswith(prefix):
+                by_level[label] += 1
+                break
+    if sum(by_level.values()) != len(national):
+        raise AssertionError(f"Jenjang prodi tidak terpetakan penuh: {by_level} dari {len(national)} prodi")
     institution = {
         "lecturers": int(len(lecturers)), "academic_staff": int(len(staff)), "departments": 4,
-        "study_programmes": int(len(programmes)), "laboratories": int(len(laboratories)),
+        "study_programmes": int(len(national)), "study_programmes_by_level": by_level,
+        "laboratories": int(len(laboratories)),
         "lecturer_doctoral": int(lecturers["doctoral"].astype(str).str.lower().eq("true").sum()),
         "lecturer_certified": int(lecturers["certified"].astype(str).str.lower().eq("true").sum()),
+        # Scene 2.5 mixes two snapshots on purpose; the UI reads its source line
+        # from here so the dates cannot drift out of step with the numbers.
+        "lecturer_sources": {
+            "jabatan_resmi": "31 Agustus 2026",
+            "roster_dasar": "27 Januari 2026",
+        },
     }
     write_json("institution_snapshot.json", institution)
 

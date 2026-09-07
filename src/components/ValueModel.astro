@@ -18,13 +18,13 @@ const fundingLabel = `Rp${format(metrics.funding_rp / 1_000_000_000, 2)} M`;
   <a class="value-node value-node--input" href="#dana-riset">
     <span>Masukan (Input)</span>
     <strong>{fundingLabel}</strong>
-    <small>dana riset 2021–2025</small>
+    <small>dana riset terkelola (2021–2025)</small>
   </a>
   <span class="value-arrow" aria-hidden="true">→</span>
   <div class="value-stage">
     <span>Aktivitas Tridharma</span>
     <div>
-      <a href="#dana-riset"><strong>{format(metrics.research_n)}</strong><small>judul riset</small></a>
+      <a href="#dana-riset"><strong>{format(metrics.research_n)}</strong><small>judul riset disetujui</small></a>
       <a href="#jangkauan"><strong>{format(metrics.outreach_n)}</strong><small>kegiatan pengabdian (PkM)</small></a>
     </div>
   </div>
@@ -32,14 +32,14 @@ const fundingLabel = `Rp${format(metrics.funding_rp / 1_000_000_000, 2)} M`;
   <a class="value-node" href="#publikasi-departemen">
     <span>Luaran Ilmiah</span>
     <strong>{format(metrics.publications_n)}</strong>
-    <small>artikel publikasi terindeks</small>
+    <small>publikasi terindeks Scopus</small>
   </a>
   <span class="value-arrow" aria-hidden="true">→</span>
   <div class="value-stage value-stage--impact">
     <span>Dampak Terukur</span>
     <div>
-      <a href="#jangkauan-riset"><strong>{format(metrics.citations_n)}</strong><small>sitasi lima tahun</small></a>
-      <a href="#jangkauan"><strong>{format(metrics.mappable_outreach_n)}</strong><small>kegiatan PkM terpetakan</small></a>
+      <a href="#jangkauan-riset"><strong>{format(metrics.citations_n)}</strong><small>sitasi lima tahun (2021–2025)</small></a>
+      <a href="#jangkauan"><strong>{format(metrics.mappable_outreach_n)}</strong><small>kegiatan PkM terpetakan wilayah</small></a>
     </div>
   </div>
 </nav>

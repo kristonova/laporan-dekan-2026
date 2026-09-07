@@ -10,27 +10,27 @@ const format = (n: number) => new Intl.NumberFormat('id-ID').format(n);
 ---
 <section data-education-origins class="origins" aria-label="Penelusuran institusi asal mahasiswa">
   <div class="origin-controls">
-    <label>Jenjang dan pendidikan sebelumnya<select data-origin-type>{types.map(p => <option value={`${p.jenjang}-${p.asal}`}>{p.label}</option>)}</select></label>
-    <label>Angkatan<select data-origin-year><option value="0">Semua angkatan · 2021–2026</option>{data.tahun.map(y => <option value={y}>{y}</option>)}</select></label>
+    <label>Jenjang dan riwayat pendidikan sebelumnya<select data-origin-type>{types.map(p => <option value={`${p.jenjang}-${p.asal}`}>{p.label}</option>)}</select></label>
+    <label>Angkatan<select data-origin-year><option value="0">Semua angkatan (2021–2026)</option>{data.tahun.map(y => <option value={y}>{y}</option>)}</select></label>
   </div>
   {data.panel.map(p => {
     const top = p.institusi.filter(r => r.n !== null).slice(0,12);
     const max = top[0]?.n || 1;
     return <div data-origin-panel={`${p.jenjang}-${p.asal}`} data-origin-cohort={p.angkatan} hidden={p.jenjang !== 'S1' || p.angkatan !== 0}>
       <div class="origin-summary" role="status">
-        <div><strong>{format(p.total)}</strong><span>rekaman mahasiswa {p.jenjang}</span></div>
-        <div><strong>{format(p.tercatat)}</strong><span>institusi asal tercatat</span></div>
-        <div><strong>{format(p.institusi_unik)}</strong><span>nama institusi berbeda</span></div>
+        <div><strong>{format(p.total)}</strong><span>total mahasiswa {p.jenjang}</span></div>
+        <div><strong>{format(p.tercatat)}</strong><span>data institusi terisi</span></div>
+        <div><strong>{format(p.institusi_unik)}</strong><span>ragam institusi asal</span></div>
       </div>
-      <p class="origin-context">{p.label} · {p.angkatan || '2021–2026'}. Menampilkan hingga 12 institusi dengan jumlah terbesar; {format(p.tidak_tercatat)} rekaman tidak mencantumkan institusi asal.</p>
+      <p class="origin-context">{p.label} · Angkatan {p.angkatan || '2021–2026'}. Menampilkan 12 institusi asal dengan jumlah mahasiswa terbanyak; sebanyak {format(p.tidak_tercatat)} mahasiswa belum mencantumkan institusi asal.</p>
       <ChartFrame id={`asal-${p.jenjang}-${p.asal}-${p.angkatan}`} title={p.label} hideHeader
-        source="Data Asal Sekolah dan Asal Univ Fak MIPA 2021–2026" extracted={data.tanggal} csvHref={withBase('/data/students_origins_institutions.csv')}
-        tableRows={p.institusi} tableColumns={[{key:'institusi',label:'Institusi asal'},{key:'n',label:'Rekaman mahasiswa',format:v=>v === null ? '<3 (disamarkan)' : format(Number(v))}]}
-        note="Jumlah 1–2 disamarkan dan tidak digambar. Tabel memuat seluruh institusi pada pilihan ini; CSV memuat semua pilihan (angkatan 0 = gabungan, jangan dijumlahkan lagi). Kapitalisasi dan spasi diseragamkan; nama berbeda belum tentu institusi berbeda.">
+        source="Data Asal Sekolah dan Perguruan Tinggi FMIPA 2021–2026" extracted={data.tanggal} csvHref={withBase('/data/students_origins_institutions.csv')}
+        tableRows={p.institusi} tableColumns={[{key:'institusi',label:'Institusi asal'},{key:'n',label:'Jumlah mahasiswa',format:v=>v === null ? '<3 (disamarkan)' : format(Number(v))}]}
+        note="Jumlah 1–2 mahasiswa disamarkan demi privasi dan tidak digambarkan dalam diagram. Tabel menampilkan seluruh institusi pada filter aktif; berkas CSV memuat rekaman lengkap seluruh kategori (angkatan 0 merupakan total gabungan tanpa penghitungan ulang). Penulisan nama distandardisasi; perbedaan penamaan belum tentu menunjukkan entitas yang berbeda.">
         <ol class="origin-bars">
           {top.map((row,i) => <li><span class="rank">{i+1}</span><span class="institution">{row.institusi}</span><span class="origin-track" aria-hidden="true"><span style={`width:${(row.n ?? 0)/max*100}%`} /></span><strong>{format(row.n ?? 0)}</strong></li>)}
         </ol>
-        {!top.length && <p>Belum ada kelompok dengan sedikitnya tiga rekaman untuk pilihan ini.</p>}
+        {!top.length && <p>Belum ada institusi dengan sedikitnya tiga mahasiswa pada kategori ini.</p>}
       </ChartFrame>
     </div>;
   })}

@@ -9,7 +9,16 @@ from collections import Counter
 
 import pandas as pd
 
-from utils import CLEAN_DIR, LOADED_DIR, MAPPINGS_DIR, ensure_directories, safe_year, split_pipe, year_from_date
+from utils import (
+    CLEAN_DIR,
+    LOADED_DIR,
+    MAPPINGS_DIR,
+    digits_only,
+    ensure_directories,
+    safe_year,
+    split_pipe,
+    year_from_date,
+)
 
 
 def normalize_identifier(value: object) -> str:
@@ -30,6 +39,141 @@ def position_group(value: object) -> str:
     if "tenaga pengajar" in text:
         return "Tenaga Pengajar"
     return "Belum terisi"
+
+
+# --- Reconciling the P2M roster with the SIMASTER rosters -------------------
+# The P2M lecturer export stopped being maintained in January 2026: it reports
+# 42 Guru Besar where the TCK 2026 detail workbooks (SIMASTER, TW3, 31 August
+# 2026) name 54, and it carries no Tenaga Pengajar at all where SIMASTER names
+# 16. TCK therefore wins for those two ranks; Asisten Ahli, Lektor, and Lektor
+# Kepala have no fresher source and stay as P2M recorded them.
+
+DEGREE_TOKENS = re.compile(
+    r"\b(prof|dr|drs|dra|ir|si|sc|su|ma|mt|st|kom|cs|eng|nat|rer|techn|phd|ph|"
+    r"apt|dea|msc|mkom|skom|mcs|meng|mhd|bsc|med|mm|mp|msi|ssi)\b",
+    re.I,
+)
+
+
+def name_key(value: object) -> str:
+    """Reduce a name to comparable tokens: no titles, no degrees, order-free.
+
+    The two sources spell the same person differently — "Reza M. I. Pulungan"
+    against "MHD. Reza M.I. Pulungan", "Harsojo Sabarman" against "Harsojo" —
+    so the key keeps only alphabetic tokens longer than two characters and
+    sorts them.
+    """
+    text = str(value or "").lower().split(",")[0]
+    text = re.sub(r"[^a-z ]", " ", text)
+    text = DEGREE_TOKENS.sub(" ", text)
+    return " ".join(sorted(token for token in text.split() if len(token) > 2))
+
+
+def resolve_person(record: dict, by_nidn: dict, by_name: dict, by_squashed: dict, tokens: dict) -> int | None:
+    """Find the P2M row a TCK roster entry refers to, most reliable key first.
+
+    NIDN is exact and settles 53 of the 54 professors on its own. The name
+    fallbacks exist for the rest: the workbooks disagree on spacing ("Endang
+    Tri Wahyuni" against "Endang Triwahyuni") and on how many given names they
+    print, so a squashed key and a unique token-subset match follow.
+    """
+    nidn = digits_only(record.get("nidn"))
+    if nidn and nidn in by_nidn:
+        return by_nidn[nidn]
+    key = name_key(record["name"])
+    if key in by_name:
+        return by_name[key]
+    squashed = key.replace(" ", "")
+    if squashed in by_squashed:
+        return by_squashed[squashed]
+    parts = set(key.split())
+    candidates = [index for index, other in tokens.items() if other and (other <= parts or parts <= other)]
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def merge_staff_positions(lecturers: pd.DataFrame, roster: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """Overlay the SIMASTER rosters onto the P2M roster and report what did not join.
+
+    Returns the reconciled frame plus an audit dict: a refreshed export must
+    make any drift visible rather than silently changing a headline number.
+    """
+    by_nidn = {}
+    by_name: dict[str, int] = {}
+    by_squashed: dict[str, int] = {}
+    tokens: dict[int, set[str]] = {}
+    for index, row in lecturers.iterrows():
+        nidn = digits_only(row.get("nidn"))
+        if nidn:
+            by_nidn.setdefault(nidn, index)
+        key = name_key(row.get("name_backup"))
+        by_name.setdefault(key, index)
+        by_squashed.setdefault(key.replace(" ", ""), index)
+        tokens[index] = set(key.split())
+
+    position = lecturers["functional_position"].map(position_group)
+    department = lecturers["department"].fillna("Belum terpetakan").replace("", "Belum terpetakan")
+    doctoral = lecturers["degree"].fillna("").str.contains(r"(?:\bDr\.|Ph\.?D|D\.Eng|Doktor)", regex=True, case=False)
+    certified = pd.to_numeric(lecturers["certification"], errors="coerce").fillna(0).gt(0)
+
+    matched_by_rank: dict[str, set[int]] = {}
+    unmatched: dict[str, list[dict]] = {}
+    appended: list[dict] = []
+    for rank in ("Guru Besar", "Tenaga Pengajar", "S3"):
+        entries = roster[roster["position"] == rank].to_dict(orient="records")
+        hit: set[int] = set()
+        miss: list[dict] = []
+        for entry in entries:
+            index = resolve_person(entry, by_nidn, by_name, by_squashed, tokens)
+            if index is None:
+                miss.append(entry)
+                continue
+            hit.add(index)
+            if rank == "S3":
+                doctoral.at[index] = True
+            else:
+                position.at[index] = rank
+                department.at[index] = entry["department"]
+        matched_by_rank[rank] = hit
+        unmatched[rank] = miss
+
+    # A professor SIMASTER no longer lists as active has retired; keeping the
+    # P2M row would publish a Guru Besar count above the university's own.
+    retired = [
+        index for index in lecturers.index
+        if position.at[index] == "Guru Besar" and index not in matched_by_rank["Guru Besar"]
+    ]
+
+    s3_keys = {name_key(entry["name"]) for entry in roster[roster["position"] == "S3"].to_dict(orient="records")}
+    for rank in ("Guru Besar", "Tenaga Pengajar"):
+        for entry in unmatched[rank]:
+            appended.append({
+                "department": entry["department"],
+                "position": rank,
+                "doctoral": name_key(entry["name"]) in s3_keys,
+                "certified": False,
+                "source": "tck",
+            })
+
+    kept = pd.DataFrame({
+        "department": department,
+        "position": position,
+        "doctoral": doctoral,
+        "certified": certified,
+        "source": "p2m",
+    }).drop(index=retired)
+    merged = pd.concat([kept, pd.DataFrame(appended)], ignore_index=True)
+
+    audit = {
+        "roster_p2m": int(len(lecturers)),
+        "roster_gabungan": int(len(merged)),
+        "purna_tugas_dikeluarkan": int(len(retired)),
+        "ditambahkan_dari_tck": int(len(appended)),
+        "tck_tanpa_padanan": {
+            rank: [{"nama": entry["name"], "departemen": entry["department"]} for entry in entries]
+            for rank, entries in unmatched.items() if entries
+        },
+    }
+    return merged, audit
 
 
 def sinta_score(value: object) -> float | None:
@@ -804,13 +948,14 @@ def main() -> None:
     lecturers = pd.read_csv(LOADED_DIR / "lecturers.csv", low_memory=False)
     clean_publications(lecturers)
     clean_subject_areas()
-    lecturer_clean = pd.DataFrame({
-        "department": lecturers["department"].fillna("Belum terpetakan").replace("", "Belum terpetakan"),
-        "position": lecturers["functional_position"].map(position_group),
-        "doctoral": lecturers["degree"].fillna("").str.contains(r"(?:\bDr\.|Ph\.?D|D\.Eng|Doktor)", regex=True, case=False),
-        "certified": pd.to_numeric(lecturers["certification"], errors="coerce").fillna(0).gt(0),
-    })
+    tck_staff = pd.read_csv(
+        LOADED_DIR / "tck_staff_positions.csv", low_memory=False, dtype={"nip": "string", "nidn": "string"}
+    )
+    lecturer_clean, lecturer_audit = merge_staff_positions(lecturers, tck_staff)
     lecturer_clean.to_csv(CLEAN_DIR / "lecturers.csv", index=False)
+    (CLEAN_DIR / "lecturers_reconciliation.json").write_text(
+        json.dumps(lecturer_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
     research = pd.read_csv(LOADED_DIR / "research.csv", low_memory=False)
     research_clean = pd.DataFrame({

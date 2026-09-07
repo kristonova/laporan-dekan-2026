@@ -22,10 +22,10 @@ const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p 
     <label>Tampilkan<select data-programme-metric><option value="count">Jumlah</option><option value="share">Proporsi (%)</option></select></label>
     <button class="reset-filter" type="button" data-programme-reset disabled>Reset filter</button>
   </div>
-  <ChartFrame {id} {title} hideHeader source="S1 & non-gelar: daftar mahasiswa FMIPA UGM; S2 & S3: Data Asal Sekolah dan Asal Univ Fak MIPA 2021–2026 (2 September 2026)" csvHref={withBase('/data/students_programme_trends.csv')}>
+  <ChartFrame {id} {title} hideHeader source="S1 & non-gelar: pangkalan data mahasiswa FMIPA UGM; S2 & S3: Data Asal Sekolah dan Perguruan Tinggi FMIPA 2021–2026 (2 September 2026)" csvHref={withBase('/data/students_programme_trends.csv')}>
     <div class="composition-board">
       <div class="board-heading">
-        <div><h4 data-programme-heading>Angkatan {chart.year}</h4><p class="selection" data-programme-status role="status" aria-live="polite">{countLabel(chart.visibleTotal)} rekaman · {chart.programmes.length} program studi · Semua jenjang</p></div>
+        <div><h4 data-programme-heading>Angkatan {chart.year}</h4><p class="selection" data-programme-status role="status" aria-live="polite">{countLabel(chart.visibleTotal)} mahasiswa · {chart.programmes.length} program studi · Semua jenjang</p></div>
         <ul class="degree-legend" aria-label="Warna jenjang">{DEGREE_PALETTE.map(item => <li data-degree-legend={item.key}><span style={`--degree-color:var(--composition-${item.key.toLowerCase()},${item.color})`} aria-hidden="true" />{item.label}</li>)}</ul>
       </div>
       <div class="column-head" aria-hidden="true">
@@ -36,8 +36,8 @@ const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p 
         {chart.programmes.map(item => <li class="programme-row" data-composition-row={item.prodi}>
           <button class="programme-name" type="button" data-programme-pick={item.prodi} aria-label={`Filter program studi ${item.prodi}`} aria-pressed="false">{item.prodi}</button>
           <div class="bar-cell"><div class="bar-track" data-programme-bar role="img" aria-label={barLabel(item)} hidden={item.partial}>
-            {DEGREE_PALETTE.map(degree => { const segment = item.segments.find(s => s.jenjang === degree.key); return <span class="bar-segment" data-bar-segment={degree.key} style={`--degree-color:var(--composition-${degree.key.toLowerCase()},${degree.color});width:${(segment?.n ?? 0) / chart.maximum * 100}%`} title={`${degree.label}: ${countLabel(segment?.n ?? null)} rekaman`} />; })}
-            <span class="zero-note" data-programme-zero hidden={item.count !== 0}>0 rekaman</span>
+            {DEGREE_PALETTE.map(degree => { const segment = item.segments.find(s => s.jenjang === degree.key); return <span class="bar-segment" data-bar-segment={degree.key} style={`--degree-color:var(--composition-${degree.key.toLowerCase()},${degree.color});width:${(segment?.n ?? 0) / chart.maximum * 100}%`} title={`${degree.label}: ${countLabel(segment?.n ?? null)} mahasiswa`} />; })}
+            <span class="zero-note" data-programme-zero hidden={item.count !== 0}>0 mahasiswa</span>
           </div><span class="partial-note" data-programme-partial hidden={!item.partial}>Data tidak lengkap / disamarkan</span></div>
           <span class="count numeric"><span class="mobile-label">Jumlah </span><strong data-composition-count>{countLabel(item.count)}</strong></span>
           <span class="share numeric"><span class="mobile-label">Proporsi </span><span data-composition-share>{shareLabel(item.share)}</span></span>
@@ -47,19 +47,19 @@ const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p 
           </svg>
         </li>)}
       </ul>
-      <div class="empty-state" data-programme-empty hidden><strong>Belum ada data untuk kombinasi filter ini.</strong><p>Pilih program studi atau jenjang lain, atau gunakan Reset filter.</p></div>
-      <div class="board-note"><span>Diurutkan dari jumlah terbesar.</span><span data-trend-note>Tren {chart.years[0]}–{chart.years.at(-1)} memakai skala yang sama; titik menandai {chart.year}.</span></div>
+      <div class="empty-state" data-programme-empty hidden><strong>Tidak ada data untuk kombinasi filter yang dipilih.</strong><p>Silakan pilih program studi atau jenjang lain, atau tekan tombol Reset filter.</p></div>
+      <div class="board-note"><span>Diurutkan dari jumlah terbanyak.</span><span data-trend-note>Tren {chart.years[0]}–{chart.years.at(-1)} menggunakan skala setara; titik menandai posisi angkatan {chart.year}.</span></div>
     </div>
   </ChartFrame>
-  <p class="denominator" data-programme-denominator>Proporsi terhadap {format(chart.denominator, 0)} rekaman seluruh jenjang pada angkatan {chart.year}. Filter prodi tidak mengubah penyebut.</p>
+  <p class="denominator" data-programme-denominator>Proporsi dihitung terhadap total {format(chart.denominator, 0)} mahasiswa seluruh jenjang pada angkatan {chart.year}. Pemilihan filter program studi tidak mengubah angka penyebut.</p>
   <details class="programme-table"><summary>Lihat tabel data</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Tabel data komposisi program studi"><table>
     <caption data-programme-caption>Semua prodi · Semua jenjang · angkatan {chart.year}</caption>
-    <thead><tr><th scope="col">Angkatan</th><th scope="col">Jenjang</th><th scope="col">Program studi</th><th scope="col">Rekaman mahasiswa</th><th scope="col">Proporsi (%)</th></tr></thead>
+    <thead><tr><th scope="col">Angkatan</th><th scope="col">Jenjang</th><th scope="col">Program studi</th><th scope="col">Jumlah mahasiswa</th><th scope="col">Proporsi (%)</th></tr></thead>
     <tbody>{data.map(row => <tr data-programme-row={seriesKey(row)} data-cohort={row.angkatan} hidden={row.angkatan !== chart.year}>
       <th scope="row">{row.angkatan}</th><td>{row.jenjang}</td><td>{row.prodi}</td><td>{row.n === null || row.disamarkan ? '<3 (disamarkan)' : format(row.n, 0)}</td><td data-programme-share>{row.n === null || row.disamarkan || chart.denominator === 0 ? '—' : shareLabel(row.n / chart.denominator * 100)}</td>
     </tr>)}</tbody>
   </table></div></details>
-  <p class="source-note">Rekaman per angkatan, bukan jumlah mahasiswa aktif. S1 mencakup reguler dan IUP. Nol berarti tidak ada rekaman pada sumber; data tidak lengkap atau disamarkan tidak digambar. CSV memuat seluruh prodi, angkatan, dan jenjang.</p>
+  <p class="source-note">Data mencerminkan jumlah mahasiswa baru per angkatan, bukan mahasiswa aktif terdaftar saat ini. Jenjang S1 mencakup kelas reguler dan IUP. Angka nol menunjukkan ketiadaan pendaftar pada berkas sumber; data dengan frekuensi kurang dari tiga disamarkan demi privasi. Berkas CSV memuat data lengkap seluruh prodi, angkatan, dan jenjang.</p>
   <noscript><p class="source-note">Aktifkan JavaScript untuk menggunakan filter. Tampilan awal menunjukkan seluruh program studi pada angkatan {chart.year}.</p></noscript>
 </section>
 
@@ -89,12 +89,12 @@ const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p 
         const chart = prepareProgrammeComposition(rows, totals, degree, Number(yearSelect.value), programme, metric);
         const degreeLabel = degree === 'all' ? 'Semua jenjang' : degree;
         setText('[data-programme-heading]', `Angkatan ${chart.year}`);
-        setText('[data-programme-status]', `${chart.visibleTotal === null ? 'Total tidak lengkap' : `${format(chart.visibleTotal, 0)} rekaman`} · ${chart.programmes.length} program studi · ${degreeLabel}`);
+        setText('[data-programme-status]', `${chart.visibleTotal === null ? 'Total tidak lengkap' : `${format(chart.visibleTotal, 0)} mahasiswa`} · ${chart.programmes.length} program studi · ${degreeLabel}`);
         setText('[data-programme-caption]', `${programme === 'all' ? 'Semua prodi' : programme} · ${degreeLabel} · angkatan ${chart.year}`);
-        setText('[data-programme-denominator]', `Proporsi terhadap ${format(chart.denominator, 0)} rekaman ${degree === 'all' ? 'seluruh jenjang' : degree} pada angkatan ${chart.year}. Filter prodi tidak mengubah penyebut.${chart.denominator === 0 ? ' Proporsi tidak tersedia karena penyebut nol.' : ''}`);
+        setText('[data-programme-denominator]', `Proporsi dihitung terhadap total ${format(chart.denominator, 0)} mahasiswa ${degree === 'all' ? 'seluruh jenjang' : degree} pada angkatan ${chart.year}. Pemilihan filter program studi tidak mengubah angka penyebut.${chart.denominator === 0 ? ' Proporsi tidak tersedia karena penyebut bernilai nol.' : ''}`);
         setText('[data-programme-mid]', `${format(chart.maximum / 2)}${metric === 'share' ? '%' : ''}`);
         setText('[data-programme-max]', `${format(chart.maximum)}${metric === 'share' ? '%' : ''}`);
-        setText('[data-trend-note]', `Tren ${metric === 'share' ? 'proporsi' : 'jumlah'} ${chart.years[0]}–${chart.years.at(-1)} memakai skala yang sama; titik menandai ${chart.year}.`);
+        setText('[data-trend-note]', `Tren ${metric === 'share' ? 'proporsi' : 'jumlah'} ${chart.years[0]}–${chart.years.at(-1)} menggunakan skala setara; titik menandai posisi angkatan ${chart.year}.`);
         root.querySelector<HTMLElement>('[data-programme-empty]')!.hidden = chart.programmes.length > 0;
         reset.disabled = programme === 'all' && degree === 'all' && yearSelect.value === latest && metric === 'count';
         root.querySelectorAll<HTMLElement>('[data-degree-legend]').forEach(item => { item.hidden = degree !== 'all' && item.dataset.degreeLegend !== degree; });
@@ -107,19 +107,19 @@ const trendLabel = (item: typeof chart.programmes[number]) => item.points.map(p 
           element.querySelector<HTMLElement>('[data-composition-share]')!.textContent = item.share === null ? '—' : `${format(item.share)}%`;
           const bar = element.querySelector<HTMLElement>('[data-programme-bar]')!;
           bar.hidden = item.partial || (metric === 'share' && item.share === null);
-          bar.setAttribute('aria-label', item.segments.map(s => `${s.jenjang}: ${s.n === null ? 'data tidak lengkap / disamarkan' : `${format(s.n, 0)} rekaman`}`).join('; '));
+          bar.setAttribute('aria-label', item.segments.map(s => `${s.jenjang}: ${s.n === null ? 'data tidak lengkap / disamarkan' : `${format(s.n, 0)} mahasiswa`}`).join('; '));
           const partial = element.querySelector<HTMLElement>('[data-programme-partial]')!;
           partial.hidden = !bar.hidden; partial.textContent = item.partial ? 'Data tidak lengkap / disamarkan' : 'Proporsi tidak tersedia';
           element.querySelector<HTMLElement>('[data-programme-zero]')!.hidden = item.count !== 0;
           element.querySelectorAll<HTMLElement>('[data-bar-segment]').forEach(segmentElement => {
             const segment = item.segments.find(s => s.jenjang === segmentElement.dataset.barSegment);
             segmentElement.style.width = `${((metric === 'share' ? segment?.share : segment?.n) ?? 0) / chart.maximum * 100}%`;
-            segmentElement.title = `${segmentElement.dataset.barSegment}: ${countLabel(segment?.n ?? null)} rekaman`;
+            segmentElement.title = `${segmentElement.dataset.barSegment}: ${countLabel(segment?.n ?? null)} mahasiswa`;
           });
           element.querySelector<SVGPathElement>('[data-spark-path]')!.setAttribute('d', item.path);
           const point = element.querySelector<SVGCircleElement>('[data-spark-point]')!;
           point.setAttribute('cx', String(item.selectedPoint.x)); point.setAttribute('cy', String(item.selectedPoint.y ?? 32)); point.style.display = item.selectedPoint.y === null ? 'none' : '';
-          const trend = `Tren ${item.prodi}. ${item.points.map(p => `${p.year}: ${p.value === null ? 'data tidak tersedia / disamarkan' : `${format(p.value, metric === 'count' ? 0 : 1)}${metric === 'share' ? '%' : ' rekaman'}`}`).join('; ')}`;
+          const trend = `Tren ${item.prodi}. ${item.points.map(p => `${p.year}: ${p.value === null ? 'data tidak tersedia / disamarkan' : `${format(p.value, metric === 'count' ? 0 : 1)}${metric === 'share' ? '%' : ' mahasiswa'}`}`).join('; ')}`;
           element.querySelector<SVGElement>('.sparkline')!.setAttribute('aria-label', trend); element.querySelector<SVGTitleElement>('[data-spark-title]')!.textContent = trend;
         });
         tableRows.forEach(tr => {

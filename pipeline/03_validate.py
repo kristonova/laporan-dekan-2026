@@ -157,7 +157,14 @@ def main() -> None:
     assert sinta_lookup["Matematika"]["median"] == 317
 
     institution = load_json("institution_snapshot.json")
-    assert institution["lecturer_doctoral"] == 138
+    assert institution["lecturers"] == 206
+    assert institution["lecturer_doctoral"] == 157
+    assert institution["lecturer_certified"] == 152
+    # The P2M study_programme export is missing Magister Elektronika dan
+    # Instrumentasi; the accreditation workbook is what the count comes from.
+    assert institution["study_programmes"] == 18
+    assert institution["study_programmes_by_level"] == {"Sarjana": 8, "Magister": 6, "Doktor": 4}
+    assert sum(institution["study_programmes_by_level"].values()) == institution["study_programmes"]
 
     collaborations = load_json("collab_countries.json")
     assert len(collaborations) == 62
@@ -183,6 +190,25 @@ def main() -> None:
 
     # Indicator 27 counts down: fewer teaching-only lecturers is better.
     assert by_no["27"]["arah"] == "turun" and by_no["27"]["status_kuartal"] == "tercapai"
+
+    # --- Jabatan fungsional: scene 2.5 must agree with the TCK indicators ---
+    # Guru Besar and Tenaga Pengajar are taken from the SIMASTER detail
+    # workbooks, so the dot matrix and the indicator table cannot disagree.
+    positions = Counter()
+    for row in load_json("lecturers_positions.json"):
+        positions[row["position"]] += int(row["n"])
+    assert positions["Guru Besar"] == by_no["30"]["capaian_dinilai"] == 54
+    assert positions["Tenaga Pengajar"] == by_no["27"]["capaian_dinilai"] == 16
+    assert sum(positions.values()) == institution["lecturers"]
+
+    reconciliation = json.loads((CLEAN_DIR / "lecturers_reconciliation.json").read_text(encoding="utf-8"))
+    # Every professor SIMASTER lists must resolve to a person; an unmatched one
+    # would mean the count above was assembled from two different populations.
+    assert "Guru Besar" not in reconciliation["tck_tanpa_padanan"], reconciliation["tck_tanpa_padanan"]
+    assert reconciliation["roster_gabungan"] == institution["lecturers"]
+    # 160 dosen hold an S3 per indicator 24, but four of them are absent from
+    # the roster entirely, so the published figure is knowingly lower.
+    assert institution["lecturer_doctoral"] + 3 == by_no["24"]["capaian_dinilai"] == 160
 
     # Percentage indicators without a denominator must not publish a TW3 percentage.
     mismatched = {str(row["no"]) for row in tck if row["unit_mismatch"]}

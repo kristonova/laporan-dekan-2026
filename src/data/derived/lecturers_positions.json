@@ -25,68 +25,83 @@
     "n": 1
   },
   {
-    "position": "Belum terisi",
-    "department": "Matematika",
-    "n": 2
-  },
-  {
     "position": "Guru Besar",
     "department": "Fisika",
-    "n": 12
+    "n": 14
   },
   {
     "position": "Guru Besar",
     "department": "Ilmu Komputer dan Elektronika",
-    "n": 6
-  },
-  {
-    "position": "Guru Besar",
-    "department": "Kimia",
-    "n": 18
-  },
-  {
-    "position": "Guru Besar",
-    "department": "Matematika",
-    "n": 6
-  },
-  {
-    "position": "Lektor",
-    "department": "Fisika",
-    "n": 23
-  },
-  {
-    "position": "Lektor",
-    "department": "Ilmu Komputer dan Elektronika",
-    "n": 26
-  },
-  {
-    "position": "Lektor",
-    "department": "Kimia",
-    "n": 12
-  },
-  {
-    "position": "Lektor",
-    "department": "Matematika",
-    "n": 23
-  },
-  {
-    "position": "Lektor Kepala",
-    "department": "Fisika",
-    "n": 13
-  },
-  {
-    "position": "Lektor Kepala",
-    "department": "Ilmu Komputer dan Elektronika",
-    "n": 10
-  },
-  {
-    "position": "Lektor Kepala",
-    "department": "Kimia",
     "n": 9
   },
   {
-    "position": "Lektor Kepala",
+    "position": "Guru Besar",
+    "department": "Kimia",
+    "n": 20
+  },
+  {
+    "position": "Guru Besar",
     "department": "Matematika",
     "n": 11
+  },
+  {
+    "position": "Lektor",
+    "department": "Fisika",
+    "n": 20
+  },
+  {
+    "position": "Lektor",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 24
+  },
+  {
+    "position": "Lektor",
+    "department": "Kimia",
+    "n": 10
+  },
+  {
+    "position": "Lektor",
+    "department": "Matematika",
+    "n": 20
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Fisika",
+    "n": 11
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 7
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Kimia",
+    "n": 6
+  },
+  {
+    "position": "Lektor Kepala",
+    "department": "Matematika",
+    "n": 6
+  },
+  {
+    "position": "Tenaga Pengajar",
+    "department": "Fisika",
+    "n": 3
+  },
+  {
+    "position": "Tenaga Pengajar",
+    "department": "Ilmu Komputer dan Elektronika",
+    "n": 3
+  },
+  {
+    "position": "Tenaga Pengajar",
+    "department": "Kimia",
+    "n": 3
+  },
+  {
+    "position": "Tenaga Pengajar",
+    "department": "Matematika",
+    "n": 7
   }
 ]

@@ -19,22 +19,22 @@ const period = `${data.tahun[0]}–${data.tahun.at(-1)}`;
   </div>
   <div class="swarm-key">
     <p><span class="sample-dot" aria-hidden="true"></span><strong>1 titik = 1 mahasiswa</strong><span class="key-divider">/</span>Warna menunjukkan angkatan</p>
-    <span class="key-hint">Arahkan kursor atau sentuh titik untuk melihat IPK</span>
+    <span class="key-hint">Arahkan kursor atau sentuh titik untuk melihat capaian IPK</span>
   </div>
-  <p class="ipk-status" role="status" aria-live="polite"><strong data-ipk-label>Semua angkatan · {period}</strong><span><b data-ipk-count>{format(total)}</b> IPK tercatat · {rows.length} program studi S1</span></p>
-  <ChartFrame id="ipk-beeswarm" title={`Beeswarm IPK S1 per program studi, ${period}`} hideHeader
-    source={`Daftar mahasiswa S1 FMIPA UGM ${period}`} extracted={extracted} csvHref={withBase('/data/students_ipk_distribution.csv')}
-    tableRows={rows} tableColumns={[{key:'prodi',label:'Program studi'},{key:'median',label:'Median',format:value => grade(Number(value))},{key:'tercatat',label:'IPK tercatat'},{key:'p25',label:'P25'},{key:'p75',label:'P75'}]}
-    note="Skala IPK 0–4 tetap untuk seluruh angkatan. Semua nilai tercatat ditampilkan, termasuk nol dan nilai ekstrem. Susunan vertikal titik hanya mencegah tumpang tindih. Median dihitung dari seluruh IPK pada pilihan angkatan. Unduhan CSV memuat ringkasan semua angkatan.">
+  <p class="ipk-status" role="status" aria-live="polite"><strong data-ipk-label>Semua angkatan · {period}</strong><span><b data-ipk-count>{format(total)}</b> mahasiswa tercatat · {rows.length} program studi sarjana</span></p>
+  <ChartFrame id="ipk-beeswarm" title={`Sebaran IPK Sarjana per Program Studi (${period})`} hideHeader
+    source={`Pangkalan data mahasiswa S1 FMIPA UGM (${period})`} extracted={extracted} csvHref={withBase('/data/students_ipk_distribution.csv')}
+    tableRows={rows} tableColumns={[{key:'prodi',label:'Program studi'},{key:'median',label:'Median',format:value => grade(Number(value))},{key:'tercatat',label:'Mahasiswa tercatat'},{key:'p25',label:'Kuartil 1 (P25)'},{key:'p75',label:'Kuartil 3 (P75)'}]}
+    note="Skala IPK 0–4,00 konsisten untuk seluruh angkatan. Seluruh data nilai tercatat ditampilkan secara utuh tanpa penyampelan. Susunan vertikal titik murni berfungsi mengurai sebaran agar tidak bertumpuk. Nilai median dihitung langsung dari seluruh populasi nilai pada pilihan filter aktif. Berkas unduhan CSV memuat ringkasan statistik seluruh angkatan.">
     <div class="swarm-header" aria-hidden="true"><span>Program studi</span><div class="swarm-axis">{[0,1,2,3,4].map(tick => <span>{tick}</span>)}</div><span class="stats-header"><span>Median</span><span>n</span></span></div>
     <div class="swarm-rows">
       {rows.map(row => {
         const swarm = layoutBeeswarm(programmePoints(data.sebaran, row.prodi), 720);
-        const tip = `${row.prodi}: median ${grade(row.median)}; ${format(row.tercatat)} IPK tercatat.`;
+        const tip = `${row.prodi}: median ${grade(row.median)}; ${format(row.tercatat)} mahasiswa tercatat.`;
         return <div class="swarm-row" data-ipk-programme={row.prodi}>
           <h4 class="programme-name">{row.prodi}</h4>
           <svg class="swarm-plot" viewBox={`0 0 ${swarm.width} ${swarm.height}`} role="img" tabindex="0" aria-label={tip}>
-            <title>{tip} Warna titik menunjukkan angkatan; gunakan filter untuk membandingkan.</title>
+            <title>{tip} Warna titik menunjukkan angkatan; gunakan tombol filter untuk membandingkan.</title>
             {[0,1,2,3,4].map(tick => <line class="grid-line" data-grid-tick={tick} x1={8+tick/4*704} x2={8+tick/4*704} y1="0" y2={swarm.height}/>)}
             {swarm.points.map(point => <circle class="swarm-dot" cx={point.x} cy={point.y} r={swarm.radius} fill={cohortColors[point.angkatan]}
               data-ipk={point.ipk} data-cohort={point.angkatan} data-order={point.order}
@@ -47,7 +47,7 @@ const period = `${data.tahun[0]}–${data.tahun.at(-1)}`;
     </div>
     <p class="axis-caption">Indeks Prestasi Kumulatif (IPK)</p>
   </ChartFrame>
-  <p class="pooled-note">Setiap angkatan berada pada tahap studi yang berbeda. Pilih satu angkatan untuk membandingkan antarprogram studi pada tahap kuliah yang sama.</p>
+  <p class="pooled-note">Setiap angkatan berada pada tahapan perkuliahan yang berbeda. Pilih salah satu angkatan untuk membandingkan sebaran antarprogram studi pada jenjang semester yang setara.</p>
   <div class="ipk-tooltip" role="tooltip" hidden></div>
 </section>
 <script>

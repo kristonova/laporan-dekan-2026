@@ -54,14 +54,14 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
 <div class="tck" data-tck-overview>
   <div class="tck__summary" aria-label="Ringkasan Capaian TCK 2026">
     <div><strong>{rows.length}</strong><span>indikator TCK</span></div>
-    <div><strong>{achieved}</strong><span>memenuhi target TW3</span></div>
+    <div><strong>{achieved}</strong><span>memenuhi target triwulan</span></div>
     <div><strong>{annual}</strong><span>melampaui target tahunan</span></div>
     <div class="is-behind"><strong>{behind}</strong><span>perlu akselerasi</span></div>
   </div>
 
   <div class="tck__context">
-    <p><strong>Triwulan III Tahun Berjalan:</strong> Posisi data mengacu pada penarikan per {snapshotLabel} (periode TW3 berakhir 30 September).</p>
-    <p><strong>Realisasi Anggaran:</strong> {format(budgetPercent)}% terserap. Sesuai siklus keuangan universitas, konsolidasi serapan anggaran terkonsentrasi pada Triwulan IV.</p>
+    <p><strong>Triwulan Berjalan:</strong> Posisi capaian mengacu pada pemutakhiran per {snapshotLabel} (akhir Triwulan III).</p>
+    <p><strong>Serapan Anggaran:</strong> Realisasi anggaran sebesar {format(budgetPercent)}%. Mengikuti pola siklus universitas, penyerapan dan pertanggungjawaban anggaran terkonsentrasi pada Triwulan IV.</p>
   </div>
 
   <div class="tck__controls" data-tck-controls hidden>
@@ -105,7 +105,7 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
                       <span class="tck-row__status" aria-hidden="true">{statusIcon[row.status_kuartal]}</span>
                       <strong>{format(row.capaian_dinilai)}</strong>
                       <small>{row.satuan} · {format(ratio)}% {quarterLabel(row)} · {format(annualRatio)}% tahunan</small>
-                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dievaluasi pada {quarterLabel(row)}: pelaporan TW3 pada dokumen sumber baru memuat jumlah orang tanpa angka penyebut populasi.</small>}
+                      {row.kuartal_dinilai !== "tw3" && <small class="tck-row__note">Dievaluasi berdasarkan capaian {quarterLabel(row)} karena pelaporan Triwulan III pada dokumen sumber baru memuat jumlah orang tanpa angka penyebut populasi.</small>}
                     </div>
                   </div>
                 </li>
@@ -140,7 +140,7 @@ const quarterLabel = (row: Row) => row.kuartal_dinilai.toUpperCase().replace("TW
   </details>
   {flagged.length > 0 && (
     <details class="tck__table tck__anomali">
-      <summary>Catatan teknis data pada {flagged.length} indikator</summary>
+      <summary>Lihat catatan teknis metodologis untuk {flagged.length} indikator</summary>
       <div tabindex="0">
         <table>
           <caption>Catatan teknis yang ditemukan pada dokumen sumber TCK 2026</caption>

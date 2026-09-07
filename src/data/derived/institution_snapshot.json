@@ -1,9 +1,18 @@
 {
-  "lecturers": 203,
+  "lecturers": 206,
   "academic_staff": 164,
   "departments": 4,
-  "study_programmes": 17,
+  "study_programmes": 18,
+  "study_programmes_by_level": {
+    "Sarjana": 8,
+    "Magister": 6,
+    "Doktor": 4
+  },
   "laboratories": 16,
-  "lecturer_doctoral": 138,
-  "lecturer_certified": 152
+  "lecturer_doctoral": 157,
+  "lecturer_certified": 152,
+  "lecturer_sources": {
+    "jabatan_resmi": "31 Agustus 2026",
+    "roster_dasar": "27 Januari 2026"
+  }
 }

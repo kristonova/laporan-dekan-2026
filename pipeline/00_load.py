@@ -16,8 +16,10 @@ from utils import (
     PARTNERSHIP_DIR,
     SCIVAL_DIR,
     TCK_2026_DIR,
+    TCK_RINCIAN_DIR,
     cell,
     deduplicate,
+    digits_only,
     ensure_directories,
     excel_date,
     numeric_cell,
@@ -511,6 +513,67 @@ def load_accreditation() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+# The three TCK detail workbooks that name individual lecturers, with the row the
+# roster starts on and the positional columns worth keeping. Each sheet was laid
+# out by hand, so none of them agree on where the header ends or which column
+# holds the department.
+TCK_STAFF_ROSTERS = {
+    "Guru Besar": {
+        "file": "30.Jumlah Guru Besar .xlsx",
+        "first_row": 5, "name": 1, "nip": 2, "nidn": 3, "department": 4,
+        # The sheet continues past the active roster with a block of retired
+        # professors; only rows marked Aktif count towards indicator 30.
+        "status": 7, "status_keep": "Aktif",
+    },
+    "Tenaga Pengajar": {
+        "file": "27.Jumlah dosen tetap tenaga pengajar.xlsx",
+        "first_row": 1, "name": 1, "nip": 2, "nidn": None, "department": 4,
+    },
+    "S3": {
+        "file": "24.Jumlah dosen tetap berkualifikasi akademik S3.xlsx",
+        "first_row": 3, "name": 1, "nip": 2, "nidn": None, "department": 5,
+    },
+}
+DEPARTMENTS = {"Fisika", "Kimia", "Matematika", "Ilmu Komputer dan Elektronika"}
+
+
+def load_tck_staff_positions() -> pd.DataFrame:
+    """Nominative jabatan fungsional rosters from the TCK 2026 detail workbooks.
+
+    The P2M lecturer export is a research-management dump whose
+    functional_position column has not been maintained since January 2026: it
+    reports 42 Guru Besar where SIMASTER reports 54. These sheets are the
+    university's own record, so they become the authority for Guru Besar and
+    Tenaga Pengajar in 01_clean.py. Names and NIP/NIDN are kept only as far as
+    work/loaded/ so the two sources can be joined on an identifier; the clean
+    stage drops them before anything reaches src/data/derived/.
+
+    Each sheet also ends in a Rekap block whose cells land in the department
+    column ("-", "persen", a stray 120), so a row is only accepted when that
+    column holds one of the four real departments.
+    """
+    rows: list[dict] = []
+    for position, spec in TCK_STAFF_ROSTERS.items():
+        grid = read_workbook(TCK_RINCIAN_DIR / spec["file"])
+        for _, row in grid.iloc[spec["first_row"]:].iterrows():
+            department = text_cell(row, spec["department"])
+            if department not in DEPARTMENTS:
+                continue
+            if spec.get("status") is not None and text_cell(row, spec["status"]) != spec["status_keep"]:
+                continue
+            name = text_cell(row, spec["name"])
+            if len(name) < 5:
+                continue
+            rows.append({
+                "position": position,
+                "name": name,
+                "nip": digits_only(text_cell(row, spec["nip"])),
+                "nidn": digits_only(text_cell(row, spec["nidn"])) if spec["nidn"] is not None else "",
+                "department": department,
+            })
+    return pd.DataFrame(rows)
+
+
 def load_exchange() -> pd.DataFrame:
     """Outbound student mobility; personal identifiers are dropped on read."""
     grid = read_workbook(ACADEMIC_DIR / "mahasiswa Exchange.xlsx", "Sheet1")
@@ -918,6 +981,9 @@ def main() -> None:
 
     tck = load_tck()
     record("tck_2026_indikator", tck, [TCK_WORKBOOK.name, "tck_pillar.csv", "tck_meta.csv", "tck_2026_anggaran.json"])
+
+    tck_staff = load_tck_staff_positions()
+    record("tck_staff_positions", tck_staff, [spec["file"] for spec in TCK_STAFF_ROSTERS.values()])
 
     partnerships = load_partnerships()
     record("partnerships", partnerships, [path.name for path in sorted(PARTNERSHIP_DIR.glob("*DATA LENTERA*.xlsx"))])

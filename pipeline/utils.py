@@ -22,6 +22,10 @@ PARTNERSHIP_DIR = DATA_ROOT / "kerjasama"
 HEALTH_DIR = DATA_ROOT / "health promotion university posbindu"
 TCK_DIR = WORKSPACE_ROOT / "target_capaian_kinerja"
 TCK_2026_DIR = TCK_DIR / "tck_2026"
+# Per-indicator detail workbooks behind the TCK summary sheet. Three of them are
+# nominative staff rosters straight out of SIMASTER, which makes them the only
+# current source for jabatan fungsional the P2M database no longer tracks.
+TCK_RINCIAN_DIR = TCK_2026_DIR / "RINCIAN TCK"
 WORK_DIR = APP_ROOT / "pipeline" / "work"
 LOADED_DIR = WORK_DIR / "loaded"
 CLEAN_DIR = WORK_DIR / "cleaned"
@@ -108,6 +112,15 @@ def numeric_cell(row: pd.Series, index: int) -> float | None:
     except ValueError:
         return None
     return None if math.isnan(parsed) else parsed
+
+
+def digits_only(value: Any) -> str:
+    """Strip a NIP/NIDN down to its digits so two spellings of one id compare equal.
+
+    Source sheets write them with dots, spaces, or a trailing ".0" from Excel's
+    numeric coercion; only the digit run identifies the person.
+    """
+    return re.sub(r"\D", "", str(value or ""))
 
 
 def excel_date(value: Any) -> pd.Timestamp | None:

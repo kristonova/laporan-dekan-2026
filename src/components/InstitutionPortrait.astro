@@ -4,6 +4,7 @@ interface Props {
   academicStaff: number;
   departmentsCount: number;
   studyProgrammes: number;
+  studyProgrammesByLevel: Record<string, number>;
   laboratories: number;
   departmentCounts: Record<string, number>;
 }
@@ -13,9 +14,15 @@ const {
   academicStaff,
   departmentsCount,
   studyProgrammes,
+  studyProgrammesByLevel,
   laboratories,
   departmentCounts,
 } = Astro.props;
+// Rendered from the data rather than written out, so the split cannot fall
+// out of step with the programme count beside it.
+const levelSummary = Object.entries(studyProgrammesByLevel)
+  .map(([level, count]) => `${count} ${level}`)
+  .join(" · ");
 const departments = [
   { name: "Fisika", sourceName: "Fisika", className: "fisika" },
   { name: "Ilmu Komputer & Elektronika", sourceName: "Ilmu Komputer dan Elektronika", className: "ike" },
@@ -64,7 +71,7 @@ const legendEntries = [
   </div>
   <div class="portrait__structure">
     <div><strong>{departmentsCount}</strong><span>departemen</span></div>
-    <div><strong>{studyProgrammes}</strong><span>program studi</span><small>8 Sarjana · 5 Magister · 4 Doktor</small></div>
+    <div><strong>{studyProgrammes}</strong><span>program studi</span><small>{levelSummary}</small></div>
     <div><strong>{laboratories}</strong><span>laboratorium</span></div>
   </div>
   <ul class="portrait__legend" aria-label="Departemen">
@@ -76,7 +83,7 @@ const legendEntries = [
       </li>
     ))}
   </ul>
-  <p class="portrait__hint" data-portrait-hint hidden>Arahkan kursor ke titik untuk melihat kelompoknya, atau pilih satu kelompok di atas untuk menyorotnya.</p>
+  <p class="portrait__hint" data-portrait-hint hidden>Arahkan kursor ke setiap titik untuk melihat rincian departemen, atau klik salah satu kategori di atas untuk menyorot sebarannya.</p>
 </div>
 
 <style>
