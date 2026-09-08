@@ -4,6 +4,7 @@ import ColdOpen from "../components/ColdOpen.astro";
 import ChapterIntro from "../components/ChapterIntro.astro";
 import StoryScene from "../components/StoryScene.astro";
 import PillarHeader from "../components/PillarHeader.astro";
+import PillarNavigation from "../components/PillarNavigation.astro";
 import InstitutionPortrait from "../components/InstitutionPortrait.astro";
 import ValueModel from "../components/ValueModel.astro";
 import TckOverview from "../components/TckOverview.astro";
@@ -1065,6 +1066,7 @@ const pillarSummary = [
 ---
 
 <BaseLayout>
+  <PillarNavigation pillars={pillarSummary} />
   <main id="konten-utama">
     <ColdOpen
       publications={valueModelRaw.metrics.publications_n}
