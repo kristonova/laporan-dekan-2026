@@ -32,9 +32,53 @@ const official=tck.find(r=>r.no==='9')?.capaian_dinilai??0;
               {p.label==='Kejuaraan'&&<p class="detail-note">{p.per_tingkat.map(r=>`${r.n} rekaman ${r.label.toLowerCase()}`).join(' · ')}.</p>}
             </div>
           </div>
+          <div class="achievement-explorer" data-achievement-explorer>
+            <div class="achievement-explorer-heading"><div><p class="detail-kicker">Kegiatan & karya · sesuai sumber</p><h4>Telusuri Cerita di Balik Pencapaian</h4></div><label>Cari kegiatan atau hasil<input type="search" data-achievement-search placeholder="Ketik nama kompetisi, karya, atau juara"/></label></div>
+            <p class="achievement-status" role="status" data-achievement-status>{events.length} entri kegiatan / hasil · {p.total} rekaman</p>
+            <div class="achievement-scroll" tabindex="0" aria-label={`Daftar kegiatan ${p.label}, gulir untuk melihat selanjutnya`}>
+              <ol>{events.slice().sort((a,b)=>b.n-a.n||a.kegiatan.localeCompare(b.kegiatan,'id')).map(row=><li data-achievement-event data-count={row.n}>
+                <div><span class="achievement-tag">{row.hasil}</span><h5>{row.kegiatan}</h5><p>{row.tingkat}</p></div><strong>{row.n}<span>rekaman</span></strong>
+              </li>)}</ol>
+              <p class="detail-note" data-achievement-empty hidden>Tidak ada kegiatan yang cocok. Coba kata pencarian lain.</p>
+            </div>
+          </div>
         </ChartFrame>
       </div>;
     })}
   </div>
-  <p class="detail-note detail-callout">Rincian memuat <strong>{data.total} rekaman</strong>, sedangkan ringkasan TCK mencatat {official}; selisih {Math.abs(official-data.total)} rekaman belum terjelaskan. Satu kegiatan dapat menghasilkan beberapa rekaman mahasiswa. Publikasi dan karya KKN tetap dibedakan dari kejuaraan; data ini tidak ditambahkan ke tren gelar juara tahunan. Daftar kegiatan lengkap tersedia melalui “Lihat Tabel Data”.</p>
+  <p class="detail-note detail-callout">Rincian memuat <strong>{data.total} rekaman</strong>, sedangkan ringkasan TCK mencatat {official}; selisih {Math.abs(official-data.total)} rekaman belum terjelaskan. Satu kegiatan dapat menghasilkan beberapa rekaman mahasiswa. Publikasi dan karya KKN tetap dibedakan dari kejuaraan; data ini tidak ditambahkan ke tren gelar juara tahunan. Satu entri menggabungkan judul, hasil, dan tingkat yang sama, bukan jumlah kompetisi unik.</p>
 </DetailShell>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-achievement-explorer]').forEach(root=>{
+    const input=root.querySelector<HTMLInputElement>('[data-achievement-search]')!;
+    const rows=[...root.querySelectorAll<HTMLElement>('[data-achievement-event]')];
+    input.addEventListener('input',()=>{
+      const query=input.value.trim().toLocaleLowerCase('id');
+      let visible=0,total=0;
+      rows.forEach(row=>{
+        row.hidden=!(row.textContent??'').toLocaleLowerCase('id').includes(query);
+        if(!row.hidden){visible++;total+=Number(row.dataset.count);}
+      });
+      root.querySelector<HTMLElement>('[data-achievement-status]')!.textContent=`${visible} entri kegiatan / hasil · ${total} rekaman`;
+      root.querySelector<HTMLElement>('[data-achievement-empty]')!.hidden=visible>0;
+    });
+  });
+</script>
+<style>
+  .achievement-explorer { margin-top:36px; border-top:1px solid var(--border-subtle); padding-top:28px; }
+  .achievement-explorer-heading { display:flex; justify-content:space-between; align-items:end; gap:30px; }
+  .achievement-explorer-heading h4 { margin:0; }
+  .achievement-explorer-heading label { min-width:280px; }
+  .achievement-status { font:12px/1.6 var(--font-ui); color:var(--text-secondary); margin:18px 0 12px; }
+  .achievement-scroll { max-height:380px; overflow:auto; padding-right:14px; scrollbar-color:var(--ugm-blue-200) transparent; }
+  .achievement-scroll:focus-visible { outline:3px solid var(--ugm-gold); outline-offset:3px; }
+  .achievement-scroll ol { margin:0; padding:0; list-style:none; }
+  .achievement-scroll li { display:grid; grid-template-columns:minmax(0,1fr) 65px; gap:26px; padding:20px 0; border-top:1px solid var(--border-subtle); }
+  .achievement-tag { font:700 10px/1.5 var(--font-ui); color:var(--text-heading); background:var(--surface-tint); padding:4px 8px; display:inline-block; }
+  .achievement-scroll h5 { font:600 14px/1.6 var(--font-ui); margin:9px 0 5px; overflow-wrap:anywhere; }
+  .achievement-scroll p { font:11px/1.5 var(--font-ui); margin:0; color:var(--text-secondary); }
+  .achievement-scroll strong { font:700 28px/1.2 var(--font-display); color:var(--text-heading); align-self:center; text-align:right; }
+  .achievement-scroll strong span { display:block; font:11px var(--font-ui); color:var(--text-secondary); }
+  @media(max-width:700px) { .achievement-explorer-heading { display:grid; gap:20px; } .achievement-explorer-heading label { min-width:0; } }
+  @media print { .achievement-scroll { max-height:none; overflow:visible; } }
+</style>

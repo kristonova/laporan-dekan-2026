@@ -14,7 +14,8 @@
     "data": "node pipeline/run-python.mjs 00_load.py 01_clean.py 02_aggregate.py",
     "validate:data": "node pipeline/run-python.mjs 03_validate.py",
     "check": "astro check",
-    "verify": "npm run data && npm run validate:data && npm run build && node pipeline/check-build.mjs"
+    "test:details": "node --test pipeline/scholarship-profile.test.mjs",
+    "verify": "npm run data && npm run validate:data && npm run test:details && npm run build && node pipeline/check-build.mjs"
   },
   "dependencies": {
     "astro": "^7.2.4"

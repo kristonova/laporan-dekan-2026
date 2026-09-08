@@ -7,7 +7,7 @@ UGM, label angka langsung, tombol jenjang/kategori, serta tabel dan unduhan.
 | Sumber | Keluaran dan pemakaian | Cakupan |
 | --- | --- | --- |
 | Rincian #4a–4b | `tck_international`: negara, program/kegiatan, status bukti | 90 kredit + 108 nonkredit; rekaman, bukan orang unik |
-| Rincian #8b1–8b3 | `tck_graduates`: histogram semester, median, kuartil per prodi | S1 150, S2 57, S3 35; daftar bukti khusus, bukan semua lulusan |
+| Rincian #8b1–8b3 | `tck_graduates`: satu titik per rekaman menurut semester, median, kuartil dan rentang per prodi | S1 150, S2 57, S3 35; daftar bukti khusus, bukan semua lulusan |
 | Rincian #9 | `tck_achievements`: jenis, departemen, tingkat, daftar kegiatan | 167 rekaman; ringkasan TCK 168 |
 | PENERIMA BEASISWA 2026 / Rekapitulasi | `scholarships` lengkap + `scholarships_detail` | 703 penerima tabel; 79 skema aktif, sebelumnya hanya 15 diekspor |
 | Rincian #8a dan #10 | `tck_supporting`: partisipasi per prodi | 603 MBKM, 44 jalur pascasarjana |
@@ -45,6 +45,36 @@ UGM, label angka langsung, tombol jenjang/kategori, serta tabel dan unduhan.
 memeriksa jumlah terhadap sumber, rekonsiliasi seluruh kelompok, semester,
 penahanan statistik kecil, IPK, cakupan 79 skema, serta ketiadaan kunci privat.
 `npm run build` dan `node pipeline/check-build.mjs` memeriksa artefak web.
+
+## Penyambungan ke halaman cerita
+
+Audit lanjutan 8 September menemukan bahwa lima komponen rincian dan datasetnya
+ada di repositori, tetapi belum diimpor atau dirender oleh `src/pages/index.astro`.
+Komponen sekarang dipasang pada tujuh lokasi berikut; katalog `/data` juga
+memuat kelima dataset rincian. Seluruh pipeline diregenerasi dan divalidasi;
+angka agregat tidak berubah dari sumber yang tersedia.
+
+| Bagian | Tautan | Visualisasi |
+| --- | --- | --- |
+| 4.3 | `#rincian-pengalaman-belajar` | MBKM dan jalur pascasarjana per prodi |
+| 4.4 | `#profil-mahasiswa-asing` | Batang terbagi kredit/nonkredit menurut negara, pilihan jalur dan program |
+| 4.5 | `#rincian-lama-studi` | Satu titik per rekaman kelulusan, median, pita 50% tengah, minimum–maksimum |
+| 4.7 | `#profil-lulusan-jenjang` | Perbandingan tiga jenjang pada skala bulan yang sama, tren lima tahun, IPK, komposisi prodi |
+| 4.7 | `#rincian-prestasi` | Komposisi kategori, departemen, hasil, dan daftar kegiatan yang dapat dicari |
+| 5.2 | `#rincian-fasilitas-gedung` | Matriks gedung × jenis fasilitas |
+| 6.4′ | `#beasiswa` | Pencarian 79 skema/periode dan sebaran penerima per prodi yang mengikuti filter |
+
+Navigasi cepat setelah ringkasan TCK mengarah ke empat rincian utama. Angka
+ringkasan fakultas pada beasiswa tetap utuh; subtotal skema, subtotal prodi, dan
+persentase terhadap rekap fakultas berubah bersama mengikuti pilihan pembaca.
+Label “rekaman tanpa negara asal” menggantikan label yang dapat terbaca sebagai
+jumlah negara hilang. Mobilitas masuk dan keluar tidak dinarasikan sebagai arus
+yang seimbang karena kedua daftar memiliki cakupan berbeda.
+
+`npm run test:details` menguji cakupan seluruh skema serta rekonsiliasi filter
+program studi, kelompok, pencarian, dan hasil kosong. Pemeriksaan build kini
+memastikan tujuh lokasi **beserta komponen yang dirender** benar-benar ada pada
+HTML hasil produksi, untuk menangkap kembali kasus komponen yang tidak terpasang.
 
 Verifikasi 8 September: pipeline penuh dan pemeriksaan build lulus. Pemeriksaan
 browser pada build produksi mencakup 14 pilihan panel, filter/pencarian/reset

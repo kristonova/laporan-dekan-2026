@@ -67,6 +67,15 @@ for (const relativePath of htmlFiles) {
 }
 
 const sw = await readFile(resolve(root, "sw.js"), "utf8");
+// These components once existed and passed type checks while never rendering
+// on the story page. Check the public artifact, not just their source files.
+const storyHtml = await readFile(resolve(root, "index.html"), "utf8");
+for (const id of ["profil-mahasiswa-asing", "rincian-lama-studi", "profil-lulusan-jenjang", "rincian-prestasi", "beasiswa", "rincian-pengalaman-belajar", "rincian-fasilitas-gedung"]) {
+  if (!storyHtml.includes(`id="${id}"`)) failures.push(`index.html: bagian rincian ${id} tidak terpasang`);
+}
+for (const marker of ["data-scholarship-profile", "data-achievement-explorer", "asing-detail-0", "tck-lulus-S3", "profil-lulus-S2", "rincian-fasilitas", "rincian-pembelajaran"]) {
+  if (!storyHtml.includes(marker)) failures.push(`index.html: visualisasi rincian ${marker} tidak dirender`);
+}
 const precacheMatch = sw.match(/const PRECACHE = (\[[\s\S]*?\]);/);
 if (!precacheMatch) {
   failures.push("sw.js: daftar precache hilang");

@@ -1,7 +1,6 @@
 ---
 import data from '../../data/derived/scholarships.json';
 import DetailShell from './DetailShell.astro';
-import CountBars from './CountBars.astro';
 import {scholarshipProfile,scholarshipGroup,programmeLabel} from '../../lib/scholarship-profile';
 import {withBase} from '../../lib/paths';
 const initial=scholarshipProfile(data.rincian);
@@ -33,9 +32,10 @@ const mix=groups.map(label=>({label,n:data.rincian.filter(r=>scholarshipGroup(r.
           <p data-scholarship-empty hidden>Tidak ada beasiswa yang cocok. Coba kata lain atau atur ulang filter.</p>
         </div>
       </div>
-      <div><p class="detail-kicker">Seluruh skema · seluruh prodi</p><h4>Sebaran Penerima per Program Studi</h4>
-        <CountBars rows={data.per_prodi.map(r=>({label:programmeLabel[r.prodi]||r.prodi,n:r.penerima}))} total={data.total} color="var(--pillar-teal)"/>
-        <p class="detail-note">Grafik di kanan selalu menunjukkan keseluruhan rekap. Filter di kiri menelusuri rincian skema di dalamnya.</p>
+      <div><p class="detail-kicker">Mengikuti filter & pencarian</p><h4>Sebaran Penerima per Program Studi</h4>
+        <div class="scholarship-scope"><strong data-scholarship-matched>{fmt(initial.matched)}</strong><span>penerima pada pilihan ini<br/><span data-scholarship-share>100% dari rekap fakultas</span></span></div>
+        <ol class="scholarship-programmes" data-scholarship-programmes>{initial.perProgramme.map(r=><li><div><span>{r.label}</span><strong>{fmt(r.n)}</strong></div><span class="scholarship-track" aria-hidden="true"><i style={`width:${r.n/Math.max(...initial.perProgramme.map(p=>p.n))*100}%`}/></span></li>)}</ol>
+        <p class="detail-note">Pilih kelompok, program studi, atau nama beasiswa. Daftar skema dan sebaran penerima berubah bersama; angka utama di atas tetap menunjukkan rekap seluruh fakultas.</p>
       </div>
     </div>
     <p class="detail-note detail-callout">Nama dan periode skema dipertahankan: varian KIP lintas angkatan, semester, atau kelayakan tetap dapat ditelusuri satu per satu. Pengelompokan didasarkan pada nama KIP/UGM di sumber. Angka merupakan penjumlahan penerima pada rekap skema, bukan hasil pencocokan orang unik lintas beasiswa.</p>
@@ -52,6 +52,7 @@ const mix=groups.map(label=>({label,n:data.rincian.filter(r=>scholarshipGroup(r.
     const search=root.querySelector<HTMLInputElement>('[data-scholarship-search]')!;
     const list=root.querySelector<HTMLOListElement>('[data-scholarship-rows]')!;
     const status=root.querySelector<HTMLElement>('[data-scholarship-status]')!;
+    const programmeList=root.querySelector<HTMLOListElement>('[data-scholarship-programmes]')!;
     const update=()=>{
       const p=scholarshipProfile(data.rincian,programme.value,group.value,search.value);
       list.replaceChildren();
@@ -63,12 +64,29 @@ const mix=groups.map(label=>({label,n:data.rincian.filter(r=>scholarshipGroup(r.
       });
       status.textContent=`${p.rows.length} skema · ${fmt(p.matched)} penerima${search.value.trim()?` cocok dengan pencarian (dari ${fmt(p.total)} pada filter)`:' pada pilihan ini'}`;
       root.querySelector<HTMLElement>('[data-scholarship-empty]')!.hidden=p.rows.length>0;
+      programmeList.replaceChildren();
+      const programmeMax=Math.max(1,...p.perProgramme.map(r=>r.n));
+      p.perProgramme.forEach(row=>{
+        const li=document.createElement('li'),line=document.createElement('div'),label=document.createElement('span'),value=document.createElement('strong'),track=document.createElement('span'),bar=document.createElement('i');
+        label.textContent=row.label;value.textContent=fmt(row.n);track.className='scholarship-track';track.setAttribute('aria-hidden','true');bar.style.width=`${row.n/programmeMax*100}%`;
+        line.append(label,value);track.append(bar);li.append(line,track);programmeList.append(li);
+      });
+      root.querySelector<HTMLElement>('[data-scholarship-matched]')!.textContent=fmt(p.matched);
+      root.querySelector<HTMLElement>('[data-scholarship-share]')!.textContent=`${new Intl.NumberFormat('id-ID',{maximumFractionDigits:1}).format(p.matched/data.total*100)}% dari rekap fakultas`;
     };
     programme.addEventListener('change',update);group.addEventListener('change',update);search.addEventListener('input',update);
     root.querySelector('[data-scholarship-reset]')!.addEventListener('click',()=>{programme.value='';group.value='';search.value='';update();});
   });
 </script>
 <style is:global>
+  .detail-viz .scholarship-scope { display:flex; gap:18px; align-items:center; border-block:1px solid var(--border-subtle); padding:20px 0; margin-bottom:24px; }
+  .detail-viz .scholarship-scope > strong { font:700 42px/1 var(--font-display); color:var(--text-heading); }
+  .detail-viz .scholarship-scope > span { font:12px/1.7 var(--font-ui); color:var(--text-secondary); }
+  .detail-viz .scholarship-programmes { list-style:none; padding:0; margin:0; display:grid; gap:19px; }
+  .detail-viz .scholarship-programmes li > div { display:flex; justify-content:space-between; gap:20px; font:13px/1.5 var(--font-ui); }
+  .detail-viz .scholarship-programmes strong { color:var(--text-heading); }
+  .detail-viz .scholarship-programmes .scholarship-track { margin-left:0; }
+  .detail-viz .scholarship-programmes .scholarship-track i { background:var(--pillar-teal); }
   .detail-viz .scholarship-controls { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .detail-viz .scholarship-search { grid-column:1/-1; }
   .detail-viz .scholarship-result { display:flex; align-items:center; gap:18px; justify-content:space-between; margin:14px 0 0; }

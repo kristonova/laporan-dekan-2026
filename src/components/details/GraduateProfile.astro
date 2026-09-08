@@ -12,8 +12,24 @@ const levels=[{code:'S1',label:'Sarjana'},{code:'S2',label:'Magister'},{code:'S3
 const fmt=(n:number|null,d=1)=>n===null?'—':new Intl.NumberFormat('id-ID',{maximumFractionDigits:d}).format(n);
 const months=(value:string)=>{const m=value.match(/(\d+)\s*th\s*(\d+)\s*bln/);return m?Number(m[1])*12+Number(m[2]):Number(value);};
 const date=(s:string)=>new Date(`${s}T00:00:00`).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+const latestProfiles=levels.map(level=>{
+  const row=population.filter(r=>r.jenjang===level.label).sort((a,b)=>a.tahun-b.tahun).at(-1)!;
+  return {...level,...row,bulan:months(row.lama_studi)};
+});
+const monthScale=Math.ceil(Math.max(...population.map(r=>months(r.lama_studi)))/24)*24;
+const semesterScale=Math.ceil(Math.max(...details.panel.map(p=>p.lama_studi.max??0)));
 ---
 <DetailShell label={mode==='population'?'Profil seluruh lulusan':'Sebaran masa studi dalam daftar TCK'}>
+  {mode==='population'&&<>
+    <p class="detail-kicker">Rerata lama studi · seluruh lulusan · {latestProfiles[0].tahun_ajaran}</p>
+    <div class="study-comparison">{latestProfiles.map(p=><article>
+      <div class="study-comparison-heading"><span>{p.code}</span><h4>{p.label}</h4></div>
+      <p class="study-comparison-value"><strong>{fmt(p.bulan,2)}</strong> bulan</p>
+      <div class="study-comparison-track" aria-hidden="true"><i style={`width:${p.bulan/monthScale*100}%`}/></div>
+      <p>{fmt(p.lulusan,0)} lulusan <span>IPK {fmt(p.ipk_rerata,2)}</span></p>
+    </article>)}</div>
+    <p class="detail-note study-scale-note">Panjang batang memakai skala yang sama: 0–{monthScale} bulan. Ketiga jenjang memiliki struktur dan durasi program berbeda.</p>
+  </>}
   <div data-detail-switch>
     <div class="detail-controls"><div class="detail-choices" role="group" aria-label={mode==='population'?'Jenjang profil lulusan':'Jenjang rincian kelulusan TCK'}>
       {levels.map((level,i)=><button type="button" data-detail-choice={level.code} aria-pressed={i===0}>{level.code} · {level.label}</button>)}
@@ -23,7 +39,6 @@ const date=(s:string)=>new Date(`${s}T00:00:00`).toLocaleDateString('id-ID',{day
       const history=population.filter(r=>r.jenjang===level.label).map(r=>({...r,bulan:months(r.lama_studi)}));
       const latest=history.at(-1)!;
       const counts=programmes.filter(r=>r.jenjang===level.label&&r.tahun===latest.tahun).map(r=>({label:r.prodi,n:r.lulusan})).sort((a,b)=>b.n-a.n);
-      const histogramMax=Math.max(...p.semester.map(r=>r.n));
       return <div data-detail-panel={level.code} hidden={i!==0}>
         {mode==='population'?<>
           <p class="detail-kicker">Seluruh lulusan · Tahun akademik {latest.tahun_ajaran}</p>
@@ -56,16 +71,22 @@ const date=(s:string)=>new Date(`${s}T00:00:00`).toLocaleDateString('id-ID',{day
             <div><strong>{fmt(p.ipk,2)}</strong><span>rerata IPK dari {p.total-p.ipk_tidak_valid} data valid</span></div>
           </div>
           <ChartFrame id={`tck-lulus-${level.code}`} title={`Lama studi dalam daftar TCK ${level.code}`} hideHeader source={`Rincian TCK 2026 #${['8b1','8b2','8b3'][i]}`} csvHref={withBase('/data/tck_graduates_prodi.csv')}
-            tableRows={p.per_prodi} tableColumns={[{key:'prodi',label:'Program studi'},{key:'n',label:'Rekaman'},{key:'rerata',label:'Rerata semester'},{key:'median',label:'Median semester'},{key:'ipk',label:'Rerata IPK'}]}>
+            tableRows={p.per_prodi} tableColumns={[{key:'prodi',label:'Program studi'},{key:'n',label:'Rekaman'},{key:'rerata',label:'Rerata semester'},{key:'median',label:'Median semester'},{key:'q1',label:'Kuartil 1'},{key:'q3',label:'Kuartil 3'},{key:'min',label:'Minimum'},{key:'max',label:'Maksimum'},{key:'ipk',label:'Rerata IPK'}]}>
             <div class="detail-grid">
-              <div><h4>Distribusi Semester Kelulusan Mahasiswa</h4><p class="detail-note">Tinggi kolom menunjukkan jumlah rekaman pada semester tersebut.</p>
-                <div class="semester-histogram">{p.semester.map(row=><div><strong>{row.n}</strong><span class="semester-column" aria-hidden="true"><i style={`height:${row.n/histogramMax*140}px`}/></span><span>Semester {row.semester}</span><small>{fmt(row.n/p.total*100)}%</small></div>)}</div>
+              <div><h4>Setiap Titik, Satu Rekaman Kelulusan</h4><p class="detail-note">Titik dikelompokkan menurut semester kelulusan. Median adalah nilai tengah setelah lama studi diurutkan.</p>
+                <div class="semester-dots">{p.semester.map(row=><div class="semester-dot-row">
+                  <span>Semester <b>{row.semester}</b></span>
+                  <div class="semester-dot-grid" aria-hidden="true">{Array.from({length:row.n},()=> <i />)}</div>
+                  <strong>{row.n}<small>{fmt(row.n/p.total*100)}%</small></strong>
+                </div>)}</div>
                 <p class="detail-note">Rerata {fmt(p.lama_studi.rerata,2)} semester · rentang {fmt(p.lama_studi.min)}–{fmt(p.lama_studi.max)} semester. Satu semester adalah satuan pencatatan sumber, bukan konversi enam bulan.</p>
+                <a class="study-download" href={withBase('/data/tck_graduates_semester.csv')} download>Unduh distribusi semester ↗</a>
               </div>
-              <div><h4>Rentang Masa Studi Antarprogram Studi</h4><p class="detail-note">Titik = median · garis tebal = 50% data di tengah · skala 1–10 semester.</p>
+              <div><h4>Rentang Masa Studi Antarprogram Studi</h4><p class="detail-note">Titik = median · pita tebal = 50% data di tengah · garis tipis = minimum–maksimum. Satuan semester.</p>
+                <div class="study-axis" aria-hidden="true"><span/><div><span>1</span><span>{semesterScale}</span></div><span/></div>
                 <div class="study-ranges">{p.per_prodi.map(row=><div>
                   <span>{row.prodi}<small>{row.n} rekaman</small></span>
-                  {row.median!==null?<><div class="study-rail" aria-hidden="true"><i style={`left:${((row.q1??0)-1)/9*100}%;width:${((row.q3??0)-(row.q1??0))/9*100}%`}/><b style={`left:${(row.median-1)/9*100}%`}/></div><strong>{fmt(row.median)}</strong></>:<span class="study-withheld">Data kelompok &lt;3 tidak ditampilkan demi kerahasiaan</span>}
+                  {row.median!==null?<><div class="study-rail" role="img" aria-label={`${row.prodi}: minimum ${fmt(row.min)}, kuartil bawah ${fmt(row.q1)}, median ${fmt(row.median)}, kuartil atas ${fmt(row.q3)}, maksimum ${fmt(row.max)} semester`}><em style={`left:${((row.min??1)-1)/(semesterScale-1)*100}%;width:${((row.max??1)-(row.min??1))/(semesterScale-1)*100}%`}/><i style={`left:${((row.q1??1)-1)/(semesterScale-1)*100}%;width:${((row.q3??1)-(row.q1??1))/(semesterScale-1)*100}%`}/><b style={`left:${(row.median-1)/(semesterScale-1)*100}%`}/></div><strong>{fmt(row.median)}</strong></>:<span class="study-withheld">Data kelompok &lt;3 tidak ditampilkan demi kerahasiaan</span>}
                 </div>)}</div>
               </div>
             </div>
@@ -77,22 +98,41 @@ const date=(s:string)=>new Date(`${s}T00:00:00`).toLocaleDateString('id-ID',{day
   </div>
 </DetailShell>
 <style>
+  .study-comparison { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .study-comparison article { background:var(--surface-card); border:1px solid var(--border-subtle); border-top:3px solid var(--chart-primary); padding:24px; }
+  .study-comparison-heading { display:flex; align-items:center; gap:12px; }
+  .study-comparison-heading > span { font:700 11px var(--font-ui); padding:5px 8px; border:1px solid var(--border-default); color:var(--text-heading); }
+  .study-comparison h4 { margin:0; font-size:15px; }
+  .study-comparison-value { color:var(--text-secondary); font:13px var(--font-ui); margin:24px 0 18px; }
+  .study-comparison-value strong { font:700 clamp(32px,4vw,48px)/1 var(--font-display); color:var(--text-heading); letter-spacing:-.04em; }
+  .study-comparison-track { height:6px; background:var(--border-subtle); }
+  .study-comparison-track i { display:block; height:100%; background:var(--chart-primary); }
+  .study-comparison article > p:last-child { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; font:12px/1.5 var(--font-ui); color:var(--text-secondary); margin:15px 0 0; }
+  .study-scale-note { margin:14px 0 32px !important; font-size:12px !important; }
+  .semester-dots { display:grid; gap:22px; margin:26px 0; }
+  .semester-dot-row { display:grid; grid-template-columns:80px minmax(0,1fr) 42px; gap:20px; align-items:center; font:12px/1.5 var(--font-ui); }
+  .semester-dot-row > span { color:var(--text-secondary); }
+  .semester-dot-row b { color:var(--text-heading); }
+  .semester-dot-row strong { text-align:right; font-size:20px; color:var(--text-heading); }
+  .semester-dot-row small { display:block; font-size:11px; font-weight:400; color:var(--text-secondary); }
+  .semester-dot-grid { display:grid; grid-template-columns:repeat(auto-fill,7px); gap:5px; }
+  .semester-dot-grid i { width:7px; height:7px; border-radius:50%; background:var(--chart-primary); }
+  .study-download { font:12px var(--font-ui); color:var(--text-link); text-underline-offset:4px; }
+  .study-axis { display:grid; grid-template-columns:minmax(125px,1fr) minmax(80px,1fr) 24px; gap:14px; margin:0 0 18px; font:10px var(--font-ui); color:var(--text-secondary); }
+  .study-axis > div { display:flex; justify-content:space-between; }
   .study-trend { width:100%; height:auto; overflow:visible; }
   .study-trend text { font:12px var(--font-ui); fill:var(--text-secondary); }
   .study-trend text.value { font-size:13px; font-weight:650; fill:var(--text-heading); }
-  .semester-histogram { display:flex; gap:18px; align-items:flex-end; margin:24px 0; border-bottom:1px solid var(--border-subtle); padding-bottom:16px; }
-  .semester-histogram > div { flex:1; min-width:0; text-align:center; display:flex; flex-direction:column; gap:8px; font:12px var(--font-ui); }
-  .semester-histogram strong { color:var(--text-heading); font-size:18px; }
-  .semester-histogram small { color:var(--text-secondary); }
-  .semester-column { height:145px; display:flex; align-items:flex-end; justify-content:center; }
-  .semester-column i { width:70%; max-width:72px; background:var(--chart-primary); border-radius:3px 3px 0 0; }
   .study-ranges { display:grid; gap:17px; }
   .study-ranges > div { display:grid; grid-template-columns:minmax(125px,1fr) minmax(80px,1fr) 24px; gap:14px; align-items:center; font:12px/1.5 var(--font-ui); }
   .study-ranges small { display:block; color:var(--text-secondary); font-size:10px; }
   .study-rail { position:relative; height:2px; background:var(--border-subtle); }
+  .study-rail em { position:absolute; top:0; height:2px; min-width:2px; background:var(--text-secondary); }
   .study-rail i { position:absolute; height:7px; top:-2.5px; min-width:3px; background:var(--ugm-blue-200); }
   .study-rail b { position:absolute; height:9px; width:9px; top:-3.5px; transform:translateX(-50%); border-radius:50%; background:var(--chart-primary); }
   .study-ranges strong { text-align:right; color:var(--text-heading); }
   .study-withheld { grid-column:2/4; color:var(--text-secondary); font-size:10px; }
-  @media(max-width:420px) { .study-ranges > div { grid-template-columns:minmax(110px,1fr) minmax(70px,1fr) 22px; gap:10px; } }
+  @media(max-width:700px) { .study-comparison { gap:10px; } .study-comparison article { padding:18px 14px; } .study-comparison-heading { flex-wrap:wrap; gap:8px; } }
+  @media(max-width:480px) { .study-comparison { grid-template-columns:1fr; } .study-comparison article { display:grid; grid-template-columns:1fr 1fr; gap:14px 20px; } .study-comparison-value { margin:0; text-align:right; } .study-comparison-value strong { font-size:32px; } .study-comparison-track { grid-column:1/-1; } .study-comparison article > p:last-child { grid-column:1/-1; margin:0; } .semester-dot-row { gap:10px; } }
+  @media(max-width:420px) { .study-ranges > div,.study-axis { grid-template-columns:minmax(110px,1fr) minmax(70px,1fr) 22px; gap:10px; } }
 </style>

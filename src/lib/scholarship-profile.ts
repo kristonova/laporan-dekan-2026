@@ -7,5 +7,9 @@ export function scholarshipProfile(rows:ScholarshipRow[],prodi='',group='',query
   source.forEach(r=>schemes.set(r.beasiswa,(schemes.get(r.beasiswa)||0)+r.penerima));
   const all=[...schemes].map(([label,n])=>({label,n})).filter(r=>r.n>0).sort((a,b)=>b.n-a.n||a.label.localeCompare(b.label,'id'));
   const matched=all.filter(r=>r.label.toLocaleLowerCase('id').includes(query.trim().toLocaleLowerCase('id')));
-  return {total:all.reduce((sum,r)=>sum+r.n,0),schemes:all.length,rows:matched,matched:matched.reduce((sum,r)=>sum+r.n,0),max:Math.max(1,...matched.map(r=>r.n))};
+  const names=new Set(matched.map(r=>r.label));
+  const programmes=new Map<string,number>();
+  source.filter(r=>names.has(r.beasiswa)).forEach(r=>programmes.set(r.prodi,(programmes.get(r.prodi)||0)+r.penerima));
+  const perProgramme=[...programmes].map(([label,n])=>({label:programmeLabel[label]||label,n})).filter(r=>r.n>0).sort((a,b)=>b.n-a.n||a.label.localeCompare(b.label,'id'));
+  return {total:all.reduce((sum,r)=>sum+r.n,0),schemes:all.length,rows:matched,matched:matched.reduce((sum,r)=>sum+r.n,0),max:Math.max(1,...matched.map(r=>r.n)),perProgramme};
 }

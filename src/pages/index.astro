@@ -22,6 +22,12 @@ import origins from "../data/derived/students_origins.json";
 import originsCohorts from "../data/derived/students_origins_cohorts.json";
 import FundingShift from "../components/FundingShift.astro";
 import SceneBlock from "../components/SceneBlock.astro";
+import InternationalProfile from "../components/details/InternationalProfile.astro";
+import GraduateProfile from "../components/details/GraduateProfile.astro";
+import AchievementProfile from "../components/details/AchievementProfile.astro";
+import ScholarshipProfile from "../components/details/ScholarshipProfile.astro";
+import SupportingProfile from "../components/details/SupportingProfile.astro";
+import DetailNavigator from "../components/details/DetailNavigator.astro";
 import {
   BulletChart,
   ChoroplethMap,
@@ -1086,6 +1092,7 @@ const pillarSummary = [
       <SceneBlock title="Status Capaian 42 Indikator Perjanjian Kinerja" lede="Evaluasi capaian indikator kinerja utama mengacu pada target triwulan berjalan menuju penutupan tahun anggaran 2026.">
         <TckOverview rows={tck as any} budgetPercent={(budgetRaw as any).realisasi_persen} snapshotLabel={snapshot.label} />
       </SceneBlock>
+      <DetailNavigator />
       <SceneBlock title="Kontribusi Relatif Empat Departemen pada Indikator Utama" lede="Proporsi kontribusi relatif tiap departemen disajikan dalam bentuk persentase untuk memudahkan perbandingan antarindikator dengan satuan ukuran yang beragam.">
         <StackedBarChart data={tckByDept} xKey="indikator" series={deptSeries} normalized title="Porsi Kontribusi Departemen pada Sepuluh Indikator Terbesar" hideHeader yLabel="Porsi capaian" source="TCK 2026 · rincian per departemen" extracted={snapshot.label} csvHref={dataUrl("tck_2026_by_dept.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
@@ -1217,6 +1224,9 @@ const pillarSummary = [
     <StoryScene id="bekal-mahasiswa" number="4.3" pillar="Employability" question={scenes["4.3"].question} deck={deck("4.3")} tone="paper" wide>
       <BulletChart data={studentReadiness} title={scenes["4.3"].question} hideHeader maxPercent={200} source="TCK 2026 FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
       <Insight tone="positive"><p>Antusiasme mahasiswa mengikuti program Merdeka Belajar Kampus Merdeka (MBKM) mencapai {format(getTckRow("8a").capaian_dinilai)} mahasiswa, melampaui target tahunan fakultas sebesar {format(getTckRow("8a").target_tw4)} orang.</p></Insight>
+      <SceneBlock id="rincian-pengalaman-belajar" title="Pengalaman Belajar menurut Program Studi" lede="Telusuri partisipasi MBKM dan jalur pascasarjana pada daftar pendukung TCK 2026.">
+        <SupportingProfile mode="learning" />
+      </SceneBlock>
     </StoryScene>
 
     <StoryScene id="mahasiswa-asing" number="4.4" pillar="Employability" question={scenes["4.4"].question} deck={deck("4.4")} wide>
@@ -1226,12 +1236,18 @@ const pillarSummary = [
       <SceneBlock title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" lede="Merekam keikutsertaan mahasiswa dalam berbagai program pertukaran dan mobilitas akademik internasional.">
         <WorldMap data={exchangeCountries} unmapped={{ label: "Negara belum tercatat", value: exchangeUnrecorded }} title="Mobilitas Keluar: Negara Tujuan Mahasiswa FMIPA" hideHeader valueLabel="rekaman mobilitas" topCount={10} source="Data mobilitas mahasiswa FMIPA UGM · batas Natural Earth 1:110m" extracted={snapshot.label} csvHref={dataUrl("exchange_students.json")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="info"><p>Internasionalisasi pendidikan berlangsung dua arah secara seimbang: fakultas menyambut {format(getTckRow("4a").capaian_dinilai + getTckRow("4b").capaian_dinilai)} mahasiswa asing, sementara <strong>{format(exchange.total)} mahasiswa FMIPA</strong> menimba pengalaman internasional melalui pertukaran pelajar, program gelar ganda (<em>dual degree</em>), dan magang riset di {format(exchange.universitas)} perguruan tinggi di {format(exchange.negara - 1)} negara.</p></Insight>
+      <SceneBlock id="profil-mahasiswa-asing" title="Dari Negara Mana, melalui Program Apa?" lede="Rincian TCK 2026 memperlihatkan negara asal dan bentuk partisipasi mahasiswa asing. Pilih jalur kredit atau nonkredit untuk membaca profilnya.">
+        <InternationalProfile />
+      </SceneBlock>
+      <Insight tone="info"><p>Internasionalisasi pendidikan berlangsung dua arah. Ringkasan TCK mencatat {format(getTckRow("4a").capaian_dinilai + getTckRow("4b").capaian_dinilai)} pada indikator mahasiswa asing, sementara daftar mobilitas keluar memuat <strong>{format(exchange.total)} rekaman</strong> melalui pertukaran pelajar, program gelar ganda, dan magang riset di {format(exchange.universitas)} perguruan tinggi. Kedua sumber memiliki cakupan berbeda dan tidak digunakan untuk menyimpulkan keseimbangan arus mobilitas.</p></Insight>
     </StoryScene>
 
-    <StoryScene id="kelulusan" number="4.5" pillar="Employability" question={scenes["4.5"].question} deck={deck("4.5")} tone="paper">
+    <StoryScene id="kelulusan" number="4.5" pillar="Employability" question={scenes["4.5"].question} deck={deck("4.5")} tone="paper" wide>
       <BulletChart data={graduation} title={scenes["4.5"].question} hideHeader maxPercent={200} source="TCK 2026 #8b1–8b3" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
       <Insight tone="attention" label="Catatan Metodologi"><p>Dalam dokumen resmi sumber, capaian Triwulan III baru memuat jumlah orang tanpa angka pembanding total mahasiswa. Demi menjaga akurasi evaluasi kinerja, persentase kelulusan tepat waktu dihitung merujuk pada data Triwulan II yang lengkap dan terverifikasi secara metodologis.</p></Insight>
+      <SceneBlock id="rincian-lama-studi" title="Membaca Lama Studi Lebih Dekat" lede="Sebaran semester dan rentang per program studi pada daftar bukti TCK. Cakupannya sebagian lulusan; profil seluruh lulusan tersedia pada bagian berikutnya.">
+        <GraduateProfile mode="tck" />
+      </SceneBlock>
     </StoryScene>
 
     <StoryScene id="riset-mahasiswa" number="4.3′" pillar="Employability" question={scenes["4.3p"].question} deck={deck("4.3p")}>
@@ -1252,12 +1268,18 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="profil-lulusan" number="4.7" pillar="Employability" question={scenes["4.7"].question} deck={deck("4.7")} wide>
+      <SceneBlock id="profil-lulusan-jenjang" title="Tiga Jenjang, Tiga Perjalanan Studi" lede="Bandingkan rerata lama studi seluruh lulusan, lalu pilih jenjang untuk menelusuri perubahan lima tahun, IPK, dan komposisi program studinya.">
+        <GraduateProfile mode="population" />
+      </SceneBlock>
       <SceneBlock title="Jumlah Lulusan per Jenjang dan Tahun Akademik">
         <StackedBarChart data={graduates} xKey="year" series={graduateSeries} gaps={graduateIncompleteYears} gapLabel="Belum tercatat" title="Jumlah Lulusan per Jenjang dan Tahun Akademik" hideHeader yLabel="Lulusan" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("graduates_profile.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <Insight tone="positive"><p>Tahun akademik 2025/2026 melengkapi seri lulusan pada seluruh jenjang dengan total <strong>{format(graduateLatestTotal)} lulusan</strong>: {format(graduateLatestOf("Sarjana")?.lulusan ?? 0)} sarjana, {format(graduateLatestOf("Magister")?.lulusan ?? 0)} magister, dan {format(graduateLatestOf("Doktor")?.lulusan ?? 0)} doktor. Rerata IPK lulusan doktor {format(graduateLatestOf("Doktor")?.ipk_rerata ?? 0, 2)} dan magister {format(graduateLatestOf("Magister")?.ipk_rerata ?? 0, 2)}, dihitung dengan pembobotan jumlah wisudawan pada empat periode wisuda.</p></Insight>
       <SceneBlock title="Prestasi Mahasiswa menurut Tingkat Kompetisi">
         <StackedBarChart data={achievements} xKey="year" series={achievementSeries} title="Prestasi Mahasiswa menurut Tingkat Kompetisi" hideHeader yLabel="Prestasi" source="Data kemahasiswaan FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("student_achievements.csv")} valueFormatter={(value:number) => format(value)} />
+      </SceneBlock>
+      <SceneBlock id="rincian-prestasi" title="Di Balik Angka Pencapaian Mahasiswa" lede="Daftar TCK 2026 mencakup kejuaraan, publikasi, karya KKN, dan penyaji. Telusuri jenis pencapaian, departemen, serta kegiatan yang mendasarinya.">
+        <AchievementProfile />
       </SceneBlock>
       <Insight tone="positive"><p>Departemen {achievementByDept[0]?.dept} mencatat raihan prestasi terbanyak ({format(achievementByDept[0]?.n)} gelar kejuaraan sejak 2022), disusul Departemen {achievementByDept[1]?.dept} ({format(achievementByDept[1]?.n)} gelar). Proporsi prestasi di kancah internasional meningkat hingga mencapai <strong>{format((achievements[achievements.length - 1].internasional / (achievements[achievements.length - 1].nasional + achievements[achievements.length - 1].internasional)) * 100, 1)}%</strong> pada {achievements[achievements.length - 1].year}.</p></Insight>
     </StoryScene>
@@ -1290,8 +1312,11 @@ const pillarSummary = [
       <Insight tone="info"><p>Sebanyak <strong>{format(lecturerRatio.tersertifikasi)} dosen ({format(lecturerRatio.rasio_sertifikasi, 1)}%)</strong> telah mengantongi sertifikat pendidik profesional. Cakupan tertinggi berada di Departemen {certificationRows[0]?.label} ({format(certificationRows[0]?.value ?? 0, 1)}%).</p></Insight>
     </StoryScene>
 
-    <StoryScene id="inklusif" number="5.2" pillar="Kesejahteraan" question={scenes["5.2"].question} deck={deck("5.2")}>
+    <StoryScene id="inklusif" number="5.2" pillar="Kesejahteraan" question={scenes["5.2"].question} deck={deck("5.2")} wide>
       <DotMatrix groups={[{ label: "Fasilitas tersedia", count: getTckRow("31").capaian_dinilai, color: DEPT.matematika, description: `Target tahunan: ${format(getTckRow("31").target_tw4)} unit` }]} columns={10} unitValue={1} unitLabel="unit" title={scenes["5.2"].question} hideHeader source="TCK 2026 #31" extracted={snapshot.label} csvHref={dataUrl("tck_2026_indikator.csv")} />
+      <SceneBlock id="rincian-fasilitas-gedung" title="Fasilitas yang Tersedia di Setiap Gedung" lede="Matriks memperlihatkan lima jenis fasilitas aksesibilitas. Angka pada setiap sel menunjukkan jumlah unit dalam inventaris.">
+        <SupportingProfile mode="facilities" />
+      </SceneBlock>
       <Insight tone="critical" label="Verifikasi Data"><p>Realisasi penerapan gedung ramah lingkungan (<em>green building</em>) tercatat sebesar <strong>{format(getTckRow("32").capaian_dinilai)}%</strong> pada dokumen sumber. Angka ini sedang dalam proses rekonsiliasi teknis bersama Direktorat Aset UGM untuk memastikan kesesuaian standar sertifikasi fisik di lapangan.</p></Insight>
     </StoryScene>
 
@@ -1361,6 +1386,10 @@ const pillarSummary = [
         <StackedBarChart data={pathwayMix} xKey="year" series={pathwaySeries} normalized title="Komposisi Jalur Masuk per Angkatan" hideHeader yLabel="Proporsi mahasiswa" source="Daftar mahasiswa S1 & non-gelar FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("students_by_pathway.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <Insight tone="info"><p>Jalur seleksi mandiri (<strong>{pathwayTop.name}</strong>) menjadi pintu masuk terbesar dengan menyerap {format(pathwayTop.total)} mahasiswa ({format((pathwayTop.total / students.total) * 100, 1)}% dari total mahasiswa). Sementara itu, jalur seleksi nasional terpusat (SNBP dan SNBT) menyumbang {format(((pathwayTotals.find((row) => row.name === "Seleksi Nasional Prestasi")?.total ?? 0) + (pathwayTotals.find((row) => row.name === "Seleksi Nasional Tes")?.total ?? 0)) / students.total * 100, 1)}%, didampingi jalur afirmasi wilayah 3T dan Rekognisi Pembelajaran Lampau (RPL).</p></Insight>
+    </StoryScene>
+
+    <StoryScene id="beasiswa" number="6.4′" pillar="Mahasiswa & Akses" question="Ragam Beasiswa, Dukungan untuk Perjalanan Studi" deck={`${format(scholarships.total)} penerima tercatat pada ${format(scholarships.skema)} skema dan periode beasiswa 2026. Telusuri nama beasiswa dan sebarannya menurut program studi.`} wide>
+      <ScholarshipProfile />
     </StoryScene>
 
     <StoryScene id="latar-keluarga" number="6.5" pillar="Mahasiswa & Akses" question={scenes["6.5"].question} deck={deck("6.5")} wide>

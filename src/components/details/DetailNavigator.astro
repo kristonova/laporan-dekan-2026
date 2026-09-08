@@ -1,0 +1,37 @@
+---
+import international from '../../data/derived/tck_international.json';
+import achievements from '../../data/derived/tck_achievements.json';
+import scholarships from '../../data/derived/scholarships.json';
+const links=[
+  {href:'#profil-mahasiswa-asing',label:'Mahasiswa asing',value:international.panel[0].total,unit:'rekaman',detail:'Negara asal & program'},
+  {href:'#profil-lulusan-jenjang',label:'Profil lulusan',value:'S1–S3',unit:'seluruh lulusan',detail:'Lama studi, IPK & prodi'},
+  {href:'#rincian-prestasi',label:'Pencapaian mahasiswa',value:achievements.total,unit:'rekaman',detail:'Kejuaraan, publikasi & karya'},
+  {href:'#beasiswa',label:'Beasiswa',value:scholarships.skema,unit:'skema / periode',detail:'Jenis bantuan & sebaran prodi'},
+];
+---
+<nav class="detail-navigator" aria-label="Jelajahi rincian data 2026">
+  <div class="detail-nav-heading"><h3>Lebih Dekat dengan Data 2026</h3><p>Langsung ke rincian yang ingin Anda telusuri.</p></div>
+  <div class="detail-nav-links">{links.map(link=><a href={link.href}>
+    <span class="detail-nav-label">{link.label}<span aria-hidden="true">↗</span></span>
+    <span class="detail-nav-number">{link.value}<small>{link.unit}</small></span>
+    <span class="detail-nav-description">{link.detail}</span>
+  </a>)}</div>
+</nav>
+<style>
+  .detail-navigator { border-top:1px solid var(--border-default); padding-top:28px; margin-top:12px; font-family:var(--font-ui); }
+  .detail-nav-heading { display:flex; align-items:baseline; justify-content:space-between; gap:20px; margin-bottom:22px; }
+  h3 { font:700 18px/1.4 var(--font-ui); color:var(--text-heading); margin:0; }
+  p { margin:0; font-size:12px; color:var(--text-secondary); }
+  .detail-nav-links { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--border-subtle); }
+  a { padding:24px; display:flex; flex-direction:column; gap:17px; text-decoration:none; background:var(--surface-card); color:var(--text-heading); transition:background var(--duration-fast); }
+  a+a { border-left:1px solid var(--border-subtle); }
+  a:hover { background:var(--surface-tint); }
+  a:focus-visible { outline:3px solid var(--ugm-gold); outline-offset:-3px; }
+  .detail-nav-label { display:flex; justify-content:space-between; gap:14px; font-size:12px; font-weight:700; }
+  .detail-nav-number { font:700 36px/1.1 var(--font-display); display:flex; flex-wrap:wrap; align-items:baseline; gap:7px; }
+  small { color:var(--text-secondary); font:11px var(--font-ui); }
+  .detail-nav-description { color:var(--text-secondary); font-size:11px; line-height:1.5; }
+  @media(max-width:850px) { .detail-nav-links { grid-template-columns:1fr 1fr; } a:nth-child(3) { border-left:0; } a:nth-child(n+3) { border-top:1px solid var(--border-subtle); } .detail-nav-heading { display:grid; gap:8px; } }
+  @media(max-width:420px) { a { padding:18px 14px; } .detail-nav-number { font-size:30px; } }
+  @media print { .detail-navigator { display:none; } }
+</style>

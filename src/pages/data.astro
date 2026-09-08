@@ -39,6 +39,11 @@ const ratio = lecturerRatioRaw as any;
 const schoolMou = schoolMouRaw as any;
 
 const datasets = [
+  { file: "tck_international.json", label: "Profil mahasiswa asing TCK 2026", coverage: "198 rekaman · 90 kredit dan 108 nonkredit · negara, prodi, kegiatan, dan status bukti", source: "Rincian TCK 2026 #4a–4b", scenes: "4.4" },
+  { file: "tck_graduates.json", label: "Sebaran lama studi dalam daftar TCK", coverage: "S1 150, S2 57, S3 35 rekaman · semester, median, kuartil, rentang, dan IPK · sebagian lulusan", source: "Rincian TCK 2026 #8b1–8b3", scenes: "4.5" },
+  { file: "tck_achievements.json", label: "Rincian pencapaian mahasiswa TCK", coverage: "167 rekaman · kejuaraan, publikasi, karya KKN, dan penyaji · selisih satu dari ringkasan TCK", source: "Rincian TCK 2026 #9", scenes: "4.7" },
+  { file: "scholarships_detail.json", label: "Jenis beasiswa menurut program studi", coverage: "703 penerima pada rekap · 79 skema dan periode aktif × 8 prodi sarjana", source: "PENERIMA BEASISWA 2026 · Rekapitulasi", scenes: "6.4′" },
+  { file: "tck_supporting.json", label: "Rincian pembelajaran dan fasilitas aksesibilitas", coverage: "603 rekaman MBKM · 44 jalur pascasarjana · 21 unit fasilitas terinci (total tertulis 23)", source: "Rincian TCK 2026 #8a, #10, #31", scenes: "4.3, 5.2" },
   { file: "partnership_revenue.json", label: "Nilai kontrak kerja sama dan DPI", coverage: `${number(revenue.kontrak)} kontrak · ${revenue.tahun_awal}–${revenue.tahun_akhir} · Rp${number(revenue.nominal / 1_000_000_000, 2)} miliar`, source: "Penerimaan dan DPI Kerja Sama Fakultas MIPA 2021–2026", scenes: "3.5′" },
   { file: "partnership_revenue_by_year.json", label: "Nilai kontrak kerja sama per tahun", coverage: "Nilai kontrak, DPI, rasio DPI, dan penanda tahun berjalan", source: "Penerimaan dan DPI Kerja Sama Fakultas MIPA 2021–2026", scenes: "3.5′" },
   { file: "partnership_revenue_by_dept.json", label: "Nilai kontrak kerja sama per departemen", coverage: `Termasuk kategori tanpa departemen (Rp${number(revenue.tanpa_departemen.nominal / 1_000_000_000, 2)} miliar pada ${number(revenue.tanpa_departemen.kontrak)} kontrak)`, source: "Penerimaan dan DPI Kerja Sama Fakultas MIPA 2021–2026", scenes: "3.5′" },
@@ -81,7 +86,7 @@ const datasets = [
   { file: "active_postgraduates.json", label: "Mahasiswa pascasarjana aktif (S2/S3)", coverage: "Semester gasal 2024/2025 · per jenjang dan prodi", source: "Rekap registrasi pascasarjana, Laporan Dekan 2024", scenes: "1.1" },
   { file: "graduates_profile.json", label: "Profil lulusan", coverage: "Sarjana, Magister, Doktor · IPK dan masa studi", source: "Pangkalan data akademik FMIPA UGM", scenes: "4.7" },
   { file: "student_achievements.json", label: "Prestasi mahasiswa", coverage: "2022–2026 · departemen × tingkat prestasi", source: "Pangkalan data kemahasiswaan FMIPA UGM", scenes: "4.7" },
-  { file: "scholarships.json", label: "Penerima beasiswa", coverage: "Agregat per program studi dan skema beasiswa", source: "Pangkalan data akademik FMIPA UGM", scenes: "4.6" },
+  { file: "scholarships.json", label: "Penerima beasiswa", coverage: "Agregat per program studi dan skema beasiswa", source: "Pangkalan data akademik FMIPA UGM", scenes: "4.6, 6.4′" },
   { file: "accreditation.json", label: "Status akreditasi prodi", coverage: `${number(accreditationRaw.prodi_unggul)} dari ${number(accreditationRaw.prodi_nasional)} prodi nasional berpredikat Unggul · ${number(accreditationRaw.prodi_internasional)} akreditasi/sertifikasi internasional`, source: "AKREDITASI PRODI MIPA (September 2026)", scenes: "1.1" },
   { file: "tracer_sectors.json", label: "Sektor karier lulusan", coverage: "Agregat sektor lapangan kerja dari survei pelacakan lulusan", source: "Tracer study FMIPA UGM", scenes: "4.1" },
   { file: "tracer_waiting_time.json", label: "Masa tunggu kerja", coverage: "Distribusi kategori masa tunggu per program studi", source: "Tracer study FMIPA UGM", scenes: "4.2" },

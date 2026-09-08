@@ -4,6 +4,10 @@ import DetailShell from './DetailShell.astro';
 import CountBars from './CountBars.astro';
 import ChartFrame from '../charts/ChartFrame.astro';
 import {withBase} from '../../lib/paths';
+const credit=data.panel.find(p=>p.label==='Kredit')!;
+const noncredit=data.panel.find(p=>p.label==='Nonkredit')!;
+const split=(label:string)=>({credit:credit.per_negara.find(r=>r.label===label)?.n??0,noncredit:noncredit.per_negara.find(r=>r.label===label)?.n??0});
+const countryMax=Math.max(...data.panel[0].per_negara.filter(r=>r.label!=='Belum tercatat').map(r=>r.n));
 ---
 <DetailShell label="Rincian mahasiswa asing TCK 2026">
   <div data-detail-switch>
@@ -14,19 +18,27 @@ import {withBase} from '../../lib/paths';
       <div class="detail-metrics" aria-live="polite">
         <div><strong>{p.total}</strong><span>rekaman {p.label==='Semua'?'kredit & nonkredit':p.label.toLowerCase()}</span></div>
         <div><strong>{p.negara_tercatat}</strong><span>negara teridentifikasi</span></div>
-        <div><strong>{p.negara_belum_tercatat}</strong><span>negara belum tercatat</span></div>
+        <div><strong>{p.negara_belum_tercatat}</strong><span>rekaman tanpa negara asal</span></div>
       </div>
       <ChartFrame id={`asing-detail-${i}`} title={`Profil mahasiswa asing · ${p.label}`} hideHeader source="Rincian TCK 2026 #4a–4b" csvHref={withBase('/data/tck_international_negara.csv')}
         tableRows={p.per_negara} tableColumns={[{key:'label',label:'Negara'},{key:'n',label:'Rekaman'}]}>
         <div class="detail-grid">
           <div><p class="detail-kicker">Asal mahasiswa</p><h4>Jangkauan negara asal</h4>
-            <CountBars rows={p.per_negara.filter(r=>r.label!=='Belum tercatat').slice(0,10)} total={p.total}/>
-            <p class="detail-note">Sepuluh label negara dengan rekaman terbanyak. Persentase memakai seluruh {p.total} rekaman pada pilihan ini; negara kosong tetap masuk penyebut. Seluruh negara tersedia di tabel.</p>
+            {p.label==='Semua'?<>
+              <div class="detail-legend"><span style="--detail-color:var(--chart-primary)"><i/>Kredit</span><span style="--detail-color:var(--pillar-teal)"><i/>Nonkredit</span></div>
+              <ol class="country-lanes">{p.per_negara.filter(r=>r.label!=='Belum tercatat').slice(0,10).map(row=>{
+                const parts=split(row.label);
+                return <li><div><span>{row.label}</span><strong>{row.n}</strong></div><div class="country-lane" aria-hidden="true"><i style={`width:${parts.credit/countryMax*100}%`}/><b style={`width:${parts.noncredit/countryMax*100}%`}/></div><small>{parts.credit} kredit · {parts.noncredit} nonkredit</small></li>;
+              })}</ol>
+            </>:<CountBars rows={p.per_negara.filter(r=>r.label!=='Belum tercatat').slice(0,10)} total={p.total}/>}
+            <p class="detail-note">Sepuluh label negara dengan rekaman terbanyak. {p.label==='Semua'?'Panjang batang menunjukkan jumlah rekaman; warna membedakan jalur kredit dan nonkredit.':`Persentase memakai seluruh ${p.total} rekaman pada pilihan ini, termasuk isian negara yang kosong.`} Seluruh negara tersedia di tabel.</p>
           </div>
           <div><p class="detail-kicker">Bentuk partisipasi</p><h4>{p.label==='Kredit'?'Program studi pada jalur kredit':p.label==='Nonkredit'?'Kegiatan pada jalur nonkredit':'Dua jalur pengalaman akademik'}</h4>
             {p.label==='Semua' ? <>
               <div class="arrival-pair">{data.panel.slice(1).map((group,index)=><div><span class="arrival-number">0{index+1}</span><strong>{group.total}</strong><h5>{group.label}</h5><p>{index===0?'Rincian program studi, dari sarjana hingga doktor, serta entri non-gelar yang dicatat pada kategori kredit.':'Sekolah musim panas, pertukaran, dan kegiatan non-gelar di tiga departemen.'}</p></div>)}</div>
-              <h4>Status pencatatan bukti</h4><CountBars rows={p.per_status} total={p.total} color="var(--pillar-teal)"/>
+              <h4>Kelengkapan Negara Asal</h4>
+              <div class="country-coverage"><strong>{Math.round((p.total-p.negara_belum_tercatat)/p.total*100)}<span>%</span></strong><p>rekaman memiliki isian negara.<br/>{p.negara_belum_tercatat} dari {p.total} masih kosong; satu isian “Hailand” belum teridentifikasi.</p></div>
+              <details class="country-evidence"><summary>Status pencatatan bukti TCK</summary><CountBars rows={p.per_status} total={p.total} color="var(--pillar-teal)"/></details>
             </> : <CountBars rows={p.label==='Kredit'?data.per_prodi:data.per_kegiatan} total={p.total} color="var(--pillar-teal)"/>}
           </div>
         </div>
@@ -36,6 +48,18 @@ import {withBase} from '../../lib/paths';
   <p class="detail-note detail-callout">Jumlah mengikuti kategori kredit/nonkredit di berkas sumber dan dapat mencakup orang yang sama pada lebih dari satu kegiatan. Status “belum masuk sistem TCK” adalah catatan pada daftar bukti. Label negara “Hailand” dipertahankan sesuai sumber dan tidak ditafsirkan sebagai negara tertentu. <a href={withBase('/data/tck_international_program.csv')} download>Unduh rincian program dan kegiatan</a>.</p>
 </DetailShell>
 <style>
+  .country-lanes { list-style:none; padding:0; margin:0; display:grid; gap:13px; }
+  .country-lanes li > div:first-child { display:flex; justify-content:space-between; gap:20px; font:13px/1.5 var(--font-ui); }
+  .country-lanes strong { color:var(--text-heading); font-variant-numeric:tabular-nums; }
+  .country-lane { display:flex; height:6px; background:var(--surface-2); margin:6px 0 2px; }
+  .country-lane i { background:var(--chart-primary); }
+  .country-lane b { background:var(--pillar-teal); }
+  .country-lanes small { font:10px var(--font-ui); color:var(--text-secondary); }
+  .country-coverage { padding:22px; border:1px solid var(--border-subtle); display:flex; gap:22px; align-items:center; margin-bottom:26px; }
+  .country-coverage > strong { font:700 40px/1 var(--font-display); color:var(--text-heading); }
+  .country-coverage strong span { font-size:20px; }
+  .country-coverage p { font:12px/1.7 var(--font-ui); color:var(--text-secondary); margin:0; }
+  .country-evidence summary { font:12px var(--font-ui); color:var(--text-link); cursor:pointer; padding:14px 0; }
   .arrival-pair { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:36px; }
   .arrival-pair > div { border-top:2px solid var(--ugm-blue); padding-top:14px; }
   .arrival-pair > div+div { border-color:var(--pillar-teal); }
