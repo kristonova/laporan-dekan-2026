@@ -1,0 +1,1321 @@
+{
+  "sumber": "9.Jumlah mahasiswa berprestasi.xlsx",
+  "total": 167,
+  "per_jenis": [
+    {
+      "label": "Karya KKN-TTG",
+      "n": 91
+    },
+    {
+      "label": "Kejuaraan",
+      "n": 38
+    },
+    {
+      "label": "Publikasi mahasiswa",
+      "n": 37
+    },
+    {
+      "label": "Penyaji",
+      "n": 1
+    }
+  ],
+  "panel": [
+    {
+      "label": "Semua",
+      "total": 167,
+      "per_departemen": [
+        {
+          "label": "Ilmu Komputer dan Elektronika",
+          "n": 68
+        },
+        {
+          "label": "Matematika",
+          "n": 41
+        },
+        {
+          "label": "Kimia",
+          "n": 34
+        },
+        {
+          "label": "Fisika",
+          "n": 24
+        }
+      ],
+      "per_tingkat": [
+        {
+          "label": "Nasional",
+          "n": 116
+        },
+        {
+          "label": "Jurnal internasional berprestasi",
+          "n": 37
+        },
+        {
+          "label": "Internasional",
+          "n": 12
+        },
+        {
+          "label": "Regional/Wilayah/Lokal",
+          "n": 1
+        },
+        {
+          "label": "Universitas",
+          "n": 1
+        }
+      ],
+      "per_hasil": [
+        {
+          "label": "KKN-TTG 2026",
+          "n": 91
+        },
+        {
+          "label": "Publikasi mahasiswa",
+          "n": 37
+        },
+        {
+          "label": "Juara II",
+          "n": 14
+        },
+        {
+          "label": "Juara III",
+          "n": 14
+        },
+        {
+          "label": "Juara I",
+          "n": 10
+        },
+        {
+          "label": "Penyaji",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "label": "Kejuaraan",
+      "total": 38,
+      "per_departemen": [
+        {
+          "label": "Matematika",
+          "n": 19
+        },
+        {
+          "label": "Ilmu Komputer dan Elektronika",
+          "n": 11
+        },
+        {
+          "label": "Kimia",
+          "n": 6
+        },
+        {
+          "label": "Fisika",
+          "n": 2
+        }
+      ],
+      "per_tingkat": [
+        {
+          "label": "Nasional",
+          "n": 25
+        },
+        {
+          "label": "Internasional",
+          "n": 11
+        },
+        {
+          "label": "Regional/Wilayah/Lokal",
+          "n": 1
+        },
+        {
+          "label": "Universitas",
+          "n": 1
+        }
+      ],
+      "per_hasil": [
+        {
+          "label": "Juara II",
+          "n": 14
+        },
+        {
+          "label": "Juara III",
+          "n": 14
+        },
+        {
+          "label": "Juara I",
+          "n": 10
+        }
+      ]
+    },
+    {
+      "label": "Publikasi mahasiswa",
+      "total": 37,
+      "per_departemen": [
+        {
+          "label": "Fisika",
+          "n": 11
+        },
+        {
+          "label": "Ilmu Komputer dan Elektronika",
+          "n": 11
+        },
+        {
+          "label": "Kimia",
+          "n": 8
+        },
+        {
+          "label": "Matematika",
+          "n": 7
+        }
+      ],
+      "per_tingkat": [
+        {
+          "label": "Jurnal internasional berprestasi",
+          "n": 37
+        }
+      ],
+      "per_hasil": [
+        {
+          "label": "Publikasi mahasiswa",
+          "n": 37
+        }
+      ]
+    },
+    {
+      "label": "Karya KKN-TTG",
+      "total": 91,
+      "per_departemen": [
+        {
+          "label": "Ilmu Komputer dan Elektronika",
+          "n": 46
+        },
+        {
+          "label": "Kimia",
+          "n": 20
+        },
+        {
+          "label": "Matematika",
+          "n": 15
+        },
+        {
+          "label": "Fisika",
+          "n": 10
+        }
+      ],
+      "per_tingkat": [
+        {
+          "label": "Nasional",
+          "n": 91
+        }
+      ],
+      "per_hasil": [
+        {
+          "label": "KKN-TTG 2026",
+          "n": 91
+        }
+      ]
+    },
+    {
+      "label": "Penyaji",
+      "total": 1,
+      "per_departemen": [
+        {
+          "label": "Fisika",
+          "n": 1
+        }
+      ],
+      "per_tingkat": [
+        {
+          "label": "Internasional",
+          "n": 1
+        }
+      ],
+      "per_hasil": [
+        {
+          "label": "Penyaji",
+          "n": 1
+        }
+      ]
+    }
+  ],
+  "kegiatan": [
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Antisipasi Hama uret menggunakan Metharzium Anisoplae",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Bimbingan Belajar Matematika dan Fisika Dasar untuk Meningkatkan Literasi Sains Anak",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Buku Saku Digital \"Hidroponik Desa: Panduan Praktis Budidaya Sayuran Modern di Dataran Tinggi\"",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Buku Saku Digital: Edukasi Penggunaan AI Dengan Bijak",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Dashboard Potensi dan Kebutuhan Pelaku UMKM untuk Penguatan Ekonomi Lokal Desa Loano",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Digital Audio Story: Buku Cerita Anak mengangkat Kearifan Lokal Khas Rembang dan Belajar Mewarnai dengan Teknik Gradasi Warna",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Digital Fun Learning IPA dan Matematika untuk anak SD Demaan dan Anak-anak Becici",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Eco-Enzim: Penyuluhan tentang Formulasi dan Pembuatan Eco-Enzim dari Limbah Kulit Buah dan Sayur",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi Konsep Fisika dalam Pendekatan Sederhana Perkiraan Kalori Makanan bagi Anak",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi Masyarakat Mengenai ketersediaan pembayaran digital (Qris)",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi Masyarakat tentang Monitoring Kualitas Udara pada Penggunaan Rocket Stove",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi Penyajian Variasi Kopi Sehat untuk Mendukung Pola Konsumsi Gizi Keluarga",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi Perencanaan Pendidikan Bekerlanjutan bagi Siswa SMP",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Edukasi penyaringan air cokelat menggunakan ijuk, pasir, dan batu koral",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Festival Sains Mini :Lomba Eksperimen Lava Gunung Berapi yang diiringi Estafet Cerdas Cermat",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Festival Sains: Presentasi Hasil Penelitian Pertumbuhan dan Perkembanan Tumbuhan dalam Pot Vertikal per Kelompok dengan Media Kliping",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Geotagging dan Pemetaan Sumber Daya Desa",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Implementasi Sistem Informasi Geografis (SIG) Jalur Evakuasi Berbasis Web dalam Pemberdayaan Masyarakat Geopark Jogja di Desa Trimulyo.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Implementasi Sistem Login dan Autentikasi Pengguna serta Dashboard Administrasi untuk Konfigurasi Sistem Presensi Berbasis Web pada Kelurahan di Kawasan Geopark Jogja.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Implementasi Sistem Otomatisasi Rekapitulasi Presensi Digital Berbasis Web guna Meningkatkan Akurasi Tata Kelola Administrasi di Kawasan Geopark Desa Trimulyo.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Implementasi Teknologi Desain Grafis dalam Pembuatan Identitas Produk Market Day Siswa SD",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Infografis Stunting: Memahami Risiko, Dampak Jangka Panjang, dan Upaya Pencegahan Sejak Dini",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Integrasi Destinasi Wisata Desa Madurejo pada Online Travel Agent (OTA) dan Pengembangan Kanal Media Sosial",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Inventarisasi dan Pemetaan Potensi Wilayah Padukuhan Kembang dalam Mendukung Program Desa Wisata",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Jaga Diri Sejak Dini: Edukasi Batasan Diri dan Keberanian Berbicara pada Anak",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Laboratorium Virtual Komprehensif Pembelajaran",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Mengajar Fisika Sekolah Menengah Pertama",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Mengajar Membaca Sekolah Dasar",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Optimalisasi Aksesibilitas Layanan Publik: Digitalisasi Lokasi dan Fisikalisasi Identitas Kelembagaan RT",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Optimalisasi Data Kependudukan (SiDAMPAK) Menjadi Sistem Informasi Statistik Desa sebagai Instrumen Strategi Pemberdayaan Masyarakat Geopark Jogja di Desa Trimulyo.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pelatihan Pencegahan Informasi Hoax Kecerdasan Buatan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pelatihan Pengelolaan Website Desa Mendelem",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pelatihan Penggunaan Platform Canva, Kahoot, Dan Virtual Lab Bagi Guru Sd Demaan, Kabupaten Rembang, Provinsi Jawa Tengah",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemanfaatan limbah rumah tangga minyak jelantah menjadi lilin aroma",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemasangan Lampu Penerangan Pada Titik Vital Akses Agrowisata Padukuhan Gunung Cilik",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemasangan Panel Surya sebagai Energi Terbarukan Pendukung Agrowisata di Padukuhan Gunung Cilik",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemasangan Sistem Lampu Jalan Otomatis Berbasis Sensor Cahaya",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemasangan tiang dan lampu panel surya pada titik titik vital yang diperlukan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembelajaran listrik dasar, perubahan energi, dan energi alternatif bagi anak SD dan MI",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemberdayaan Desa melalui Pemanfaatan Teknologi Ramah Lingkungan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan BioPestisida untuk Hama pada Komoditas Pertanian Lokal Desa Demaan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan E-book Kampung Kebaya untuk Media Promosi Digital dan Penguatan Branding Desa Wisata",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan Modul : Pembelajaran Survei dan Pengolahan Data Sederhana Berbasis Lingkungan Sekitar untuk Siswa SD sebagai Upaya Penguatan Literasi Data dan Keberlanjutan Desa",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan POC dari Limbah Kulit Buah dan Sayur",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan Poster Bijak Menggunakan Energi",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan Program Slot Machine Sederhana Untuk Meningkatkan Kesadaran Jebakan Ekonomi Judi Online",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan booklet Peta Potensi Desa Kedungrejo",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan dan Sosialisasi Eko-Enzim Praktis untuk Kebersihan Rumah Tangga",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan dan Sosialisasi Peta UMKM",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pembuatan peraga interaktif Aksi Tanggap Bencana",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pemetaan Titik-titik Pelaku UMKM untuk Pendataan dan Promosi UMKM",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Penerapan Harga Pokok Produksi (HPP) dan Harga Jual bagi Pelaku Usaha",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Penerapan Katalog dan Pemetaan Digital UMKM Desa Mendelem",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Penerapan Konten Pengiklanan Pertanian di Website Desa Mendelem",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Digital Gallery sebagai Media Visualisasi Potensi Lokal dan Identitas Geopark Jogja di Desa Trimulyo.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Media Simulasi Tanggap Bencana Berbasis Visual Interaktif sebagai Sarana Edukasi",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Sekolah Alam Sanggrahan: Penalaran Umum dan Logika",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Sosial dan Natural Desa",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Website Desa Mendelem",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengembangan Website Kalurahan untuk Sarana Promosi Kalurahan dan UMKM",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengenalan dan Pelatihan Penggunaan Teknologi Kecerdasan Buatan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pengenalan mutu gizi pada makanan kemasan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Peningkatan Jangkauan Pasar UMKM Petani dan Pengrajin Bambu Melalui Pemanfaatan Platform WhatsApp Business",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Peningkatan Literasi AI untuk Mewaspadai Hoax/Berita Bohong",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Peningkatan Motivasi Belajar Bahasa Inggris Anak di Desa Madurejo Menggunakan Media Digital melalui Website Interaktif",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Penyuluhan dan Evaluasi Statistik Desain Produk terhadap Preferensi Konsumen UMKM",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Penyusunan dan Pembuatan LPJ Pemerintah Desa Loano",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Perancangan Antarmuka Pengguna Website Informasi Gizi Keluarga",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Perancangan Desain Kandang Ayam Bahagia",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Perancangan Sistem Sensor dan Kendali Elektronik pada Smart Composter Berbasis Mikrokontroler",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Perancangan dan Pengembangan Website Portal Digital Wisata Kecamatan Dlingo",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Petualangan Angka: Belajar Matematika sambil Bermain",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Pot Bunga Pintar: Hemat Air",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Publikasi Data Ketenagakerjaan Desa Loano Tahun 2025 : Dasar Penguatan Tata Kelola dan Kemandirian Desa Berkelanjutan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Rancang Bangun Sistem Presensi Digital Berbasis Lokasi (Radius Kantor) dan Log Aktivitas Lapangan Berbasis Foto–Waktu–Koordinat untuk Penguatan Administrasi Kelurahan di Kawasan Geopark Jogja.",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Remaja Melek Finansial: Edukasi Risiko Pinjaman Online",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "SIJAGA SAMPAH: Sistem Jaringan Digital Pengelolaan Sampah",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "SULFURMATE: Mitigasi dan Monitoring Sulfur dalam Proses Pengawetan Bambu",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Sekolah Alam: Mitigasi dan Penanganan Bencana",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Sistem Pendataan dan Pengiklanan Wisata Website Desa Mendelem",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Smart Microclimate Station untuk Agrowisata di Kelurahan Muntuk",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Sosialisasi & Pelatihan IoT Sederhana untuk Pengelola Agrowisata dan Masyarakat di Kelurahan Muntuk",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Sosialisasi Cerdas Berinternet: Pemberdayaan Cybersecurity Awareness dan Literasi Digital Warga",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Sosialisasi Pengelolaan Sampah Botol Melalui Ecobrick dan Lainnya",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "TERA-PANGAN: Teknologi pemantauan Ramah Lingkungan untuk Pangan Fermentasi",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Tata Cara Menggunakkan Anjungan Tunai Mandiri (ATM) bagi Kelompok Masyrakat Demaan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Teknologi Sederhana untuk Produksi VCO: Menuju Desa Mandiri dan Berkelanjutan",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Tubuh Kuat, Bebas Anemia: Infografis Pencegahan Anemia Sejak Dini",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Workshop Upskilling UMKM (Optimasi Google Map)",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "Youth Financial Problem-Solving: Mencegah Kesalahan Keuangan di Usia Muda",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Karya KKN-TTG",
+      "kegiatan": "sosialisasi pencegahan prolaku merokok dan bullying pada usia remaja",
+      "hasil": "KKN-TTG 2026",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "2nd International Student Competition (ISC) 2026",
+      "hasil": "Juara II",
+      "tingkat": "Internasional",
+      "n": 3
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "2nd International Student Summit 2026",
+      "hasil": "Juara II",
+      "tingkat": "Internasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "6th KIBO-RPC (Robot Programming Challenge)",
+      "hasil": "Juara III",
+      "tingkat": "Internasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "AIRLANGGA COMPETITION IV",
+      "hasil": "Juara I",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Academic Weeks Politeknik Keuangan Negara STAN 2026",
+      "hasil": "Juara III",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Ajang Pengenalan Statistika dan Festival Data #20",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Arkavidia 10.0 (Cabang Datavidia)",
+      "hasil": "Juara III",
+      "tingkat": "Nasional",
+      "n": 3
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Brawijaya ASEAN Essay Competition 2026",
+      "hasil": "Juara I",
+      "tingkat": "Nasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Business-IT Case DIG IN HIMSISFO BINUS",
+      "hasil": "Juara III",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "GEOPHYSICS DAY 4.0",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Global Sustainability Challenge",
+      "hasil": "Juara I",
+      "tingkat": "Internasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "International Student Competition",
+      "hasil": "Juara I",
+      "tingkat": "Internasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Kompetisi Hackathon Geophysics Day 4.0",
+      "hasil": "Juara III",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Lomba Esai Nasional (ESNAS) 2026",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Lomba Essay UIE Insight Festival 2026",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Lomba Studi Kasus IEEEBIG 2026",
+      "hasil": "Juara I",
+      "tingkat": "Universitas",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "MATHEMATICAL ANALYSIS & GEOMETRY DAY ke -7 (MAGD-DAY) 2026 (Kategori Individu)",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "MATHEMATICAL ANALYSIS & GEOMETRY DAY ke 17 (MAGD-DAY) 2026 (Kategori Individu)",
+      "hasil": "Juara I",
+      "tingkat": "Nasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "MATHEMATICAL ANALYSIS & GEOMETRY DAY ke 17 (MAGD-DAY) 2026 (Kategori Individu)",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "MATHEMATICAL ANALYSIS & GEOMETRY DAY ke 17 (MAGD-DAY) 2026 (Kategori Individu)",
+      "hasil": "Juara III",
+      "tingkat": "Nasional",
+      "n": 4
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Mathematical Analysis and Geometry Day XVII 2026",
+      "hasil": "Juara II",
+      "tingkat": "Nasional",
+      "n": 2
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Ramadhan Qur'an Fest",
+      "hasil": "Juara III",
+      "tingkat": "Regional/Wilayah/Lokal",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Shell Eco-Marathon Asia Pacific and Middle East 2026",
+      "hasil": "Juara I",
+      "tingkat": "Internasional",
+      "n": 1
+    },
+    {
+      "jenis": "Kejuaraan",
+      "kegiatan": "Shell Eco-marathon Asia Pacific and the Middle East 2026",
+      "hasil": "Juara III",
+      "tingkat": "Internasional",
+      "n": 2
+    },
+    {
+      "jenis": "Penyaji",
+      "kegiatan": "Seminar Nasional/Internasional ICOGEE 2025",
+      "hasil": "Penyaji",
+      "tingkat": "Internasional",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "A SIMPLER PROOF OF THE EQUIVALENCE BETWEEN THEBACKWARDS ITˆO INTEGRAL AND THE MCSHANEBACKWARDS ITˆO INTEGRAL",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "A promising computational study of ovarian cancer treatment of the isolated compound 5, 7-dihydroxy-3 (R)-methylphthalide",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Adaptive Multi-Scale Gaussian-Laplacian Pyramid with Gabor Filtering for Microplastics Detection",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Advancing burn wound monitoring: A non-invasive photoacoustic imaging approach",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Assessing the Long-Term Sustainability of Pension Plans: A Benchmarking Approach Using the Divergence Between Discount Rates and GDP Growth in Relation to the Pension Benefit-Contribution Ratio",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Co-Design of a Power State-Aware Scheduler and an Intelligent Power Manager for Energy-Efficient HPC Systems",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Comparative evaluation of hotplate, sonochemical, and microwave-assisted reduction methods for improving the structure and electrical conductivity of reduced graphene oxide",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Concatenated feature pyramid network for robust object detection in urban driving scenarios: A case study in Yogyakarta, Indonesia",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Convolutional Structural Similarity Index Measure (CSSIM): A Novel Interpretable Classification Method for ADHD Diagnosis Using EEG",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Defect-induced spin-split localized states with strong out-of-plane spin polarization in monolayer 1H-WSe2: DFT and k·p analysis",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Development of a Rapid Metal Oxide Semiconductor-Based Sensory System for Noninvasive Neonatal Sepsis Detection",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Energy-Efficient VLSI Architecture for Time-Multiplexed Vibration Feature Extraction and Fuzzy Inference",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Enhanced Badminton Stroke Recognition Using Hybrid RGB–Skeleton Features and Ensemble Learning",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Feature-Optimized Electronic-Nose Classification of Fermented and Non-Fermented Teas",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Gold Price Forecasting with Long Short Term Memory (LSTM) and ARIMAX Method",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "High-performance eco-friendly Ni-Cu/bamboo activated carbon catalysts for oxidative desulfurization of high-concentration DBT",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Hybrid Handcrafted Feature Extraction Combined with an Assisted Region of Interest Protocol for Multi-Class Age-Related Macular Degeneration Classification",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Hydrothermal Method for the Green Synthesis of Carbon Dots using Soursop Leaves: Advancing Low-Toxicity Applications in Imaging and Nanomaterials",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Improving Cluster Validity in K-Means Clustering Using Robust Statistical Estimators",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Investigation of reaction mechanism in selective citric acid leaching of Ni and Co from NMC cathodes via real time Raman spectroscopy and RSM optimization",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "LiDAR-Based Sensor Fusion and Navigation for Indoor Autonomous Mobile Robots in Warehouse Environments",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Lithium enrichment in high radiogenic geothermal systems originating from lithospheric water due to water-rock interactions",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "MLP-Based inverse Kinematics for Efficient Pick and Place Motion Generation of 6 DOF Robotic Manipulators",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Nitrogen-Enriched Graphene Quantum Dots from Biomass as Fluorescent Probes for Fe3+ Ions: A Combined Experimental and DFT Study",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "ORCA: AI-powered Autonomous Underwater Vehicle for Subaquatic Exploration",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Optimizing pore structure and edge surface functionalization with oxygen-containing groups in nanoporous graphene for highly efficient CO2 capture",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Performance evaluation and DFT study of a room temperature methylamine gas sensor based on QCM with Fe3O4-PVAc nanofiber active layer",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Physicochemical and antibacterial properties of white mineral trioxide aggregate after replacement of Bi2O3 with ZnO nanoflowers",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Probabilistic Earthquake Hazard Assessment in Indonesia Using Poisson Model and Spatial Grid Analysis",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Quantization Yielding Sharp and Unsharp Observables",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Quinazolinone derivatives as selective COX-2 inhibitors: In silico analysis using molecular docking, dynamics, and ADMET",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Stable and Efficient Vision Model for AUV Perception via Multi-Task Learning with Gradient Normalization and Knowledge Distillation",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "THE BACKWARDS MCSHANE INTEGRAL: AN ALTERNATIVE APPROACH USING FULL DIVISIONS",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "The effect of sulfur doping on the ZrTiO4 (111) surface toward the CO2RR to chemically valuable products: a density functional theory study",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Valence state-dependent catalytic behavior of Ni and Co in NiCo/activated carbon derived from spent Li-ion batteries for biojet fuel production",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Valuing Fruit Tree Lease Contracts Under Uncertainty: A Probabilistic Framework for Fair Pricing",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    },
+    {
+      "jenis": "Publikasi mahasiswa",
+      "kegiatan": "Various light sources-assisted photodegradation of Rhodamine B using magnetically separable and reusable MnFe2O4/Cdots synthesized utilizing Moringa oleifera leaf extract and watermelon peel",
+      "hasil": "Publikasi mahasiswa",
+      "tingkat": "Jurnal internasional berprestasi",
+      "n": 1
+    }
+  ],
+  "per_status": [
+    {
+      "label": "Belum masuk sistem TCK",
+      "n": 113
+    },
+    {
+      "label": "Sudah masuk sistem TCK",
+      "n": 54
+    }
+  ]
+}

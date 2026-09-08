@@ -1,0 +1,46 @@
+---
+import data from '../../data/derived/tck_international.json';
+import DetailShell from './DetailShell.astro';
+import CountBars from './CountBars.astro';
+import ChartFrame from '../charts/ChartFrame.astro';
+import {withBase} from '../../lib/paths';
+---
+<DetailShell label="Rincian mahasiswa asing TCK 2026">
+  <div data-detail-switch>
+    <div class="detail-controls"><div class="detail-choices" role="group" aria-label="Kategori mahasiswa asing">
+      {data.panel.map((p,i)=><button type="button" data-detail-choice={p.label} aria-pressed={i===0}>{p.label}</button>)}
+    </div></div>
+    {data.panel.map((p,i)=><div data-detail-panel={p.label} hidden={i!==0}>
+      <div class="detail-metrics" aria-live="polite">
+        <div><strong>{p.total}</strong><span>rekaman {p.label==='Semua'?'kredit & nonkredit':p.label.toLowerCase()}</span></div>
+        <div><strong>{p.negara_tercatat}</strong><span>negara teridentifikasi</span></div>
+        <div><strong>{p.negara_belum_tercatat}</strong><span>negara belum tercatat</span></div>
+      </div>
+      <ChartFrame id={`asing-detail-${i}`} title={`Profil mahasiswa asing · ${p.label}`} hideHeader source="Rincian TCK 2026 #4a–4b" csvHref={withBase('/data/tck_international_negara.csv')}
+        tableRows={p.per_negara} tableColumns={[{key:'label',label:'Negara'},{key:'n',label:'Rekaman'}]}>
+        <div class="detail-grid">
+          <div><p class="detail-kicker">Asal mahasiswa</p><h4>Jangkauan negara asal</h4>
+            <CountBars rows={p.per_negara.filter(r=>r.label!=='Belum tercatat').slice(0,10)} total={p.total}/>
+            <p class="detail-note">Sepuluh label negara dengan rekaman terbanyak. Persentase memakai seluruh {p.total} rekaman pada pilihan ini; negara kosong tetap masuk penyebut. Seluruh negara tersedia di tabel.</p>
+          </div>
+          <div><p class="detail-kicker">Bentuk partisipasi</p><h4>{p.label==='Kredit'?'Program studi pada jalur kredit':p.label==='Nonkredit'?'Kegiatan pada jalur nonkredit':'Dua jalur pengalaman akademik'}</h4>
+            {p.label==='Semua' ? <>
+              <div class="arrival-pair">{data.panel.slice(1).map((group,index)=><div><span class="arrival-number">0{index+1}</span><strong>{group.total}</strong><h5>{group.label}</h5><p>{index===0?'Rincian program studi, dari sarjana hingga doktor, serta entri non-gelar yang dicatat pada kategori kredit.':'Sekolah musim panas, pertukaran, dan kegiatan non-gelar di tiga departemen.'}</p></div>)}</div>
+              <h4>Status pencatatan bukti</h4><CountBars rows={p.per_status} total={p.total} color="var(--pillar-teal)"/>
+            </> : <CountBars rows={p.label==='Kredit'?data.per_prodi:data.per_kegiatan} total={p.total} color="var(--pillar-teal)"/>}
+          </div>
+        </div>
+      </ChartFrame>
+    </div>)}
+  </div>
+  <p class="detail-note detail-callout">Jumlah mengikuti kategori kredit/nonkredit di berkas sumber dan dapat mencakup orang yang sama pada lebih dari satu kegiatan. Status “belum masuk sistem TCK” adalah catatan pada daftar bukti. Label negara “Hailand” dipertahankan sesuai sumber dan tidak ditafsirkan sebagai negara tertentu. <a href={withBase('/data/tck_international_program.csv')} download>Unduh rincian program dan kegiatan</a>.</p>
+</DetailShell>
+<style>
+  .arrival-pair { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:36px; }
+  .arrival-pair > div { border-top:2px solid var(--ugm-blue); padding-top:14px; }
+  .arrival-pair > div+div { border-color:var(--pillar-teal); }
+  .arrival-number { display:block; font:11px var(--font-ui); color:var(--text-secondary); margin-bottom:18px; }
+  .arrival-pair strong { font:600 44px/1 var(--font-display); color:var(--text-heading); }
+  h5 { font:600 14px var(--font-ui); margin:10px 0; }
+  .arrival-pair p { font:12px/1.7 var(--font-ui); color:var(--text-secondary); margin:0; }
+</style>

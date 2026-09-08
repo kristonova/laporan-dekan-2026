@@ -1,0 +1,18 @@
+jenjang,satuan,prodi,n,terukur,rerata,median,q1,q3,min,max,ipk
+S1,semester,Elektronika dan Instrumentasi,25,25,7.52,8.0,7.0,8.0,7.0,8.0,3.72
+S1,semester,Fisika,20,20,7.45,7.0,7.0,8.0,7.0,8.0,3.53
+S1,semester,Geofisika,1,1,,,,,,,
+S1,semester,Ilmu Aktuaria,8,8,7.62,8.0,7.0,8.0,7.0,8.0,3.78
+S1,semester,Ilmu Komputer,44,44,7.77,8.0,8.0,8.0,7.0,8.0,3.82
+S1,semester,Kimia,19,19,8.0,8.0,8.0,8.0,8.0,8.0,3.56
+S1,semester,Matematika,4,4,7.5,7.5,7.0,8.0,7.0,8.0,3.66
+S1,semester,Statistika,29,29,7.45,7.0,7.0,8.0,7.0,8.0,3.76
+S2,semester,Elektronika dan Instrumentasi,1,1,,,,,,,
+S2,semester,Fisika,13,13,3.77,4.0,4.0,4.0,3.0,4.0,3.89
+S2,semester,Ilmu Komputer,14,14,3.79,4.0,4.0,4.0,3.0,4.0,3.84
+S2,semester,Kecerdasan Artifisial,6,6,3.17,3.0,3.0,3.0,3.0,4.0,3.88
+S2,semester,Kimia,19,19,3.79,4.0,3.5,4.0,3.0,5.0,3.86
+S2,semester,Matematika,4,4,3.75,4.0,3.75,4.0,3.0,4.0,3.8
+S3,semester,Fisika,10,10,5.9,5.0,5.0,7.0,5.0,8.0,3.98
+S3,semester,Ilmu Komputer,13,13,7.0,7.0,7.0,8.0,5.0,8.0,3.99
+S3,semester,Kimia,12,12,6.58,7.0,6.0,7.0,5.0,8.0,3.99

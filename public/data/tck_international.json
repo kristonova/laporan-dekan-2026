@@ -1,0 +1,476 @@
+{
+  "sumber": [
+    "4.A.Jumlah mahasiswa asing semua jenjang (Kredit).xlsx",
+    "4.B.Jumlah mahasiswa asing semua jenjang (Non Kredit).xlsx"
+  ],
+  "panel": [
+    {
+      "label": "Semua",
+      "total": 198,
+      "per_negara": [
+        {
+          "label": "Belum tercatat",
+          "n": 99
+        },
+        {
+          "label": "Jepang",
+          "n": 14
+        },
+        {
+          "label": "Malaysia",
+          "n": 13
+        },
+        {
+          "label": "Pakistan",
+          "n": 13
+        },
+        {
+          "label": "Tiongkok",
+          "n": 7
+        },
+        {
+          "label": "Nigeria",
+          "n": 4
+        },
+        {
+          "label": "Qatar",
+          "n": 4
+        },
+        {
+          "label": "Thailand",
+          "n": 4
+        },
+        {
+          "label": "Turkmenistan",
+          "n": 4
+        },
+        {
+          "label": "Vanuatu",
+          "n": 4
+        },
+        {
+          "label": "Bangladesh",
+          "n": 3
+        },
+        {
+          "label": "India",
+          "n": 3
+        },
+        {
+          "label": "Timor-Leste",
+          "n": 3
+        },
+        {
+          "label": "Amerika Serikat",
+          "n": 2
+        },
+        {
+          "label": "Bolivia",
+          "n": 2
+        },
+        {
+          "label": "Etiopia",
+          "n": 2
+        },
+        {
+          "label": "Tanzania",
+          "n": 2
+        },
+        {
+          "label": "Vietnam",
+          "n": 2
+        },
+        {
+          "label": "Aljazair",
+          "n": 1
+        },
+        {
+          "label": "Arab Saudi",
+          "n": 1
+        },
+        {
+          "label": "Ghana",
+          "n": 1
+        },
+        {
+          "label": "Hailand (sesuai sumber)",
+          "n": 1
+        },
+        {
+          "label": "Kamboja",
+          "n": 1
+        },
+        {
+          "label": "Mesir",
+          "n": 1
+        },
+        {
+          "label": "Palestina",
+          "n": 1
+        },
+        {
+          "label": "Rusia",
+          "n": 1
+        },
+        {
+          "label": "Rwanda",
+          "n": 1
+        },
+        {
+          "label": "Sri Lanka",
+          "n": 1
+        },
+        {
+          "label": "Sudan",
+          "n": 1
+        },
+        {
+          "label": "Tajikistan",
+          "n": 1
+        },
+        {
+          "label": "Zambia",
+          "n": 1
+        }
+      ],
+      "negara_tercatat": 29,
+      "negara_belum_tercatat": 99,
+      "per_status": [
+        {
+          "label": "Belum masuk sistem TCK",
+          "n": 113
+        },
+        {
+          "label": "Sudah masuk sistem TCK",
+          "n": 85
+        }
+      ]
+    },
+    {
+      "label": "Kredit",
+      "total": 90,
+      "per_negara": [
+        {
+          "label": "Belum tercatat",
+          "n": 51
+        },
+        {
+          "label": "Jepang",
+          "n": 7
+        },
+        {
+          "label": "Pakistan",
+          "n": 5
+        },
+        {
+          "label": "Qatar",
+          "n": 4
+        },
+        {
+          "label": "Turkmenistan",
+          "n": 4
+        },
+        {
+          "label": "Vanuatu",
+          "n": 4
+        },
+        {
+          "label": "Tiongkok",
+          "n": 3
+        },
+        {
+          "label": "Timor-Leste",
+          "n": 2
+        },
+        {
+          "label": "Amerika Serikat",
+          "n": 1
+        },
+        {
+          "label": "Bangladesh",
+          "n": 1
+        },
+        {
+          "label": "Bolivia",
+          "n": 1
+        },
+        {
+          "label": "Etiopia",
+          "n": 1
+        },
+        {
+          "label": "India",
+          "n": 1
+        },
+        {
+          "label": "Kamboja",
+          "n": 1
+        },
+        {
+          "label": "Malaysia",
+          "n": 1
+        },
+        {
+          "label": "Rusia",
+          "n": 1
+        },
+        {
+          "label": "Tanzania",
+          "n": 1
+        },
+        {
+          "label": "Thailand",
+          "n": 1
+        }
+      ],
+      "negara_tercatat": 17,
+      "negara_belum_tercatat": 51,
+      "per_status": [
+        {
+          "label": "Belum masuk sistem TCK",
+          "n": 65
+        },
+        {
+          "label": "Sudah masuk sistem TCK",
+          "n": 25
+        }
+      ]
+    },
+    {
+      "label": "Nonkredit",
+      "total": 108,
+      "per_negara": [
+        {
+          "label": "Belum tercatat",
+          "n": 48
+        },
+        {
+          "label": "Malaysia",
+          "n": 12
+        },
+        {
+          "label": "Pakistan",
+          "n": 8
+        },
+        {
+          "label": "Jepang",
+          "n": 7
+        },
+        {
+          "label": "Nigeria",
+          "n": 4
+        },
+        {
+          "label": "Tiongkok",
+          "n": 4
+        },
+        {
+          "label": "Thailand",
+          "n": 3
+        },
+        {
+          "label": "Bangladesh",
+          "n": 2
+        },
+        {
+          "label": "India",
+          "n": 2
+        },
+        {
+          "label": "Vietnam",
+          "n": 2
+        },
+        {
+          "label": "Aljazair",
+          "n": 1
+        },
+        {
+          "label": "Amerika Serikat",
+          "n": 1
+        },
+        {
+          "label": "Arab Saudi",
+          "n": 1
+        },
+        {
+          "label": "Bolivia",
+          "n": 1
+        },
+        {
+          "label": "Etiopia",
+          "n": 1
+        },
+        {
+          "label": "Ghana",
+          "n": 1
+        },
+        {
+          "label": "Hailand (sesuai sumber)",
+          "n": 1
+        },
+        {
+          "label": "Mesir",
+          "n": 1
+        },
+        {
+          "label": "Palestina",
+          "n": 1
+        },
+        {
+          "label": "Rwanda",
+          "n": 1
+        },
+        {
+          "label": "Sri Lanka",
+          "n": 1
+        },
+        {
+          "label": "Sudan",
+          "n": 1
+        },
+        {
+          "label": "Tajikistan",
+          "n": 1
+        },
+        {
+          "label": "Tanzania",
+          "n": 1
+        },
+        {
+          "label": "Timor-Leste",
+          "n": 1
+        },
+        {
+          "label": "Zambia",
+          "n": 1
+        }
+      ],
+      "negara_tercatat": 24,
+      "negara_belum_tercatat": 48,
+      "per_status": [
+        {
+          "label": "Sudah masuk sistem TCK",
+          "n": 60
+        },
+        {
+          "label": "Belum masuk sistem TCK",
+          "n": 48
+        }
+      ]
+    }
+  ],
+  "per_prodi": [
+    {
+      "label": "Sarjana Ilmu Komputer",
+      "n": 19
+    },
+    {
+      "label": "Ilmu Komputer",
+      "n": 13
+    },
+    {
+      "label": "ND Magister Kimia",
+      "n": 12
+    },
+    {
+      "label": "Magister Kecerdasan Artifisial",
+      "n": 10
+    },
+    {
+      "label": "Magister Ilmu Komputer",
+      "n": 8
+    },
+    {
+      "label": "Magister Kimia",
+      "n": 5
+    },
+    {
+      "label": "Doktor Ilmu Komputer",
+      "n": 4
+    },
+    {
+      "label": "Sarjana Statistika",
+      "n": 4
+    },
+    {
+      "label": "Magister Fisika",
+      "n": 3
+    },
+    {
+      "label": "Magister Matematika",
+      "n": 3
+    },
+    {
+      "label": "Sarjana Elektronika dan Instrumentasi",
+      "n": 3
+    },
+    {
+      "label": "Doktor Kimia",
+      "n": 2
+    },
+    {
+      "label": "Sarjana Kimia",
+      "n": 2
+    },
+    {
+      "label": "Doktor Matematika",
+      "n": 1
+    },
+    {
+      "label": "Sarjana Geofisika",
+      "n": 1
+    }
+  ],
+  "per_kegiatan": [
+    {
+      "label": "PARE program (Population â€“ Activities â€“ Resources â€“ Enviroments) Spring School February 2026",
+      "n": 38
+    },
+    {
+      "label": "[Online] DCSE Summer Course on AI and Robotics 2026: Empowering Society through AI & Robotics",
+      "n": 27
+    },
+    {
+      "label": "Online_Summer School 2026 on post quantum cryptography, cybersecurity, analysis and probability",
+      "n": 18
+    },
+    {
+      "label": "ND MAGISTER KIMIA",
+      "n": 11
+    },
+    {
+      "label": "ND BACHELOR IN MATHEMATICS",
+      "n": 7
+    },
+    {
+      "label": "Student Exchange Program in Bachelor of Computer Science, Faculty of Mathematics and Natural Sciences - Intake August 2026 (1 semester)",
+      "n": 4
+    },
+    {
+      "label": "ND BACHELOR IN COMPUTER SCIENCE",
+      "n": 1
+    },
+    {
+      "label": "Student Exchange Program in Master of Artificial Intelligence, Faculty of Mathematics and Natural Sciences - Intake August 2026 (1 semester)",
+      "n": 1
+    },
+    {
+      "label": "Student Exchange Program in Master of Mathematics, Faculty of Mathematics and Natural Sciences - Intake August 2026 (1 semester)",
+      "n": 1
+    }
+  ],
+  "per_departemen": [
+    {
+      "label": "Kimia",
+      "n": 49
+    },
+    {
+      "label": "Ilmu Komputer dan Elektronika",
+      "n": 32
+    },
+    {
+      "label": "Matematika",
+      "n": 27
+    }
+  ]
+}

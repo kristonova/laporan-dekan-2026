@@ -19,6 +19,7 @@ from utils import (
     SCIVAL_DIR,
     SDM_DIR,
     TCK_2026_DIR,
+    WORKSPACE_ROOT,
     cell,
     deduplicate,
     digits_only,
@@ -389,6 +390,9 @@ def load_admissions() -> pd.DataFrame:
 def load_active_students() -> pd.DataFrame:
     """Registered undergraduates by programme and entry cohort."""
     grid = read_workbook(ACADEMIC_DIR / "7. Profil Mahasiswa S1.xlsx", "registrasi mahasiswa")
+    period = re.search(r"SEMESTER GASAL T\.A\. (\d{4}/\d{4})", text_cell(grid.iloc[0], 0))
+    if not period:
+        raise ValueError("Periode registrasi sarjana tidak dikenali")
     header = grid.iloc[4]
     years = [
         (int(text_cell(header, index)), index)
@@ -412,7 +416,58 @@ def load_active_students() -> pd.DataFrame:
                 "prodi": programme,
                 "angkatan": year,
                 "mahasiswa": numeric_cell(row, index) or 0,
+                "tahun_ajaran": period.group(1),
+                "semester": "gasal",
             })
+    return pd.DataFrame(rows)
+
+
+POSTGRADUATE_REGISTRATION_FILE = (
+    WORKSPACE_ROOT / "data laporan dekan 2021-2026" / "Laporan Dekan 2024"
+    / "AKADEMIK" / "S2 S3 -Registrasi, Maba, Beasiswa.xlsx"
+)
+
+
+def load_active_postgraduates() -> pd.DataFrame:
+    """Latest supplied registration snapshot, distinct from intake histories."""
+    sheet = "Registrasi 2024 I S2 S3 fi"
+    grid = read_workbook(POSTGRADUATE_REGISTRATION_FILE, sheet)
+    period = re.fullmatch(r"Semester I Tahun Akademik (\d{4}/\d{4})", text_cell(grid.iloc[1], 0))
+    if not period:
+        raise ValueError("Periode registrasi pascasarjana tidak dikenali")
+    header_index = next(i for i, row in grid.iterrows() if text_cell(row, 1) == "PROGRAM STUDI")
+    total_index = next(i for i, value in enumerate(grid.iloc[header_index]) if str(value).strip() == "JUMLAH")
+    years = [i for i in range(2, total_index) if text_cell(grid.iloc[header_index + 1], i).isdigit()]
+    rows: list[dict] = []
+    level = ""
+    subtotals: dict[str, int] = {}
+    grand_total = None
+    for _, row in grid.iloc[header_index + 2:].iterrows():
+        first, programme = text_cell(row, 0), text_cell(row, 1)
+        if first in ("Magister", "Doktor"):
+            level = {"Magister": "S2", "Doktor": "S3"}[first]
+        if first.startswith("JUMLAH MAHASISWA"):
+            grand_total = numeric_cell(row, total_index)
+            break
+        if programme == "JUMLAH":
+            subtotals[level] = int(numeric_cell(row, total_index))
+            continue
+        if not programme:
+            continue
+        count = sum(numeric_cell(row, i) or 0 for i in years)
+        if not level or count != numeric_cell(row, total_index):
+            raise ValueError(f"Rincian registrasi tidak cocok: {level} {programme}")
+        rows.append({
+            "jenjang": level, "prodi": programme, "mahasiswa": int(count),
+            "tahun_ajaran": period.group(1), "semester": "gasal",
+            "sumber": POSTGRADUATE_REGISTRATION_FILE.relative_to(WORKSPACE_ROOT).as_posix(),
+            "sheet": sheet,
+        })
+    for level in ("S2", "S3"):
+        if sum(row["mahasiswa"] for row in rows if row["jenjang"] == level) != subtotals.get(level):
+            raise ValueError(f"Jumlah registrasi {level} tidak cocok dengan sumber")
+    if sum(row["mahasiswa"] for row in rows) != grand_total:
+        raise ValueError("Jumlah registrasi pascasarjana tidak cocok dengan sumber")
     return pd.DataFrame(rows)
 
 
@@ -1298,6 +1353,7 @@ def main() -> None:
     revenue = load_partnership_revenue()
     record("partnership_revenue", revenue, [REVENUE_WORKBOOK])
     record("school_mou", load_school_mou(), [SCHOOL_MOU_WORKBOOK])
+    record("active_postgraduates", load_active_postgraduates(), [POSTGRADUATE_REGISTRATION_FILE.relative_to(WORKSPACE_ROOT).as_posix()])
 
     academic_loaders = {
         "admissions": (load_admissions, "PROFIL MABA.xlsx"),

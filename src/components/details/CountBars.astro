@@ -1,0 +1,21 @@
+---
+interface Props { rows: {label:string;n:number}[]; total?:number; color?:string; }
+const {rows,total,color='var(--chart-primary)'} = Astro.props;
+const max = Math.max(1,...rows.map(r=>r.n));
+const fmt = (n:number) => new Intl.NumberFormat('id-ID',{maximumFractionDigits:1}).format(n);
+---
+<ol class="count-bars" style={`--bar-color:${color}`}>
+  {rows.map(row => <li>
+    <div><span>{row.label}</span><strong>{fmt(row.n)}{total !== undefined && <small>{fmt(total ? row.n/total*100 : 0)}%</small>}</strong></div>
+    <span class="count-track" aria-hidden="true"><i style={`width:${row.n/max*100}%`} /></span>
+  </li>)}
+</ol>
+<style>
+  ol { list-style:none; padding:0; margin:0; display:grid; gap:15px; }
+  li > div { display:flex; justify-content:space-between; align-items:baseline; gap:24px; margin-bottom:7px; font:13px/1.5 var(--font-ui); }
+  li > div > span { overflow-wrap:anywhere; }
+  strong { display:flex; gap:12px; white-space:nowrap; font-size:14px; font-weight:650; color:var(--text-heading); font-variant-numeric:tabular-nums; }
+  small { min-width:42px; text-align:right; color:var(--text-secondary); font-size:11px; font-weight:400; }
+  .count-track { display:block; height:6px; background:var(--surface-2); border-radius:1px; overflow:hidden; }
+  i { display:block; height:100%; background:var(--bar-color); }
+</style>

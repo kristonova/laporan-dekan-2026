@@ -1,0 +1,40 @@
+---
+import data from '../../data/derived/tck_achievements.json';
+import tck from '../../data/derived/tck_2026_joined.json';
+import DetailShell from './DetailShell.astro';
+import CountBars from './CountBars.astro';
+import ChartFrame from '../charts/ChartFrame.astro';
+import {withBase} from '../../lib/paths';
+const colors=['var(--chart-primary)','var(--pillar-teal)','var(--ugm-blue-400)','var(--slate-500)'];
+const official=tck.find(r=>r.no==='9')?.capaian_dinilai??0;
+---
+<DetailShell label="Rincian prestasi mahasiswa TCK 2026">
+  <p class="detail-kicker">Komposisi Kategori Prestasi Mahasiswa</p>
+  <div class="detail-ribbon" aria-hidden="true">{data.per_jenis.map((r,i)=><span style={`width:${r.n/data.total*100}%;--detail-color:${colors[i]}`}/>)}</div>
+  <div class="detail-legend">{data.per_jenis.map((r,i)=><span style={`--detail-color:${colors[i]}`}><i/>{r.label} <strong>{r.n}</strong></span>)}</div>
+  <div data-detail-switch>
+    <div class="detail-controls"><div class="detail-choices" role="group" aria-label="Jenis prestasi dalam TCK">
+      {data.panel.map((p,i)=><button type="button" data-detail-choice={p.label} aria-pressed={i===0}>{p.label}</button>)}
+    </div></div>
+    {data.panel.map((p,i)=>{
+      const events=data.kegiatan.filter(r=>p.label==='Semua'||r.jenis===p.label);
+      return <div data-detail-panel={p.label} hidden={i!==0}>
+        <div class="detail-metrics" aria-live="polite">
+          <div><strong>{p.total}</strong><span>rekaman {p.label==='Semua'?'pencapaian':p.label.toLowerCase()}</span></div>
+          <div><strong>{p.per_departemen.length}</strong><span>departemen terwakili</span></div>
+          <div><strong>{p.per_tingkat.length}</strong><span>kategori tingkat kegiatan</span></div>
+        </div>
+        <ChartFrame id={`prestasi-rincian-${i}`} title={`Rincian pencapaian · ${p.label}`} hideHeader source="Rincian TCK 2026 #9" csvHref={withBase('/data/tck_achievements_kegiatan.csv')}
+          tableRows={events} tableColumns={[{key:'kegiatan',label:'Kegiatan / karya (sesuai sumber)'},{key:'hasil',label:'Hasil'},{key:'tingkat',label:'Tingkat'},{key:'n',label:'Rekaman'}]}>
+          <div class="detail-grid">
+            <div><h4>Distribusi Prestasi per Departemen</h4><CountBars rows={p.per_departemen} total={p.total}/></div>
+            <div><h4>{p.label==='Kejuaraan'?'Raihan Juara':'Tingkat Wilayah Kegiatan'}</h4><CountBars rows={p.label==='Kejuaraan'?p.per_hasil:p.per_tingkat} total={p.total} color="var(--pillar-teal)"/>
+              {p.label==='Kejuaraan'&&<p class="detail-note">{p.per_tingkat.map(r=>`${r.n} rekaman ${r.label.toLowerCase()}`).join(' · ')}.</p>}
+            </div>
+          </div>
+        </ChartFrame>
+      </div>;
+    })}
+  </div>
+  <p class="detail-note detail-callout">Rincian memuat <strong>{data.total} rekaman</strong>, sedangkan ringkasan TCK mencatat {official}; selisih {Math.abs(official-data.total)} rekaman belum terjelaskan. Satu kegiatan dapat menghasilkan beberapa rekaman mahasiswa. Publikasi dan karya KKN tetap dibedakan dari kejuaraan; data ini tidak ditambahkan ke tren gelar juara tahunan. Daftar kegiatan lengkap tersedia melalui “Lihat Tabel Data”.</p>
+</DetailShell>

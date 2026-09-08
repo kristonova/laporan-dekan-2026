@@ -131,7 +131,7 @@ const tableColumns = hasCategories
   ? [
       { key: "Indikator", label: "Indikator" },
       { key: "Kategori", label: "Kategori pada berkas sumber" },
-      { key: "Pita", label: "Pita risiko" },
+      { key: "Pita", label: "Kategori risiko" },
       { key: "Kunjungan", label: "Kunjungan", align: "end" as const },
       { key: "Porsi diperiksa", label: "Porsi diperiksa", align: "end" as const },
     ]
@@ -161,7 +161,7 @@ const tableColumns = hasCategories
     <title id={`${id}-svg-title`}>{title}</title>
     <desc id={`${id}-svg-desc`}>
       Grafik batang bertumpuk 100 persen untuk {rows.length} indikator kesehatan. Setiap baris membagi peserta
-      yang diperiksa ke dalam {measured.length} pita risiko. Nilai lengkap tersedia pada tabel.
+      yang diperiksa ke dalam {measured.length} kategori risiko. Nilai lengkap tersedia pada tabel.
     </desc>
 
     <defs>
@@ -228,7 +228,7 @@ const tableColumns = hasCategories
       );
     })}
 
-    <g class="legend" transform={`translate(${margin.left}, ${legendTop})`} aria-label="Legenda pita risiko">
+    <g class="legend" transform={`translate(${margin.left}, ${legendTop})`} aria-label="Legenda kategori risiko">
       {legendBands.map((band, index) => (
         <g transform={`translate(${legend.positions[index].x}, ${legend.positions[index].y})`}>
           <rect width="18" height="18" rx="2" fill={`url(#${id}-band-${bands.indexOf(band)})`} />

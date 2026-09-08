@@ -1,0 +1,43 @@
+---
+import data from '../../data/derived/tck_supporting.json';
+import tck from '../../data/derived/tck_2026_joined.json';
+import DetailShell from './DetailShell.astro';
+import CountBars from './CountBars.astro';
+import ChartFrame from '../charts/ChartFrame.astro';
+import {withBase} from '../../lib/paths';
+interface Props { mode:'learning'|'facilities'; }
+const {mode}=Astro.props;
+const facilities=data.fasilitas;
+const types=[{key:'kursi_roda',label:'Kursi roda'},{key:'ram',label:'Ram'},{key:'parkir',label:'Parkir'},{key:'toilet',label:'Toilet'},{key:'lift',label:'Lift'}] as const;
+const fmt=(n:number)=>new Intl.NumberFormat('id-ID').format(n);
+const official=(no:string)=>tck.find(r=>r.no===no)?.capaian_dinilai??0;
+---
+<DetailShell label={mode==='learning'?'Partisipasi MBKM dan jalur pascasarjana':'Fasilitas aksesibilitas per gedung'}>
+  {mode==='learning'?<ChartFrame id="rincian-pembelajaran" title="Rincian MBKM dan jalur pascasarjana" hideHeader source="Rincian TCK 2026 #8a dan #10" csvHref={withBase('/data/tck_supporting_mbkm.csv')}
+    tableRows={data.mbkm.per_prodi} tableColumns={[{key:'label',label:'Program studi'},{key:'n',label:'Rekaman MBKM'}]}>
+    <div class="detail-grid">
+      <div><p class="detail-kicker">Pembelajaran di Luar Program Studi</p><h4>{fmt(data.mbkm.total)} rekaman MBKM</h4>
+        <CountBars rows={data.mbkm.per_prodi.map(r=>({label:r.label.replace(/^S1 /,'').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()).replace(' Dan ',' dan '),n:r.n}))} total={data.mbkm.total}/>
+        <p class="detail-note">Beban tercatat {data.mbkm.sks.min}–{data.mbkm.sks.max} SKS; median {data.mbkm.sks.median} SKS. Ringkasan TCK #8a memuat {fmt(official('8a'))} mahasiswa{official('8a')!==data.mbkm.total?`, berselisih ${fmt(Math.abs(official('8a')-data.mbkm.total))} dari rincian`:''}.</p>
+      </div>
+      <div><p class="detail-kicker">Jalur Pascasarjana (Indikator #10)</p><h4>{data.jalur_pascasarjana.total} rekaman pada enam program studi</h4>
+        <CountBars rows={data.jalur_pascasarjana.per_prodi} total={data.jalur_pascasarjana.total} color="var(--pillar-teal)"/>
+        <p class="detail-note">Daftar mencakup label batch V–VIII, PMDSU, dan Fasttrack. Label batch tidak ditafsirkan ulang sebagai jenis program. <a href={withBase('/data/tck_supporting_pascasarjana.csv')} download>Unduh rincian pascasarjana</a>.</p>
+      </div>
+    </div>
+  </ChartFrame>:<ChartFrame id="rincian-fasilitas" title="Matriks fasilitas aksesibilitas per gedung" hideHeader source="Rincian TCK 2026 #31" csvHref={withBase('/data/tck_supporting_fasilitas.csv')}>
+    <div class="detail-metrics"><div><strong>{facilities.total}</strong><span>unit pada sel rincian fasilitas</span></div><div><strong>{facilities.gedung.filter(r=>r.total>0).length}</strong><span>gedung dengan fasilitas tercatat</span></div><div><strong>{types.length}</strong><span>jenis fasilitas dalam inventaris</span></div></div>
+    <div class="detail-scroll" tabindex="0" aria-label="Matriks fasilitas, geser horizontal pada layar kecil"><table class="facility-matrix"><caption>Fasilitas menurut gedung · angka menunjukkan unit yang tercatat</caption><thead><tr><th scope="col">Gedung</th>{types.map(t=><th scope="col">{t.label}</th>)}<th scope="col">Total</th></tr></thead><tbody>
+      {facilities.gedung.map(r=><tr><th scope="row">{r.gedung}</th>{types.map(t=><td><span class:list={['facility-cell',{'has-value':r[t.key]>0}]}>{r[t.key]||'—'}</span></td>)}<td><strong>{r.total||'—'}</strong></td></tr>)}
+    </tbody></table></div>
+    <p class="detail-note detail-callout">Tanda — berarti tidak ada unit tercatat pada sel sumber. Penjumlahan rincian menghasilkan {facilities.total} unit, sedangkan baris total workbook dan ringkasan TCK memuat 23; selisih dua unit perlu direkonsiliasi. Inventarisasi ini berfokus pada ketersediaan sarana fisik dan belum mencakup audit teknis kelaikan fungsi.</p>
+  </ChartFrame>}
+</DetailShell>
+<style>
+  .facility-matrix { min-width:550px; }
+  .facility-matrix caption { text-align:left; color:var(--text-secondary); font:12px/1.6 var(--font-ui); margin-bottom:18px; }
+  .facility-matrix td,.facility-matrix thead th:not(:first-child) { text-align:center; }
+  .facility-cell { display:inline-flex; width:38px; height:32px; align-items:center; justify-content:center; border-radius:3px; color:var(--text-secondary); background:var(--surface-2); }
+  .facility-cell.has-value { background:var(--surface-tint); color:var(--text-heading); font-weight:700; border-bottom:2px solid var(--ugm-blue); }
+  a { color:var(--text-link); text-underline-offset:3px; }
+</style>

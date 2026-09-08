@@ -1,0 +1,91 @@
+---
+import data from '../../data/derived/scholarships.json';
+import DetailShell from './DetailShell.astro';
+import CountBars from './CountBars.astro';
+import {scholarshipProfile,scholarshipGroup,programmeLabel} from '../../lib/scholarship-profile';
+import {withBase} from '../../lib/paths';
+const initial=scholarshipProfile(data.rincian);
+const fmt=(n:number)=>new Intl.NumberFormat('id-ID').format(n);
+const groups=['KIP Kuliah','Program UGM','Program lainnya'];
+const colors=['var(--chart-primary)','var(--pillar-teal)','var(--ugm-blue-400)'];
+const mix=groups.map(label=>({label,n:data.rincian.filter(r=>scholarshipGroup(r.beasiswa)===label).reduce((sum,r)=>sum+r.penerima,0)}));
+---
+<DetailShell label="Penelusuran jenis dan penerima beasiswa">
+  <div data-scholarship-profile>
+    <div class="detail-metrics">
+      <div><strong>{fmt(data.total)}</strong><span>penerima pada rekap beasiswa 2026</span></div>
+      <div><strong>{data.skema}</strong><span>skema dan periode beasiswa aktif</span></div>
+      <div><strong>{data.per_prodi.length}</strong><span>program studi sarjana</span></div>
+    </div>
+    <div class="detail-ribbon" aria-hidden="true">{mix.map((r,i)=><span style={`width:${r.n/data.total*100}%;--detail-color:${colors[i]}`}/>)}</div>
+    <div class="detail-legend">{mix.map((r,i)=><span style={`--detail-color:${colors[i]}`}><i/>{r.label} <strong>{r.n}</strong></span>)}</div>
+    <div class="detail-grid">
+      <div><h4>Rincian Skema Pendanaan Beasiswa</h4>
+        <div class="scholarship-controls">
+          <label>Program studi<select data-scholarship-programme><option value="">Semua program studi</option>{data.per_prodi.map(r=><option value={r.prodi}>{programmeLabel[r.prodi]||r.prodi}</option>)}</select></label>
+          <label>Kelompok program<select data-scholarship-group><option value="">Semua kelompok</option>{groups.map(g=><option>{g}</option>)}</select></label>
+          <label class="scholarship-search">Cari nama beasiswa<input data-scholarship-search type="search" placeholder="Misalnya KIP, Bank Indonesia, atau Bayan"/></label>
+        </div>
+        <div class="scholarship-result"><p data-scholarship-status role="status" aria-live="polite">{initial.schemes} skema · {fmt(initial.total)} penerima pada pilihan ini</p><button type="button" data-scholarship-reset>Atur ulang</button></div>
+        <p class="detail-note scholarship-scale">Panjang batang membandingkan jumlah penerima pada hasil pencarian.</p>
+        <div class="scholarship-list" tabindex="0" aria-label="Daftar semua skema beasiswa, gulir untuk melihat selanjutnya">
+          <ol data-scholarship-rows>{initial.rows.map((r,i)=><li><div><span class="scholarship-rank">{String(i+1).padStart(2,'0')}</span><span>{r.label}</span><strong>{fmt(r.n)}</strong></div><span class="scholarship-track" aria-hidden="true"><i style={`width:${r.n/initial.max*100}%`}/></span></li>)}</ol>
+          <p data-scholarship-empty hidden>Tidak ada beasiswa yang cocok. Coba kata lain atau atur ulang filter.</p>
+        </div>
+      </div>
+      <div><p class="detail-kicker">Seluruh skema · seluruh prodi</p><h4>Sebaran Penerima per Program Studi</h4>
+        <CountBars rows={data.per_prodi.map(r=>({label:programmeLabel[r.prodi]||r.prodi,n:r.penerima}))} total={data.total} color="var(--pillar-teal)"/>
+        <p class="detail-note">Grafik di kanan selalu menunjukkan keseluruhan rekap. Filter di kiri menelusuri rincian skema di dalamnya.</p>
+      </div>
+    </div>
+    <p class="detail-note detail-callout">Nama dan periode skema dipertahankan: varian KIP lintas angkatan, semester, atau kelayakan tetap dapat ditelusuri satu per satu. Pengelompokan didasarkan pada nama KIP/UGM di sumber. Angka merupakan penjumlahan penerima pada rekap skema, bukan hasil pencocokan orang unik lintas beasiswa.</p>
+    <p class="scholarship-source">Sumber: PENERIMA BEASISWA 2026 · Rekapitulasi · <a href={withBase('/data/scholarships_detail.csv')} download>Unduh rincian CSV</a></p>
+  </div>
+</DetailShell>
+<script>
+  import data from '../../data/derived/scholarships.json';
+  import {scholarshipProfile} from '../../lib/scholarship-profile';
+  const fmt=(n:number)=>new Intl.NumberFormat('id-ID').format(n);
+  document.querySelectorAll<HTMLElement>('[data-scholarship-profile]').forEach(root=>{
+    const programme=root.querySelector<HTMLSelectElement>('[data-scholarship-programme]')!;
+    const group=root.querySelector<HTMLSelectElement>('[data-scholarship-group]')!;
+    const search=root.querySelector<HTMLInputElement>('[data-scholarship-search]')!;
+    const list=root.querySelector<HTMLOListElement>('[data-scholarship-rows]')!;
+    const status=root.querySelector<HTMLElement>('[data-scholarship-status]')!;
+    const update=()=>{
+      const p=scholarshipProfile(data.rincian,programme.value,group.value,search.value);
+      list.replaceChildren();
+      p.rows.forEach((row,index)=>{
+        const li=document.createElement('li'),line=document.createElement('div'),rank=document.createElement('span'),label=document.createElement('span'),value=document.createElement('strong'),track=document.createElement('span'),bar=document.createElement('i');
+        rank.className='scholarship-rank';rank.textContent=String(index+1).padStart(2,'0');label.textContent=row.label;value.textContent=fmt(row.n);
+        track.className='scholarship-track';track.setAttribute('aria-hidden','true');bar.style.width=`${row.n/p.max*100}%`;
+        line.append(rank,label,value);track.append(bar);li.append(line,track);list.append(li);
+      });
+      status.textContent=`${p.rows.length} skema · ${fmt(p.matched)} penerima${search.value.trim()?` cocok dengan pencarian (dari ${fmt(p.total)} pada filter)`:' pada pilihan ini'}`;
+      root.querySelector<HTMLElement>('[data-scholarship-empty]')!.hidden=p.rows.length>0;
+    };
+    programme.addEventListener('change',update);group.addEventListener('change',update);search.addEventListener('input',update);
+    root.querySelector('[data-scholarship-reset]')!.addEventListener('click',()=>{programme.value='';group.value='';search.value='';update();});
+  });
+</script>
+<style is:global>
+  .detail-viz .scholarship-controls { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .detail-viz .scholarship-search { grid-column:1/-1; }
+  .detail-viz .scholarship-result { display:flex; align-items:center; gap:18px; justify-content:space-between; margin:14px 0 0; }
+  .detail-viz .scholarship-result p { font:12px/1.6 var(--font-ui); color:var(--text-secondary); }
+  .detail-viz .scholarship-result button { flex-shrink:0; border:0; cursor:pointer; color:var(--text-link); background:transparent; text-decoration:underline; font:12px var(--font-ui); padding:10px 0; min-height:44px; }
+  .detail-viz .scholarship-list { max-height:490px; overflow:auto; padding-right:14px; scrollbar-color:var(--ugm-blue-200) transparent; border-block:1px solid var(--border-subtle); }
+  .detail-viz .scholarship-list:focus-visible { outline:3px solid var(--ugm-gold); outline-offset:3px; }
+  .detail-viz .scholarship-list ol { list-style:none; padding:0; margin:0; }
+  .detail-viz .scholarship-list li { padding:16px 0; border-bottom:1px solid var(--border-subtle); }
+  .detail-viz .scholarship-list li > div { display:grid; grid-template-columns:24px 1fr 35px; gap:12px; font:13px/1.6 var(--font-ui); }
+  .detail-viz .scholarship-rank { color:var(--text-secondary); font-size:10px; padding-top:3px; }
+  .detail-viz .scholarship-list strong { color:var(--text-heading); text-align:right; }
+  .detail-viz .scholarship-track { display:block; margin:9px 0 0 36px; height:5px; background:var(--surface-2); }
+  .detail-viz .scholarship-track i { display:block; height:100%; background:var(--chart-primary); }
+  .detail-viz .scholarship-scale { margin:4px 0 15px; font-size:11px; }
+  .detail-viz .scholarship-source { font:12px/1.7 var(--font-ui); color:var(--text-secondary); }
+  .detail-viz .scholarship-source a { color:var(--text-link); text-underline-offset:3px; }
+  @media(max-width:420px) { .detail-viz .scholarship-controls { grid-template-columns:1fr; } }
+  @media print { .detail-viz .scholarship-list { max-height:none; overflow:visible; } }
+</style>

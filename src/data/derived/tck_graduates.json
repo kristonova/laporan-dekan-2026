@@ -1,0 +1,316 @@
+{
+  "panel": [
+    {
+      "jenjang": "S1",
+      "sumber": "8B1.Persentase mahasiswa semua jenjang yang lulus tepat waktu (S1).xlsx",
+      "total": 150,
+      "satuan": "semester",
+      "awal": "2025-09-23",
+      "akhir": "2026-06-19",
+      "lama_studi": {
+        "terukur": 150,
+        "rerata": 7.64,
+        "median": 8.0,
+        "q1": 7.0,
+        "q3": 8.0,
+        "min": 7.0,
+        "max": 8.0
+      },
+      "ipk": 3.71,
+      "ipk_tidak_valid": 0,
+      "bulan_menyalin_ipk": 0,
+      "semester": [
+        {
+          "semester": 7,
+          "n": 54
+        },
+        {
+          "semester": 8,
+          "n": 96
+        }
+      ],
+      "per_prodi": [
+        {
+          "prodi": "Elektronika dan Instrumentasi",
+          "n": 25,
+          "terukur": 25,
+          "rerata": 7.52,
+          "median": 8.0,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.72
+        },
+        {
+          "prodi": "Fisika",
+          "n": 20,
+          "terukur": 20,
+          "rerata": 7.45,
+          "median": 7.0,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.53
+        },
+        {
+          "prodi": "Geofisika",
+          "n": 1,
+          "terukur": 1,
+          "rerata": null,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "min": null,
+          "max": null,
+          "ipk": null
+        },
+        {
+          "prodi": "Ilmu Aktuaria",
+          "n": 8,
+          "terukur": 8,
+          "rerata": 7.62,
+          "median": 8.0,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.78
+        },
+        {
+          "prodi": "Ilmu Komputer",
+          "n": 44,
+          "terukur": 44,
+          "rerata": 7.77,
+          "median": 8.0,
+          "q1": 8.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.82
+        },
+        {
+          "prodi": "Kimia",
+          "n": 19,
+          "terukur": 19,
+          "rerata": 8.0,
+          "median": 8.0,
+          "q1": 8.0,
+          "q3": 8.0,
+          "min": 8.0,
+          "max": 8.0,
+          "ipk": 3.56
+        },
+        {
+          "prodi": "Matematika",
+          "n": 4,
+          "terukur": 4,
+          "rerata": 7.5,
+          "median": 7.5,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.66
+        },
+        {
+          "prodi": "Statistika",
+          "n": 29,
+          "terukur": 29,
+          "rerata": 7.45,
+          "median": 7.0,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 7.0,
+          "max": 8.0,
+          "ipk": 3.76
+        }
+      ]
+    },
+    {
+      "jenjang": "S2",
+      "sumber": "8B2.Persentase mahasiswa semua jenjang yang lulus tepat waktu (S2).xlsx",
+      "total": 57,
+      "satuan": "semester",
+      "awal": "2025-09-23",
+      "akhir": "2026-06-19",
+      "lama_studi": {
+        "terukur": 57,
+        "rerata": 3.72,
+        "median": 4.0,
+        "q1": 3.0,
+        "q3": 4.0,
+        "min": 3.0,
+        "max": 5.0
+      },
+      "ipk": 3.86,
+      "ipk_tidak_valid": 0,
+      "bulan_menyalin_ipk": 25,
+      "semester": [
+        {
+          "semester": 3,
+          "n": 17
+        },
+        {
+          "semester": 4,
+          "n": 39
+        },
+        {
+          "semester": 5,
+          "n": 1
+        }
+      ],
+      "per_prodi": [
+        {
+          "prodi": "Elektronika dan Instrumentasi",
+          "n": 1,
+          "terukur": 1,
+          "rerata": null,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "min": null,
+          "max": null,
+          "ipk": null
+        },
+        {
+          "prodi": "Fisika",
+          "n": 13,
+          "terukur": 13,
+          "rerata": 3.77,
+          "median": 4.0,
+          "q1": 4.0,
+          "q3": 4.0,
+          "min": 3.0,
+          "max": 4.0,
+          "ipk": 3.89
+        },
+        {
+          "prodi": "Ilmu Komputer",
+          "n": 14,
+          "terukur": 14,
+          "rerata": 3.79,
+          "median": 4.0,
+          "q1": 4.0,
+          "q3": 4.0,
+          "min": 3.0,
+          "max": 4.0,
+          "ipk": 3.84
+        },
+        {
+          "prodi": "Kecerdasan Artifisial",
+          "n": 6,
+          "terukur": 6,
+          "rerata": 3.17,
+          "median": 3.0,
+          "q1": 3.0,
+          "q3": 3.0,
+          "min": 3.0,
+          "max": 4.0,
+          "ipk": 3.88
+        },
+        {
+          "prodi": "Kimia",
+          "n": 19,
+          "terukur": 19,
+          "rerata": 3.79,
+          "median": 4.0,
+          "q1": 3.5,
+          "q3": 4.0,
+          "min": 3.0,
+          "max": 5.0,
+          "ipk": 3.86
+        },
+        {
+          "prodi": "Matematika",
+          "n": 4,
+          "terukur": 4,
+          "rerata": 3.75,
+          "median": 4.0,
+          "q1": 3.75,
+          "q3": 4.0,
+          "min": 3.0,
+          "max": 4.0,
+          "ipk": 3.8
+        }
+      ]
+    },
+    {
+      "jenjang": "S3",
+      "sumber": "8B3.Persentase mahasiswa semua jenjang yang lulus tepat waktu (S3).xlsx",
+      "total": 35,
+      "satuan": "semester",
+      "awal": "2025-02-28",
+      "akhir": "2026-06-19",
+      "lama_studi": {
+        "terukur": 35,
+        "rerata": 6.54,
+        "median": 7.0,
+        "q1": 5.0,
+        "q3": 7.0,
+        "min": 5.0,
+        "max": 8.0
+      },
+      "ipk": 3.98,
+      "ipk_tidak_valid": 2,
+      "bulan_menyalin_ipk": 2,
+      "semester": [
+        {
+          "semester": 5,
+          "n": 10
+        },
+        {
+          "semester": 6,
+          "n": 2
+        },
+        {
+          "semester": 7,
+          "n": 17
+        },
+        {
+          "semester": 8,
+          "n": 6
+        }
+      ],
+      "per_prodi": [
+        {
+          "prodi": "Fisika",
+          "n": 10,
+          "terukur": 10,
+          "rerata": 5.9,
+          "median": 5.0,
+          "q1": 5.0,
+          "q3": 7.0,
+          "min": 5.0,
+          "max": 8.0,
+          "ipk": 3.98
+        },
+        {
+          "prodi": "Ilmu Komputer",
+          "n": 13,
+          "terukur": 13,
+          "rerata": 7.0,
+          "median": 7.0,
+          "q1": 7.0,
+          "q3": 8.0,
+          "min": 5.0,
+          "max": 8.0,
+          "ipk": 3.99
+        },
+        {
+          "prodi": "Kimia",
+          "n": 12,
+          "terukur": 12,
+          "rerata": 6.58,
+          "median": 7.0,
+          "q1": 6.0,
+          "q3": 7.0,
+          "min": 5.0,
+          "max": 8.0,
+          "ipk": 3.99
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1355 @@
+{
+  "mbkm": {
+    "sumber": "8A.Jumlah mahasiswa sarjana dan sarjana terapan yang menjalankan kegiatan pembelajaran di luar program studi minimal 10 (sepuluh) SKS.xlsx",
+    "total": 603,
+    "per_prodi": [
+      {
+        "label": "S1 KIMIA",
+        "n": 139
+      },
+      {
+        "label": "S1 ILMU KOMPUTER",
+        "n": 124
+      },
+      {
+        "label": "S1 ELEKTRONIKA DAN INSTRUMENTASI",
+        "n": 79
+      },
+      {
+        "label": "S1 GEOFISIKA",
+        "n": 61
+      },
+      {
+        "label": "S1 FISIKA",
+        "n": 59
+      },
+      {
+        "label": "S1 MATEMATIKA",
+        "n": 55
+      },
+      {
+        "label": "S1 STATISTIKA",
+        "n": 45
+      },
+      {
+        "label": "S1 ILMU AKTUARIA",
+        "n": 41
+      }
+    ],
+    "per_kegiatan": [
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 236
+      },
+      {
+        "label": "KKN (8.00 sks); KKN (2.00 sks)",
+        "n": 41
+      },
+      {
+        "label": "KKN (10.00 sks)",
+        "n": 7
+      },
+      {
+        "label": "Double Degree INTENSE Program - Department of Finance in Wealth Management Dayeh University (INTENSE Program)",
+        "n": 4
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan di BBPOM Jakarta Timur",
+        "n": 3
+      },
+      {
+        "label": "Magang Industri/Praktik Kerja Lapangan di Laboratorium Pangan PT Great Giant Pineapple",
+        "n": 3
+      },
+      {
+        "label": "Analisis Sampel Biofuel Research and Technology PT Pertamina (Pesero) (Magang/Praktik Kerja)",
+        "n": 2
+      },
+      {
+        "label": "Analisis Sampel Geothermal Career Centre FMIPA (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Analisis Sampel Geothermal PT Pertamina (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Analisis dan Simulasi Ekstraksi Berkas Ion pada Sumber Ion (Penning dan Multicusp) serta Sistem Injektor Siklotron Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Belum tercatat",
+        "n": 2
+      },
+      {
+        "label": "Hilirisasi Trainer Kit IIoT Berbasis Kecerdasan Artifisial untuk smart Environment Monitoring dan Predictive Maintenance di Lingkungan Industri PT Stechoq Robotika Indonesia (Riset Teknologi Transformasi Digital 4.0)",
+        "n": 2
+      },
+      {
+        "label": "KKN (6.00 sks); KKN (4.00 sks)",
+        "n": 2
+      },
+      {
+        "label": "Magang Industri di Laboratorium PT SUCOFINDO Cabang Semarang",
+        "n": 2
+      },
+      {
+        "label": "Magang Industri/Praktik Kerja Lapangan di PT Kilang Pertamina Internasional Refinery Unit VI Balongan (Persero)",
+        "n": 2
+      },
+      {
+        "label": "Magang Industri/Praktik Kerja Lapangan di Research and Technology Innovation PT Pertamina (Persero)",
+        "n": 2
+      },
+      {
+        "label": "Magang Praktik Kerja Career Centre FMIPA",
+        "n": 2
+      },
+      {
+        "label": "Magang Praktik Kerja Career Centre FMIPA (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Magang Praktik Kerja PT Kilang Pertamina Internasional RU IV Cilacap (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Magang Praktik Kerja PT Pertamina (Persero) Research and Technology Center (Magang/Praktik Kerja)",
+        "n": 2
+      },
+      {
+        "label": "Magang Teknologi Sistem Monitoring Cerdas Berbasis IoT dan AI PT Zona Tech Solutions (ZTS) (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Magang atau Praktik Kerja Lapangan di laboratorium kimia PT SUCOFINDO Cabang Semarang",
+        "n": 2
+      },
+      {
+        "label": "Magang/Praktik Kerja Career Centre FMIPA (Magang)",
+        "n": 2
+      },
+      {
+        "label": "PT Kimia Farma (Magang Mahasiswa)",
+        "n": 2
+      },
+      {
+        "label": "Pelaksanaan MBKM Magang Industry 2026",
+        "n": 2
+      },
+      {
+        "label": "Prototipe Sistem Kendali Lateral (Steering) Add-on Berbasis Neural Network Enhanced PID untuk Konversi Mobil Konvensional Menjadi Otonom Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 2
+      },
+      {
+        "label": "Sistem Multi-Pesawat Tanpa Awak Sayap Tetap Berbasis Teknologi Kawanan (Swarm) untuk Akselerasi Pemetaan Lahan PT Stechoq Robotika Indonesia (Riset Teknologi Transformasi Digital 4.0)",
+        "n": 2
+      },
+      {
+        "label": "(IUPE)Programming Methodology, (IUPE)Applied Mathematical Logic I, (IUPE)Applied Mathematical Logic II, Laboratory of Health and Sports Science, Softskill: Adaptasi, Softskill:Membangun Jaringan Kerjasama (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "2026 Spring Kobe University (Exchange Program Spring 2025)",
+        "n": 1
+      },
+      {
+        "label": "AML Directorate Risk and Compliance Internship PT Asuransi Etiqa Internasional Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial Apprenticeship - Asset and Liability Management PT Prudential Life Assurance (Prudential Indonesia) (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial EV & Modelling Intern PT FWD Insurance Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial Individual Pricing Internship PT Asuransi Jiwa Generali Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial Pricing & CPM Internship PT Prudential Sharia Life Assurance (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial Pricing Intern PT AXA Financial Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuarial Statutory Reporting Intern PT FWD Insurance Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Actuary Internship PT Asuransi Tugu Pratama Indonesia Tbk (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Analisis Air Tanah, Permukaan, dan atau Limbah Dinas Lingkungan Hidup Propinsi Jawa Barat (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Analisis Komposisi dan Kualitas Gas Alam serta Produk Migas di Laboratorium PT DND Java Menggunakan Metode Standar ASTM/ISO",
+        "n": 1
+      },
+      {
+        "label": "Analisis Mutu Pupuk NPK dan Pengendalian Kualitas Produk PT Petrokimia Gresik (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Analisis Sampel Biofuel PT Pertamina (Persero) Research and Technology Center (Magang/Praktik Kerja)",
+        "n": 1
+      },
+      {
+        "label": "Analisis Senyawa Hidrokarbon Stream 8401 (Feed) dan Stream 8404 (Platformate) Terhadap Angka Oktan Berdasarkan Analisis PIO PT Kilang Pertamina Internasional RU IV Cilacap (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Analisis kualitas bahan baku dan produk pelumas pada PT Pertamina Lubricants",
+        "n": 1
+      },
+      {
+        "label": "Analisis kualitas bahan baku pelumas dan produk jadi pelumas di PT Pertamina Lubricants (magang)",
+        "n": 1
+      },
+      {
+        "label": "Analisis pengujian sampel kosmetika dan obat-obatan PT Saraswanti Indo Genetech (Magang/Praktik Kerja)",
+        "n": 1
+      },
+      {
+        "label": "Apprenticeship - Actuarial Group Internal Economic Capital Assessment PT Prudential Life Assurance (Prudential Indonesia) (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Artificial Intelligence Talent Factory (10.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Backend Developer Intern (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Backend Developer Intern (17.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Backend Engineer Intern (15.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Backend Engineer Internship (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Balai Besar Kulit, Karet dan Plastik (BBKKP) Yogyakarta (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "CV AMX UAV Technologies (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Calibration of Climatic Chambers merupakan kegiatan pembelajaran berbasis magang dan riset yang berfokus pada penerapan prosedur kalibrasi ruang uji iklim untuk menjamin akurasi dan ketertelusuran pengukuran parameter lingkungan Kementerian Perdagangan RI (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Chemical and Quality Analysis PT Pertamina (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Commercial Pricing and Portfolio Management Internship AXA Insurance Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Computer Science and IT Product Development Aarhus University (Student Exchange)",
+        "n": 1
+      },
+      {
+        "label": "Computer Vision Engineer Intern PT Ferbos Kreasi Digital (Magang/Internship)",
+        "n": 1
+      },
+      {
+        "label": "Data Innovation Specialist di Departemen Inovasi dan Digitalisasi Data (DIDD) - Bank Indonesia (magang)",
+        "n": 1
+      },
+      {
+        "label": "Data Science Internship PT Global Tiket Network (tiket.com) (Magang dan Studi Independen Bersertifikat (MSIB))",
+        "n": 1
+      },
+      {
+        "label": "Data Scientist Intern (19.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Data Scientist PT Freeport Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "DevSecOps Intern PT Semesta Data Digital (17.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Double degree INTENSE Program Dayeh University (INTENSE Program)",
+        "n": 1
+      },
+      {
+        "label": "Dual Degree INTENSE Program",
+        "n": 1
+      },
+      {
+        "label": "Dual Degree Program (Bsc. Computer Science) (18.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Dual Degree Program for BSc of Computer Science at the University of Birmingham (18.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "EX-UG - Exchange Undergraduate University of Melbourne (Student Exchange)",
+        "n": 1
+      },
+      {
+        "label": "Efisiensi Bahan Kimia Analisa Caroten Produk Nanas Kaleng Dole Metode Spektrofotometer PT Great Giant Foods (Magang dan Studi Independen Bersertifikat (MSIB))",
+        "n": 1
+      },
+      {
+        "label": "Evaluasi Efektivitas Sistem Pengolahan Air Limbah Domestik Terhadap Kontaminan Utama Di PPSDM Migas Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Evaluasi Efektivitas Sistem Pengolahan Air Limbah Dosmetik Terhadap Kontaminan Utama Di PPSDM Migas",
+        "n": 1
+      },
+      {
+        "label": "Exchange Program in Economics and Management (Licence Level) at Aix-Marseille Université",
+        "n": 1
+      },
+      {
+        "label": "Formula SAE Japan 2025 - Electric Vehicle Class (2.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Fullstack Website Developer (12.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "GAOGAO Product Engineer Internship 2026",
+        "n": 1
+      },
+      {
+        "label": "Game Programming Internship",
+        "n": 1
+      },
+      {
+        "label": "Group Pemeriksaan Asuransi (GPSA) LPS (Lembaga Penjamin Simpanan) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Hardware Accelerator Berbasis FPGA untuk Algoritma Generative Adversarial Network (GAN) (15.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Hilirisasi Teknologi Portable E-Nose Berbasis Embedded Artificial Intelligence untuk Standardisasi Kualitas Roasting Kopi Skala Industri (magang)",
+        "n": 1
+      },
+      {
+        "label": "Hiroshima University Study Abroad (12.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "IFRS 17 Intern PT Asuransi Astra (Magang)",
+        "n": 1
+      },
+      {
+        "label": "IISMA Co-Funding (5.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "INFO20005, HPSC20009, MECM30013, MGMT20004 (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Implementasi Project Analisis Kimia dalam Pengujian dan Pengendalian Mutu Produk Farmasi PT Kalbe Farma Tbk (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Internship (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Internship Divisi Product Development (13.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Internship di Valuation Team PT AXA Financial Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Internship selama satu semester (4 bulan) dengan PT Dialogika Persona Indonesia (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Internship: Pengembangan Fitur dan Modul Proyek Internship: Implementasi Prototipe Produk Internship: Pengembangan Back-end Internship: Pengujian Unit dan Modul Proyek Soft skill: Kemampuan Berkomunikasi Hard skill: Pemecahan Masalah (19.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Internship: Spesifikasi Masalah dan Deskripsi Prototipe, Internship: Pengembangan Fitur dan Modul Proyek Deskripsi Kegiatan, Internship: Implementasi Prototipe Produk, Internship: Pengembangan Back-end, Internship: Pengujian Unit dan Modul Proyek, Intern (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Internship: Spesifikasi Masalah dan Deskripsi Prototipe, Internship: Pengembangan Fitur dan Modul Proyek, Internship: Implementasi Prototipe Produk, Internship: Pengembangan Back-end, Internship: Pengujian Unit dan Modul Proyek, Internship: Pengujian Inte (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (10.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); COMP3320 Vulnerability & Penetration Test ENGG4800 Project Management BISM3222 Information Analysis and System Design BISM3208 Business Information Systems & Analytics Capstone CSSE3012 The Software Process (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Hilirisasi Trainer Kit IloT Berbasis Kecerdasan Artifisial untuk smart Environment Monitoring dan Predictive Maintenance di Lingkungan Industri (18.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Data Intelligence Intern (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Frontend Developer Internship in Vortex Career Catalyst Batch 3 (9.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Full Stack Developer Intern - PT Sinergi Informatika Semen Indonesia (SISI) (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Google Project Management Professional Certification (3.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); IT Solution Engineer (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Internship Backend Engineer (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Kewirausahaan GICO Education (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Learning Osaka, The Mercantile Capital of Japan (1.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); One Kalbe Internship (13.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Product Management Pricing Intern @ tiket.com (13.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Proyek Perancangan dan Pengembangan Antarmuka Pengguna pada Kegiatan Magang UI/UX Designer di Kantor (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Quality Assurance Intern (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Software Engineer Intern (14.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Software Engineer Intern (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Web-Based Spatial Dashboard Development for Land Management Research (11.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); KKN (8.00 sks); Winter School Kansai University 2026 (1.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Kegiatan magang pengembangan perangkat lunak dijalani di PT Altayasa Nakita Karya pada periode semester 6 secara daring sebagai bagian dari program Merdeka Belajar Kampus Merdeka (MBKM) (16.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Mengikuti 3 Mata kuliah : IS4302 Blockchain and Distributed Ledger Technologies, BT1101 Introduction to Business Analytics, dan IS2218 Digital Platforms for Business (18.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Pengembangan Perangkat Lunak: Server dan Sistem Informasi pada Proyek Data-as-a-Service (DaaS) Berbasis UAV (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Product Management Intern (Pricing) (16.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (2.00 sks); Sistem Multi-pesawat Tanpa Awak Sayap Tetap Berbasis Teknologi Kawanan (Swarm) untuk Akselerasi Pemetaan Lahan (15.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); Full Stack Developer Intern - PT Sinergi Informatika Semen Indonesia (SISI) (13.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); KKN (2.00 sks); Super Internship Program (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); Magang Game Programmer (16.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); Revolutions in Science and Technology dan Principles of Microeconomics (3.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); Student Training and Rotation (STAR) (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "KKN (8.00 sks); Web-Based Spatial Dashboard Development for Land Management Research (11.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Karakterisasi Lapisan Zinc Phosphate (Zn3(PO4)2) sebagai Pelindung Korosi pada Hood Mobil BZ4X menggunakan Scanning Electron Microscopy (SEM-EDX) PT Toyota Motor Manufacturing Indonesia (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Katalis non precious untuk reaksi isomeriasasi eugenol menjadi isoeugenol dengan variasi logam transisi, ligan, solven dan agen pereduksi PT. INDESSO CULINAROMA INTERNASIONAL (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Katalis untuk reaksi isomerisasi eugenol menjadi isoeugenol PT. INDESSO CULINAROMA INTERNASIONAL (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan PKL di PT Pertamina selama 3 bulan (2 Februari s.d 2 Mei 2026)",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan Praktik Kerja Lapangan PT Pertamina (Persero) Technology Innovation and implementation",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan Praktik Kerja Lapangan PT. Pertamina (Persereo) Technology Innovation and Implementation",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan magang industri di PT Madubaru",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan magang pengembangan perangkat lunak yang dilakukan di PT Altayasa Nakita Karya pada periode semester genap secara daring sebagai bagian dari program Merdeka Belajar Kampus Merdeka (MBKM) (10.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Kegiatan praktik kerja lapangan (magang) sebagai pengembang perangkat lunak di PT Altayasa Nakita Karya pada semester 6 secara daring, sebagai bagian dari program Merdeka Belajar Kampus Merdeka (MBKM) (16.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Kerja Praktik Tech Development PT Medco E&P Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Kuliah Kerja Terpadu BPJS Kesehatan (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Kyushu University Exchange Program Spring 2026",
+        "n": 1
+      },
+      {
+        "label": "Leaching Cs-137 dari Slag Logam Sisa Hasil Peleburan Logam Terkontaminasi Cs-137 Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "MBKM (Praktik Kerja Lapangan) PT Etana Biotechnologies Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang @ REKIND dengan role Data Science Intern : Analisis Dataset, Analisis Arsitektur Data Pipeline, Eksperimen Komparasi Model, dan Visualisasi Insight",
+        "n": 1
+      },
+      {
+        "label": "Magang AI Engineer (+ Fullstack Engineer) (19.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Magang Aktuaria BPJS Kesehatan 2025",
+        "n": 1
+      },
+      {
+        "label": "Magang Aktuaria Komite Nasional Ekonomi dan Keuangan Syariah (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Aktuaria di PT Reasuransi Nasional Indonesia( Actuary Division)",
+        "n": 1
+      },
+      {
+        "label": "Magang Divisi QHSE PT Superintending Company of Indonesia (Sucofindo) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri / Praktik Kerja Lapangan (PKL) di Pusat Riset Teknologi Bahan Nuklir dan Limbah Radioaktif (PRTBNLR), Badan Riset dan Inovasi Nasional (BRIN), Kawasan Sains dan Teknologi B.J. Habibie, Serpong, Tangerang Selatan.",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan Di Badan Riset dan Inovasi Nasional",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan di Laboratorium Kimia PT Clariant Indonesia Tangerang",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan di Laboratorium Kimia PT GMF AeroAsia",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan di Laboratorium Kimia di Badan Riset dan Inovasi Nasional",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja Lapangan di Pusat Riset Kimia Molekuler, Badan Riset dan Inovasi Nasional (BRIN) Area Serpong (16.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri atau Praktik Kerja lapangan di Laboratorium BBPMGB LEMIGAS",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri dan Praktik Kerja Lapangan di Technology Development II PT Pertamina (Persero) Research and Technology Center (Magang/Praktik Kerja)",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri dan Praktik Kerja Lapangan di Technology and Development II PT Pertamina (Persero) Research and Technology Center (Magang/Praktik Kerja)",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri/Praktik Kerja Lapangan di Laboratorium Lingkungan PT Medialab Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Magang Industri/Praktik Kerja Lapangan di Research and Technology Innovation PT Pertamina (Persero) pada periode 2 Januari – 31 Maret 2026 dengan penempatan di Laboratorium Crude Fuel and Feedstock (CFF)",
+        "n": 1
+      },
+      {
+        "label": "Magang Kampus Merdeka PT Altastratus Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Magang Kerja Praktik Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang LPS (Lembaga Penjamin Simpanan) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Laboratorium PT Kilang Pertamina Internasional",
+        "n": 1
+      },
+      {
+        "label": "Magang MBKM CV Aksaka Projek Hilirisasi Teknologi Portable E-Nose Berbasis Embedded Artificial Intelligence untuk Standardisasi Kualitas Roasting Kopi Skala Industri",
+        "n": 1
+      },
+      {
+        "label": "Magang Mandiri Actuary & Risk Management PT Asuransi Dayin Mitra Tbk",
+        "n": 1
+      },
+      {
+        "label": "Magang Mandiri Technical Management PT Asuransi Etiqa Internasional Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Magang Praktek Kerja Teknologi Pengolahan Bahan Baku Nuklir - Pusat Riset Teknologi Bahan Nuklir dan Limbah Radioaktif, topik tentang pelindian logam tanah jarang (LTJ) menggunakan asam organi",
+        "n": 1
+      },
+      {
+        "label": "Magang Praktik Kerja",
+        "n": 1
+      },
+      {
+        "label": "Magang Praktik Kerja Balai Besar Kulit, Karet dan Plastik (BBKKP) Yogyakarta (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Magang Praktik Kerja PT Kimia Farma (Magang Mahasiswa)",
+        "n": 1
+      },
+      {
+        "label": "Magang Praktik Kerja PT Pertamina",
+        "n": 1
+      },
+      {
+        "label": "Magang Pusat Riset dan Teknologi Keselamatan dan Metrologi Radiasi-Badan Riset dan Inovasi Nasional (PRTKMR-BRIN)",
+        "n": 1
+      },
+      {
+        "label": "Magang Reguler PT Paragon Technology Innovation (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Magang Riset - Informasi dan Komputasi Kuantum Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Riset : Teknologi Mineral Logam Tanah Jarang, Pusat Riset Teknologi Mineral - Badan Riset dan Inovasi Nasional (KSTE Achmad Baiquni)",
+        "n": 1
+      },
+      {
+        "label": "Magang Riset Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Riset Kalibrasi Thermometer Digital Dry Block Calibrators Kementerian Perdagangan RI (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Magang Teknologi Industri",
+        "n": 1
+      },
+      {
+        "label": "Magang atau Praktik Kerja Lapangan di PT Konimex Farmasi",
+        "n": 1
+      },
+      {
+        "label": "Magang dan Kerja Praktik BRIN",
+        "n": 1
+      },
+      {
+        "label": "Magang dan Penelitian Tugas Akhir di Badan Riset dan Inovasi Nasional (BRIN)",
+        "n": 1
+      },
+      {
+        "label": "Magang dan Praktik Kerja Lapangan di Technology Development II PT Pertamina (Persero) Research and Technology Center",
+        "n": 1
+      },
+      {
+        "label": "Magang di Group Likuidasi dan Manajemen Aset Asuransi LPS",
+        "n": 1
+      },
+      {
+        "label": "Magang di LPS (Lembaga Penjamin Simpanan)",
+        "n": 1
+      },
+      {
+        "label": "Magang di Laboratorium Balai Pengujian Mutu Produk Tanaman periode 2 Februari-10 Mei 2026",
+        "n": 1
+      },
+      {
+        "label": "Magang di Laboratorium Universitas Islam Malang (10.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Magang di PT Altayasa Nakita Karya berupa Pengembangan Proyek Perangkat Lunak (Project Corporate Expense Management) (17.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Magang di PT Asuransi Jiwa Inhealth Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Magang di PT Kimia Farma (Magang Mahasiswa)",
+        "n": 1
+      },
+      {
+        "label": "Magang di PT Medialab Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Magang di PT Nose Herbal Indo",
+        "n": 1
+      },
+      {
+        "label": "Magang di bagian R&D yang akan belajar dalam pembuatan parfum melalui minyak atsiri, penyulingan, komponen terpenoid dan penyusunan laporan magang, serta hal lainnya yang berhubungan dengan analis minyak atsiri",
+        "n": 1
+      },
+      {
+        "label": "Magang divisi programmer di BRIN",
+        "n": 1
+      },
+      {
+        "label": "Magang industri PT Nusantara Power UP Muara Karang",
+        "n": 1
+      },
+      {
+        "label": "Magang industri di Laboratorium PT SUCOFINDO Cabang Semarang",
+        "n": 1
+      },
+      {
+        "label": "Magang riset Sintesis dan pengujian oksida logam carbon dots untuk aplikasi radar dan superkapasitor",
+        "n": 1
+      },
+      {
+        "label": "Magang sebagai Market Analis EBC Financial Group",
+        "n": 1
+      },
+      {
+        "label": "Magang – Analisis dan Pelaporan Imbalan Kerja (PSAK 219) di KKA Steven & Mourits Kantor Konsultan Aktuaria Steven & Mourits",
+        "n": 1
+      },
+      {
+        "label": "Magang/Praktik Kerja Lapangan pada Center of Excellent Applied Nanotechnology Nano Center Indonesia selama 2 bulan (5 Januari hingga 6 maret 2026)",
+        "n": 1
+      },
+      {
+        "label": "Magang/Praktik Kerja PT Pertamina (Persero) Research and Technology Center (Magang/Praktik Kerja)",
+        "n": 1
+      },
+      {
+        "label": "Magang/Praktik Kerja PT Stechoq Robotika Indonesia (Riset Teknologi Transformasi Digital 4.0)",
+        "n": 1
+      },
+      {
+        "label": "Magang/praktik kerja lapangan di PT SUCOFINDO Cabang Semarang bagian Laboratorium pada periode 2 Februari – 8 Mei 2026.",
+        "n": 1
+      },
+      {
+        "label": "Marketing Data Analyst Intern PLN Icon Plus (15.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Melakukan magang MBKM di Pusat Riset Fotonika BRIN KST Serpong",
+        "n": 1
+      },
+      {
+        "label": "Module Title: LI Functional Programming Module Code: 06 34253, LI Software Engineering and Professional Practice Module Code : 06 34258, LI Operating Systems and Systems Programming Module Code : 06 38059, (21.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Monitoring dan Analisis Kimia pada sistem PLTGU di PT PLN NP UP Muara Tawar (magang)",
+        "n": 1
+      },
+      {
+        "label": "Monitoring dan Analisis Kimia pada sistem PLTGU di PT PLN NP UP Muara Tawar Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Monitoring dan Evaluasi Tsunami Ready Community Kabupaten Bantul dan Kabupaten Kulon Progo (5.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Nagoya University Program for Academic Exchange (NUPACE) (10.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Nagoya University Program for Academic Exchange (NUPACE) Spring Semester 2026 (19.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Nava Lab: riset dan pengembangan minuman serbuk susu herbal yang rendah kalori dan memiliki kandungan antioksidan -PPSDM Migas: Analisis Pengolahan Air Limbah di Kilang PPSDM Migas: Efektivitas Fisik Kimia, dan Biologi G85 Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "PKL atau magang di Laboratorium Coal Handling and Transportation PT Bukit Asam Periode 12 Januari-30 April 2026",
+        "n": 1
+      },
+      {
+        "label": "PKL di Laboratorium CHT PT Bukit Asam Periode 12 Januari 2026-30 April 2026",
+        "n": 1
+      },
+      {
+        "label": "PT Etana Biotechnologies Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "PT Global Nava Industri : Riset dan pengembangan minuman serbuk yang aman untuk penderita diabetes dan program diet, PPSDM Migas : Analisis Pengolahan Air Limbah Di Kilang PPSDM Migas: Efektivitas Proses Fisik, Kimia, Dan Biologi",
+        "n": 1
+      },
+      {
+        "label": "PT Kilang Pertamina Internasional RU IV Cilacap (Magang)",
+        "n": 1
+      },
+      {
+        "label": "PT Pertamina (Magang)",
+        "n": 1
+      },
+      {
+        "label": "PT Unilever Indonesia Tbk. (Academy Internship Program)",
+        "n": 1
+      },
+      {
+        "label": "PT Vinix Seven Aurum (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Pemanfaatan Material Nanostruktur TiO2 dan Ko-katalis AgPd dalam Sistem Sensor Fotolistrik Kimia Berbasis Photoelectrochemical (PEC) Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Pemanfaatan abu boiler dari ampas tebu Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Pembelajaran Mengenai Evaluasi Kualitas Sampel Master Produk Pertalite Melalui Pengujian Standar dan Mutu di PT Kilang Pertamina Internasional Unit 6 Balongan (magang)",
+        "n": 1
+      },
+      {
+        "label": "Pembuatan Platform Data as a Service Berbasis UAV dengan Sensor Hiperspektral dan Lidar untuk Mendukung Precision Farming di Sektor Pertanian dan Perikanan (18.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Penelitian Badan Riset dan Inovasi Nasional (BRIN) (Penelitian)",
+        "n": 1
+      },
+      {
+        "label": "Pengembangan Ekosistem TMS LEN Logistics (13.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Pengembangan dan Aplikasi Nanokarbon Fungsional sebagai Adsorben Zat Warna Badan Riset dan Inovasi Nasional (BRIN) (Penelitian)",
+        "n": 1
+      },
+      {
+        "label": "Pengembangan dan Hilirisasi Trainer Kit Kendali Keseimbangan Robot pada Sistem Dinamis Multi-Platform (18.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Pengendalian Mutu Bahan Baku, Kemasan, dan Produk Akhir Es Krim di PT The Magnum Ice Cream Indonesia PT Unilever Indonesia Tbk. (Academy Internship Program)",
+        "n": 1
+      },
+      {
+        "label": "Pengujian Mutu Formulasi Pestisida Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Post Sales Internship PT Sembilan Pilar Semesta (14.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan (PKL) PT Pertamina (Persero) Technology Innovation & Implementation (TII)",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan (PKL) di PT Indesso Aroma",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan (PKL) di PT Kilang Pertamina Internasional",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan (PKL) di PT Kilang Pertamina International Refinery Unit VI Balongan",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan (PKL) yang akan kami lakukan di PT Kilang Pertamina Internasional RU VI Balongan",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan di PT Kilang Pertamina Internasional RU IV Cilacap pada Perioode Januari-Februari 2026",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan di PT Pertamina (Persero) Research and Technology Center Periode 2 Januari - 31 Maret 2026",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan di PT Pertamina (Persero) meliputi persiapan administrasi, pengenalan lingkungan kerja, pelaksanaan tugas sesuai bidang ilmu kimia, serta penyusunan laporan akhir.",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja Lapangan di Research and Technology Center (RTC) PT Pertamina (Persero) Periode 2 Januari-31 Maret 2026",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja di Pusat Riset Teknologi Bahan Bakar Nuklir dan Limbah Radioaktif - Badan Riset dan Inovasi Nasional (BRIN)",
+        "n": 1
+      },
+      {
+        "label": "Praktik Kerja/Magang Mandiri sebagai Cyber Security Analyst (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Praktik kerja lapangan MBKM Industri di divisi Quality Control PT Deltomed Laboratories dan laboratorium aplikasi PT Citra Resins Industries.",
+        "n": 1
+      },
+      {
+        "label": "Product Development Internship OONA Insurance (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Progam magang/praktik kerja lapangan di Balai Laboratorium Kesehatan Masyarakat (Labkesmas) Magelang",
+        "n": 1
+      },
+      {
+        "label": "Program PKL Produksi Drone CV AMX UAV Technologies",
+        "n": 1
+      },
+      {
+        "label": "Program magang di PT AXA Financial Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Program magang/praktik kerja lapangan di Balai Laboratorium Kesehatan Masyarakat Magelang",
+        "n": 1
+      },
+      {
+        "label": "Prototipe Sistem Kendali Lateral (Steering) Add-on Berbasis Neural Network Enhanced PID untuk Konversi Mobil konvensional menjadi otonom Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Prototipe Sistem Kendali Lateral (Steering) Add-on Berbasis Neural Network–Enhanced PID untuk Konversi Mobil Konvensional Menjadi Otonom Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Prototipe Sistem Kendali Lateral (Steering) Add-on Berbasis Neural network Enhanced PID untuk Konversi Mobil Konvensional menjadi Otonom (15.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Proyek Penelitian: Representation-Theoretic Aspect of Modular Forms (12.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Proyek Pengembangan dan Implementasi Sistem Perangkat Lunak pada Kegiatan Magang Programmer di Kantor (15.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Quality Assurance Internship PT Kode Kolektif Indonesia (14.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "R&D Laboratory PT Tesso Tetra Chemika",
+        "n": 1
+      },
+      {
+        "label": "Research Internship within the Data-Driven Industrial Systems at Constructor University Bremen, Germany",
+        "n": 1
+      },
+      {
+        "label": "Research in Artificial Intelligence and Natural Language Processing nstitute of Science Tokyo (Young Science and Engineering Researchers Program)",
+        "n": 1
+      },
+      {
+        "label": "Riset dan observasi air di lingkungan daerah jawa barat Dinas Lingkungan Hidup Propinsi Jawa Barat (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Riset mengenai Pengembangan Teknologi Konversi Gliserol Menjadi Hidrogen Melalui Steam Reforming dengan Katalis Berbasis Nikel Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Risk Management Departement PT Smart Multi Finance (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Risk Management Intern PT Dipo Star Finance (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Risk Management and Statistics Intern PT Asuransi Astra (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Ritsumeikan Asia Pacific University – Exchange Program for Spring 2026 (17.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "SISTEM MONITORING REAL-TIME KUALITAS AIR LINGKUNGAN MENGGUNAKAN SENSOR NANO/MIKRO Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Simulasi Kuantum Sistem Molekul dengan Metode VQE dan Basis Intrinsic Atomic Orbitals (IAO)",
+        "n": 1
+      },
+      {
+        "label": "Sintesis ZIF Co/Zn untuk Remediasi Cesium Pada Limbah Air Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Sintesis dan Karakterisasi Magnesium Stearat Berbasis Minyak Sawit Menggunakan Metode Presipitasi untuk Aplikasi Karet Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Sistem Multi-Pesawat Tanpa Awak Sayap Tetap Berbasis Teknologi Kawanan (Swarm) untuk Akselerasi Pemetaan Lahan (15.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "SkyGrowth Academy (Division: Enterprise Data Intelligence Analyst) PT Skyworx Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Software Engineering Intern (20.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Software Engineering Intern GDP Labs (20.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Spring 2026 JBNU Exchange Program & Lomba Internasional Global Sustainability Challenge - First Prize, Regional Finals (20.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Spring 2026 JBNU Exchange Program (16.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Staf Monitoring Air, Bahan Baku, dan Produk, Pengujian Mutu Mikrobiologi PT. Biofarma (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Studi Degradasi Kimia Material Rubber pada Hose Otomotif Menggunakan Analisis FTIR dan Morfologi Patahan (Microscope keyence dan SEM EDX) PT Toyota Motor Manufacturing Indonesia (Magang MBKM)",
+        "n": 1
+      },
+      {
+        "label": "Studi Komparasi Reaksi Isomerisasi Eugenol Hasil Recovery DEP dan Eugenol Standar Terhadap Pembentukan Isoeugenol",
+        "n": 1
+      },
+      {
+        "label": "Study Abroad and Exchanges Programme (SAE) Spring Semester 2025/2026",
+        "n": 1
+      },
+      {
+        "label": "Study Abroad and Exchanges Programme (SAE) Spring Semester 2025/2026 (17.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Study Abroad and Exchanges Programme (SAE) Spring Semester 2025/2026 (18.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Supply Chain Fulfillment Intern PT Jingdong Industrials Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Technical Artist (10.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Tohoku University Engineering Short Program 2026 (3.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "UI/UX & Front-End Developer Intern di PT Roda Data Infrastruktur, bertanggung jawab dalam mengintegrasikan proses analisis kebutuhan bisnis ke dalam perancangan desain antarmuka yang intuitif menggunakan Figma, serta implementasi teknis ke dalam pengemban (13.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "University of Tsukuba – Exchange Program Spring 2026 (19.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "University-Wide Student Exchange Program (USTEP) Spring 2026 (12.00 sks); KKN (2.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "Valuation Actuarial Internship at Sun Life Indonesia",
+        "n": 1
+      },
+      {
+        "label": "Valuation Internship di AXA Financial Service Indonesia PT AXA Financial Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "Wirausaha Gadjah Mada Muda (Wiragama)",
+        "n": 1
+      },
+      {
+        "label": "Workshop Kewirausahaan Gadjah Mada - Demo day (6.00 sks); KKN (2.00 sks); KKN (8.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "[Japan] Ritsumeikan Asia Pacific University – APU Exchange Program for Spring 2026 (18.00 sks)",
+        "n": 1
+      },
+      {
+        "label": "analisis base oil, produk lubricant, dan coolant di PT Pertamina Lubricant Career Centre FMIPA (Magang)",
+        "n": 1
+      },
+      {
+        "label": "eaching Cs-137 dari Slag Logam Sisa Hasil Peleburan Logam Terkontaminasi Cs-137 Badan Riset dan Inovasi Nasional (BRIN) (Magang)",
+        "n": 1
+      },
+      {
+        "label": "ivisi Actuary Experience Study PT AXA Mandiri Financial Services (Magang)",
+        "n": 1
+      },
+      {
+        "label": "kegiatan magang di Balai Besar Laboratorium Kesehatan Yogyakarta",
+        "n": 1
+      },
+      {
+        "label": "kegiatan magang di PT Bank Pembangunan Daerah Sulawesi Tenggara",
+        "n": 1
+      },
+      {
+        "label": "magang MBKM di pusat Fotonika BRIN,",
+        "n": 1
+      },
+      {
+        "label": "magang MBKM di pusat riset sistem nanoteknologi BRIN",
+        "n": 1
+      },
+      {
+        "label": "magang di PT Medialab Indonesia",
+        "n": 1
+      },
+      {
+        "label": "magang dilaksanakan di Badan Riset dan Inovasi Nasional (BRIN)",
+        "n": 1
+      },
+      {
+        "label": "magang/praktik kerja lapangan PT Etana Biotechnologies Indonesia (Magang)",
+        "n": 1
+      },
+      {
+        "label": "program magang ini dilaksanakan di PT Kilang Pertamina RU VI Balongan",
+        "n": 1
+      }
+    ],
+    "sks": {
+      "terukur": 603,
+      "rerata": 14.2,
+      "median": 12.0,
+      "q1": 10.0,
+      "q3": 20.0,
+      "min": 10.0,
+      "max": 25.0
+    },
+    "sks_di_bawah_10": 0
+  },
+  "jalur_pascasarjana": {
+    "total": 44,
+    "per_prodi": [
+      {
+        "label": "Magister Kimia",
+        "n": 15
+      },
+      {
+        "label": "Doktor Kimia",
+        "n": 12
+      },
+      {
+        "label": "Doktor Fisika",
+        "n": 6
+      },
+      {
+        "label": "Magister Ilmu Komputer",
+        "n": 5
+      },
+      {
+        "label": "Doktor Ilmu Komputer",
+        "n": 4
+      },
+      {
+        "label": "Magister Matematika",
+        "n": 2
+      }
+    ],
+    "per_batch": [
+      {
+        "label": "VI",
+        "n": 14
+      },
+      {
+        "label": "VIII",
+        "n": 11
+      },
+      {
+        "label": "VII",
+        "n": 6
+      },
+      {
+        "label": "PMDSU",
+        "n": 5
+      },
+      {
+        "label": "Fasttrack",
+        "n": 4
+      },
+      {
+        "label": "V tahap 1",
+        "n": 2
+      },
+      {
+        "label": "V tahap 2",
+        "n": 2
+      }
+    ]
+  },
+  "fasilitas": {
+    "total": 21,
+    "gedung": [
+      {
+        "gedung": "KPTU",
+        "kursi_roda": 0,
+        "ram": 1,
+        "parkir": 1,
+        "toilet": 1,
+        "lift": 0,
+        "total": 3
+      },
+      {
+        "gedung": "GEDUNG A",
+        "kursi_roda": 0,
+        "ram": 1,
+        "parkir": 1,
+        "toilet": 0,
+        "lift": 0,
+        "total": 2
+      },
+      {
+        "gedung": "GEDUNG B",
+        "kursi_roda": 0,
+        "ram": 2,
+        "parkir": 1,
+        "toilet": 0,
+        "lift": 0,
+        "total": 3
+      },
+      {
+        "gedung": "GEDUNG C",
+        "kursi_roda": 0,
+        "ram": 0,
+        "parkir": 0,
+        "toilet": 0,
+        "lift": 0,
+        "total": 0
+      },
+      {
+        "gedung": "GEDUNG D",
+        "kursi_roda": 2,
+        "ram": 2,
+        "parkir": 0,
+        "toilet": 5,
+        "lift": 1,
+        "total": 10
+      },
+      {
+        "gedung": "GEDUNG E",
+        "kursi_roda": 0,
+        "ram": 2,
+        "parkir": 0,
+        "toilet": 0,
+        "lift": 0,
+        "total": 2
+      },
+      {
+        "gedung": "Masjid",
+        "kursi_roda": 0,
+        "ram": 1,
+        "parkir": 0,
+        "toilet": 0,
+        "lift": 0,
+        "total": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+gedung,kursi_roda,ram,parkir,toilet,lift,total
+KPTU,0,1,1,1,0,3
+GEDUNG A,0,1,1,0,0,2
+GEDUNG B,0,2,1,0,0,3
+GEDUNG C,0,0,0,0,0,0
+GEDUNG D,2,2,0,5,1,10
+GEDUNG E,0,2,0,0,0,2
+Masjid,0,1,0,0,0,1

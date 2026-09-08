@@ -70,6 +70,7 @@ import partnershipPointsRaw from "../data/derived/partnership_points.json";
 import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
 import admissionsRaw from "../data/derived/admissions_by_year.json";
 import activeStudentsRaw from "../data/derived/active_students.json";
+import activePostgraduates from "../data/derived/active_postgraduates.json";
 import graduatesRaw from "../data/derived/graduates_profile.json";
 import achievementsRaw from "../data/derived/student_achievements.json";
 import accreditationRaw from "../data/derived/accreditation.json";
@@ -496,6 +497,8 @@ const selectivityShrinking = [...selectivityRows]
   .filter((row) => row.applicants[0])
   .sort((a, b) => (a.applicants.at(-1)! / a.applicants[0]!) - (b.applicants.at(-1)! / b.applicants[0]!))[0];
 const activeStudentTotal = (activeStudentsRaw as any[]).reduce((sum, row) => sum + row.mahasiswa, 0);
+const activeStudentPeriod = `${activeStudentsRaw[0].semester} ${activeStudentsRaw[0].tahun_ajaran}`;
+const activePostgraduatePeriod = `${activePostgraduates.semester} ${activePostgraduates.tahun_ajaran}`;
 
 const graduateLevels = ["Sarjana", "Magister", "Doktor"];
 const graduateYears = [...new Set((graduatesRaw as any[]).map((row) => row.tahun))].sort((a, b) => a - b);
@@ -940,6 +943,10 @@ const sceneValues: SceneValues = {
   studyProgrammes: institutionRaw.study_programmes,
   laboratories: institutionRaw.laboratories,
   activeStudents: activeStudentTotal,
+  activeStudentPeriod,
+  activeMasters: activePostgraduates.per_jenjang.S2,
+  activeDoctoral: activePostgraduates.per_jenjang.S3,
+  activePostgraduatePeriod,
   tckTotal: tck.length,
   tckAchieved,
   tckBehind,
@@ -1068,9 +1075,9 @@ const pillarSummary = [
     <StoryScene id="fmipa-hari-ini" number="1.1" question={scenes["1.1"].question} deck={deck("1.1")} wide>
       <ChartFrame source="Data kepegawaian, unit, dan registrasi mahasiswa FMIPA UGM" updated={`snapshot ${snapshot.label}`} downloadHref={dataUrl("institution_snapshot.json")} downloadName="institution_snapshot.json" note="Empat departemen akademik: Fisika, Ilmu Komputer dan Elektronika, Kimia, serta Matematika.">
         <InstitutionPortrait lecturers={institutionRaw.lecturers} academicStaff={institutionRaw.academic_staff} departmentsCount={institutionRaw.departments} studyProgrammes={institutionRaw.study_programmes} studyProgrammesByLevel={institutionRaw.study_programmes_by_level} laboratories={institutionRaw.laboratories} {departmentCounts} />
-        <table slot="table"><caption>Komposisi dan Struktur Organisasi FMIPA UGM</caption><tbody><tr><th scope="row">Dosen</th><td>{institutionRaw.lecturers}</td></tr><tr><th scope="row">Tenaga kependidikan</th><td>{institutionRaw.academic_staff}</td></tr><tr><th scope="row">Departemen akademik</th><td>{institutionRaw.departments}</td></tr><tr><th scope="row">Program studi</th><td>{institutionRaw.study_programmes}</td></tr><tr><th scope="row">Laboratorium</th><td>{institutionRaw.laboratories}</td></tr><tr><th scope="row">Mahasiswa sarjana aktif</th><td>{activeStudentTotal}</td></tr></tbody></table>
+        <table slot="table"><caption>Komposisi dan Struktur Organisasi FMIPA UGM</caption><tbody><tr><th scope="row">Dosen</th><td>{institutionRaw.lecturers}</td></tr><tr><th scope="row">Tenaga kependidikan</th><td>{institutionRaw.academic_staff}</td></tr><tr><th scope="row">Departemen akademik</th><td>{institutionRaw.departments}</td></tr><tr><th scope="row">Program studi</th><td>{institutionRaw.study_programmes}</td></tr><tr><th scope="row">Laboratorium</th><td>{institutionRaw.laboratories}</td></tr><tr><th scope="row">Mahasiswa sarjana aktif · {activeStudentPeriod}</th><td>{activeStudentTotal}</td></tr><tr><th scope="row">Mahasiswa magister (S2) aktif · {activePostgraduatePeriod}</th><td>{activePostgraduates.per_jenjang.S2}</td></tr><tr><th scope="row">Mahasiswa doktor (S3) aktif · {activePostgraduatePeriod}</th><td>{activePostgraduates.per_jenjang.S3}</td></tr></tbody></table>
       </ChartFrame>
-      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana aktif</strong> terdaftar di sembilan angkatan. Seluruh {format(accreditation.prodi_nasional)} program studi kini berpredikat <strong>Unggul</strong> pada akreditasi nasional, dan {format(accreditation.prodi_internasional)} program studi telah mengantongi akreditasi internasional.</p></Insight>
+      <Insight tone="info"><p>Sebanyak <strong>{format(activeStudentTotal)} mahasiswa sarjana aktif</strong> terdaftar di sembilan angkatan pada semester {activeStudentPeriod}. Rekap pascasarjana terakhir yang tersedia, semester {activePostgraduatePeriod}, mencatat <strong>{format(activePostgraduates.total)} mahasiswa aktif</strong>: {format(activePostgraduates.per_jenjang.S2)} mahasiswa S2 dan {format(activePostgraduates.per_jenjang.S3)} mahasiswa S3. <a href={dataUrl("active_postgraduates.json")} download>Unduh rekap pascasarjana</a>. Seluruh {format(accreditation.prodi_nasional)} program studi kini berpredikat <strong>Unggul</strong> pada akreditasi nasional, dan {format(accreditation.prodi_internasional)} program studi telah mengantongi akreditasi internasional.</p></Insight>
       <Insight tone="critical" label="Verifikasi Data"><p>Berkas akreditasi per September 2026 mencantumkan predikat Unggul pada seluruh {format(accreditation.prodi_nasional)} baris rincian program studi, namun sel ringkasan di berkas yang sama serta indikator TCK #3 masih tertulis {format(getTckRow("3").capaian_tw3)} prodi karena belum dihitung ulang setelah empat kenaikan peringkat pada 2025–2026 (Doktor Ilmu Komputer, Magister Kecerdasan Artifisial, Magister Elektronika dan Instrumentasi, serta S1 Aktuaria). Angka {format(accreditation.prodi_nasional)} mengikuti baris rincian dan masih menunggu konfirmasi tertulis fakultas.</p></Insight>
       <Insight tone="attention" label="Selisih Antarsumber"><p>Jumlah tenaga kependidikan berbeda di tiga sumber: ekstrak SIMASTER per 3 September 2026 mencatat <strong>{format(institutionRaw.academic_staff)} orang</strong>, basis data P2M mencatat {format(institutionRaw.academic_staff_alternatif.p2m_2026)} orang karena tidak pernah menonaktifkan pegawai yang telah purna tugas, sedangkan Laporan Dekan 2025 memuat {format(institutionRaw.academic_staff_alternatif.laporan_dekan_2025)} orang. Laporan ini memakai angka SIMASTER sebagai catatan kepegawaian resmi.</p></Insight>
     </StoryScene>
@@ -1180,7 +1187,7 @@ const pillarSummary = [
       <Insight tone="positive"><p>Kemitraan strategis tumbuh signifikan dari {format(partnerships[0]?.domestik + partnerships[0]?.internasional)} naskah kerja sama pada {partnerships[0]?.year} menjadi <strong>{format(partnerships[partnerships.length - 1]?.domestik + partnerships[partnerships.length - 1]?.internasional)} dokumen pada {partnerships[partnerships.length - 1]?.year}</strong>. Dari total {format(partnershipCoverage.total)} dokumen kerja sama, sebanyak {format(partnershipCoverage.terpetakan)} dokumen telah terpetakan lokasinya di dalam negeri, {format(partnershipCoverage.internasional)} dokumen merupakan kemitraan luar negeri, dan {format(partnershipCoverage.lokasi_kosong)} dokumen dalam proses pemutakhiran data alamat mitra.</p></Insight>
     </StoryScene>
     <StoryScene id="nilai-kerja-sama" number="3.5′" pillar="Kontribusi terhadap Bangsa" question={scenes["3.5p"].question} deck={deck("3.5p")} wide>
-      <SceneBlock title="Nilai Kontrak Kerja Sama dan Dana Pengembangan Institusi" lede={`Nilai kontrak adalah penerimaan kerja sama berbasis penagihan (billing), berbeda dari perolehan hibah riset pada Adegan 3.1 dan tidak boleh dijumlahkan dengan angka tersebut. Tahun ${revenueLast.year} masih berjalan.`}>
+      <SceneBlock title="Nilai Kontrak Kerja Sama dan Dana Pengembangan Institusi" lede={`Nilai kontrak adalah penerimaan kerja sama berbasis penagihan (billing), berbeda dari perolehan hibah riset pada Bagian 3.1 dan tidak boleh dijumlahkan dengan angka tersebut. Tahun ${revenueLast.year} masih berjalan.`}>
         <TrendRows data={revenueTrendRows} periods={revenueYears} title="Nilai Kontrak, DPI, dan Rasionya per Tahun" hideHeader axisLabel="Skala tiap baris mengikuti rentangnya sendiri" source="Penerimaan dan DPI Kerja Sama FMIPA UGM 2021–2026" extracted={snapshot.label} csvHref={dataUrl("partnership_revenue_by_year.csv")} valueFormatter={(value:number) => format(value, 2)} />
       </SceneBlock>
       <SceneBlock title="Konsentrasi Nilai Kontrak per Departemen" lede="Empat baris bernilai besar tidak mencantumkan departemen pada berkas sumber; baris tersebut ditampilkan sebagai kategori tersendiri, bukan dibagi berdasarkan perkiraan.">
@@ -1268,7 +1275,7 @@ const pillarSummary = [
       <SceneBlock title="Pengangkatan Guru Besar per Tahun dan Departemen" lede="Dihitung berdasarkan tahun TMT jabatan Guru Besar sepanjang periode kepemimpinan 2021–2026.">
         <StackedBarChart data={tenureByYear} xKey="year" series={tenureSeries} title="Pengangkatan Guru Besar per Tahun dan Departemen" hideHeader yLabel="Guru Besar" source="Data Guru Besar SIMASTER FMIPA UGM" extracted={lecturerSource} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
-      <Insight tone="positive"><p>Sebanyak <strong>{format(tenure.periode_ini)} dari {format(tenure.total)} Guru Besar</strong> ({format((tenure.periode_ini / tenure.total) * 100, 1)}%) menerima jabatannya pada periode kepemimpinan {tenure.tahun_awal}–2026, dengan puncak {format(tenurePeak.n)} pengangkatan pada {tenurePeak.year}. Berkas sumber menandai kolom periode ini secara eksplisit sebagai “Periode Dekanat 2021-2026”.</p></Insight>
+      <Insight tone="positive"><p>Sebanyak <strong>{format(tenure.periode_ini)} dari {format(tenure.total)} Guru Besar</strong> ({format((tenure.periode_ini / tenure.total) * 100, 1)}%) diangkat pada periode kepemimpinan {tenure.tahun_awal}–2026, dengan puncak {format(tenurePeak.n)} pengangkatan pada {tenurePeak.year}. Berkas sumber menandai kolom periode ini secara eksplisit sebagai “Periode Dekanat 2021-2026”.</p></Insight>
       <Insight tone="info"><p>Jabatan Guru Besar mencakup dua jenjang angka kredit (850 dan 1050) yang dihitung sebagai satu jabatan fungsional, sesuai penamaan pada basis data kepegawaian.</p></Insight>
     </StoryScene>
 
@@ -1366,7 +1373,7 @@ const pillarSummary = [
       <DataGap
         label="Agenda Integrasi Data"
         title="Agenda Penyelarasan Data Sosial-Ekonomi Mahasiswa"
-        description={`Sebanyak ${format(studentBackground.wali_tidak_dilaporkan)} dari ${format(students.total)} data mencantumkan keterangan umum atau belum merinci pekerjaan orang tua/wali. Selain itu, basis data ini belum memadukan status perolehan beasiswa ke dalam profil perorangan. Grafik ini menyajikan keragaman latar profesi dan bukan indikator kemampuan ekonomi keluarga.`}
+        description={`Sebanyak ${format(studentBackground.wali_tidak_dilaporkan)} dari ${format(students.total)} data mahasiswa mencantumkan keterangan umum atau belum merinci pekerjaan orang tua/wali. Selain itu, pangkalan data ini belum memadukan status beasiswa ke dalam profil perorangan. Visualisasi ini menyajikan keragaman latar profesi orang tua/wali dan bukan ukuran kemampuan ekonomi keluarga.`}
         owner="Bagian Akademik dan Kemahasiswaan FMIPA UGM"
         knownValue={`${format(students.total - studentBackground.wali_tidak_dilaporkan)} data dengan pekerjaan wali terklasifikasi`}
       />
@@ -1382,7 +1389,7 @@ const pillarSummary = [
       <Insight tone="info" label="Cakupan Basis Data"><p>Pembaruan data mencatat sekolah asal untuk <strong>{format(schoolOrigin.tercatat)} dari {format(schoolOrigin.total)} mahasiswa S1</strong> pada keenam angkatan, termasuk angkatan 2021–2022. Jejaring pascasarjana memuat {format(masterOrigin.institusi_unik)} perguruan tinggi S1 asal mahasiswa magister dan {format(doctorOrigin.institusi_unik)} perguruan tinggi S2 asal mahasiswa doktor. Sumber data tidak memuat provinsi institusi, sehingga persebaran geografis sekolah tidak diasumsikan dari nama institusi.</p></Insight>
     </StoryScene>
     <StoryScene id="jejaring-mou-sekolah" number="6.6′" pillar="Mahasiswa & Akses" question={scenes["6.6p"].question} deck={deck("6.6p")} tone="paper" wide>
-      <SceneBlock title="Sekolah Penanda Tangan MoU Juli 2026 terhadap Jejaring Sekolah Asal" lede="Setiap titik mewakili satu sekolah. Warna menunjukkan apakah sekolah tersebut sudah tercatat sebagai asal mahasiswa S1 angkatan 2021–2026 atau merupakan jejaring baru.">
+      <SceneBlock title="Perluasan Jejaring Kemitraan Sekolah Menengah (MoU Juli 2026)" lede="Setiap titik merepresentasikan satu sekolah mitra penanda tangan nota kesepahaman (MoU), membedakan antara sekolah yang telah rutin menjadi asal mahasiswa FMIPA dan sekolah mitra baru.">
         <DotMatrix groups={schoolMouGroups} columns={22} unitValue={1} unitLabel="sekolah" title="Sekolah Penanda Tangan MoU menurut Status Jejaring" hideHeader source="Daftar Peserta MoU FMIPA UGM (29–31 Juli 2026) dan pangkalan data asal pendidikan mahasiswa" extracted={snapshot.label} csvHref={dataUrl("school_mou_status.csv")} />
       </SceneBlock>
       <Insight tone="positive"><p>Penandatanganan nota kesepahaman pada 29–31 Juli 2026 menjangkau <strong>{format(schoolMou.sekolah)} sekolah</strong> dalam tiga sesi. Sebanyak {format(schoolMou.sudah_menjadi_asal)} di antaranya sudah tercatat sebagai sekolah asal mahasiswa FMIPA, sementara <strong>{format(schoolMou.jejaring_baru)} sekolah</strong> merupakan jejaring baru yang belum pernah mengirimkan mahasiswa pada enam angkatan terakhir.</p></Insight>

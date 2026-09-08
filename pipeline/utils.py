@@ -28,7 +28,9 @@ TCK_RINCIAN_DIR = TCK_2026_DIR / "RINCIAN TCK"
 # personnel extract: until it arrived, jabatan fungsional had to be stitched
 # together from the TCK detail workbooks and a P2M roster that stopped being
 # maintained in January 2026. It is now the single source for staffing.
-DEKAN_2026_DIR = DATA_ROOT / "Laporan Dekan 2026"
+DEKAN_2026_DIR = WORKSPACE_ROOT / "data laporan dekan 2021-2026" / "Laporan Dekan 2026"
+if not DEKAN_2026_DIR.exists():
+    DEKAN_2026_DIR = DATA_ROOT / "Laporan Dekan 2026"
 SDM_DIR = DEKAN_2026_DIR / "SDM"
 WORK_DIR = APP_ROOT / "pipeline" / "work"
 LOADED_DIR = WORK_DIR / "loaded"

@@ -20,7 +20,7 @@ EXPECTED_FILES = {
     # Added with the 31 August 2026 refresh.
     "snapshot.json", "tck_2026_by_dept.json",
     "partnerships_by_year.json", "partnership_partners.json", "partnership_points.json",
-    "partnership_coverage.json", "admissions_by_year.json", "active_students.json",
+    "partnership_coverage.json", "admissions_by_year.json", "active_students.json", "active_postgraduates.json",
     "graduates_profile.json", "graduates_by_programme.json", "student_achievements.json",
     "scholarships.json", "accreditation.json", "exchange_students.json",
     "tracer_waiting_time.json", "tracer_sectors.json", "tracer_summary.json", "hpu_posbindu.json",
@@ -35,6 +35,8 @@ EXPECTED_FILES = {
     "students_origins.json", "students_origins_cohorts.json",
     "students_origins_programmes.json", "students_origins_institutions.json",
     "students_programme_trends.json", "students_programme_trends_meta.json",
+    "tck_international.json", "tck_graduates.json", "tck_achievements.json",
+    "tck_supporting.json", "scholarships_detail.json",
 }
 PRIVATE_KEYS = {
     "name", "nama", "name_backup", "nidn", "nip", "nika", "nim", "niu", "leader", "member", "authors",
@@ -305,6 +307,14 @@ def main() -> None:
 
     active = load_json("active_students.json")
     assert sum(row["mahasiswa"] for row in active) == 3_147
+    assert {(row["semester"], row["tahun_ajaran"]) for row in active} == {("gasal", "2025/2026")}
+
+    postgraduate = load_json("active_postgraduates.json")
+    assert postgraduate["tahun_ajaran"] == "2024/2025" and postgraduate["semester"] == "gasal"
+    assert postgraduate["per_jenjang"] == {"S2": 589, "S3": 348}
+    assert postgraduate["total"] == sum(postgraduate["per_jenjang"].values()) == 937
+    for level, count in postgraduate["per_jenjang"].items():
+        assert sum(row["mahasiswa"] for row in postgraduate["per_prodi"] if row["jenjang"] == level) == count
 
     achievements = load_json("student_achievements.json")
     assert sum(row["prestasi"] for row in achievements) == 1_600
@@ -547,6 +557,49 @@ def main() -> None:
             f"Registrasi {year} berbeda {difference} antara daftar mahasiswa "
             f"({row['sarjana']}) dan PROFIL MABA ({expected})"
         )
+
+    # Evidence lists are not populations: validate their own partitions without
+    # forcing them to match a different TCK summary or annual graduate cohort.
+    international = load_json("tck_international.json")
+    assert [p["total"] for p in international["panel"]] == [198, 90, 108]
+    for panel in international["panel"]:
+        assert sum(r["n"] for r in panel["per_negara"]) == panel["total"]
+        assert sum(r["n"] for r in panel["per_status"]) == panel["total"]
+    assert sum(r["n"] for r in international["per_prodi"]) == 90
+    assert sum(r["n"] for r in international["per_kegiatan"]) == 108
+    detail_graduates = load_json("tck_graduates.json")
+    assert [p["total"] for p in detail_graduates["panel"]] == [150, 57, 35]
+    for panel in detail_graduates["panel"]:
+        assert panel["satuan"] == "semester"
+        assert sum(r["n"] for r in panel["semester"]) == panel["total"]
+        assert sum(r["n"] for r in panel["per_prodi"]) == panel["total"]
+        expected_mean = sum(r["semester"] * r["n"] for r in panel["semester"]) / panel["total"]
+        assert abs(panel["lama_studi"]["rerata"] - expected_mean) < .006
+        for row in panel["per_prodi"]:
+            if row["n"] < 3:
+                assert row["median"] is None and row["ipk"] is None
+            else:
+                assert row["min"] <= row["q1"] <= row["median"] <= row["q3"] <= row["max"]
+            assert row["ipk"] is None or 0 <= row["ipk"] <= 4
+    assert detail_graduates["panel"][2]["ipk_tidak_valid"] == 2
+    assert detail_graduates["panel"][1]["bulan_menyalin_ipk"] > 0
+    detail_achievements = load_json("tck_achievements.json")
+    assert detail_achievements["total"] == 167
+    assert sum(r["n"] for r in detail_achievements["per_jenis"]) == 167
+    assert sum(r["n"] for r in detail_achievements["kegiatan"]) == 167
+    for panel in detail_achievements["panel"]:
+        assert sum(r["n"] for r in panel["per_departemen"]) == panel["total"]
+        assert sum(r["n"] for r in panel["per_tingkat"]) == panel["total"]
+    scholarship_details = load_json("scholarships_detail.json")
+    scholarship_profile = load_json("scholarships.json")
+    assert sum(r["penerima"] for r in scholarship_details) == scholarship_profile["total"] == 703
+    assert len(scholarship_profile["per_skema"]) == scholarship_profile["skema"] == 79
+    assert sum(r["penerima"] for r in scholarship_profile["per_skema"]) == 703
+    assert sum(r["penerima"] for r in scholarship_profile["rincian"]) == 703
+    supporting = load_json("tck_supporting.json")
+    assert supporting["mbkm"]["total"] == sum(r["n"] for r in supporting["mbkm"]["per_prodi"]) == 603
+    assert supporting["jalur_pascasarjana"]["total"] == 44
+    assert supporting["fasilitas"]["total"] == sum(r["total"] for r in supporting["fasilitas"]["gedung"]) == 21
 
     for path in DERIVED_DIR.glob("*.json"):
         payload = json.loads(path.read_text(encoding="utf-8"))

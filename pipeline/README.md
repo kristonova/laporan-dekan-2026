@@ -1,5 +1,21 @@
 # Pipeline data — Lima Tahun FMIPA
 
+Scene 1.1 memakai `active_postgraduates.json` untuk rekap aktif S2/S3 terakhir
+yang tersedia: semester gasal 2024/2025 (589 S2 dan 348 S3). Sumbernya adalah
+`Laporan Dekan 2024/AKADEMIK/S2 S3 -Registrasi, Maba, Beasiswa.xlsx`, sheet
+`Registrasi 2024 I S2 S3 fi`. Loader menjumlahkan angkatan per prodi dan
+mencocokkan hasilnya dengan jumlah prodi, subtotal jenjang, dan total 937.
+Subtotal angkatan S2 di sumber tidak lengkap, sehingga tidak dipakai.
+Periodenya ditampilkan terpisah dari S1 gasal 2025/2026; tidak ada total gabungan
+lintas periode. Data asal pendidikan 2021–2026 dan profil mahasiswa baru 2025/2026
+tidak diperlakukan sebagai jumlah mahasiswa aktif.
+
+Pembaruan 8 September 2026: `tck_details.py` menambahkan agregat anonim rincian
+mahasiswa asing, lama studi, pencapaian mahasiswa, MBKM, jalur pascasarjana,
+dan fasilitas aksesibilitas. Ekspor beasiswa kini memuat seluruh 79 skema aktif
+dan matriks skema × prodi. Aturan cakupan dan rekonsiliasi didokumentasikan di
+[`docs/rincian-tck-20260908.md`](../docs/rincian-tck-20260908.md).
+
 Pembaruan 7 September 2026: kiriman `data ugm/Laporan Dekan 2026/` menambahkan
 lima loader baru dan mengganti tiga sumber lama.
 

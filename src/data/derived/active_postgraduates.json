@@ -1,0 +1,63 @@
+{
+  "tahun_ajaran": "2024/2025",
+  "semester": "gasal",
+  "sumber": "data laporan dekan 2021-2026/Laporan Dekan 2024/AKADEMIK/S2 S3 -Registrasi, Maba, Beasiswa.xlsx",
+  "sheet": "Registrasi 2024 I S2 S3 fi",
+  "total": 937,
+  "per_jenjang": {
+    "S2": 589,
+    "S3": 348
+  },
+  "per_prodi": [
+    {
+      "jenjang": "S2",
+      "prodi": "Elektronika dan Instrumentasi",
+      "mahasiswa": 16
+    },
+    {
+      "jenjang": "S2",
+      "prodi": "Fisika",
+      "mahasiswa": 79
+    },
+    {
+      "jenjang": "S2",
+      "prodi": "Ilmu Komputer",
+      "mahasiswa": 166
+    },
+    {
+      "jenjang": "S2",
+      "prodi": "Kecerdasan Artifisial",
+      "mahasiswa": 71
+    },
+    {
+      "jenjang": "S2",
+      "prodi": "Kimia",
+      "mahasiswa": 143
+    },
+    {
+      "jenjang": "S2",
+      "prodi": "Matematika",
+      "mahasiswa": 114
+    },
+    {
+      "jenjang": "S3",
+      "prodi": "Fisika",
+      "mahasiswa": 81
+    },
+    {
+      "jenjang": "S3",
+      "prodi": "Ilmu Komputer",
+      "mahasiswa": 136
+    },
+    {
+      "jenjang": "S3",
+      "prodi": "Kimia",
+      "mahasiswa": 77
+    },
+    {
+      "jenjang": "S3",
+      "prodi": "Matematika",
+      "mahasiswa": 54
+    }
+  ]
+}

@@ -1038,7 +1038,7 @@ def main() -> None:
     # forward so the aggregate stage reads everything from one directory.
     passthrough = (
         "study_programmes", "departments", "laboratories",
-        "admissions", "active_students", "graduates", "achievements",
+        "admissions", "active_students", "active_postgraduates", "graduates", "achievements",
         "scholarships", "accreditation", "exchange",
     )
     for name in passthrough:

@@ -1,0 +1,98 @@
+---
+import details from '../../data/derived/tck_graduates.json';
+import population from '../../data/derived/graduates_profile.json';
+import programmes from '../../data/derived/graduates_by_programme.json';
+import DetailShell from './DetailShell.astro';
+import CountBars from './CountBars.astro';
+import ChartFrame from '../charts/ChartFrame.astro';
+import {withBase} from '../../lib/paths';
+interface Props { mode?:'population'|'tck'; }
+const {mode='population'}=Astro.props;
+const levels=[{code:'S1',label:'Sarjana'},{code:'S2',label:'Magister'},{code:'S3',label:'Doktor'}];
+const fmt=(n:number|null,d=1)=>n===null?'—':new Intl.NumberFormat('id-ID',{maximumFractionDigits:d}).format(n);
+const months=(value:string)=>{const m=value.match(/(\d+)\s*th\s*(\d+)\s*bln/);return m?Number(m[1])*12+Number(m[2]):Number(value);};
+const date=(s:string)=>new Date(`${s}T00:00:00`).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+---
+<DetailShell label={mode==='population'?'Profil seluruh lulusan':'Sebaran masa studi dalam daftar TCK'}>
+  <div data-detail-switch>
+    <div class="detail-controls"><div class="detail-choices" role="group" aria-label={mode==='population'?'Jenjang profil lulusan':'Jenjang rincian kelulusan TCK'}>
+      {levels.map((level,i)=><button type="button" data-detail-choice={level.code} aria-pressed={i===0}>{level.code} · {level.label}</button>)}
+    </div></div>
+    {levels.map((level,i)=>{
+      const p=details.panel[i];
+      const history=population.filter(r=>r.jenjang===level.label).map(r=>({...r,bulan:months(r.lama_studi)}));
+      const latest=history.at(-1)!;
+      const counts=programmes.filter(r=>r.jenjang===level.label&&r.tahun===latest.tahun).map(r=>({label:r.prodi,n:r.lulusan})).sort((a,b)=>b.n-a.n);
+      const histogramMax=Math.max(...p.semester.map(r=>r.n));
+      return <div data-detail-panel={level.code} hidden={i!==0}>
+        {mode==='population'?<>
+          <p class="detail-kicker">Seluruh lulusan · Tahun akademik {latest.tahun_ajaran}</p>
+          <div class="detail-metrics" aria-live="polite">
+            <div><strong>{fmt(latest.lulusan,0)}</strong><span>lulusan {level.label.toLowerCase()}</span></div>
+            <div><strong>{fmt(latest.bulan,2)}</strong><span>bulan · rerata lama studi</span></div>
+            <div><strong>{fmt(latest.ipk_rerata,2)}</strong><span>rerata IPK · skala 0–4</span></div>
+          </div>
+          <ChartFrame id={`profil-lulus-${level.code}`} title={`Profil lulusan ${level.label}`} hideHeader source="Profil Lulusan FMIPA; profil Magister & Doktor 2025/2026" csvHref={withBase('/data/graduates_profile.csv')}
+            tableRows={history} tableColumns={[{key:'tahun_ajaran',label:'Tahun akademik'},{key:'lulusan',label:'Lulusan'},{key:'bulan',label:'Lama studi (bulan)',format:v=>fmt(Number(v),2)},{key:'ipk_rerata',label:'Rerata IPK'}]}>
+            <div class="detail-grid">
+              <div><h4>Perjalanan rerata lama studi</h4><p class="detail-note">Satuan bulan · skala yang sama untuk ketiga jenjang.</p>
+                <svg class="study-trend" viewBox="0 0 520 235" role="img" aria-label={`Rerata lama studi ${level.label}: ${history.map(r=>`${r.tahun_ajaran}: ${fmt(r.bulan,2)} bulan`).join('; ')}`}>
+                  {[0,24,48,72].map(v=><g><line x1="38" x2="490" y1={190-v*2} y2={190-v*2} stroke="var(--border-subtle)"/><text x="27" y={194-v*2} text-anchor="end">{v}</text></g>)}
+                  <polyline points={history.map((r,index)=>`${50+index*108},${190-r.bulan*2}`).join(' ')} fill="none" stroke="var(--chart-primary)" stroke-width="2.5"/>
+                  {history.map((r,index)=><g><circle cx={50+index*108} cy={190-r.bulan*2} r="5" fill="var(--surface-card)" stroke="var(--chart-primary)" stroke-width="2.5"/><text x={50+index*108} y={175-r.bulan*2} text-anchor="middle" class="value">{fmt(r.bulan,2)}</text><text x={50+index*108} y="214" text-anchor="middle">{r.tahun_ajaran.slice(2,4)}/{r.tahun_ajaran.slice(7)}</text></g>)}
+                </svg>
+                <p class="detail-note">S1 dikonversi dari tahun dan bulan pada rekap. Rerata S2/S3 tahun 2025/2026 dibobot menurut jumlah wisudawan pada tiap program studi dan periode wisuda.</p>
+              </div>
+              <div><h4>Lulusan menurut program studi</h4><CountBars rows={counts} total={latest.lulusan} color="var(--pillar-teal)"/>
+                {latest.cumlaude!==null&&<p class="detail-note"><strong>{fmt(latest.cumlaude,0)} lulusan cumlaude</strong> · {fmt(latest.cumlaude/latest.lulusan*100)}% dari seluruh lulusan {level.label.toLowerCase()}.</p>}
+              </div>
+            </div>
+          </ChartFrame>
+        </>:<>
+          <p class="detail-kicker">Daftar bukti TCK #{['8b1','8b2','8b3'][i]} · {date(p.awal)}–{date(p.akhir)}</p>
+          <div class="detail-metrics" aria-live="polite">
+            <div><strong>{p.total}</strong><span>rekaman lulusan dalam daftar</span></div>
+            <div><strong>{fmt(p.lama_studi.median)}</strong><span>semester · median lama studi</span></div>
+            <div><strong>{fmt(p.ipk,2)}</strong><span>rerata IPK dari {p.total-p.ipk_tidak_valid} data valid</span></div>
+          </div>
+          <ChartFrame id={`tck-lulus-${level.code}`} title={`Lama studi dalam daftar TCK ${level.code}`} hideHeader source={`Rincian TCK 2026 #${['8b1','8b2','8b3'][i]}`} csvHref={withBase('/data/tck_graduates_prodi.csv')}
+            tableRows={p.per_prodi} tableColumns={[{key:'prodi',label:'Program studi'},{key:'n',label:'Rekaman'},{key:'rerata',label:'Rerata semester'},{key:'median',label:'Median semester'},{key:'ipk',label:'Rerata IPK'}]}>
+            <div class="detail-grid">
+              <div><h4>Distribusi Semester Kelulusan Mahasiswa</h4><p class="detail-note">Tinggi kolom menunjukkan jumlah rekaman pada semester tersebut.</p>
+                <div class="semester-histogram">{p.semester.map(row=><div><strong>{row.n}</strong><span class="semester-column" aria-hidden="true"><i style={`height:${row.n/histogramMax*140}px`}/></span><span>Semester {row.semester}</span><small>{fmt(row.n/p.total*100)}%</small></div>)}</div>
+                <p class="detail-note">Rerata {fmt(p.lama_studi.rerata,2)} semester · rentang {fmt(p.lama_studi.min)}–{fmt(p.lama_studi.max)} semester. Satu semester adalah satuan pencatatan sumber, bukan konversi enam bulan.</p>
+              </div>
+              <div><h4>Rentang Masa Studi Antarprogram Studi</h4><p class="detail-note">Titik = median · garis tebal = 50% data di tengah · skala 1–10 semester.</p>
+                <div class="study-ranges">{p.per_prodi.map(row=><div>
+                  <span>{row.prodi}<small>{row.n} rekaman</small></span>
+                  {row.median!==null?<><div class="study-rail" aria-hidden="true"><i style={`left:${((row.q1??0)-1)/9*100}%;width:${((row.q3??0)-(row.q1??0))/9*100}%`}/><b style={`left:${(row.median-1)/9*100}%`}/></div><strong>{fmt(row.median)}</strong></>:<span class="study-withheld">Data kelompok &lt;3 tidak ditampilkan demi kerahasiaan</span>}
+                </div>)}</div>
+              </div>
+            </div>
+          </ChartFrame>
+          <p class="detail-note detail-callout">Daftar ini disiapkan sebagai bukti indikator kelulusan tepat waktu dan hanya mencakup sebagian lulusan. Angka di sini tidak menjadi penyebut persentase seluruh lulusan. Kolom semester dipakai sesuai sumber{p.bulan_menyalin_ipk>0?`; ${p.bulan_menyalin_ipk} isian bulan pada S2 sama dengan IPK, sehingga kolom bulan tidak dipakai`:''}.{p.ipk_tidak_valid>0?` Sebanyak ${p.ipk_tidak_valid} IPK di luar skala 0–4 dikeluarkan dari rerata IPK.`:''}</p>
+        </>}
+      </div>;
+    })}
+  </div>
+</DetailShell>
+<style>
+  .study-trend { width:100%; height:auto; overflow:visible; }
+  .study-trend text { font:12px var(--font-ui); fill:var(--text-secondary); }
+  .study-trend text.value { font-size:13px; font-weight:650; fill:var(--text-heading); }
+  .semester-histogram { display:flex; gap:18px; align-items:flex-end; margin:24px 0; border-bottom:1px solid var(--border-subtle); padding-bottom:16px; }
+  .semester-histogram > div { flex:1; min-width:0; text-align:center; display:flex; flex-direction:column; gap:8px; font:12px var(--font-ui); }
+  .semester-histogram strong { color:var(--text-heading); font-size:18px; }
+  .semester-histogram small { color:var(--text-secondary); }
+  .semester-column { height:145px; display:flex; align-items:flex-end; justify-content:center; }
+  .semester-column i { width:70%; max-width:72px; background:var(--chart-primary); border-radius:3px 3px 0 0; }
+  .study-ranges { display:grid; gap:17px; }
+  .study-ranges > div { display:grid; grid-template-columns:minmax(125px,1fr) minmax(80px,1fr) 24px; gap:14px; align-items:center; font:12px/1.5 var(--font-ui); }
+  .study-ranges small { display:block; color:var(--text-secondary); font-size:10px; }
+  .study-rail { position:relative; height:2px; background:var(--border-subtle); }
+  .study-rail i { position:absolute; height:7px; top:-2.5px; min-width:3px; background:var(--ugm-blue-200); }
+  .study-rail b { position:absolute; height:9px; width:9px; top:-3.5px; transform:translateX(-50%); border-radius:50%; background:var(--chart-primary); }
+  .study-ranges strong { text-align:right; color:var(--text-heading); }
+  .study-withheld { grid-column:2/4; color:var(--text-secondary); font-size:10px; }
+  @media(max-width:420px) { .study-ranges > div { grid-template-columns:minmax(110px,1fr) minmax(70px,1fr) 22px; gap:10px; } }
+</style>

@@ -9,6 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+from tck_details import generate_tck_details
 
 from utils import (
     CLEAN_DIR,
@@ -158,6 +159,18 @@ def academic_outputs() -> None:
     active["mahasiswa"] = pd.to_numeric(active["mahasiswa"], errors="coerce").fillna(0).astype(int)
     output("active_students.json", records(active.sort_values(["prodi", "angkatan"])))
 
+    postgraduate = pd.read_csv(CLEAN_DIR / "active_postgraduates.csv")
+    postgraduate["mahasiswa"] = pd.to_numeric(postgraduate["mahasiswa"], errors="raise").astype(int)
+    metadata = postgraduate[["tahun_ajaran", "semester", "sumber", "sheet"]].drop_duplicates()
+    if len(metadata) != 1:
+        raise ValueError("Registrasi pascasarjana harus berasal dari satu periode dan sumber")
+    output("active_postgraduates.json", {
+        **metadata.iloc[0].to_dict(),
+        "total": int(postgraduate["mahasiswa"].sum()),
+        "per_jenjang": {level: int(count) for level, count in postgraduate.groupby("jenjang")["mahasiswa"].sum().items()},
+        "per_prodi": records(postgraduate[["jenjang", "prodi", "mahasiswa"]].sort_values(["jenjang", "prodi"])),
+    })
+
     graduates = pd.read_csv(CLEAN_DIR / "graduates.csv")
     graduates["tahun"] = graduates["tahun"].astype(int)
     graduates["lulusan"] = pd.to_numeric(graduates["lulusan"], errors="coerce").fillna(0).astype(int)
@@ -185,8 +198,10 @@ def academic_outputs() -> None:
         "total": int(scholarships["penerima"].sum()),
         "skema": int(len(by_scheme)),
         "per_prodi": records(by_programme.sort_values(["penerima", "prodi"], ascending=[False, True])),
-        "per_skema": records(by_scheme.head(15)),
+        "per_skema": records(by_scheme),
+        "rincian": records(scholarships[scholarships["penerima"] > 0][["beasiswa", "prodi", "penerima"]]),
     })
+    output("scholarships_detail.json", records(scholarships[["beasiswa", "prodi", "penerima"]]))
 
     accreditation = pd.read_csv(CLEAN_DIR / "accreditation.csv").fillna("")
     national = accreditation[accreditation["lingkup"] == "Nasional"]
@@ -1140,3 +1155,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    generate_tck_details()

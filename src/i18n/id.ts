@@ -14,19 +14,19 @@ export const chapters = {
     number: "Bagian I",
     title: "Potret Institusi & Capaian Kinerja",
     description:
-      "Potret menyeluruh FMIPA UGM berdasarkan data resmi institusi: profil sivitas akademika, realisasi target perjanjian kinerja, serta pemetaan objektif atas berbagai aspek strategis fakultas.",
+      "Potret menyeluruh FMIPA UGM berdasarkan data resmi institusi: profil sumber daya manusia, realisasi target perjanjian kinerja, serta pemetaan objektif atas berbagai capaian strategis fakultas.",
   },
   journey: {
     number: "Bagian II",
     title: "Rekam Jejak Transformasi Lima Tahun",
     description:
-      "Capaian lima tahun dipahami secara utuh melalui rekam jejak perjalanannya. Melalui lima pilar tridharma, bagian ini mengulas perkembangan riset, kontribusi pengabdian kepada masyarakat, profil mahasiswa dari berbagai penjuru tanah air, hingga aspek-aspek yang terus ditingkatkan mutunya.",
+      "Capaian lima tahun dipahami secara utuh melalui perjalanan pembuktiannya. Melalui lima pilar tridharma, bagian ini mengulas lompatan riset, jangkauan pengabdian kepada masyarakat, profil mahasiswa dari seluruh penjuru nusantara, hingga penguatan tata kelola kelembagaan.",
   },
   handover: {
     number: "Bagian III",
     title: "Estafet Kepemimpinan & Agenda Strategis",
     description:
-      "Laporan pertanggungjawaban ini meletakkan fondasi data yang tepercaya dan peta jalan yang jelas bagi kepemimpinan fakultas periode berikutnya untuk terus melangkah maju.",
+      "Laporan pertanggungjawaban ini meletakkan fondasi data yang sahih dan peta jalan yang jelas bagi kepemimpinan fakultas periode berikutnya untuk melangkah lebih jauh.",
   },
 };
 
@@ -43,6 +43,10 @@ export interface SceneValues {
   studyProgrammes: number;
   laboratories: number;
   activeStudents: number;
+  activeStudentPeriod: string;
+  activeMasters: number;
+  activeDoctoral: number;
+  activePostgraduatePeriod: string;
   tckTotal: number;
   tckAchieved: number;
   tckBehind: number;
@@ -162,198 +166,198 @@ interface Scene {
 
 export const scenes = {
   "1.1": {
-    question: "Bagaimana Profil Sumber Daya dan Sivitas FMIPA UGM Saat Ini?",
+    question: "Profil Sumber Daya dan Sivitas Akademika FMIPA UGM",
     deck: (v) =>
-      `Aktivitas tridharma di FMIPA UGM dijalankan oleh ${v.format(v.lecturers)} dosen dan ${v.format(v.academicStaff)} tenaga kependidikan di empat departemen yang menaungi ${v.format(v.studyProgrammes)} program studi. Ekosistem pembelajaran dan riset ini didukung ${v.format(v.laboratories)} laboratorium terpadu serta melayani ${v.format(v.activeStudents)} mahasiswa sarjana aktif.`,
+      `Denyut tridharma di FMIPA UGM digerakkan oleh ${v.format(v.lecturers)} dosen dan ${v.format(v.academicStaff)} tenaga kependidikan pada empat departemen yang menaungi ${v.format(v.studyProgrammes)} program studi. Ekosistem keilmuan ini diperkuat oleh ${v.format(v.laboratories)} laboratorium dan menjadi rumah belajar bagi ${v.format(v.activeStudents)} mahasiswa sarjana aktif pada semester ${v.activeStudentPeriod}. Pada jenjang pascasarjana, rekap semester ${v.activePostgraduatePeriod} mencatat ${v.format(v.activeMasters)} mahasiswa magister (S2) dan ${v.format(v.activeDoctoral)} mahasiswa doktor (S3) aktif.`,
   },
   "1.2": {
-    question: "Bagaimana Capaian Target Perjanjian Kinerja Fakultas?",
+    question: "Realisasi Target Perjanjian Kinerja Fakultas",
     deck: (v) =>
-      `Hingga triwulan berjalan tahun 2026, sebanyak ${v.format(v.tckAchieved)} dari ${v.format(v.tckTotal)} indikator kinerja telah mencapai target. Pemenuhan ${v.format(v.tckBehind)} indikator lainnya terus diakselerasi menuju akhir tahun anggaran, dengan evaluasi dan catatan konteks data yang disajikan secara transparan.`,
+      `Hingga triwulan berjalan tahun 2026, sebanyak ${v.format(v.tckAchieved)} dari ${v.format(v.tckTotal)} indikator kinerja telah melampaui atau memenuhi target. Sebanyak ${v.format(v.tckBehind)} indikator lainnya terus dipacu menjelang akhir tahun anggaran, dengan evaluasi capaian dan catatan konteks data yang disajikan secara transparan.`,
   },
   "1.3": {
-    question: "Bagaimana Sumber Daya Dikelola Menjadi Dampak Nyata Tridharma?",
-    deck: "Alokasi pendanaan dan komitmen kerja sivitas diterjemahkan ke dalam hasil nyata: gagasan riset di laboratorium berkembang menjadi publikasi ilmiah bereputasi, program pengabdian masyarakat di berbagai daerah, serta manfaat langsung bagi kemaslahatan publik.",
+    question: "Alur Transformasi: Dari Sumber Daya Menuju Dampak Nyata",
+    deck: "Komitmen kerja sivitas dan dukungan pendanaan berbuah nyata di lapangan. Gagasan riset di laboratorium bertumbuh menjadi publikasi ilmiah bereputasi internasional, program pengabdian yang menjangkau masyarakat pelosok, serta kontribusi konkret bagi kemaslahatan publik.",
   },
   "2.1": {
-    question: "Bagaimana Perkembangan Dampak dan Sitasi Riset FMIPA di Tingkat Global?",
-    deck: "Dampak riset sivitas meningkat signifikan dalam enam tahun terakhir: jumlah sitasi tahunan naik lebih dari tiga kali lipat, dari 4.129 sitasi pada 2019 hingga mencapai puncaknya 12.629 sitasi pada 2024. Data tahun 2025 masih terus bertambah seiring proses pemutakhiran berkala pada pangkalan data Scopus.",
+    question: "Lonjakan Sitasi dan Pengakuan Riset di Tingkat Dunia",
+    deck: "Pengaruh riset sivitas FMIPA melesat tajam dalam enam tahun terakhir. Sitasi tahunan tumbuh lebih dari tiga kali lipat, dari 4.129 sitasi pada 2019 hingga mencapai puncaknya 12.629 sitasi pada 2024. Catatan tahun 2025 sendiri masih bergerak naik seiring proses pemutakhiran berkala pada pangkalan data Scopus.",
   },
   "2.2": {
-    question: "Bagaimana Produktivitas Publikasi Tersebar di Empat Departemen?",
+    question: "Peta Produktivitas Publikasi di Empat Departemen",
     deck: (v) =>
-      `Sebanyak ${v.format(v.publicationsMappedShare, 1)}% publikasi ilmiah periode ${v.publicationsFirstYear}–${v.publicationsLastYear} telah terpetakan ke departemen pengampu, baik melalui basis data fakultas maupun identifikasi profil Scopus para penulis. Sebanyak ${v.format(v.publicationsUnmapped)} artikel lainnya terus diverifikasi untuk melengkapi gambaran menyeluruh produktivitas riset fakultas.`,
+      `Sebanyak ${v.format(v.publicationsMappedShare, 1)}% publikasi ilmiah kurun ${v.publicationsFirstYear}–${v.publicationsLastYear} telah terpetakan ke departemen masing-masing, baik melalui basis data fakultas maupun profil Scopus para penulis. Sementara itu, ${v.format(v.publicationsUnmapped)} artikel lainnya terus diverifikasi guna melengkapi potret utuh produktivitas riset fakultas.`,
   },
   "2.2p": {
-    question: "Bagaimana Mutu dan Dampak Sitasi Riset FMIPA Dibandingkan Rata-Rata Dunia?",
+    question: "Mutu dan Dampak Sitasi Riset Melampaui Rata-Rata Dunia",
     deck: (v) =>
-      `Pertumbuhan kuantitas publikasi terus diimbangi dengan peningkatan mutu sitasi: dari ${v.format(v.researchAreas)} bidang ilmu yang tercatat, ${v.format(v.researchAreasAtWorld)} bidang telah mencapai atau melampaui rata-rata dunia (FWCI ≥ 1,00). Pada bidang dengan publikasi terbanyak, ${v.researchLeadArea} mencatat capaian tertinggi dengan FWCI ${v.format(v.researchLeadFwci, 2)}. Penguatan mutu dan rekognisi ilmiah ini menjadi prioritas strategis yang berjalan beriringan dengan produktivitas publikasi.`,
+      `Pertumbuhan jumlah publikasi berjalan seiring dengan peningkatan mutu riset. Dari ${v.format(v.researchAreas)} bidang keilmuan yang tercatat, ${v.format(v.researchAreasAtWorld)} bidang telah menyamai atau melampaui rata-rata dunia (FWCI ≥ 1,00). Bidang ${v.researchLeadArea} menorehkan dampak sitasi tertinggi dengan FWCI ${v.format(v.researchLeadFwci, 2)}, membuktikan bahwa riset FMIPA tidak hanya produktif melainkan berbobot tinggi di mata ilmuwan dunia.`,
   },
   "2.3": {
-    question: "Apa Saja Fokus dan Klaster Topik Riset Unggulan di FMIPA?",
+    question: "Klaster Riset Unggulan dan Keragaman Keilmuan",
     deck: (v) =>
-      `Sebanyak ${v.format(v.topicClusters)} klaster topik riset menunjukkan peta keilmuan fakultas yang kaya dan interdisipliner—mencakup sains material, energi terbarukan, kecerdasan buatan, biosains, hingga teknologi sensor dan pemantauan lingkungan.`,
+      `Sebanyak ${v.format(v.topicClusters)} klaster riset memperlihatkan lanskap keilmuan fakultas yang kaya dan lintas disiplin—mulai dari sains material, energi terbarukan, kecerdasan artifisial, biosains, hingga teknologi sensor dan pemantauan lingkungan hidup.`,
   },
   "2.4": {
-    question: "Sejauh Mana Jangkauan Kolaborasi Riset Internasional Peneliti FMIPA?",
+    question: "Jejaring Kolaborasi Riset Peneliti FMIPA di Panggung Internasional",
     deck: (v) =>
-      `Jejaring kolaborasi ilmiah para peneliti FMIPA kini terhubung dengan mitra riset di ${v.format(v.collabCountries)} negara. Proporsi publikasi bersama mitra internasional meningkat dari ${v.format(v.collabFirstShare, 1)}% pada ${v.collabFirstYear} menjadi ${v.format(v.collabLastShare, 1)}% pada ${v.collabLastYear}.`,
+      `Jejaring ilmiah para peneliti FMIPA merambah mitra riset di ${v.format(v.collabCountries)} negara. Porsi karya ilmiah yang digarap bersama mitra internasional melonjak dari ${v.format(v.collabFirstShare, 1)}% pada ${v.collabFirstYear} menjadi ${v.format(v.collabLastShare, 1)}% pada ${v.collabLastYear}.`,
   },
   "2.4p": {
-    question: "Bagaimana Keterbukaan Akses Publik terhadap Publikasi Ilmiah FMIPA?",
+    question: "Keterbukaan Akses Publikasi Ilmiah (Open Access)",
     deck: (v) =>
-      `Sekitar separuh publikasi ilmiah fakultas kini dapat diakses secara terbuka (Open Access): ${v.format(v.openAccessFirstShare, 1)}% pada ${v.openAccessFirstYear} dan ${v.format(v.openAccessLastShare, 1)}% pada ${v.openAccessLastYear}. Mayoritas artikel terbit melalui jalur Gold Open Access di pihak penerbit, sementara pemanfaatan repositori institusi (Green Open Access) baru mencatat ${v.format(v.openAccessGreenLatest)} artikel pada ${v.openAccessLastYear}—jalur mandiri yang ke depan terus didorong penguatannya oleh fakultas.`,
+      `Sekitar separuh dari karya ilmiah fakultas kini dapat diakses bebas oleh publik dunia: tercatat ${v.format(v.openAccessFirstShare, 1)}% pada ${v.openAccessFirstYear} dan ${v.format(v.openAccessLastShare, 1)}% pada ${v.openAccessLastYear}. Sebagian besar terbit melalui jalur Gold Open Access di pihak penerbit, sedangkan pemanfaatan repositori institusi (Green Open Access) membukukan ${v.format(v.openAccessGreenLatest)} artikel pada ${v.openAccessLastYear}—sebuah ruang mandiri yang terus didorong penguatannya oleh fakultas.`,
   },
   "2.5": {
-    question: "Bagaimana Komposisi Jabatan Fungsional dan Kualifikasi Dosen FMIPA?",
+    question: "Struktur Kepakaran dan Jabatan Fungsional Dosen",
     deck: (v) =>
-      `Kapasitas kepakaran akademik terus bertumbuh: lebih dari seperempat dosen tetap aktif (${v.format(v.professorShare, 1)}% atau ${v.format(v.professors)} dari ${v.format(v.lecturers)} dosen) telah menduduki jabatan fungsional tertinggi sebagai Guru Besar.`,
+      `Kekuatan akademik fakultas bertumpu pada kualifikasi dosen yang kokoh. Lebih dari seperempat dosen (${v.format(v.professorShare, 1)}% atau ${v.format(v.professors)} dari ${v.format(v.lecturers)} dosen aktif) telah mengemban jabatan akademik tertinggi sebagai Guru Besar.`,
   },
   "2.6": {
-    question: "Agenda Strategis Apa yang Perlu Dipercepat pada Pilar Reputasi Akademik?",
-    deck: "Seiring peningkatan produktivitas riset, langkah akselerasi difokuskan pada dua agenda utama: mendorong pemerataan publikasi antardepartemen serta memacu luaran publikasi mahasiswa program doktor bersama jejaring mitra global.",
+    question: "Agenda Strategis Penguatan Reputasi Akademik",
+    deck: "Seiring peningkatan produktivitas riset, langkah akselerasi diarahkan pada dua sasaran utama: pemerataan publikasi lintas departemen serta peningkatan luaran ilmiah mahasiswa program doktor bersama mitra penelitian global.",
   },
   "3.1": {
-    question: "Bagaimana Perkembangan Pendanaan Riset Fakultas Selama Lima Tahun?",
-    deck: "Perolehan dana riset tumbuh signifikan hingga mencapai puncaknya sebesar Rp74,91 miliar pada 2024, naik lebih dari dua puluh kali lipat dibandingkan posisi Rp3,30 miliar pada 2021. Pada 2025, perolehan dana tercatat sebesar Rp69,51 miliar, mencerminkan kapasitas pendanaan riset yang tetap kokoh dan berkelanjutan jauh di atas skala awal periode.",
+    question: "Pertumbuhan dan Keberlanjutan Dana Riset Fakultas",
+    deck: "Perolehan dana penelitian melesat hingga mencapai puncaknya Rp74,91 miliar pada 2024—meningkat lebih dari dua puluh kali lipat dibandingkan Rp3,30 miliar pada 2021. Pada 2025, perolehan dana tercatat sebesar Rp69,51 miliar, menandakan kapasitas riset fakultas kini telah berada pada skala baru yang mapan dan berkesinambungan.",
   },
   "3.2": {
-    question: "Di Mana Saja Sebaran Kegiatan Pengabdian kepada Masyarakat FMIPA UGM?",
-    deck: "Aktivitas Pengabdian kepada Masyarakat (PkM) meningkat lebih dari empat kali lipat, dari 109 kegiatan pada 2021 menjadi 445 kegiatan per tahun. Sepanjang 2021–2025, sebanyak 921 dari 1.481 kegiatan telah terverifikasi dan dipetakan lokasinya di berbagai provinsi di seluruh tanah air.",
+    question: "Jangkauan Pengabdian kepada Masyarakat di Berbagai Daerah Nusantara",
+    deck: "Kegiatan Pengabdian kepada Masyarakat (PkM) bertambah lebih dari empat kali lipat, dari 109 kegiatan pada 2021 menjadi 445 kegiatan per tahun. Sepanjang 2021–2025, sebanyak 921 dari 1.481 kegiatan telah terverifikasi dan terpetakan di berbagai provinsi di seluruh Indonesia.",
   },
   "3.3": {
-    question: "Bagaimana Kontribusi Tridharma FMIPA terhadap Tujuan Pembangunan Berkelanjutan (SDGs)?",
-    deck: "Kiprah tridharma sivitas berkontribusi nyata terhadap pencapaian agenda pembangunan berkelanjutan, terutama pada pilar industri dan inovasi (SDG 9), kesehatan dan kesejahteraan (SDG 3), konsumsi dan produksi bertanggung jawab (SDG 12), serta penyediaan air bersih (SDG 6), di samping penguatan pencatatan pada pilar-pilar SDGs lainnya.",
+    question: "Kontribusi Nyata Tridharma pada Agenda Berkelanjutan (SDGs)",
+    deck: "Kiprah tridharma sivitas berkontribusi langsung pada pencapaian Tujuan Pembangunan Berkelanjutan. Kontribusi terbesar terkonsentrasi pada industri dan inovasi (SDG 9), kesehatan dan kesejahteraan (SDG 3), konsumsi dan produksi bertanggung jawab (SDG 12), serta penyediaan air bersih (SDG 6), seraya terus memperkuat dokumentasi pada pilar SDGs lainnya.",
   },
   "3.4": {
-    question: "Bagaimana Peran Jurnal Berkala Ilmiah FMIPA dalam Diseminasi Pengetahuan?",
-    deck: "Empat jurnal berkala ilmiah yang dikelola FMIPA secara konsisten menjadi wadah diseminasi riset berkualitas dengan mempublikasikan 461 artikel terindeks bereputasi. Penyebarluasan hasil inovasi juga diperkuat melalui dokumentasi 115 liputan media massa yang terhimpun rapi sejak 2023.",
+    question: "Peran Jurnal Ilmiah Fakultas dalam Penyebarluasan Ilmu Pengetahuan",
+    deck: "Empat jurnal berkala ilmiah yang dikelola FMIPA konsisten menjadi rujukan riset berkualitas dengan menerbitkan 461 artikel terindeks bereputasi. Selain itu, kiprah inovasi sivitas disuarakan ke ranah publik melalui 115 liputan media massa yang terdokumentasi rapi sejak 2023.",
   },
   "3.5": {
-    question: "Bagaimana Perkembangan Jejaring Kerja Sama Strategis FMIPA UGM?",
+    question: "Penguatan Kemitraan Strategis Dalam dan Luar Negeri",
     deck: (v) =>
-      `Sepanjang periode 2021–2026, FMIPA UGM menjalin ${v.format(v.partnershipTotal)} naskah kerja sama resmi. Sebanyak ${v.format(v.partnershipInternational)} dokumen di antaranya merupakan kolaborasi internasional yang menghubungkan fakultas dengan berbagai institusi mitra di ${v.format(v.partnershipCountries)} negara.`,
+      `Sepanjang periode 2021–2026, FMIPA UGM telah menandatangani ${v.format(v.partnershipTotal)} naskah kerja sama resmi. Sebanyak ${v.format(v.partnershipInternational)} dokumen di antaranya merupakan kemitraan internasional yang menghubungkan fakultas dengan berbagai institusi terkemuka di ${v.format(v.partnershipCountries)} negara.`,
   },
   "3.5p": {
-    question: "Berapa Nilai Ekonomi Kerja Sama dan Kontribusinya bagi Fakultas?",
+    question: "Nilai Kontrak Kemitraan dan Penerimaan Pengembangan Institusi",
     deck: (v) =>
-      `Kemitraan tidak berhenti pada naskah perjanjian: sepanjang 2022–2026 tercatat ${v.format(v.revenueContracts)} kontrak kerja sama senilai ${v.format(v.revenueTotal, 2)} miliar rupiah, dengan ${v.format(v.revenueDpi, 2)} miliar rupiah kembali ke fakultas sebagai Dana Pengembangan Institusi.`,
+      `Kemitraan membawa manfaat nyata bagi kemandirian fakultas. Sepanjang kurun 2022–2026 tercatat ${v.format(v.revenueContracts)} kontrak kerja sama dengan total nilai ${v.format(v.revenueTotal, 2)} miliar rupiah, yang menyumbang ${v.format(v.revenueDpi, 2)} miliar rupiah sebagai Dana Pengembangan Institusi (DPI).`,
   },
   "3.6": {
-    question: "Program Apa yang Menjadi Prioritas Akselerasi pada Pilar Kontribusi?",
+    question: "Prioritas Percepatan pada Pilar Kontribusi bagi Bangsa",
     deck: (v) =>
-      `Pilar kontribusi terus mempercepat ketercapaian target indikator: saat ini ${v.format(v.contributionAchieved)} dari ${v.format(v.contributionTotal)} indikator telah terpenuhi pada triwulan berjalan. Fokus akselerasi diarahkan pada hilirisasi hasil riset ke masyarakat dan dunia industri, serta penyempurnaan pencatatan kegiatan berbasis SDGs.`,
+      `Dari pilar kontribusi, sebanyak ${v.format(v.contributionAchieved)} dari ${v.format(v.contributionTotal)} indikator telah terpenuhi pada triwulan berjalan. Fokus percepatan kini diarahkan pada hilirisasi hasil riset ke masyarakat dan dunia industri, serta penyempurnaan pencatatan kegiatan berbasis SDGs.`,
   },
   "4.1": {
-    question: "Di Sektor Mana Saja Lulusan FMIPA Mengembangkan Karier?",
+    question: "Kiprah dan Daya Serap Alumni di Dunia Profesional",
     deck: (v) =>
-      `Lulusan sains dan matematika membuktikan daya saing yang tinggi di dunia profesional. Survei penelusuran lulusan (tracer study) terhadap ${v.format(v.tracerRespondents)} alumni mencatat sektor ${v.tracerTopSector} sebagai penyerap terbanyak, diikuti sektor perbankan dan jasa keuangan, industri teknologi, serta dunia pendidikan dan riset.`,
+      `Lulusan sains dan matematika membuktikan keluwesan dan daya saing tinggi di pasar kerja modern. Pelacakan alumni (tracer study) terhadap ${v.format(v.tracerRespondents)} responden mencatat sektor ${v.tracerTopSector} sebagai penyerap terbesar, disusul perbankan dan jasa keuangan, industri teknologi informasi, serta lembaga pendidikan dan penelitian.`,
   },
   "4.2": {
-    question: "Berapa Lama Rata-Rata Masa Tunggu Kerja Lulusan FMIPA?",
+    question: "Kecepatan Keterserapan Kerja dan Singkatnya Masa Tunggu Alumni",
     deck: (v) =>
-      `Masa tunggu lulusan untuk memperoleh pekerjaan tergolong singkat: sebanyak ${v.format(v.tracerWithinSixMonths)} dari ${v.format(v.tracerRespondents)} responden telah bekerja dalam waktu kurang dari enam bulan setelah kelulusan. Bahkan, ${v.format(v.tracerBeforeGraduation)} orang di antaranya telah diterima bekerja sebelum resmi diwisuda.`,
+      `Alumni FMIPA tergolong sangat cepat terserap di dunia kerja. Sebanyak ${v.format(v.tracerWithinSixMonths)} dari ${v.format(v.tracerRespondents)} responden telah bekerja dalam kurun waktu kurang dari enam bulan setelah kelulusan. Bahkan, ${v.format(v.tracerBeforeGraduation)} lulusan telah diterima bekerja sebelum resmi diwisuda.`,
   },
   "4.3": {
-    question: "Bagaimana Kesiapan Karier Mahasiswa Dibina Selama Masa Studi?",
-    deck: "Penguatan kompetensi di luar ruang kuliah berjalan aktif: partisipasi mahasiswa dalam program Merdeka Belajar Kampus Merdeka (MBKM) melampaui target tahunan fakultas, diperkaya dengan program percepatan studi (fast track), keikutsertaan kompetisi keilmuan, serta pembekalan karier profesional terstruktur.",
+    question: "Pembekalan Kesiapan Karier dan Pengalaman Belajar Mahasiswa",
+    deck: "Kesiapan kerja mahasiswa diasah sejak dini di dalam maupun di luar kampus. Partisipasi mahasiswa dalam Merdeka Belajar Kampus Merdeka (MBKM) melampaui target tahunan fakultas, diperkaya oleh program percepatan studi (fast track), kompetisi keilmuan, serta pembekalan karier terstruktur.",
   },
   "4.4": {
-    question: "Bagaimana Pelaksanaan Program Mobilitas Internasional Mahasiswa?",
+    question: "Mobilitas Internasional Mahasiswa: Pertukaran Dua Arah",
     deck: (v) =>
-      `Program mobilitas mahasiswa berlangsung dinamis dan dua arah: fakultas menyambut ${v.format(v.foreignCredit)} mahasiswa asing pada program berbobot sks (credit-earning) dan ${v.format(v.foreignNonCredit)} mahasiswa pada program non-kredit, sekaligus memfasilitasi mahasiswa FMIPA untuk menimba pengalaman akademik di luar negeri.`,
+      `Internasionalisasi berlangsung dinamis dan dua arah: fakultas menerima ${v.format(v.foreignCredit)} mahasiswa asing pada program perolehan SKS (credit-earning) dan ${v.format(v.foreignNonCredit)} mahasiswa pada program non-kredit, sekaligus mengantarkan mahasiswa FMIPA menimba pengalaman berharga di universitas mitra mancanegara.`,
   },
   "4.5": {
-    question: "Bagaimana Capaian Kelulusan Tepat Waktu di Seluruh Jenjang Studi?",
-    deck: "Persentase kelulusan tepat waktu di jenjang Sarjana, Magister, maupun Doktor secara konsisten memenuhi target yang ditetapkan universitas, berkat pemantauan masa studi berkala dan pendampingan tugas akhir yang efektif.",
+    question: "Tingkat Kelulusan Tepat Waktu di Jenjang Sarjana dan Pascasarjana",
+    deck: "Tingkat kelulusan tepat waktu di jenjang Sarjana, Magister, maupun Doktor secara konsisten melampaui target perjanjian kinerja, buah dari pemantauan berkala kemajuan studi dan pendampingan tugas akhir yang intensif.",
   },
   "4.6": {
-    question: "Bagaimana Minat Pendaftar dan Keketatan Seleksi Mahasiswa Baru?",
+    question: "Tingginya Minat Pendaftar dan Keketatan Seleksi Mahasiswa Baru",
     deck: (v) =>
-      `Peminat program sarjana tumbuh dari ${v.format(v.admissionsApplicantsFirst)} pendaftar pada ${v.admissionsFirstYear} menjadi ${v.format(v.admissionsApplicants)} pada ${v.admissionsLastYear}. Dengan daya tampung ${v.format(v.admissionsSeats)} kursi, rasio keketatan seleksi berada pada kisaran 1 : ${v.format(v.admissionsTightnessLast, 1)} (dibandingkan 1 : ${v.format(v.admissionsTightnessFirst, 1)} pada awal periode). Komitmen calon mahasiswa juga sangat kuat, tecermin dari tingkat registrasi ulang yang mencapai ${v.format(v.admissionsYieldLast, 1)}%.`,
+      `Minat terhadap program sarjana FMIPA terus menanjak, dari ${v.format(v.admissionsApplicantsFirst)} pendaftar pada ${v.admissionsFirstYear} menjadi ${v.format(v.admissionsApplicants)} pada ${v.admissionsLastYear}. Dengan daya tampung ${v.format(v.admissionsSeats)} kursi, rasio keketatan seleksi berada pada kisaran 1 : ${v.format(v.admissionsTightnessLast, 1)}. Tingkat keseriusan calon mahasiswa juga sangat tinggi, terlihat dari angka daftar ulang yang mencapai ${v.format(v.admissionsYieldLast, 1)}%.`,
   },
   "4.7": {
-    question: "Bagaimana Profil Kelulusan dan Raihan Prestasi Mahasiswa Setiap Tahun?",
+    question: "Profil Kelulusan dan Prestasi Membanggakan Mahasiswa",
     deck: (v) =>
-      `Fakultas meluluskan ${v.format(v.graduatesLatest)} sarjana baru pada tahun akademik terakhir. Pada saat yang sama, mahasiswa FMIPA menorehkan ${v.format(v.achievementsTotal)} prestasi kejuaraan sejak 2022, termasuk ${v.format(v.achievementsInternational)} penghargaan di tingkat internasional.`,
+      `Fakultas meluluskan ${v.format(v.graduatesLatest)} sarjana baru pada tahun akademik terakhir. Di samping ketuntasan akademik, mahasiswa FMIPA menorehkan ${v.format(v.achievementsTotal)} gelar kejuaraan sejak 2022, dengan ${v.format(v.achievementsInternational)} prestasi di antaranya diraih di panggung kompetisi internasional.`,
   },
   "4.3p": {
-    question: "Sejauh Mana Keterlibatan Mahasiswa Sarjana dalam Riset Dosen?",
-    deck: "Keterlibatan mahasiswa dalam riset dosen menjadi sarana penguatan kompetensi nyata: sebanyak 182 judul penelitian telah melibatkan langsung mahasiswa sarjana sebagai asisten peneliti, dengan peningkatan partisipasi yang nyata pada kurun 2023–2024.",
+    question: "Keterlibatan Mahasiswa Sarjana dalam Payung Riset Dosen",
+    deck: "Keterlibatan dalam riset dosen menjadi wahana pembelajaran autentik bagi mahasiswa. Sebanyak 182 judul penelitian telah melibatkan langsung mahasiswa sarjana sebagai anggota tim peneliti, dengan peningkatan partisipasi yang signifikan pada kurun 2023–2024.",
   },
   "5.1": {
-    question: "Bagaimana Perkembangan Pembinaan Karier dan Kualifikasi Dosen?",
+    question: "Pembinaan Karier dan Peningkatan Kualifikasi Dosen",
     deck: (v) =>
-      `Tata kelola SDM dan pengembangan karier staf menunjukkan capaian positif: ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator kinerja telah memenuhi target, didukung oleh kelancaran usulan kenaikan jabatan fungsional dosen serta perolehan rekognisi kepakaran internasional.`,
+      `Pengelolaan SDM dan jenjang karier tenaga pendidik membuahkan capaian menggembirakan: ${v.format(v.welfareAchieved)} dari ${v.format(v.welfareTotal)} indikator kinerja telah memenuhi target, ditopang oleh kelancaran kenaikan jabatan fungsional serta rekognisi kepakaran di tingkat dunia.`,
   },
   "5.1p": {
-    question: "Bagaimana Regenerasi Guru Besar Berlangsung Selama Lima Tahun?",
+    question: "Akselerasi Regenerasi dan Pertumbuhan Jumlah Guru Besar",
     deck: (v) =>
-      `Regenerasi kepakaran berjalan pesat: ${v.format(v.professorsThisPeriod)} dari ${v.format(v.professors)} Guru Besar aktif (${v.format(v.professorsThisPeriodShare, 1)}%) menerima jabatannya pada periode kepemimpinan 2021–2026.`,
+      `Regenerasi kepakaran tertinggi berlangsung pesat: sebanyak ${v.format(v.professorsThisPeriod)} dari ${v.format(v.professors)} Guru Besar aktif (${v.format(v.professorsThisPeriodShare, 1)}%) resmi diangkat menjadi Guru Besar dalam masa kepemimpinan 2021–2026.`,
   },
   "5.1q": {
-    question: "Sejauh Mana Jabatan Akademik dan Sertifikasi Dosen Terpenuhi?",
+    question: "Pemenuhan Jabatan Fungsional Awal dan Sertifikasi Dosen",
     deck: (v) =>
-      `Sebanyak ${v.format(v.lecturersWithoutPosition)} dari ${v.format(v.lecturers)} dosen (${v.format(v.lecturersWithoutPositionShare, 2)}%) belum memiliki jabatan akademik—masih di bawah ambang 10%—sementara ${v.format(v.lecturersCertifiedShare, 1)}% dosen telah mengantongi sertifikat pendidik profesional.`,
+      `Sebanyak ${v.format(v.lecturersWithoutPosition)} dari ${v.format(v.lecturers)} dosen (${v.format(v.lecturersWithoutPositionShare, 2)}%) tercatat sedang dalam proses pengusulan jabatan fungsional pertama—jauh di bawah batas toleransi 10%. Sementara itu, ${v.format(v.lecturersCertifiedShare, 1)}% dosen telah memperoleh sertifikat pendidik profesional.`,
   },
   "5.2": {
-    question: "Bagaimana Kesiapan Fasilitas Kampus Inklusif dan Ramah Disabilitas?",
+    question: "Mewujudkan Lingkungan Kampus yang Inklusif dan Ramah Disabilitas",
     deck: (v) =>
-      `Komitmen mewujudkan lingkungan kampus yang inklusif diwujudkan melalui penyediaan ${v.format(v.disabilityFacilities)} unit fasilitas ramah disabilitas, melampaui target tahunan (${v.format(v.disabilityTarget)} unit). Penerapan standar fasilitas fisik yang ramah lingkungan dan aksesibel terus diperkuat berkoordinasi dengan universitas.`,
+      `Komitmen terhadap kampus inklusif diwujudkan lewat pengadaan ${v.format(v.disabilityFacilities)} unit fasilitas ramah disabilitas, melampaui target tahunan fakultas (${v.format(v.disabilityTarget)} unit). Standardisasi fasilitas yang mudah diakses dan ramah lingkungan terus disempurnakan bersama universitas.`,
   },
   "5.3": {
-    question: "Bagaimana Hasil Pemantauan Kesehatan Dosen dan Tenaga Kependidikan?",
+    question: "Pemantauan Kesehatan Kerja Dosen dan Tenaga Kependidikan",
     deck: (v) =>
-      `Pemeriksaan kesehatan berkala melalui Posbindu HPU mencatat ${v.format(v.posbinduYearVisits)} kunjungan dosen dan tenaga kependidikan sepanjang lima tahun (${v.posbinduFirstYear}–${v.posbinduLastYear}). Parameter ${v.posbinduTopRisk.toLowerCase()} menjadi faktor risiko yang paling banyak teridentifikasi (${v.format(v.posbinduTopRiskShare)}% peserta), sementara proporsi peserta dengan risiko tekanan darah meningkat dari ${v.format(v.posbinduTensionFirst)}% menjadi ${v.format(v.posbinduTensionLast)}%, sehingga menuntut perhatian bersama melalui program promosi kesehatan kerja.`,
+      `Pemeriksaan berkala melalui Posbindu HPU membukukan ${v.format(v.posbinduYearVisits)} kunjungan dosen dan tenaga kependidikan sepanjang lima tahun (${v.posbinduFirstYear}–${v.posbinduLastYear}). Temuan ${v.posbinduTopRisk.toLowerCase()} menjadi faktor risiko yang paling dominan (${v.format(v.posbinduTopRiskShare)}% peserta), sementara proporsi risiko tekanan darah naik dari ${v.format(v.posbinduTensionFirst)}% menjadi ${v.format(v.posbinduTensionLast)}%. Data ini menjadi landasan penting bagi fakultas untuk merancang program kesehatan kerja preventif yang berkesinambungan.`,
   },
   "6.1": {
-    question: "Bagaimana Komposisi Mahasiswa FMIPA UGM Lintas Jenjang Pendidikan?",
+    question: "Komposisi dan Dinamika Mahasiswa Lintas Jenjang Pendidikan",
     deck: (v) =>
-      `Basis data akademik per 2 September 2026 mendokumentasikan riwayat ${v.format(v.studentsTotal)} mahasiswa dari enam angkatan (${v.studentsFirstYear}–${v.studentsLastYear}), mencakup ${v.format(v.studentsUndergraduate)} mahasiswa sarjana (S1), ${v.format(v.studentsMasters)} magister (S2), ${v.format(v.studentsDoctoral)} doktor (S3), serta ${v.format(v.studentsAllNonDegree)} peserta program non-gelar.`,
+      `Basis data akademik per 2 September 2026 mencatat riwayat ${v.format(v.studentsTotal)} mahasiswa dari enam angkatan (${v.studentsFirstYear}–${v.studentsLastYear}), yang terdiri atas ${v.format(v.studentsUndergraduate)} mahasiswa sarjana (S1), ${v.format(v.studentsMasters)} magister (S2), ${v.format(v.studentsDoctoral)} doktor (S3), serta ${v.format(v.studentsAllNonDegree)} peserta program non-gelar.`,
   },
   "6.2": {
-    question: "Bagaimana Sebaran Geografis Daerah Asal Mahasiswa FMIPA UGM?",
+    question: "Pemerataan Akses: Menjangkau Talenta dari Seluruh Penjuru Nusantara",
     deck: (v) =>
-      `Akses pendidikan di FMIPA UGM menjangkau putra-putri dari seluruh tanah air: daerah asal mahasiswa kini meluas dari ${v.format(v.studentsProvincesFirst)} menjadi ${v.format(v.studentsProvincesLast)} provinsi. Proporsi mahasiswa dari luar Pulau Jawa sempat menyentuh puncaknya sebesar ${v.format(v.studentsOutsideJavaPeak, 1)}% pada angkatan ${v.studentsOutsideJavaPeakYear}, dan berada di angka ${v.format(v.studentsOutsideJavaLast, 1)}% pada angkatan ${v.studentsLastYear}.`,
+      `FMIPA UGM membuka pintu seluas-luasnya bagi putra-putri terbaik dari seluruh tanah air. Daerah asal mahasiswa meluas dari ${v.format(v.studentsProvincesFirst)} menjadi ${v.format(v.studentsProvincesLast)} provinsi. Proporsi mahasiswa asal luar Pulau Jawa mencapai puncaknya ${v.format(v.studentsOutsideJavaPeak, 1)}% pada angkatan ${v.studentsOutsideJavaPeakYear} dan berada di posisi ${v.format(v.studentsOutsideJavaLast, 1)}% pada angkatan ${v.studentsLastYear}.`,
   },
   "6.3": {
-    question: "Bagaimana Komposisi Gender Mahasiswa di Setiap Program Studi?",
+    question: "Keseimbangan Gender dan Pola Peminatan Mahasiswa",
     deck: (v) =>
-      `Pada tingkat fakultas, perbandingan gender tergolong seimbang dengan proporsi mahasiswa perempuan sebesar ${v.format(v.studentsWomenShareLast, 1)}%. Pola peminatan bervariasi antardisiplin ilmu: Program Studi ${v.studentsWomenTopProgramme} mencatat proporsi perempuan tertinggi (${v.format(v.studentsWomenTopShare, 1)}%), sedangkan Program Studi ${v.studentsWomenLowProgramme} mencatat ${v.format(v.studentsWomenLowShare, 1)}%.`,
+      `Di tingkat fakultas, komposisi gender berada dalam keseimbangan yang sehat dengan proporsi mahasiswa perempuan sebesar ${v.format(v.studentsWomenShareLast, 1)}%. Pilihan bidang keilmuan memperlihatkan dinamika yang menarik: Program Studi ${v.studentsWomenTopProgramme} memiliki proporsi mahasiswi tertinggi (${v.format(v.studentsWomenTopShare, 1)}%), sedangkan Program Studi ${v.studentsWomenLowProgramme} berada pada angka ${v.format(v.studentsWomenLowShare, 1)}%.`,
   },
   "6.4": {
-    question: "Melalui Jalur Apa Saja Mahasiswa Masuk ke FMIPA UGM?",
+    question: "Ragam Pintu Masuk: Jalur Seleksi Mahasiswa Baru",
     deck: (v) =>
-      `Jalur seleksi ${v.studentsTopPathway} menjadi pintu masuk terbesar yang menyaring ${v.format(v.studentsTopPathwayShare, 1)}% mahasiswa baru. Di samping seleksi nasional berbasis prestasi (SNBP) dan tes (SNBT), kelas internasional (IUP) konsisten menerima sekitar ${v.format(v.studentsIup)} mahasiswa per angkatan, didampingi jalur afirmasi wilayah 3T dan alih program.`,
+      `Jalur seleksi ${v.studentsTopPathway} menjadi pintu masuk utama yang menyerap ${v.format(v.studentsTopPathwayShare, 1)}% mahasiswa baru. Di samping seleksi nasional berbasis prestasi (SNBP) dan tes (SNBT), International Undergraduate Program (IUP) konsisten menerima sekitar ${v.format(v.studentsIup)} mahasiswa per angkatan, dilengkapi jalur afirmasi wilayah 3T dan alih program.`,
   },
   "6.5": {
-    question: "Bagaimana Latar Belakang Profesi Orang Tua atau Wali Mahasiswa?",
+    question: "Kemajemukan Latar Belakang Profesi Orang Tua dan Wali Mahasiswa",
     deck: (v) =>
-      `Keberagaman latar belakang keluarga tecermin dari profesi orang tua/wali mahasiswa yang didominasi oleh ${v.studentsGuardianTop.toLowerCase()} (${v.format(v.studentsGuardianTopShare, 1)}%), disusul pegawai swasta dan aparatur sipil negara. Sebanyak ${v.format(v.studentsGuardianUnreported)} data belum merinci spesifikasi pekerjaan, sehingga catatan ini berfungsi sebagai potret keragaman latar belakang keluarga dan bukan ukuran kemampuan ekonomi.`,
+      `Keberagaman latar belakang keluarga terlihat dari rumpun profesi orang tua/wali mahasiswa yang didominasi oleh sektor ${v.studentsGuardianTop.toLowerCase()} (${v.format(v.studentsGuardianTopShare, 1)}%), disusul karyawan swasta dan aparatur sipil negara (ASN). Sebanyak ${v.format(v.studentsGuardianUnreported)} data belum mencantumkan pekerjaan secara terperinci, sehingga catatan ini menyajikan potret keragaman sosial keluarga dan bukan tolok ukur kemampuan ekonomi.`,
   },
   "6.6": {
-    question: "Dari Sekolah dan Perguruan Tinggi Mana Saja Mahasiswa Berasal?",
+    question: "Jejaring Sekolah dan Perguruan Tinggi Asal Mahasiswa",
     deck: (v) =>
-      `Jejaring institusi asal mahasiswa kini mencakup ${v.format(v.studentsSchoolUnique)} SMA/MA bagi mahasiswa sarjana, ${v.format(v.studentsMasterOrigins)} universitas asal bagi mahasiswa magister, serta ${v.format(v.studentsDoctorOrigins)} perguruan tinggi asal bagi mahasiswa doktor. Pemutakhiran basis data ini melengkapi informasi asal pendidikan untuk seluruh angkatan 2021–2026.`,
+      `Jejaring institusi pendidikan asal mahasiswa mencakup ${v.format(v.studentsSchoolUnique)} SMA/MA bagi jenjang sarjana, ${v.format(v.studentsMasterOrigins)} universitas asal bagi jenjang magister, serta ${v.format(v.studentsDoctorOrigins)} perguruan tinggi bagi jenjang doktor. Pemutakhiran basis data ini berhasil melengkapi informasi asal sekolah dan kampus untuk seluruh angkatan 2021–2026.`,
   },
   "6.6p": {
-    question: "Seberapa Luas Jejaring Sekolah Mitra yang Baru Dibangun?",
+    question: "Perluasan Jejaring Kemitraan dengan Sekolah Baru",
     deck: (v) =>
-      `Penandatanganan nota kesepahaman pada Juli 2026 menjangkau ${v.format(v.mouSchools)} sekolah, dan ${v.format(v.mouNewSchools)} di antaranya merupakan jejaring baru yang belum pernah mengirimkan mahasiswa pada enam angkatan terakhir.`,
+      `Penandatanganan nota kesepahaman (MoU) pada Juli 2026 merangkul ${v.format(v.mouSchools)} sekolah. Sebanyak ${v.format(v.mouNewSchools)} di antaranya merupakan jejaring mitra baru yang belum pernah mengirimkan lulusannya ke FMIPA dalam enam angkatan terakhir.`,
   },
   "6.7": {
-    question: "Bagaimana Perjalanan Kemajuan Studi Mahasiswa dari Masuk hingga Lulus?",
+    question: "Dinamika Perjalanan Studi Mahasiswa Menuju Kelulusan",
     deck: (v) =>
-      `Perjalanan studi mahasiswa memperlihatkan ritme akademik yang teratur: setelah menempuh masa perkuliahan lima tahun, sebanyak ${v.format(v.studentsCohortGraduated)} mahasiswa angkatan ${v.studentsFirstYear} telah resmi menyandang gelar sarjana. Perbedaan median IPK antartahun angkatan merupakan hal wajar yang sejalan dengan tahapan semester dan penyelesaian tugas akhir yang sedang dijalani.`,
+      `Perjalanan studi mahasiswa memperlihatkan kelancaran akademik yang teratur. Memasuki tahun kelima, sebanyak ${v.format(v.studentsCohortGraduated)} mahasiswa angkatan ${v.studentsFirstYear} telah resmi menyandang gelar sarjana. Perbedaan median IPK antarangkatan mencerminkan tahapan perkuliahan dan penyelesaian tugas akhir yang sedang ditempuh, bukan penurunan mutu akademik.`,
   },
   "7.1": {
-    question: "Evaluasi dan Agenda Strategis yang Memerlukan Percepatan",
+    question: "Evaluasi Kinerja dan Agenda Strategis yang Memerlukan Akselerasi",
     deck: (v) =>
-      `Sebagai wujud akuntabilitas, laporan ini memetakan secara terbuka ${v.format(v.tckBehind)} indikator yang perlu diakselerasi, penyelarasan integrasi data lulusan dan keselamatan kerja (K3L), serta langkah antisipatif untuk merawat keberlanjutan pendanaan riset ke depan.`,
+      `Sebagai wujud keterbukaan institusional, laporan ini memetakan secara jujur ${v.format(v.tckBehind)} indikator kinerja yang perlu dipacu, penguatan integrasi data lulusan dan sistem keselamatan kerja (K3L), serta langkah antisipatif demi menjaga keberlanjutan pendanaan riset di masa mendatang.`,
   },
   "7.2": {
-    question: "Estafet Kepemimpinan: Fondasi Data untuk Melangkah Maju",
-    deck: "Rekam jejak capaian tridharma selama lima tahun telah terdokumentasi secara tertib, terverifikasi, dan transparan—menjadi modal berharga dan pijakan yang kokoh bagi kepemimpinan fakultas periode berikutnya untuk terus melangkah maju.",
+    question: "Estafet Kepemimpinan: Pijakan Data yang Kokoh Menuju Masa Depan",
+    deck: "Rekam jejak capaian tridharma selama lima tahun telah terdokumentasi secara tertib, sahih, dan terbuka. Dokumentasi ini menjadi warisan berharga sekaligus landasan yang kokoh bagi kepemimpinan fakultas periode berikutnya untuk terus melangkah maju membawa FMIPA UGM kian menjulang.",
   },
 } satisfies Record<string, Scene>;
 
