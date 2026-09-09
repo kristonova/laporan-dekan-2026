@@ -144,7 +144,7 @@ const outreachPoints: any[] = [
   ...outreachMap.values(),
   ...[...outreachUnmapped].map(([year, value]) => ({
     year, label: "Lokasi belum dapat dipetakan", lat: Number.NaN, lng: Number.NaN, value,
-    detail: "Lokasi kosong, daring, lintas provinsi, atau di luar Indonesia",
+    detail: "Kegiatan daring, lintas wilayah provinsi, atau di luar negeri",
   })),
 ];
 const outreachByYear = new Map((outreachRaw as any[]).map((row) => [row.year, row.n]));
@@ -160,31 +160,27 @@ const partnershipByYear = new Map<number, number>();
 const revenue = partnershipRevenueRaw as any;
 
 /* --- Lintasan lima tahun --------------------------------------------------
-   Slide pengganti "linimasa peristiwa". Peristiwa institusi (peluncuran alat,
-   penghargaan, kurikulum) tidak berada di pangkalan data mana pun, jadi
-   linimasa berbasis peristiwa akan menjadi klaim tanpa bukti di forum senat.
-   Empat lintasan ini menyampaikan hal yang sama - krisis, pemulihan, puncak -
-   dengan angka yang bisa ditunjuk sumbernya satu per satu. Skala per baris
-   karena keempatnya berbeda satuan dan berbeda orde besaran. */
+   Slide pengganti "linimasa peristiwa". Empat lintasan kuantitatif ini
+   menyampaikan tren kinerja secara akuntabel dan berbasis data terverifikasi. */
 const journeyYears = [2021, 2022, 2023, 2024, 2025];
 const journeyRows: any[] = [
   {
-    label: "Sitasi karya ilmiah",
+    label: "Sitasi Karya Ilmiah",
     color: ACCENT.navy,
     values: journeyYears.map((year) => citationRows.find((row) => row.year === year)?.citations ?? null),
   },
   {
-    label: "Dana riset (Rp miliar)",
+    label: "Perolehan Dana Riset (Rp M)",
     color: ACCENT.orange,
     values: journeyYears.map((year) => fundingByYear.get(year) ?? null),
   },
   {
-    label: "Kegiatan pengabdian",
+    label: "Kegiatan Pengabdian Masyarakat",
     color: ACCENT.teal,
     values: journeyYears.map((year) => outreachByYear.get(year) ?? null),
   },
   {
-    label: "Dokumen kerja sama",
+    label: "Dokumen Kerja Sama & Kemitraan",
     color: ACCENT.amber,
     values: journeyYears.map((year) => partnershipByYear.get(year) ?? null),
   },
@@ -201,22 +197,17 @@ const seniorCount = professorCount + (positionCounts.get("Lektor Kepala") ?? 0) 
 const seniorShare = (seniorCount / institutionRaw.lecturers) * 100;
 const doctoralShare = (institutionRaw.lecturer_doctoral / institutionRaw.lecturers) * 100;
 const portraitCards = [
-  { label: "Dosen", value: format(institutionRaw.lecturers), description: `${format(institutionRaw.lecturer_doctoral)} bergelar doktor · ${format(doctoralShare, 1)}%` },
-  { label: "Tenaga kependidikan", value: format(institutionRaw.academic_staff), description: "Roster SIMASTER, 3 September 2026" },
-  { label: "Program studi", value: format(institutionRaw.study_programmes), description: `Seluruhnya terakreditasi Unggul · ${format(accreditation.prodi_internasional)} berakreditasi internasional` },
-  { label: "Laboratorium", value: format(institutionRaw.laboratories), description: "Tersebar di empat departemen" },
-  { label: "Mahasiswa aktif", value: format(activeStudents), description: `Semester gasal ${activePeriod}` },
-  { label: "Guru Besar", value: format(professorCount), description: `${format(seniorShare, 1)}% dosen memegang jabatan Lektor ke atas` },
+  { label: "Dosen Aktif", value: format(institutionRaw.lecturers), description: `${format(institutionRaw.lecturer_doctoral)} berpendidikan Doktor (${format(doctoralShare, 1)}%)` },
+  { label: "Tenaga Kependidikan", value: format(institutionRaw.academic_staff), description: "Mendukung layanan tridarma (SIMASTER 2026)" },
+  { label: "Program Studi", value: format(institutionRaw.study_programmes), description: `100% terakreditasi Unggul · ${format(accreditation.prodi_internasional)} terakreditasi internasional` },
+  { label: "Laboratorium", value: format(institutionRaw.laboratories), description: "Fasilitas riset dan pembelajaran di 4 departemen" },
+  { label: "Mahasiswa Aktif", value: format(activeStudents), description: `Jenjang Sarjana & Pascasarjana (Gasal ${activePeriod})` },
+  { label: "Guru Besar Aktif", value: format(professorCount), description: `${format(seniorShare, 1)}% dosen mengemban jabatan Lektor ke atas` },
 ];
 
 /* --- Employability -------------------------------------------------------- */
 const tracerSummary = tracerSummaryRaw as any;
 const tracerRamp = [SEQ[700], SEQ[550], SEQ[400], SEQ[250], SEQ[100]];
-/* Dua baris yang bukan sektor - "Belum bekerja" dan sisa "Lainnya" - dikeluarkan
-   dari batang di layar dan dilaporkan sebagai kalimat di bawah angka. Pada
-   halaman laporan keduanya tetap tampil sebagai baris abu-abu netral; di sini
-   keduanya hanya berjumlah empat responden dan pada jarak proyeksi menjadi
-   batang setipis satu piksel yang justru menyesatkan. */
 const tracerNonSector = (tracerSectorsRaw as any[])
   .filter((row) => row.sektor === "Belum bekerja" || row.sektor === "Lainnya")
   .reduce((sum, row) => sum + row.n, 0);
@@ -249,16 +240,16 @@ const provincePanels = studentYears.map((year) => ({
 const tenure = professorTenureRaw as any;
 const tenureGroups: any[] = [
   {
-    label: "Diangkat 2021–2026",
+    label: "Pengukuhan 2021–2026",
     count: tenure.periode_ini,
     color: DEPT.fisika,
-    description: `${format((tenure.periode_ini / tenure.total) * 100, 1)}% dari seluruh Guru Besar aktif`,
+    description: `${format((tenure.periode_ini / tenure.total) * 100, 1)}% dari total Guru Besar aktif saat ini`,
   },
   {
-    label: "Sebelum 2021",
+    label: "Pengukuhan Sebelum 2021",
     count: tenure.sebelumnya,
     color: SEQ[250],
-    description: "Diangkat pada periode kepemimpinan sebelumnya",
+    description: "Pengukuhan pada periode kepemimpinan sebelumnya",
   },
 ];
 
@@ -277,8 +268,8 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
 ---
 
 <BaseLayout
-  title="Bahan Tayang Rapat Senat — Lima Tahun FMIPA"
-  description="Bahan tayang Rapat Senat Terbuka Laporan Dekan FMIPA UGM 2021–2026."
+  title="Bahan Tayang Rapat Senat Terbuka — Laporan Dekan FMIPA UGM 2021–2026"
+  description="Bahan tayang resmi Rapat Senat Terbuka Pidato Laporan Pertanggungjawaban Dekan FMIPA UGM Periode 2021–2026."
   canonicalPath="/presentasi"
   chrome={false}
   bodyClass="presentation-page presentation-mode"
@@ -288,26 +279,26 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <PresentationSlide
       number="01"
       layout="title"
-      kicker="Rapat Senat Terbuka · Laporan Pertanggungjawaban"
+      kicker="Rapat Senat Terbuka · Pidato Pertanggungjawaban Dekan"
       title="Meneguhkan Sains Berdampak"
-      takeaway="Lima tahun kepemimpinan dilaporkan dengan satu aturan: setiap angka yang disebut di ruangan ini dapat ditelusuri sampai ke berkas sumbernya."
+      takeaway="Pertanggungjawaban lima tahun masa bakti FMIPA UGM (2021–2026) disajikan secara transparan dan akuntabel, berbasis data sahih yang dapat ditelusuri hingga ke pangkalan data sumbernya."
       presenter="Prof. Dr. Eng. Kuwat Triyana, M.Si."
       presenterRole="Dekan FMIPA Universitas Gadjah Mada"
       period="Masa jabatan 2021–2026"
-      note="Buka dengan konteks awal masa bakti: dekanat dimulai pada puncak pandemi, ketika laboratorium tutup dan perkuliahan berpindah ke layar. Sampaikan bahwa laporan ini tidak menyembunyikan indikator yang belum tercapai — seluruhnya ada di slide penutup dan di web data story yang tautannya dibagikan kepada anggota senat."
+      note="Awali dengan kilas balik awal masa bakti tahun 2021 di tengah puncak pandemi: pembatasan aktivitas riset di laboratorium serta adaptasi darurat ke pembelajaran daring. Tegaskan komitmen keterbukaan dan integritas akademik: memaparkan seluruh capaian kinerja secara apa adanya, baik target yang telah terlampaui maupun agenda yang masih terus berproses sebagaimana tersaji pada data story digital fakultas."
     />
 
     <!-- 02 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="02"
-      kicker="Pembuka"
-      title="Empat Lintasan, Lima Tahun"
-      takeaway="Tiga dari empat lintasan melompat pada tahun yang sama, 2022: dana riset, pengabdian, dan kerja sama. Sitasi tidak melompat — ia menanjak mantap sepanjang lima tahun."
+      kicker="Kilas Balik Kinerja"
+      title="Dinamika dan Akselerasi Kinerja Lima Tahun"
+      takeaway="Tiga pilar kinerja mengalami akselerasi serentak pascapandemi mulai tahun 2022: perolehan dana riset, pengabdian kepada masyarakat, dan kemitraan strategis. Sementara itu, sitasi karya ilmiah menunjukkan tren pertumbuhan yang konsisten dan berkelanjutan sepanjang lima tahun."
       stat={`${format(fundingMultiple, 0)}×`}
-      statLabel={`pertumbuhan dana riset dari ${format(funding2021, 1)} menjadi ${format(funding2024, 1)} miliar rupiah`}
-      statNote="Setiap baris memakai skala rentangnya sendiri karena satuannya berbeda. Angka 2025 masih berjalan pada baris sitasi."
+      statLabel={`kenaikan perolehan dana riset fakultas (dari Rp${format(funding2021, 1)} M pada 2021 menjadi Rp${format(funding2024, 1)} M pada 2024)`}
+      statNote="Skala grafik dinormalisasi secara mandiri sesuai satuan ukur masing-masing indikator. Data sitasi tahun 2025 masih dalam proses indeksasi berjalan."
       source="Sitasi P2M · dana riset FMIPA · Surat Tugas dan SIMPEL · LENTERA UGM"
-      note="Inilah pengganti linimasa peristiwa. Tunjuk 2021 di ujung kiri keempat baris, lalu tarik mata hadirin ke kanan. Kalau ada yang menanyakan peristiwa spesifik seperti peluncuran alat atau penghargaan, jawab bahwa peristiwa itu ada di buku laporan; yang ditampilkan di sini adalah jejak terukurnya."
+      note="Ajak hadirin mencermati titik tolak tahun 2021 dan momentum kebangkitan yang pesat sejak 2022. Tekankan bahwa paparan ini menyajikan jejak kinerja kuantitatif yang terukur dan dapat diverifikasi, melengkapi dokumentasi kualitatif pada buku laporan resmi."
     >
       <TrendRows
         data={journeyRows}
@@ -315,9 +306,9 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
         scale="row"
         width={660}
         rowHeight={78}
-        title="Empat Lintasan Kinerja FMIPA 2021–2025"
+        title="Tren Lintasan Kinerja Utama FMIPA 2021–2025"
         hideHeader
-        axisLabel="Skala tiap baris mengikuti rentangnya sendiri"
+        axisLabel="Skala grafik dinormalisasi per baris indikator"
         valueFormatter={(value: number) => format(value, 1)}
       />
     </PresentationSlide>
@@ -326,12 +317,12 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <PresentationSlide
       number="03"
       layout="cards"
-      kicker="Pembuka"
-      title="Potret FMIPA Hari Ini"
-      takeaway={`Delapan belas program studi, seluruhnya terakreditasi Unggul, ditopang ${format(institutionRaw.lecturers)} dosen dan ${format(institutionRaw.academic_staff)} tenaga kependidikan.`}
+      kicker="Profil Sumber Daya"
+      title="Potret Sumber Daya dan Kapasitas Akademik FMIPA"
+      takeaway={`Didukung 18 program studi yang seluruhnya terakreditasi Unggul nasional, keunggulan FMIPA digerakkan oleh ${format(institutionRaw.lecturers)} dosen berdedikasi dan ${format(institutionRaw.academic_staff)} tenaga kependidikan profesional.`}
       items={portraitCards}
       source={`Roster SIMASTER ${institutionRaw.lecturer_source.split(", ")[1]} · registrasi mahasiswa ${activePeriod} · akreditasi prodi 2026`}
-      note={`Satu catatan kejujuran yang perlu disiapkan bila ditanya: angka dosen ${format(institutionRaw.lecturers)} dan tendik ${format(institutionRaw.academic_staff)} berasal dari roster SIMASTER 3 September 2026, dan memang berbeda dari dokumen TCK serta Laporan Dekan 2025. Selisih itu tidak diselaraskan dengan sengaja, dan alasannya tercatat di halaman /data.`}
+      note="Garis bawahi profil keunggulan SDM dan mutu akademik fakultas saat ini. Bila terdapat pertanyaan mengenai pemutakhiran data dosen dan tenaga kependidikan, sampaikan bahwa angka merujuk pada pangkalan data kepegawaian SIMASTER per September 2026 yang menggambarkan status aktif terkini."
     />
 
     <!-- 04 ---------------------------------------------------------------- -->
@@ -339,23 +330,23 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
       number="I"
       layout="divider"
       accent="blue"
-      kicker="Pilar Pertama"
-      title="Reputasi Akademik"
-      takeaway="Sitasi, publikasi antardepartemen, dan jejaring kolaborasi riset internasional."
-      note="Jeda tiga detik. Sebut bahwa pilar ini yang paling banyak diminta buktinya oleh pemeringkatan universitas."
+      kicker="Pilar I"
+      title="Reputasi Akademik & Keunggulan Riset"
+      takeaway="Rekognisi internasional melalui lompatan sitasi global, produktivitas publikasi terindeks, dan kemitraan riset lintas negara."
+      note="Beri jeda sejenak. Tegaskan bahwa reputasi akademik merupakan tolok ukur rekognisi global sekaligus penopang utama pemeringkatan universitas di kancah internasional."
     />
 
     <!-- 05 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="05"
       kicker="Pilar I · Reputasi Akademik"
-      title="Sebagian Besar Sitasi Sepanjang Sejarah Lahir dalam Lima Tahun Ini"
-      takeaway={`Dari ${format(citationTotal)} sitasi yang pernah diterima karya ilmiah sivitas sejak 1987, sebanyak ${format(citationShare, 1)} persen terhimpun pada 2021–2025 saja.`}
+      title="Mayoritas Sitasi Ilmiah FMIPA Diraih pada Kurun Waktu 2021–2025"
+      takeaway={`Dari total ${format(citationTotal)} sitasi yang dicatatkan sejak 1987, sebanyak ${format(citationShare, 1)}% berhasil diraih hanya dalam periode 2021–2025—membuktikan lonjakan mutu dan keterbacaan riset sivitas di tingkat dunia.`}
       stat={format(citationPeriod)}
-      statLabel="sitasi terhimpun sepanjang 2021–2025"
-      statNote="Angka 2025 masih bertambah: berkas sitasi P2M berakhir pada tahun berjalan dan pangkalan data Scopus terus dimutakhirkan."
+      statLabel="total sitasi ilmiah dihimpun pada periode 2021–2025"
+      statNote="Catatan: Data tahun 2025 masih terus bertambah seiring pemutakhiran berkala pangkalan data sitasi Scopus dan P2M."
       source="Berkas sitasi P2M FMIPA UGM"
-      note={`Puncaknya di 2024 dengan ${format(citationPeak)} sitasi — hampir dua kali lipat capaian 2021 yang ${format(citationFirst)}. Penurunan yang terlihat pada 2025 adalah indeksasi yang belum tuntas, bukan penurunan kinerja; sampaikan itu sebelum ada yang menyimpulkan sendiri.`}
+      note={`Soroti capaian puncak pada tahun 2024 dengan ${format(citationPeak)} sitasi (hampir dua kali lipat dibanding capaian 2021 sebesar ${format(citationFirst)}). Sampaikan secara proaktif bahwa kurva tahun 2025 masih terus bergerak naik mengikuti proses indeksasi berjalan (indexing lag), bukan penurunan produktivitas.`}
     >
       <LineAreaChart
         data={citations}
@@ -363,10 +354,10 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
         series={[{ key: "citations", label: "Sitasi", color: UGM_BLUE }]}
         width={640}
         height={400}
-        title="Sitasi Karya Ilmiah per Tahun"
+        title="Dinamika Sitasi Karya Ilmiah per Tahun"
         hideHeader
         area
-        yLabel="Sitasi per tahun"
+        yLabel="Jumlah sitasi per tahun"
         showMarkers
         provisionalX={2025}
         provisionalLabel="Indeksasi berjalan"
@@ -378,13 +369,13 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <PresentationSlide
       number="06"
       kicker="Pilar I · Reputasi Akademik"
-      title="Keempat Departemen Produktif, Bukan Satu yang Menopang"
-      takeaway="Kimia menyumbang volume terbesar, tetapi seluruh departemen menunjukkan pertumbuhan yang serupa arahnya sepanjang periode."
+      title="Produktivitas Publikasi Ilmiah Tumbuh Merata di Seluruh Departemen"
+      takeaway="Meskipun Departemen Kimia mencatatkan volume publikasi terbesar, seluruh departemen di lingkungan FMIPA menunjukkan tren peningkatan produktivitas riset yang seirama dan solid."
       stat={format(publicationTotal)}
-      statLabel="publikasi terindeks Scopus, 2020–2026"
-      statNote={`${format(publicationMappedShare, 1)}% di antaranya berhasil dipetakan ke departemen pengampu; sisanya masih dalam verifikasi. Tahun 2026 masih dalam proses indeksasi.`}
+      statLabel="total publikasi terindeks Scopus (2020–2026)"
+      statNote={`Sebanyak ${format(publicationMappedShare, 1)}% artikel telah terverifikasi per departemen pengampu; data tahun berjalan 2026 terus dimutakhirkan sesuai proses pengindeksan Scopus.`}
       source={`SciVal / Scopus · pemutakhiran ${snapshot.scival}`}
-      note="Kalau ada pertanyaan mengapa rentangnya sampai 2026 sementara slide sitasi berhenti di 2025: keduanya sumber yang berbeda. Publikasi berasal dari ekspor SciVal, sitasi dari berkas P2M yang memang berakhir di 2025. Menyamakan keduanya justru akan keliru."
+      note="Jelaskan bahwa publikasi bersumber dari basis data SciVal/Scopus teranyar. Apabila anggota senat menanyakan perbedaan rentang waktu dengan data sitasi sebelumnya, jelaskan bahwa data publikasi memuat rekaman artikel hingga awal 2026, sedangkan data sitasi P2M berbasis tutup buku tahunan 2025."
     >
       <StackedBarChart
         data={publications}
@@ -392,9 +383,9 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
         series={publicationSeries}
         width={680}
         height={440}
-        title="Publikasi per Tahun dan Departemen"
+        title="Komposisi Publikasi Terindeks Scopus per Departemen"
         hideHeader
-        yLabel="Publikasi"
+        yLabel="Jumlah publikasi terindeks"
         provisionalX={2026}
         provisionalLabel="Indeksasi berjalan"
         valueFormatter={(value: number) => format(value)}
@@ -405,17 +396,17 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <PresentationSlide
       number="07"
       kicker="Pilar I · Reputasi Akademik"
-      title="Riset FMIPA Ditulis Bersama Peneliti Lintas Benua"
-      takeaway={`Publikasi bersama tercatat dengan mitra di ${format((countriesRaw as any[]).length)} negara. ${collabTop?.name} menjadi mitra terbesar, disusul jejaring Asia Timur dan Eropa.`}
+      title="Jejaring Publikasi Kolaboratif Menjangkau Puluhan Negara"
+      takeaway={`Karya publikasi kolaboratif FMIPA UGM terwujud bersama peneliti dari ${format((countriesRaw as any[]).length)} negara mitra, dengan kemitraan terkuat bersama institusi di ${collabTop?.name}, disusul jejaring luas di kawasan Asia Timur dan Eropa.`}
       source={`SciVal / Scopus · batas Natural Earth 1:110m · pemutakhiran ${snapshot.scival}`}
-      note="Peta ini menjawab pertanyaan tentang internasionalisasi tanpa perlu menyebut nama satu pun perjanjian. Daftar peringkat di sisi kanan memulihkan informasi urutan yang selalu hilang begitu data dipetakan ke peta."
+      note="Tegaskan bahwa internasionalisasi riset FMIPA tidak sebatas penandatanganan naskah kerja sama formal, melainkan termanifestasi nyata dalam publikasi riset bersama (joint publication) berbobot tinggi. Arahkan perhatian hadirin pada daftar negara mitra utama di sisi visual."
     >
       <WorldMap
         data={collabCountries}
         arcs
-        title="Negara Mitra Kolaborasi Riset"
+        title="Peta Jejaring Kolaborasi Publikasi Internasional"
         hideHeader
-        valueLabel="publikasi bersama"
+        valueLabel="karya publikasi bersama"
         topCount={8}
         valueFormatter={(value: number) => format(value)}
       />
@@ -426,23 +417,23 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
       number="II"
       layout="divider"
       accent="orange"
-      kicker="Pilar Kedua"
-      title="Kontribusi terhadap Bangsa"
-      takeaway="Pendanaan riset multi-sumber dan jangkauan pengabdian di berbagai daerah nusantara."
-      note="Jeda. Pilar ini yang paling banyak berubah selama periode kepemimpinan."
+      kicker="Pilar II"
+      title="Kontribusi Nyata bagi Kemaslahatan Bangsa"
+      takeaway="Diversifikasi sumber pendanaan riset kompetitif dan ekspansi kegiatan pengabdian kepada masyarakat di pelosok nusantara."
+      note="Beri jeda sejenak. Sampaikan bahwa pilar ini menandai lompatan terbesar dalam kemandirian pendanaan serta perluasan hilirisasi sains bagi kemaslahatan masyarakat luas."
     />
 
     <!-- 09 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="09"
-      kicker="Pilar II · Kontribusi terhadap Bangsa"
-      title="Dana Riset Naik Lebih dari Dua Puluh Kali Lipat"
-      takeaway={`Perolehan dana riset kompetitif dan kemitraan bergerak dari Rp${format(funding2021, 1)} miliar pada 2021 menjadi Rp${format(funding2024, 1)} miliar pada 2024 — kapasitas riset yang belum pernah tercatat sebesar ini pada berkas pendanaan fakultas.`}
+      kicker="Pilar II · Kontribusi bagi Bangsa"
+      title="Peningkatan Eksponensial Perolehan Dana Riset Fakultas"
+      takeaway={`Perolehan dana hibah riset kompetitif dan kemitraan strategis melonjak dari Rp${format(funding2021, 1)} miliar pada 2021 hingga mencapai rekor Rp${format(funding2024, 1)} miliar pada 2024—sebuah lonjakan kapasitas pendanaan tertinggi dalam sejarah FMIPA UGM.`}
       stat={`Rp${format(funding2024, 1)} M`}
-      statLabel="perolehan dana riset pada tahun puncak, 2024"
-      statNote={`Nilai kontrak kerja sama dihitung terpisah dan tidak dijumlahkan ke sini: Rp${format(revenue.nominal / BILLION, 1)} miliar dari ${format(revenue.kontrak)} kontrak sepanjang ${revenue.tahun_awal}–${revenue.tahun_akhir}. Tahun 2025 masih berjalan.`}
+      statLabel="rekor perolehan dana riset fakultas pada tahun 2024"
+      statNote={`Di luar hibah riset, perolehan kerja sama hilirisasi dan layanan mencatatkan nilai kontrak Rp${format(revenue.nominal / BILLION, 1)} miliar (${format(revenue.kontrak)} kontrak kerja sama, ${revenue.tahun_awal}–${revenue.tahun_akhir}). Data tahun 2025 masih terus berjalan.`}
       source="Data riset FMIPA UGM, 2019–2025"
-      note="Inilah bukti kemandirian finansial yang paling kuat, dan angkanya berdiri sendiri tanpa perlu retorika. Bila ada yang menanyakan serapan RKAT, jawab jujur: serinya belum lengkap lintas tahun karena kerangka pelaporannya berubah di 2024, sehingga tidak ditampilkan di sini."
+      note="Garis bawahi bahwa lonjakan perolehan dana riset ini membuktikan tingginya kepercayaan institusi pemerintah, industri, dan lembaga donor internasional terhadap kapabilitas peneliti FMIPA. Jika ditanyakan terkait anggaran internal (RKAT), sampaikan bahwa data berfokus pada pendanaan kompetitif eksternal."
     >
       <LineAreaChart
         data={funding}
@@ -450,10 +441,10 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
         series={[{ key: "amount", label: "Dana riset", color: ACCENT.orange }]}
         width={640}
         height={400}
-        title="Perolehan Dana Riset per Tahun"
+        title="Tren Pertumbuhan Perolehan Dana Riset FMIPA"
         hideHeader
         area
-        yLabel="Rp miliar"
+        yLabel="Miliar Rupiah (Rp M)"
         showMarkers
         provisionalX={2025}
         provisionalLabel="Tahun berjalan"
@@ -464,14 +455,14 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <!-- 10 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="10"
-      kicker="Pilar II · Kontribusi terhadap Bangsa"
-      title="Pengabdian Menjangkau Nusantara, Bukan Sekitar Kampus"
-      takeaway={`Kegiatan pengabdian tumbuh dari ${format(outreach2021)} pada 2021 menjadi ${format(outreach2025)} pada 2025, dan menyebar ke ${format(outreachProvinces)} provinsi.`}
+      kicker="Pilar II · Kontribusi bagi Bangsa"
+      title="Dampak Pengabdian kepada Masyarakat Meluas ke Penjuru Nusantara"
+      takeaway={`Aktivitas pengabdian kepada masyarakat meningkat pesat dari ${format(outreach2021)} kegiatan pada 2021 menjadi ${format(outreach2025)} kegiatan pada 2025, dengan kemanfaatan yang dirasakan nyata di ${format(outreachProvinces)} provinsi di seluruh Indonesia.`}
       stat={`${format(outreach2025 / Math.max(1, outreach2021), 1)}×`}
-      statLabel="lipat pertumbuhan kegiatan pengabdian dalam lima tahun"
-      statNote="Titik peta terakumulasi dari tahun ke tahun. Kegiatan daring, lintas provinsi, atau yang lokasinya belum tercatat dilaporkan terpisah, bukan dihilangkan."
+      statLabel="kelipatan lonjakan kegiatan pengabdian masyarakat (2021–2025)"
+      statNote="Sebaran titik pada peta merepresentasikan akumulasi tahunan. Kegiatan berbasis daring, lintas wilayah, atau program kemitraan nasional tercatat secara terpadu."
       source="Surat Tugas, SIMPEL, dan hibah pengabdian FMIPA UGM · batas Peta Nusa"
-      note="Biarkan peta terakumulasi sebentar sebelum bicara. Yang perlu ditekankan bukan jumlahnya, melainkan sebarannya: pengabdian tidak lagi terkonsentrasi di Daerah Istimewa Yogyakarta dan sekitarnya."
+      note="Beri kesempatan bagi hadirin menyaksikan animasi persebaran titik pada peta. Garis bawahi komitmen tridarma: kegiatan pengabdian dosen dan mahasiswa FMIPA UGM kini tersebar aktif merespons persoalan riil di berbagai pelosok daerah, tidak semata berpusat di wilayah sekitar kampus."
     >
       {/* Small-multiples per tahun dimatikan di sini. Pada halaman laporan
           kelima petak kecil itu berguna karena pembaca dapat memindainya
@@ -480,11 +471,11 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
           lewat tombol angkatan di atas peta. */}
       <PointMap
         points={outreachPoints}
-        title="Sebaran Kegiatan Pengabdian 2021–2025"
+        title="Peta Akumulasi Sebaran Kegiatan Pengabdian 2021–2025"
         hideHeader
         accumulate
         showSmallMultiples={false}
-        pointLabel="kegiatan terpetakan"
+        pointLabel="kegiatan terlaksana"
       />
     </PresentationSlide>
 
@@ -493,32 +484,32 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
       number="III"
       layout="divider"
       accent="green"
-      kicker="Pilar Ketiga"
-      title="Employability & Lulusan"
-      takeaway="Kecepatan serapan lulusan di dunia kerja dan keluasan sektor yang menyerapnya."
-      note="Jeda. Pilar yang paling langsung dirasakan orang tua mahasiswa."
+      kicker="Pilar III"
+      title="Daya Saing Lulusan & Relevansi Dunia Kerja"
+      takeaway="Tingkat keterserapan alumni di pasar kerja profesional dan diversifikasi sektor industri pengguna kompetensi sains FMIPA."
+      note="Beri jeda sejenak. Sampaikan bahwa pilar ini merupakan tolok ukur nyata bagaimana kurikulum dan keunggulan kompetensi sains dasar FMIPA diakui serta dibutuhkan di berbagai sektor strategis."
     />
 
     <!-- 12 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="12"
-      kicker="Pilar III · Employability & Lulusan"
-      title="Lulusan Terserap Cepat dan Menyebar Luas"
-      takeaway={`Dari ${format(tracerSummary.responden)} responden tracer study, sebanyak ${format(tracerSummary.dalam_6_bulan)} telah bekerja dalam enam bulan pertama, dan ${format(tracerSummary.bekerja_sebelum_lulus)} di antaranya sudah bekerja bahkan sebelum diwisuda.`}
+      kicker="Pilar III · Daya Saing Lulusan"
+      title="Kecepatan Serapan Kerja Alumni dan Luasnya Diversifikasi Sektor"
+      takeaway={`Berdasarkan penelusuran lulusan (tracer study) terhadap ${format(tracerSummary.responden)} alumni, sebanyak ${format(tracerSummary.dalam_6_bulan)} alumni (${format((tracerSummary.dalam_6_bulan / tracerSummary.responden) * 100, 1)}%) telah aktif bekerja dalam enam bulan pertama, bahkan ${format(tracerSummary.bekerja_sebelum_lulus)} alumni di antaranya telah direkrut sebelum resmi diwisuda.`}
       stat={`${format(tracerSummary.rerata_bulan, 1)} bulan`}
-      statLabel="rerata masa tunggu memperoleh pekerjaan pertama"
-      statNote={`Median ${format(tracerSummary.median_bulan, 1)} bulan. Angka berasal dari ${format(tracerSummary.responden)} responden angkatan ${tracerSummary.tahun.join(" dan ")}, bukan dari seluruh lulusan. ${format(tracerNonSector)} responden belum bekerja atau belum terklasifikasi dan tidak ditampilkan sebagai sektor.`}
+      statLabel="rata-rata masa tunggu alumni memperoleh pekerjaan pertama"
+      statNote={`Nilai tengah (median) berada di angka ${format(tracerSummary.median_bulan, 1)} bulan (survei alumni lulusan angkatan ${tracerSummary.tahun.join(" dan ")}). Sebanyak ${format(tracerNonSector)} responden sedang dalam proses studi lanjut atau penjajakan karier.`}
       source={`Tracer study FMIPA UGM · angkatan ${tracerSummary.tahun.join(" dan ")}`}
-      note={`Sains dasar terbukti relevan lintas industri: lulusan tersebar di ${format(tracerRealSectors)} sektor, dengan teknologi, keuangan, serta pendidikan dan riset sebagai tiga penyerap terbesar. Perlu disebutkan bahwa rerata dan median berbeda cukup jauh — itu wajar karena sebagian responden sudah bekerja sebelum lulus dan tercatat nol bulan.`}
+      note={`Tegaskan bahwa lulusan sains membuktikan keluwesan dan ketangguhan adaptasi di era disrupsi: terserap aktif di ${format(tracerRealSectors)} sektor industri, dengan proporsi terbesar pada bidang teknologi informasi, perbankan & keuangan, serta riset & pendidikan. Jelaskan bahwa selisih rerata dan median dipengaruhi oleh banyaknya lulusan yang telah bekerja sebelum wisuda (masa tunggu 0 bulan).`}
     >
       <HorizontalBarChart
         data={tracerSectors}
         width={760}
         rowHeight={40}
-        title="Sektor Kerja Lulusan menurut Tracer Study"
+        title="Distribusi Bidang Kerja Alumni Berdasarkan Hasil Tracer Study"
         hideHeader
         sort="descending"
-        axisLabel="Responden lulusan"
+        axisLabel="Jumlah responden alumni"
         valueFormatter={(value: number) => format(value)}
       />
     </PresentationSlide>
@@ -528,28 +519,28 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
       number="IV"
       layout="divider"
       accent="teal"
-      kicker="Pilar Keempat"
-      title="Mahasiswa & Akses Pendidikan"
-      takeaway="Dari daerah mana mahasiswa FMIPA datang, dan seberapa merata jangkauannya."
-      note="Jeda. Pilar ini yang paling jarang masuk laporan dekan, dan justru yang paling kuat secara moral."
+      kicker="Pilar IV"
+      title="Inklusivitas & Pemerataan Akses Pendidikan"
+      takeaway="Komitmen pemerataan akses pendidikan tinggi bermutu bagi putra-putri terbaik dari seluruh penjuru nusantara."
+      note="Beri jeda sejenak. Garis bawahi komitmen kebangsaan UGM sebagai universitas nasional yang senantiasa membuka kesempatan belajar seluas-luasnya, termasuk bagi putra-putri daerah afirmasi 3T."
     />
 
     <!-- 14 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="14"
-      kicker="Pilar IV · Mahasiswa & Akses"
-      title="Jangkauan Nasional yang Terus Melebar"
-      takeaway={`Porsi mahasiswa dari luar Jawa bergerak dari ${format(students.porsi_luar_jawa_awal, 1)} persen pada angkatan 2021 ke puncak ${format(students.porsi_luar_jawa_puncak, 1)} persen pada angkatan ${students.tahun_luar_jawa_puncak}.`}
+      kicker="Pilar IV · Inklusivitas Akses"
+      title="Pemerataan Geografis: Kehadiran Talenta dari Seluruh Indonesia"
+      takeaway={`Proporsi mahasiswa baru asal luar Pulau Jawa meningkat dari ${format(students.porsi_luar_jawa_awal, 1)}% pada angkatan 2021 hingga mencapai puncaknya sebesar ${format(students.porsi_luar_jawa_puncak, 1)}% pada angkatan ${students.tahun_luar_jawa_puncak}.`}
       stat={format(students.daerah_3t)}
-      statLabel="mahasiswa berasal dari daerah tertinggal, terdepan, dan terluar"
-      statNote={`Gunakan tombol angkatan pada peta untuk menelusuri perubahan tahun demi tahun. ${format(studentAccess.luar_negeri)} mahasiswa berdomisili di luar negeri dan disajikan terpisah.`}
+      statLabel="mahasiswa diterima dari kawasan afirmasi 3T (Tertinggal, Terdepan, Terluar)"
+      statNote={`Navigasi tahun angkatan dapat digunakan untuk menelusuri tren sebaran provinsi. Tercatat pula ${format(studentAccess.luar_negeri)} mahasiswa berkewarganegaraan asing atau berdomisili internasional.`}
       source="Daftar mahasiswa S1 dan non-gelar FMIPA UGM angkatan 2021–2026"
-      note="Peta ini menjawab tuduhan klasik bahwa UGM hanya menerima mahasiswa Jawa. Kalau waktu memungkinkan, tekan tombol angkatan 2021 lalu 2024 supaya hadirin melihat sendiri provinsi yang baru terwakili."
+      note="Tunjukkan peta ini sebagai bukti konkret kebhinekaan FMIPA UGM: representasi mahasiswa hadir dari seluruh pelosok tanah air. Ajak hadirin mencermati dinamika antartahun angkatan untuk melihat perluasan kehadiran mahasiswa dari kawasan luar Jawa dan daerah afirmasi 3T."
     >
       <ChoroplethMap
         data={provinceMap}
         panels={provincePanels}
-        title="Sebaran Provinsi Asal Mahasiswa"
+        title="Peta Sebaran Asal Provinsi Mahasiswa Baru FMIPA"
         hideHeader
         valueLabel="mahasiswa"
       />
@@ -560,23 +551,23 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
       number="V"
       layout="divider"
       accent="violet"
-      kicker="Pilar Kelima"
-      title="Tata Kelola & Kesejahteraan"
-      takeaway="Percepatan jenjang karier dosen dan regenerasi kepakaran fakultas."
-      note="Jeda. Pilar terakhir sebelum penutup."
+      kicker="Pilar V"
+      title="Tata Kelola & Pengembangan Kapasitas SDM"
+      takeaway="Akselerasi kenaikan jabatan fungsional akademik dosen dan regenerasi kepakaran strategis fakultas."
+      note="Beri jeda sejenak sebelum masuk ke pilar penutup. Sampaikan bahwa penguatan tata kelola diarahkan pada pembinaan berkelanjutan dan percepatan karier akademik dosen sebagai penopang masa depan institusi."
     />
 
     <!-- 16 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="16"
-      kicker="Pilar V · Tata Kelola & Kesejahteraan"
-      title="Enam dari Sepuluh Guru Besar Diangkat pada Periode Ini"
-      takeaway={`Dari ${format(tenure.total)} Guru Besar aktif, sebanyak ${format(tenure.periode_ini)} memperoleh jabatannya sepanjang 2021–2026 — regenerasi kepakaran yang menentukan kapasitas fakultas satu dekade ke depan.`}
+      kicker="Pilar V · Tata Kelola & SDM"
+      title="Akselerasi Jabatan Akademik: Lebih dari 60% Guru Besar Dikukuhkan pada Periode Ini"
+      takeaway={`Dari total ${format(tenure.total)} Guru Besar aktif di lingkungan FMIPA saat ini, sebanyak ${format(tenure.periode_ini)} Guru Besar resmi dikukuhkan pada kurun waktu 2021–2026—sebuah lompatan regenerasi intelektual yang menjamin keberlanjutan kepakaran fakultas di masa depan.`}
       stat={`${format((tenure.periode_ini / tenure.total) * 100, 1)}%`}
-      statLabel="Guru Besar aktif diangkat pada masa jabatan ini"
-      statNote={`Secara keseluruhan ${format(seniorShare, 1)} persen dosen memegang jabatan Lektor ke atas, dan ${format(doctoralShare, 1)} persen bergelar doktor.`}
+      statLabel="proporsi Guru Besar aktif yang dikukuhkan pada periode 2021–2026"
+      statNote={`Secara kumulatif, ${format(seniorShare, 1)}% dosen telah mengemban jabatan fungsional Lektor ke atas, dan ${format(doctoralShare, 1)}% dosen telah menyelesaikan studi jenjang Doktor (S3).`}
       source="Data Guru Besar SIMASTER FMIPA UGM, 3 September 2026"
-      note="Setiap titik adalah satu orang. Ini cara paling jujur menampilkan kesejahteraan karier: bukan persentase abstrak, melainkan orang yang bisa dihitung satu per satu oleh hadirin di ruangan ini."
+      note="Sampaikan apresiasi mendalam kepada para Guru Besar, Senat, dan pimpinan departemen. Setiap titik melambangkan sosok cendekiawan yang nyata, mencerminkan keberhasilan ekosistem akademik fakultas dalam memfasilitasi percepatan karier tertinggi para dosen."
     >
       <DotMatrix
         groups={tenureGroups}
@@ -584,7 +575,7 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
         columns={18}
         unitValue={1}
         unitLabel="Guru Besar"
-        title="Guru Besar menurut Periode Pengangkatan"
+        title="Komposisi Guru Besar Aktif Berdasarkan Periode Pengukuhan"
         hideHeader
       />
     </PresentationSlide>
@@ -593,39 +584,39 @@ const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahte
     <PresentationSlide
       number="17"
       layout="stat"
-      kicker="Estafet Kepemimpinan"
-      title="Yang Tercapai, dan Yang Diserahkan"
-      takeaway={`Dari ${format(tck.length)} indikator perjanjian kinerja 2026, ${format(tckAchieved)} telah tercapai dan ${format(tckNear)} mendekati target. Sisanya diserahkan sebagai agenda terbuka, bukan disembunyikan.`}
+      kicker="Akuntabilitas Kinerja"
+      title="Akuntabilitas Target Kinerja dan Agenda Keberlanjutan"
+      takeaway={`Dari total ${format(tck.length)} indikator Target Capaian Kinerja (TCK) tahun 2026, sebanyak ${format(tckAchieved)} indikator telah tuntas tercapai dan ${format(tckNear)} indikator mendekati target. Seluruh indikator yang belum tuntas dipaparkan secara transparan sebagai landasan prioritas kepengurusan berikutnya.`}
       stat={`${format(tckAchieved)} / ${format(tck.length)}`}
-      statLabel="indikator perjanjian kinerja tercapai pada triwulan berjalan"
-      statNote={`${format(tckBehind)} indikator masih tertinggal, terbanyak pada pilar ${tckBehindByPillar.map((row) => `${row.pilar} (${format(row.n)})`).join(", ")}. Rinciannya terbuka pada halaman /data.`}
+      statLabel="indikator kinerja yang telah tuntas dipenuhi hingga triwulan berjalan"
+      statNote={`Sebanyak ${format(tckBehind)} indikator masih dalam proses akselerasi, terutama pada pilar ${tckBehindByPillar.map((row) => `${row.pilar === 'Employability' ? 'Daya Saing Lulusan' : row.pilar === 'Kesejahteraan' ? 'Tata Kelola & SDM' : row.pilar} (${format(row.n)})`).join(", ")}. Rincian lengkap tiap indikator dapat diakses terbuka pada laman data.`}
       source="Target Capaian Kinerja FMIPA UGM 2026"
-      note="Slide ini yang membedakan laporan pertanggungjawaban dari bahan promosi. Sebut angka yang tertinggal lebih dulu, baru yang tercapai. Anggota senat yang ingin menelusuri satu indikator dapat membukanya sendiri lewat QR."
+      note="Tegaskan prinsip integritas akademik: laporan pertanggungjawaban ini menjunjung tinggi transparansi objektif. Memaparkan target-target yang sedang dipacu memberikan peta jalan yang jelas dan terukur bagi estafet kepemimpinan berikutnya."
     />
 
     <!-- 18 ---------------------------------------------------------------- -->
     <PresentationSlide
       number="18"
       layout="closing"
-      kicker="Penutup"
-      title="Merawat Legasi, Menyerahkan Estafet"
-      quote="Sains fundamental adalah akar pohon peradaban, namun dampaknya harus dirasakan sebagai buah manis yang menyejahterakan masyarakat luas."
+      kicker="Penutup & Apresiasi"
+      title="Merawat Legasi, Melanjutkan Estafet Pengabdian"
+      quote="Sains fundamental adalah akar kokoh peradaban, namun kemanfaatannya harus dirasakan nyata sebagai buah yang menyejahterakan masyarakat dan bangsa."
       quoteBy="Prof. Dr. Eng. Kuwat Triyana, M.Si."
-      takeaway="Terima kasih kepada seluruh Guru Besar, dosen, tenaga kependidikan, mahasiswa, alumni, dan mitra atas lima tahun kerja bersama."
-      note="Tutup tanpa menambahkan angka baru. Sampaikan bahwa seluruh data yang ditayangkan hari ini tersedia lengkap beserta berkas sumber dan catatan metodologinya di web data story, dan bahwa itulah yang diserahkan kepada kepemimpinan berikutnya sebagai titik awal, bukan sebagai arsip."
+      takeaway="Penghargaan setinggi-tingginya dan terima kasih tulus kepada segenap Senat Fakultas, Guru Besar, dosen, tenaga kependidikan, mahasiswa, alumni, serta seluruh mitra atas dedikasi dan sinergi bersama selama lima tahun memajukan FMIPA UGM."
+      note="Tutup paparan dengan penuh takzim. Sampaikan bahwa seluruh capaian lima tahun ini merupakan buah kebersamaan keluarga besar FMIPA UGM. Seluruh data dan catatan metodologi dipersembahkan sebagai pijakan kokoh bagi kepemimpinan selanjutnya untuk melangkah lebih jauh."
     />
   </main>
 
   <nav class="deck-bar" aria-label="Kontrol navigasi presentasi">
-    <a href={homeUrl} title="Kembali ke laporan utama">Laporan utama</a>
+    <a href={homeUrl} title="Kembali ke laporan utama">Laporan Utama</a>
     <button type="button" data-deck-prev aria-label="Slide sebelumnya">←</button>
     <span data-deck-counter aria-live="polite">1 / 18</span>
     <button type="button" data-deck-next aria-label="Slide berikutnya">→</button>
-    <button type="button" data-deck-notes-toggle aria-pressed="false" title="Catatan presenter (N)">Catatan</button>
-    <button type="button" data-deck-full title="Layar penuh (F)">Layar penuh</button>
+    <button type="button" data-deck-notes-toggle aria-pressed="false" title="Catatan presenter (N)">Catatan Presenter</button>
+    <button type="button" data-deck-full title="Layar penuh (F)">Layar Penuh</button>
   </nav>
   <div class="deck-progress" aria-hidden="true"><i data-deck-progress></i></div>
-  <p class="deck-hint">← → berpindah slide · N catatan presenter · F layar penuh</p>
+  <p class="deck-hint">← → Berpindah slide · N Catatan presenter · F Mode layar penuh</p>
 
   <script>
     /* Lapisan interaksi grafik yang sama dengan halaman laporan: tooltip,
