@@ -1,0 +1,243 @@
+/* ===========================================================================
+   Lapisan gerak bahan tayang Rapat Senat.
+
+   Kesan korporat lahir dari kekangan, bukan dari kekayaan efek: satu easing
+   mengerjakan hampir semuanya, jarak tempuh kecil (12-20px, bukan 40-60px),
+   dan tidak ada satu pun animasi yang berulang. Tidak ada @keyframes, tidak
+   ada glassmorphism, tidak ada partikel, tidak ada bounce.
+
+   Seluruh gerak adalah transisi CSS yang dilepas oleh SATU kelas (.anim-nyala)
+   yang dipasang skrip deck pada slide aktif. JS tidak menganimasikan apa pun;
+   ia hanya memasang kelas, menyetel --tunda, dan mengukur panjang lintasan SVG
+   sekali di awal.
+
+   Komponen grafik di src/components/charts/ TIDAK disentuh sama sekali. Lapisan
+   ini hanya menumpang pada kelas yang sudah dirender komponen-komponen itu
+   (.segment, .line, .bar-row, .trend-row, .dot-group, .panel, ...), sehingga
+   grafik yang sama persis dengan halaman laporan bisa masuk bertahap tanpa
+   satu baris pun berubah di komponennya.
+
+   TIGA konteks tidak punya slide aktif dan WAJIB dipaksa ke keadaan akhir:
+   cetak, prefers-reduced-motion, dan thumbnail ikhtisar. Kalau salah satu
+   terlewat, konteks itu merender slide yang isinya tidak terlihat - dan untuk
+   cetak itu berarti 17 halaman PDF kosong.
+   =========================================================================== */
+
+:root {
+  --anim-dur: 460ms;                      /* masuknya satu elemen */
+  --anim-draw: 1100ms;                    /* garis SVG menggambar dirinya */
+  --anim-ease: cubic-bezier(.16, 1, .3, 1); /* expo-out: tiba cepat lalu mengendap */
+}
+
+/* Token --duration-* di tokens.css berskala UI (180ms) - benar untuk tombol,
+   terlalu pendek untuk elemen yang diproyeksikan ke layar tiga meter di ruang
+   senat. Nilai di atas tetap menghormati arahan identitas UGM "dignified and
+   short, no bounce, no spring": expo-out tidak pernah melewati nilai akhirnya. */
+
+/* --- Kosakata arah masuk ------------------------------------------------ */
+
+[data-anim] {
+  transition:
+    opacity var(--anim-dur) var(--anim-ease),
+    transform var(--anim-dur) var(--anim-ease);
+}
+
+[data-anim="naik"]   { opacity: 0; transform: translateY(16px); }
+[data-anim="turun"]  { opacity: 0; transform: translateY(-12px); }
+[data-anim="kanan"]  { opacity: 0; transform: translateX(-20px); }
+[data-anim="kiri"]   { opacity: 0; transform: translateX(20px); }
+[data-anim="pudar"]  { opacity: 0; }
+[data-anim="tumbuh"] { opacity: 0; transform: scale(.96); }
+
+/* Sapuan skala untuk elemen brand: rule emas, band bawah, kolom pemisah.
+   Aturan identitas UGM "band bersudut tajam, tidak pernah membulat, tidak
+   pernah memudar" berarti band tidak boleh masuk dengan pudar - ia tumbuh dari
+   tepinya dengan sudut yang tetap tajam. Karena itu keduanya TIDAK menyetel
+   opacity. */
+[data-anim="lebar"]  { transform: scaleX(0); transform-origin: left center; }
+[data-anim="tinggi"] { transform: scaleY(0); transform-origin: bottom center; }
+
+/* Satu selektor melepas semuanya. */
+.anim-nyala [data-anim] { opacity: 1; transform: none; }
+
+/* Jeda hanya berlaku saat masuk. Saat slide ditinggalkan elemen pulih tanpa
+   tangga, supaya build terputar bersih kalau presenter langsung kembali. */
+.anim-nyala [data-anim] { transition-delay: var(--tunda, 0ms); }
+
+/* =========================================================================
+   Koreografi grafik
+
+   Setiap keluarga tanda mendapat gerak yang searah dengan cara grafiknya
+   dibaca: batang tumbuh dari sumbunya, garis menggambar dirinya dari kiri ke
+   kanan, titik peta menyembul di tempatnya. Jeda antar-tanda dipasang skrip
+   deck lewat --tunda supaya satu grafik terbaca sebagai satu gelombang.
+
+   transform-box: fill-box wajib - tanpa itu transform-origin pada elemen SVG
+   dihitung terhadap viewport SVG, bukan terhadap kotak elemennya, dan batang
+   akan tumbuh dari sudut kanvas alih-alih dari sumbunya.
+   ========================================================================= */
+
+[data-deck-chart] :where(.segment, .bar-row, .bullet-row, .trend-row, .dot-group, .panel, .stack) {
+  transform-box: fill-box;
+}
+
+/* Batang bertumpuk: tumbuh dari sumbu x. */
+[data-deck-chart] .segment {
+  transform-origin: bottom center;
+  transform: scaleY(0);
+  transition: transform var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] .segment {
+  transform: none;
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Batang mendatar: tumbuh dari sumbu y. Baris utuh yang digerakkan, bukan
+   rect-nya sendiri, supaya label nilai di ujung batang ikut bergerak. */
+[data-deck-chart] :where(.bar-row, .bullet-row) {
+  transform-origin: left center;
+  opacity: 0;
+  transform: translateX(-14px);
+  transition:
+    opacity var(--anim-dur) var(--anim-ease),
+    transform var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] :where(.bar-row, .bullet-row) {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Baris tren, gugus titik, dan panel small-multiples: naik pelan, satu per
+   satu, mengikuti urutan bacanya. */
+[data-deck-chart] :where(.trend-row, .dot-group, .panel) {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--anim-dur) var(--anim-ease),
+    transform var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] :where(.trend-row, .dot-group, .panel) {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Garis tren menggambar dirinya. Skrip deck mengukur getTotalLength() sekali
+   lalu menyetel dasharray/dashoffset; kelas aktif mengembalikan offset ke nol.
+   Mekanisme ini hanya menyentuh stroke-dashoffset - TIDAK PERNAH opacity. */
+[data-deck-chart] path.line {
+  transition: stroke-dashoffset var(--anim-draw) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] path.line {
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Bidang di bawah garis menyusul setelah garisnya selesai digambar, supaya
+   tidak ada bidang berwarna yang muncul mendahului garis batasnya. */
+[data-deck-chart] path.area {
+  opacity: 0;
+  transition: opacity var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] path.area {
+  opacity: 1;
+  transition-delay: calc(var(--anim-draw) * .55);
+}
+
+/* Peta: daratan mitra dan provinsi menyala bersama sebagai satu bidang, lalu
+   penanda nilainya menyembul. Memberi tangga pada 38 provinsi membuat peta
+   berkedip; yang bertahap justru penandanya. */
+[data-deck-chart] :where(.world-map__land, .provinces, .basemap) {
+  opacity: 0;
+  transition: opacity var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] :where(.world-map__land, .provinces, .basemap) {
+  opacity: 1;
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Penanda nilai digerakkan pada lingkarannya, BUKAN pada .map-point yang
+   membungkusnya: pembungkus itu sudah memiliki transisi opacity sendiri yang
+   dipakai skrip peta untuk memunculkan titik seiring tahun berjalan. Menimpanya
+   akan membuat titik tahun-tahun berikutnya ikut tampil sejak awal. */
+[data-deck-chart] :where(.world-map__markers > circle, .map-point > .point) {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(.4);
+  transition:
+    opacity var(--anim-dur) var(--anim-ease),
+    transform var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] :where(.world-map__markers > circle, .map-point > .point) {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--tunda, 0ms);
+}
+
+/* Sumbu, kisi, dan legenda tidak pernah bertangga. Keduanya adalah kerangka
+   baca, bukan data: kalau ikut masuk bertahap, penonton membaca kisi sebagai
+   informasi. Keduanya menyala bersama slide. */
+[data-deck-chart] :where(.grid, .axis, .chart-legend, .scale-note) {
+  opacity: 0;
+  transition: opacity var(--anim-dur) var(--anim-ease);
+}
+.anim-nyala [data-deck-chart] :where(.grid, .axis, .chart-legend, .scale-note) {
+  opacity: 1;
+  transition-delay: 120ms;
+}
+
+/* =========================================================================
+   Penekan gerak 1 dari 3 - pengguna yang meminta gerak minimal
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim],
+  [data-deck-chart] :where(.segment, .bar-row, .bullet-row, .trend-row, .dot-group,
+    .panel, .area, .line, .grid, .axis, .chart-legend, .scale-note,
+    .world-map__land, .provinces, .world-map__markers > circle, .map-point > .point) {
+    transition: none !important;
+  }
+  [data-anim],
+  [data-deck-chart] :where(.segment, .bar-row, .bullet-row, .trend-row, .dot-group,
+    .panel, .area, .grid, .axis, .chart-legend, .scale-note,
+    .world-map__land, .provinces, .world-map__markers > circle, .map-point > .point) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  [data-deck-chart] path.line { stroke-dashoffset: 0 !important; }
+}
+
+/* =========================================================================
+   Penekan gerak 2 dari 3 - thumbnail ikhtisar
+
+   Thumbnail adalah salinan innerHTML slide dan tidak pernah mendapat
+   .anim-nyala, jadi tanpa aturan ini seluruh petaknya tampil kosong.
+   ========================================================================= */
+
+.deck-overview__thumb :where([data-anim], .segment, .bar-row, .bullet-row, .trend-row,
+  .dot-group, .panel, .area, .grid, .axis, .chart-legend, .scale-note,
+  .world-map__land, .provinces) {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.deck-overview__thumb path.line { stroke-dashoffset: 0 !important; }
+
+/* =========================================================================
+   Penekan gerak 3 dari 3 - cetak
+   ========================================================================= */
+
+@media print {
+  [data-anim],
+  [data-deck-chart] :where(.segment, .bar-row, .bullet-row, .trend-row, .dot-group,
+    .panel, .area, .grid, .axis, .chart-legend, .scale-note,
+    .world-map__land, .provinces, .world-map__markers > circle, .map-point > .point) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-deck-chart] path.line {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+}

@@ -531,6 +531,13 @@ const graduateIncompleteYears = graduates
   .filter((row) => graduateLevels.some((level) => !row[level.toLowerCase()]))
   .map((row) => row.year);
 const graduateLatestYear = graduateYears[graduateYears.length - 1];
+/* The series now spans two deliveries: the 2021 five-year recap tables for
+   2016/2017-2020/2021 and the running academic database from 2021/2022 on. The
+   labels are read off the data so the caption cannot drift from the chart. */
+const graduateAcademicYear = (year: number) =>
+  (graduatesRaw as any[]).find((row) => row.tahun === year)?.tahun_ajaran ?? String(year);
+const graduateFirstAcademicYear = graduateAcademicYear(graduateYears[0]);
+const graduateLastAcademicYear = graduateAcademicYear(graduateLatestYear);
 const graduateLatestRows = (graduatesRaw as any[]).filter((row) => row.tahun === graduateLatestYear);
 const graduateLatestTotal = graduateLatestRows.reduce((total, row) => total + (row.lulusan ?? 0), 0);
 const graduateLatestOf = (level: string) => graduateLatestRows.find((row) => row.jenjang === level);
@@ -1270,11 +1277,11 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="profil-lulusan" number="4.7" pillar="Employability" question={scenes["4.7"].question} deck={deck("4.7")} wide>
-      <SceneBlock id="profil-lulusan-jenjang" title="Tiga Jenjang, Tiga Perjalanan Studi" lede="Bandingkan rerata lama studi seluruh lulusan, lalu pilih jenjang untuk menelusuri perubahan lima tahun, IPK, dan komposisi program studinya.">
+      <SceneBlock id="profil-lulusan-jenjang" title="Tiga Jenjang, Tiga Perjalanan Studi" lede={`Bandingkan rerata lama studi seluruh lulusan, lalu pilih jenjang untuk menelusuri perubahan ${format(graduateYears.length)} tahun akademik, IPK, dan komposisi program studinya.`}>
         <GraduateProfile mode="population" />
       </SceneBlock>
-      <SceneBlock title="Jumlah Lulusan per Jenjang dan Tahun Akademik">
-        <StackedBarChart data={graduates} xKey="year" series={graduateSeries} gaps={graduateIncompleteYears} gapLabel="Belum tercatat" title="Jumlah Lulusan per Jenjang dan Tahun Akademik" hideHeader yLabel="Lulusan" source="Data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("graduates_profile.csv")} valueFormatter={(value:number) => format(value)} />
+      <SceneBlock title="Jumlah Lulusan per Jenjang dan Tahun Akademik" lede={`Seri ${graduateFirstAcademicYear}–${graduateLastAcademicYear}, menyambung rekap lima tahun Laporan Dekan 2021 dengan pangkalan data akademik berjalan. Jumlah cumlaude baru dicatat mulai 2021/2022.`}>
+        <StackedBarChart data={graduates} xKey="year" series={graduateSeries} gaps={graduateIncompleteYears} gapLabel="Belum tercatat" title="Jumlah Lulusan per Jenjang dan Tahun Akademik" hideHeader yLabel="Lulusan" source="Rekap lulusan lima tahun Laporan Dekan 2021; data akademik FMIPA UGM" extracted={snapshot.label} csvHref={dataUrl("graduates_profile.csv")} valueFormatter={(value:number) => format(value)} />
       </SceneBlock>
       <Insight tone="positive"><p>Tahun akademik 2025/2026 melengkapi seri lulusan pada seluruh jenjang dengan total <strong>{format(graduateLatestTotal)} lulusan</strong>: {format(graduateLatestOf("Sarjana")?.lulusan ?? 0)} sarjana, {format(graduateLatestOf("Magister")?.lulusan ?? 0)} magister, dan {format(graduateLatestOf("Doktor")?.lulusan ?? 0)} doktor. Rerata IPK lulusan doktor {format(graduateLatestOf("Doktor")?.ipk_rerata ?? 0, 2)} dan magister {format(graduateLatestOf("Magister")?.ipk_rerata ?? 0, 2)}, dihitung dengan pembobotan jumlah wisudawan pada empat periode wisuda.</p></Insight>
       <SceneBlock title="Prestasi Mahasiswa menurut Tingkat Kompetisi">

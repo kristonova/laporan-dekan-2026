@@ -10,6 +10,57 @@ Periodenya ditampilkan terpisah dari S1 gasal 2025/2026; tidak ada total gabunga
 lintas periode. Data asal pendidikan 2021–2026 dan profil mahasiswa baru 2025/2026
 tidak diperlakukan sebagai jumlah mahasiswa aktif.
 
+Pembaruan 9 September 2026: seri lulusan diperpanjang mundur ke 2016/2017.
+`load_historical_graduates` membaca dua rekap lima tahun pada volume 2021 arsip
+`data laporan dekan 2021-2026`: `1.18. Rekap Kelulusan S1 5 tahun.xls` dan
+`Laporan Dekan 2021 Program Magister dan Doktor - rekap 2017-2021.xls`. Keduanya
+berhenti tepat di tahun `PROFIL LULUSAN.xlsx` dimulai, sehingga `graduates_profile`
+dan `graduates_by_programme` kini menjadi satu seri 2016/2017–2025/2026, bukan dua
+seri bersebelahan.
+
+- **Blok dikenali dari judulnya, bukan dari offset.** Tiap lembar adalah satu
+  kisi berisi blok bertumpuk. Baris dimasukkan ke blok menurut label terakhir
+  yang dilewati (`A. Jumlah`, `D. Jumlah Lulusan`), dan **setiap** judul berpola
+  `X. ` menutup blok sebelumnya — termasuk blok yang tidak dipakai. Tanpa itu
+  `D. Usia Lulus` menimpa masa studi S1 dan menghasilkan 23 tahun yang terlihat
+  masuk akal. `03_validate.py` menahan lama studi sarjana pada 4–5 tahun.
+- **Rerata dihitung berbobot.** Baris `Rata-Rata` pada kedua rekap adalah rerata
+  antarprodi tanpa bobot: pada 2016/2017 ia menyamakan 74 lulusan Matematika
+  dengan 204 lulusan Kimia dan menghasilkan 3,22, sedangkan rerata berbobot 3,23.
+  Aturannya sama dengan yang sudah dipakai untuk berkas pascasarjana 2025/2026.
+- **Satuan disatukan.** Rekap S1 menulis masa studi dalam tahun desimal (4,76);
+  kolomnya diubah ke teks `4 th 9 bln` seperti berkas 2026. Rekap pascasarjana
+  sudah dalam bulan.
+- **Prodi tanpa kohort lulus tidak ditulis nol.** S1 Ilmu Aktuaria bertanda `-`
+  sepanjang 2016/2017–2020/2021 karena angkatan pertamanya baru masuk 2019/2020.
+- **Jumlah cumlaude tidak ada sebelum 2021/2022** dan tetap `null`.
+- **Dua salinan rekap pascasarjana dibandingkan, bukan dipilih diam-diam.**
+  `compare_historical_postgraduate_copies` menemukan satu sel berbeda: IPK
+  Magister Ilmu Komputer 2018/2019 tertulis 3,71 pada `1.23` (mengulang nilai
+  Magister Fisika di sebelahnya) dan 3,4475 pada salinan Rekap Data. Yang
+  dipakai salinan Rekap Data; selisihnya tercatat pada `konflik_sumber_lulusan`
+  di `validation_report.json` dan pada `/data`.
+
+Arsip itu berada 270–320 karakter dalam sehingga melewati batas MAX_PATH
+Windows. `utils.long_path()` menambahkan awalan `\\?\` agar `read_workbook`
+tetap dapat membukanya pada mesin dengan `LongPathsEnabled=0`. Awalan itu
+melewati penamaan perangkat DOS, jadi drive hasil `subst` harus diuraikan ke
+path aslinya lebih dahulu.
+
+Selebihnya arsip 2021–2025 **tidak** disambungkan, dan itu disengaja:
+
+- **Prestasi mahasiswa tidak dapat disambung.** `PRESTASI MAHASISWA.xlsx`
+  (2022–2026) hanya mengenal tingkat Nasional dan Internasional dengan label
+  tahun berpotong September, sedangkan rekap 2021 memakai tahun akademik dan
+  memuat tingkat Regional. Totalnya pun berbeda tiga kali lipat (2021/2022: 105
+  versus 2022: 326). Menyambungnya akan menciptakan lonjakan yang tidak terjadi.
+- **Keketatan seleksi tidak dapat mundur ke 2021.** Tabel 1.1 dan 1.15 pada
+  volume 2021 hanya mencatat registrasi per jalur masuk; tidak ada kolom peminat
+  atau diterima di tahun mana pun sebelum 2022, sehingga `admissions_by_year`
+  tetap 2022–2026.
+- **Serapan RKAT tidak membentuk tren.** 2023 hanya tersedia per 30 Juni, 2024
+  memakai kerangka berbeda, dan folder Keuangan 2025 kosong.
+
 Pembaruan 8 September 2026: `tck_details.py` menambahkan agregat anonim rincian
 mahasiswa asing, lama studi, pencapaian mahasiswa, MBKM, jalur pascasarjana,
 dan fasilitas aksesibilitas. Ekspor beasiswa kini memuat seluruh 79 skema aktif

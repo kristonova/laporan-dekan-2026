@@ -1,211 +1,698 @@
 ---
+/**
+ * Satu slide bahan tayang Rapat Senat.
+ *
+ * Perbedaan pokok dari versi sebelumnya: slide tidak lagi menggambar ulang
+ * datanya sendiri. Versi lama punya enam "mode" (stat, bars, status, flow, gap,
+ * cards) yang masing-masing melukis batang dan angkanya sendiri dari larik
+ * `items` - itulah sumber kesan monoton, dan sekaligus sumber risiko bahwa
+ * angka di bahan tayang menyimpang dari angka di halaman laporan.
+ *
+ * Sekarang slide hanyalah bingkai. Grafiknya masuk lewat <slot> sebagai
+ * komponen yang sama persis dengan yang dipakai halaman laporan, dengan data
+ * dan properti yang sama. Bahan tayang dan laporan mustahil berselisih karena
+ * keduanya merender komponen yang sama dari berkas turunan yang sama.
+ *
+ * Koreografi masuk ditulis tangan di sini lewat atribut data-anim; skrip deck
+ * hanya melepasnya dengan satu kelas dan mengurus tanda-tanda di dalam grafik.
+ * Lihat src/styles/deck-motion.css.
+ */
 import { withBase } from "../lib/paths";
 
 interface Item {
   label: string;
-  value?: number;
-  display?: string;
-  max?: number;
+  value: string;
   description?: string;
-  status?: "good" | "near" | "behind" | "missed" | "neutral";
 }
+
 interface Props {
   number: string;
-  kicker: string;
+  /** Bingkai bawaan (chart) sampai penutup; menentukan tata letak dan warna. */
+  layout?: "title" | "divider" | "chart" | "stat" | "cards" | "closing";
+  kicker?: string;
   title: string;
-  takeaway: string;
-  source: string;
-  note: string;
-  mode?: "stat" | "bars" | "status" | "flow" | "gap" | "cards";
+  /** Satu kalimat yang menjadi klaim slide. Satu slide, satu klaim. */
+  takeaway?: string;
+  /** Angka utama pada kolom kiri slide chart, atau tokoh utama slide stat. */
   stat?: string;
   statLabel?: string;
+  /** Baris kecil di bawah angka: pembanding, rentang, atau peringatan cakupan. */
+  statNote?: string;
   items?: Item[];
+  /** Kutipan penutup. */
+  quote?: string;
+  quoteBy?: string;
+  /** Identitas penyaji pada slide judul. */
+  presenter?: string;
+  presenterRole?: string;
+  period?: string;
+  source?: string;
+  note: string;
   dark?: boolean;
+  /** Aksen pilar: mewarnai angka pilar dan rule pada slide pemisah. */
+  accent?: "blue" | "orange" | "green" | "violet" | "teal";
 }
+
 const {
-  number, kicker, title, takeaway, source, note,
-  mode = "stat", stat, statLabel, items = [], dark = false,
+  number,
+  layout = "chart",
+  kicker,
+  title,
+  takeaway,
+  stat,
+  statLabel,
+  statNote,
+  items = [],
+  quote,
+  quoteBy,
+  presenter,
+  presenterRole,
+  period,
+  source,
+  note,
+  dark = layout === "title" || layout === "divider" || layout === "closing",
+  accent = "blue",
 } = Astro.props;
-const maxValue = Math.max(1, ...items.map((item) => item.max ?? item.value ?? 0));
+
+const titleId = `slide-${number.replaceAll(".", "-")}-title`;
 const lightLogoUrl = withBase("/brand/logo-horizontal-stackup.png");
 const darkLogoUrl = withBase("/brand/logo-horizontal-white.png");
-const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
+const motifUrl = withBase("/brand/supergraphic-lines.png");
+const hasChrome = layout !== "title" && layout !== "divider" && layout !== "closing";
 ---
 
-<section class:list={["presentation-slide", `presentation-slide--${mode}`, { "presentation-slide--dark": dark }]} data-presentation-slide aria-labelledby={`slide-${number.replaceAll(".", "-")}-title`}>
-  <div class="presentation-slide__motif" aria-hidden="true" style={motifStyle}></div>
-  <header class="presentation-slide__header">
-    <div>
-      <p>{kicker}</p>
-      <span>{number}</span>
-    </div>
-    <img src={dark ? darkLogoUrl : lightLogoUrl} width="200" height="57" alt="Universitas Gadjah Mada" />
-  </header>
-  <div class="presentation-slide__body">
-    <div class="presentation-slide__copy">
-      <div class="presentation-slide__rule" aria-hidden="true"></div>
-      <h2 id={`slide-${number.replaceAll(".", "-")}-title`}>{title}</h2>
-      <p>{takeaway}</p>
-    </div>
+<section
+  class:list={["dslide", `dslide--${layout}`, { "is-dark": dark }]}
+  data-deck-slide
+  data-slide-layout={layout}
+  aria-labelledby={titleId}
+>
+  {dark && <div class="dslide__motif" aria-hidden="true" style={`background-image:url(${JSON.stringify(motifUrl)})`}></div>}
 
-    <div class:list={["presentation-visual", `presentation-visual--${mode}`]}>
-      {mode === "stat" && <><strong>{stat}</strong>{statLabel && <span>{statLabel}</span>}</>}
-      {mode === "gap" && <><strong>?</strong><span>{statLabel ?? "Data belum tersedia"}</span></>}
-      {(mode === "bars" || mode === "status") && (
-        <div class="presentation-bars">
-          {items.map((item) => (
-            <div class={`presentation-bar presentation-bar--${item.status ?? "neutral"}`}>
-              <div><span>{item.label}</span><strong>{item.display ?? item.value}</strong></div>
-              <i><b style={`width:${Math.min(100, ((item.value ?? 0) / (item.max ?? maxValue)) * 100)}%`}></b></i>
-              {item.description && <small>{item.description}</small>}
+  {
+    hasChrome && (
+      <header class="dslide__head">
+        <div class="dslide__id">
+          <p data-anim="turun">{kicker}</p>
+          <span data-anim="turun" style="--tunda:60ms">{number}</span>
+        </div>
+        <img src={lightLogoUrl} width="200" height="57" alt="Universitas Gadjah Mada" data-anim="pudar" style="--tunda:60ms" />
+      </header>
+    )
+  }
+
+  {/* --- Slide judul ------------------------------------------------------ */}
+  {
+    layout === "title" && (
+      <div class="dslide__body dslide__body--title">
+        <img class="dslide__logo-tl" src={darkLogoUrl} width="240" height="68" alt="Universitas Gadjah Mada" data-anim="pudar" />
+        <div>
+          <p class="dslide__eyebrow" data-anim="turun" style="--tunda:120ms">{kicker}</p>
+          <h1 id={titleId} data-anim="naik" style="--tunda:200ms">{title}</h1>
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:320ms" aria-hidden="true"></div>
+          {takeaway && <p class="dslide__lede" data-anim="naik" style="--tunda:400ms">{takeaway}</p>}
+          {presenter && (
+            <div class="dslide__presenter" data-anim="naik" style="--tunda:480ms">
+              <strong>{presenter}</strong>
+              {presenterRole && <span>{presenterRole}</span>}
+              {period && <span>{period}</span>}
             </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  {/* --- Slide pemisah pilar --------------------------------------------- */}
+  {
+    layout === "divider" && (
+      <div class:list={["dslide__body", "dslide__body--divider", `accent-${accent}`]}>
+        <p class="dslide__pillar-no" data-anim="kanan">{number}</p>
+        <div>
+          <p class="dslide__eyebrow" data-anim="turun" style="--tunda:80ms">{kicker}</p>
+          <h2 id={titleId} data-anim="naik" style="--tunda:160ms">{title}</h2>
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:280ms" aria-hidden="true"></div>
+          {takeaway && <p class="dslide__lede" data-anim="naik" style="--tunda:360ms">{takeaway}</p>}
+        </div>
+      </div>
+    )
+  }
+
+  {/* --- Slide grafik: klaim di kiri, grafik asli di kanan ---------------- */}
+  {
+    layout === "chart" && (
+      <div class="dslide__body dslide__body--chart">
+        <div class="dslide__copy">
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:120ms" aria-hidden="true"></div>
+          <h2 id={titleId} data-anim="naik" style="--tunda:180ms">{title}</h2>
+          {stat && (
+            <p class="dslide__stat" data-anim="naik" style="--tunda:260ms">
+              <strong data-deck-count>{stat}</strong>
+              {statLabel && <span>{statLabel}</span>}
+            </p>
+          )}
+          {takeaway && <p class="dslide__takeaway" data-anim="naik" style="--tunda:320ms">{takeaway}</p>}
+          {statNote && <p class="dslide__statnote" data-anim="pudar" style="--tunda:420ms">{statNote}</p>}
+        </div>
+        <div class="dslide__stage" data-deck-chart>
+          <slot />
+        </div>
+      </div>
+    )
+  }
+
+  {/* --- Slide angka tunggal ---------------------------------------------- */}
+  {
+    layout === "stat" && (
+      <div class="dslide__body dslide__body--stat">
+        <div class="dslide__copy">
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:120ms" aria-hidden="true"></div>
+          <h2 id={titleId} data-anim="naik" style="--tunda:180ms">{title}</h2>
+          {takeaway && <p class="dslide__takeaway" data-anim="naik" style="--tunda:260ms">{takeaway}</p>}
+        </div>
+        <div class="dslide__hero">
+          <strong data-anim="naik" style="--tunda:340ms" data-deck-count>{stat}</strong>
+          {statLabel && <span data-anim="naik" style="--tunda:440ms">{statLabel}</span>}
+          {statNote && <em data-anim="pudar" style="--tunda:540ms">{statNote}</em>}
+        </div>
+      </div>
+    )
+  }
+
+  {/* --- Slide kartu potret ----------------------------------------------- */}
+  {
+    layout === "cards" && (
+      <div class="dslide__body dslide__body--cards">
+        <div class="dslide__copy">
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:120ms" aria-hidden="true"></div>
+          <h2 id={titleId} data-anim="naik" style="--tunda:180ms">{title}</h2>
+          {takeaway && <p class="dslide__takeaway" data-anim="naik" style="--tunda:260ms">{takeaway}</p>}
+        </div>
+        <div class="dslide__cards">
+          {items.map((item, index) => (
+            <article data-anim="naik" style={`--tunda:${320 + index * 70}ms`}>
+              <strong data-deck-count>{item.value}</strong>
+              <h3>{item.label}</h3>
+              {item.description && <p>{item.description}</p>}
+            </article>
           ))}
         </div>
-      )}
-      {mode === "flow" && (
-        <div class="presentation-flow">
-          {items.map((item, index) => <><div><strong>{item.display ?? item.value}</strong><span>{item.label}</span></div>{index < items.length - 1 && <i aria-hidden="true">→</i>}</>)}
+      </div>
+    )
+  }
+
+  {/* --- Slide penutup ----------------------------------------------------- */}
+  {
+    layout === "closing" && (
+      <div class="dslide__body dslide__body--closing">
+        <img class="dslide__logo-tl" src={darkLogoUrl} width="240" height="68" alt="Universitas Gadjah Mada" data-anim="pudar" />
+        <div>
+          <p class="dslide__eyebrow" data-anim="turun" style="--tunda:120ms">{kicker}</p>
+          <h2 id={titleId} data-anim="naik" style="--tunda:200ms">{title}</h2>
+          <div class="dslide__rule" data-anim="lebar" style="--tunda:320ms" aria-hidden="true"></div>
+          {quote && (
+            <blockquote data-anim="naik" style="--tunda:400ms">
+              <p>{quote}</p>
+              {quoteBy && <cite>{quoteBy}</cite>}
+            </blockquote>
+          )}
+          {takeaway && <p class="dslide__lede" data-anim="naik" style="--tunda:520ms">{takeaway}</p>}
         </div>
-      )}
-      {mode === "cards" && (
-        <div class="presentation-cards">
-          {items.map((item) => <article class={`is-${item.status ?? "neutral"}`}><strong>{item.display ?? item.value}</strong><h3>{item.label}</h3>{item.description && <p>{item.description}</p>}</article>)}
-        </div>
-      )}
-    </div>
-  </div>
-  <footer class="presentation-slide__footer"><span>Sumber: {source}</span><span>Lima Tahun FMIPA · 2021–2026</span></footer>
-  <aside class="presenter-notes" data-presenter-notes aria-label="Catatan presenter"><strong>Catatan presenter</strong><p>{note}</p></aside>
+      </div>
+    )
+  }
+
+  {
+    hasChrome && (
+      <footer class="dslide__foot" data-anim="pudar" style="--tunda:520ms">
+        <span>{source ? `Sumber: ${source}` : ""}</span>
+        <span>Lima Tahun FMIPA · 2021–2026</span>
+      </footer>
+    )
+  }
+
+  <aside class="dslide__notes" data-deck-notes aria-label="Catatan presenter">
+    <strong>Catatan presenter</strong>
+    <p>{note}</p>
+  </aside>
 </section>
 
 <style>
-  .presentation-slide {
-    --slide-pad-inline: max(clamp(32px, 3vw, 54px), calc((100vw - 1920px) / 2 + 54px));
-    --slide-pad-top: clamp(28px, 3.9dvh, 38px);
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: 100vh;
-    height: 100dvh;
+  /* ---------------------------------------------------------------------
+     Kerangka slide. Tinggi dikunci ke viewport supaya tidak pernah ada
+     gulir di dalam slide: apa pun yang tidak muat harus dipangkas dari
+     naskahnya, bukan digulir oleh penonton.
+     --------------------------------------------------------------------- */
+  .dslide {
+    --pad-x: max(clamp(32px, 3.4vw, 60px), calc((100vw - 1920px) / 2 + 60px));
+    --pad-y: clamp(26px, 3.6dvh, 40px);
     position: relative;
+    block-size: 100dvh;
     display: grid;
-    grid-template-rows: clamp(52px, 6.6dvh, 64px) minmax(0, 1fr) auto;
-    row-gap: clamp(8px, 1.2dvh, 14px);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    row-gap: clamp(10px, 1.4dvh, 18px);
+    padding: var(--pad-y) var(--pad-x) 20px;
     overflow: hidden;
-    padding: var(--slide-pad-top) var(--slide-pad-inline) 18px;
     background: var(--surface-page);
     color: var(--text-primary);
   }
-  .presentation-slide--dark { background: var(--ugm-blue-deep); color: #fff; }
-  .presentation-slide__header {
-    min-height: 0;
+
+  .dslide.is-dark {
+    background: var(--ugm-blue-deep);
+    color: #fff;
+  }
+
+  /* Band emas di tepi bawah. Aturan identitas: sudut tajam, tidak pernah
+     membulat, tidak pernah memudar. */
+  .dslide::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 3;
+    block-size: 10px;
+    background: var(--ugm-gold);
+  }
+
+  .dslide__motif {
+    position: absolute;
+    inset: -28% -14% auto auto;
+    inline-size: min(60vw, 780px);
+    aspect-ratio: 1;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: .09;
+    filter: brightness(0) invert(1);
+  }
+
+  /* --- Kepala dan kaki -------------------------------------------------- */
+
+  .dslide__head {
     position: relative;
     z-index: 2;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 24px;
   }
-  .presentation-slide__header > div { display: flex; align-items: baseline; gap: 16px; }
-  .presentation-slide__header p { color: var(--text-muted); font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-  .presentation-slide--dark .presentation-slide__header p { color: rgba(255,255,255,.62); }
-  .presentation-slide__header span { color: var(--ugm-gold); font-weight: 700; }
-  .presentation-slide__header img { width: 200px; height: auto; }
-  .presentation-slide__body {
-    min-width: 0;
-    min-height: 0;
+  .dslide__id { display: flex; align-items: baseline; gap: 16px; }
+  .dslide__id p {
+    color: var(--text-muted);
+    font-size: clamp(13px, 1.7dvh, 16px);
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .dslide__id span { color: var(--ugm-gold); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dslide__head img { inline-size: clamp(150px, 11vw, 200px); block-size: auto; }
+
+  .dslide__foot {
+    position: relative;
+    z-index: 2;
+    align-self: end;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--text-muted);
+    font-size: clamp(12px, 1.5dvh, 15px);
+  }
+  .is-dark .dslide__foot { color: rgb(255 255 255 / 70%); }
+
+  .dslide__body { position: relative; z-index: 2; min-block-size: 0; min-inline-size: 0; }
+
+  .dslide__rule {
+    inline-size: 82px;
+    block-size: 3px;
+    margin-block-end: clamp(16px, 2.6dvh, 26px);
+    background: var(--ugm-gold);
+  }
+
+  .dslide__eyebrow {
+    color: var(--ugm-gold);
+    font-size: clamp(13px, 1.8dvh, 17px);
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  /* --- Slide judul ------------------------------------------------------- */
+
+  .dslide--title,
+  .dslide--closing { grid-template-rows: minmax(0, 1fr); }
+
+  .dslide__body--title,
+  .dslide__body--closing {
     display: grid;
-    grid-template-columns: minmax(360px, .88fr) minmax(0, 1.12fr);
-    gap: clamp(36px, 5vw, 76px);
-    align-items: stretch;
+    align-content: center;
+    max-inline-size: 60ch;
   }
-  .presentation-slide__copy { min-width: 0; min-height: 0; display: grid; align-content: center; }
-  .presentation-slide__rule { width: 82px; height: 3px; margin-block-end: clamp(18px, 2.8dvh, 28px); background: var(--ugm-gold); }
-  .presentation-slide h2 { max-width: 14ch; color: inherit; font-family: var(--font-display); font-size: clamp(44px, min(4.6vw, 7.5dvh), 68px); line-height: 1; letter-spacing: -.03em; }
-  .presentation-slide__copy > p { max-width: 48ch; margin-block-start: clamp(16px, 2.4dvh, 24px); color: var(--text-secondary); font-size: clamp(17px, min(1.55vw, 2.4dvh), 22px); line-height: 1.48; }
-  .presentation-slide--dark .presentation-slide__copy > p { color: rgba(255,255,255,.75); }
-  .presentation-visual {
-    min-width: 0;
-    min-height: 0;
-    block-size: min(58dvh, 640px, 100%);
-    align-self: center;
+  .dslide__logo-tl {
+    inline-size: clamp(180px, 13vw, 240px);
+    block-size: auto;
+    margin-block-end: clamp(30px, 5dvh, 62px);
+  }
+  .dslide__body--title h1 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(42px, min(4.6vw, 8dvh), 74px);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+  }
+  .dslide__body--title .dslide__rule { margin-block: clamp(22px, 3.4dvh, 34px) 0; }
+  .dslide__lede {
+    max-inline-size: 52ch;
+    margin-block-start: clamp(18px, 2.8dvh, 28px);
+    color: rgb(255 255 255 / 78%);
+    font-size: clamp(16px, min(1.5vw, 2.3dvh), 21px);
+    line-height: 1.5;
+  }
+  .dslide__presenter {
+    margin-block-start: clamp(28px, 4.4dvh, 48px);
+    padding-inline-start: 20px;
+    border-inline-start: 3px solid var(--ugm-gold);
+    display: grid;
+    gap: 4px;
+  }
+  .dslide__presenter strong { color: #fff; font-size: clamp(18px, 2.4dvh, 24px); }
+  .dslide__presenter span { color: rgb(255 255 255 / 66%); font-size: clamp(14px, 1.8dvh, 17px); }
+
+  /* --- Slide pemisah pilar ---------------------------------------------- */
+
+  .dslide--divider { grid-template-rows: minmax(0, 1fr); }
+  .dslide__body--divider {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 76px);
+    align-content: center;
+    align-items: center;
+  }
+  .dslide__pillar-no {
+    color: var(--pillar-color, var(--ugm-gold));
+    font-family: var(--font-display);
+    font-size: clamp(120px, min(15vw, 30dvh), 260px);
+    font-weight: 300;
+    line-height: .8;
+    letter-spacing: -.06em;
+    opacity: .9;
+  }
+  .dslide__body--divider h2 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(38px, min(4vw, 7dvh), 62px);
+    line-height: 1.04;
+    letter-spacing: -.02em;
+    max-inline-size: 18ch;
+  }
+  .dslide__body--divider .dslide__rule {
+    margin-block: clamp(18px, 2.8dvh, 28px) 0;
+    background: var(--pillar-color, var(--ugm-gold));
+  }
+  .accent-blue   { --pillar-color: #4aa3e8; }
+  .accent-orange { --pillar-color: #f08a52; }
+  .accent-green  { --pillar-color: #3fc794; }
+  .accent-violet { --pillar-color: #9b8ce8; }
+  .accent-teal   { --pillar-color: #46c9c0; }
+
+  /* --- Slide grafik ------------------------------------------------------ */
+
+  .dslide__body--chart {
+    display: grid;
+    grid-template-columns: minmax(300px, .82fr) minmax(0, 1.18fr);
+    gap: clamp(30px, 3.6vw, 64px);
+    align-items: center;
+  }
+  .dslide__copy { min-inline-size: 0; align-self: center; }
+  .dslide__body--chart h2,
+  .dslide__body--stat h2,
+  .dslide__body--cards h2 {
+    max-inline-size: 15ch;
+    color: inherit;
+    font-family: var(--font-display);
+    font-size: clamp(32px, min(3.3vw, 5.6dvh), 52px);
+    line-height: 1.06;
+    letter-spacing: -.025em;
+  }
+  .dslide__takeaway {
+    max-inline-size: 44ch;
+    margin-block-start: clamp(14px, 2.2dvh, 22px);
+    color: var(--text-secondary);
+    font-size: clamp(15px, min(1.35vw, 2.1dvh), 19px);
+    line-height: 1.5;
+  }
+  .is-dark .dslide__takeaway { color: rgb(255 255 255 / 76%); }
+
+  .dslide__stat {
+    margin-block-start: clamp(16px, 2.4dvh, 26px);
+    padding-inline-start: 20px;
+    border-inline-start: 4px solid var(--ugm-gold);
+  }
+  .dslide__stat strong {
+    display: block;
+    color: var(--ugm-blue);
+    font-size: clamp(40px, min(4vw, 7dvh), 68px);
+    font-weight: 300;
+    line-height: .95;
+    letter-spacing: -.045em;
+    font-variant-numeric: tabular-nums;
+  }
+  .is-dark .dslide__stat strong { color: var(--ugm-gold); }
+  .dslide__stat span {
+    display: block;
+    margin-block-start: 8px;
+    color: var(--text-secondary);
+    font-size: clamp(14px, 1.9dvh, 18px);
+    line-height: 1.35;
+  }
+  .dslide__statnote {
+    margin-block-start: clamp(12px, 1.8dvh, 18px);
+    color: var(--text-muted);
+    font-size: clamp(12px, 1.6dvh, 15px);
+    line-height: 1.4;
+  }
+  .is-dark .dslide__statnote { color: rgb(255 255 255 / 58%); }
+
+  /* Panggung grafik. Grafik masuk sebagai komponen apa adanya; yang diatur di
+     sini hanya ruangnya, dan chrome ChartFrame yang mubazir di layar lebar
+     (sumber, unduh CSV, tabel) disembunyikan karena sumbernya sudah tercetak
+     di kaki slide dan tabelnya tidak dapat dibaca dari kursi belakang. */
+  .dslide__stage {
+    min-inline-size: 0;
+    min-block-size: 0;
+    block-size: 100%;
     display: grid;
     align-content: center;
   }
-  .presentation-visual--bars, .presentation-visual--status, .presentation-visual--cards {
-    grid-template-rows: minmax(0, 1fr);
-    align-content: stretch;
-  }
-  .presentation-visual--stat, .presentation-visual--gap { padding: clamp(30px, 4.8dvh, 52px); border-inline-start: 4px solid var(--ugm-gold); }
-  .presentation-visual--stat > strong, .presentation-visual--gap > strong { color: var(--ugm-blue); font-size: clamp(84px, min(11vw, 16dvh), 168px); font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -.06em; line-height: .85; }
-  .presentation-slide--dark .presentation-visual--stat > strong, .presentation-slide--dark .presentation-visual--gap > strong { color: var(--ugm-gold); }
-  .presentation-visual--stat > span, .presentation-visual--gap > span { max-width: 28ch; margin-block-start: 26px; color: var(--text-secondary); font-size: clamp(20px, 2.5dvh, 26px); line-height: 1.25; }
-  .presentation-slide--dark .presentation-visual--stat > span, .presentation-slide--dark .presentation-visual--gap > span { color: rgba(255,255,255,.76); }
-  .presentation-bars { min-height: 0; block-size: 100%; display: grid; align-content: space-evenly; gap: clamp(16px, 2.1dvh, 24px); }
-  .presentation-bar > div { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
-  .presentation-bar span { color: inherit; font-size: clamp(15px, 1.9dvh, 18px); }
-  .presentation-bar strong { color: var(--bar-color); font-size: clamp(22px, 2.8dvh, 28px); font-weight: 700; font-variant-numeric: tabular-nums; }
-  .presentation-bar > i { height: clamp(10px, 1.35dvh, 14px); margin-block-start: 7px; display: block; background: var(--border-subtle); }
-  .presentation-bar > i b { height: 100%; display: block; background: var(--bar-color); }
-  .presentation-bar small { display: block; margin-block-start: 5px; color: var(--text-muted); }
-  .presentation-bar--good { --bar-color: var(--status-achieved); }
-  .presentation-bar--near { --bar-color: var(--status-info); }
-  .presentation-bar--behind { --bar-color: var(--status-lagging); }
-  .presentation-bar--missed { --bar-color: var(--status-missed); }
-  .presentation-bar--neutral { --bar-color: var(--ugm-blue); }
-  .presentation-slide--dark .presentation-bar--neutral { --bar-color: var(--ugm-gold); }
-  .presentation-slide--dark .presentation-bar > i { background: rgba(255,255,255,.16); }
-  .presentation-flow { min-width: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: clamp(8px, 1vw, 14px); }
-  .presentation-flow > div { min-width: 0; min-height: clamp(260px, 36dvh, 360px); padding: clamp(16px, 2.4dvh, 24px) clamp(12px, 1.1vw, 20px); border: 1px solid var(--border-default); border-top: 4px solid var(--ugm-blue); background: var(--surface-card); display: flex; flex-direction: column; justify-content: center; }
-  .presentation-flow strong { color: var(--ugm-blue); font-size: clamp(25px, min(1.9vw, 4.2dvh), 38px); font-weight: 300; line-height: 1.1; white-space: nowrap; }
-  .presentation-flow span { margin-block-start: 10px; color: var(--text-secondary); font-size: clamp(13px, 1.7dvh, 17px); line-height: 1.35; }
-  .presentation-flow > i { align-self: center; color: var(--status-approaching); font-size: clamp(20px, 2.8dvh, 28px); font-style: normal; }
-  .presentation-cards { min-height: 0; block-size: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8dvh, 20px); }
-  .presentation-cards article { min-width: 0; min-height: 0; padding: clamp(20px, 2.8dvh, 30px); border: 1px solid var(--border-default); border-top: 4px solid var(--card-color); background: var(--surface-card); color: var(--text-primary); display: flex; flex-direction: column; justify-content: center; }
-  .presentation-cards article.is-good { --card-color: var(--status-achieved); }
-  .presentation-cards article.is-near { --card-color: var(--status-info); }
-  .presentation-cards article.is-behind { --card-color: var(--status-lagging); }
-  .presentation-cards article.is-missed { --card-color: var(--status-missed); }
-  .presentation-cards article.is-neutral { --card-color: var(--ugm-blue); }
-  .presentation-cards strong { color: var(--card-color); font-size: clamp(36px, 4.8dvh, 50px); font-weight: 300; line-height: 1.05; }
-  .presentation-cards h3 { margin-block-start: 10px; color: var(--text-primary); font-family: var(--font-ui); font-size: clamp(17px, 2dvh, 21px); }
-  .presentation-cards p { margin-block-start: 8px; color: var(--text-secondary); font-size: clamp(13px, 1.5dvh, 16px); line-height: 1.35; }
-  .presentation-slide__footer { min-width: 0; align-self: end; display: flex; justify-content: space-between; gap: 20px; color: var(--text-muted); font-size: clamp(13px, 1.55dvh, 16px); letter-spacing: .02em; }
-  .presentation-slide--dark .presentation-slide__footer { color: rgba(255,255,255,.7); }
-  .presentation-slide::after { content: ""; position: absolute; inset: auto 0 0; height: 10px; background: var(--ugm-gold); }
-  .presentation-slide__motif { display: none; position: absolute; inset: -30% -12% auto auto; width: min(62vw, 760px); aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; opacity: .08; filter: brightness(0) invert(1); }
-  .presentation-slide--dark .presentation-slide__motif { display: block; }
-  .presenter-notes { display: none; position: absolute; z-index: 10; inset: auto var(--slide-pad-inline) 46px auto; width: min(520px, calc(100% - 64px)); padding: 20px 24px; border: 2px solid var(--ugm-gold); background: #0B1F2E; color: #fff; box-shadow: 0 14px 40px rgb(0 0 0 / 28%); }
-  .presenter-notes strong { color: var(--ugm-gold); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
-  .presenter-notes p { margin-block-start: 8px; color: #fff; font-size: 15px; }
-  [data-notes-visible="true"] .presenter-notes { display: block; }
+  .dslide__stage :global(.chart-frame) { margin: 0; }
+  .dslide__stage :global(.chart-frame__footer),
+  .dslide__stage :global(.chart-frame__note),
+  .dslide__stage :global(.chart-frame__actions),
+  .dslide__stage :global(.chart-frame__table-wrap) { display: none !important; }
+  /* Gulir mendatar milik ChartFrame dimatikan: di layar proyeksi tidak ada
+     yang bisa menggulir, jadi grafik harus muat seluruhnya atau tidak sama
+     sekali. */
+  .dslide__stage :global(.chart-frame__plot) { overflow: visible; }
 
-  @media (min-width: 901px) and (max-height: 720px) {
-    .presentation-slide { --slide-pad-top: 20px; grid-template-rows: 52px minmax(0, 1fr) auto; row-gap: 6px; }
-    .presentation-slide__header img { width: 170px; }
-    .presentation-visual { block-size: min(56dvh, 100%); }
-    .presentation-flow > div { min-height: clamp(140px, 24dvh, 180px); }
-    .presentation-cards article { padding: 18px 22px; }
+  /* Hanya SVG grafik utama yang dibatasi tingginya - bukan SVG kecil di dalam
+     legenda dan petak kunci, yang ukurannya sudah ditentukan komponennya. */
+  .dslide__stage :global(.chart-frame__plot-inner > svg) {
+    max-block-size: min(62dvh, 100%);
   }
 
-  @media (min-width: 901px) and (max-width: 1200px) {
-    .presentation-slide h2 { font-size: clamp(42px, 4.2vw, 54px); }
-    .presentation-slide--flow .presentation-slide__body { grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr); gap: 28px; }
-    .presentation-slide--flow .presentation-flow { gap: 6px; }
-    .presentation-slide--flow .presentation-flow > div { padding-inline: 10px; }
-    .presentation-slide--flow .presentation-flow strong { font-size: clamp(20px, 2.4vw, 28px); }
+  /* Tipografi DI DALAM SVG sengaja tidak disentuh. Ukurannya dipatok dalam
+     satuan viewBox, jadi ia ikut membesar bersama grafiknya; itulah sebabnya
+     tiap grafik di halaman ini dipanggil dengan properti `width` yang lebih
+     kecil daripada bawaannya. viewBox yang lebih sempit direntang ke lebar
+     panggung yang sama, dan seluruh label ikut terangkat proporsional tanpa
+     satu baris pun berubah di komponennya.
+
+     Yang TIDAK ikut terangkat adalah chrome HTML di sekitar peta - daftar
+     peringkat, penghitung, dan tombol angkatan - karena ukurannya dalam rem,
+     relatif terhadap akar dokumen, bukan terhadap viewBox. Hanya bagian itu
+     yang dinaikkan di bawah ini. Selektornya sengaja tiga tingkat agar menang
+     atas gaya berlingkup komponen tanpa perlu !important. */
+
+  .dslide .dslide__stage :global(.world-map__count strong) { font-size: 2.9rem; }
+  .dslide .dslide__stage :global(.world-map__count span) { font-size: 1rem; }
+  .dslide .dslide__stage :global(.world-map__rank li) { font-size: 1.05rem; gap: .7rem; }
+  .dslide .dslide__stage :global(.world-map__rest),
+  .dslide .dslide__stage :global(.world-map__unmapped) { font-size: .95rem; }
+  .dslide .dslide__stage :global(.world-map__legend) { font-size: .95rem; }
+
+  .dslide .dslide__stage :global(.choropleth__tabs button) { min-block-size: 44px; font-size: 1.02rem; }
+  .dslide .dslide__stage :global(.choropleth__counter) { font-size: 1.1rem; }
+  .dslide .dslide__stage :global(.choropleth__counter output) { font-size: 1.9rem; }
+  .dslide .dslide__stage :global(.choropleth__legend) { font-size: 1rem; }
+
+  .dslide .dslide__stage :global(.point-map__counter) { font-size: 1.1rem; }
+  .dslide .dslide__stage :global(.point-map__counter output) { font-size: 1.9rem; }
+  .dslide .dslide__stage :global(.point-map__controls button) { min-block-size: 44px; font-size: 1rem; }
+
+  /* Atribusi peta diulang di kaki slide, jadi barisnya dihapus dari panggung
+     agar tidak memakan tinggi yang dibutuhkan petanya. */
+  .dslide .dslide__stage :global(.point-map__attribution),
+  .dslide .dslide__stage :global(.world-map__attribution) { display: none; }
+
+  /* --- Slide angka tunggal ---------------------------------------------- */
+
+  .dslide__body--stat {
+    display: grid;
+    grid-template-columns: minmax(300px, .9fr) minmax(0, 1.1fr);
+    gap: clamp(30px, 4vw, 72px);
+    align-items: center;
   }
+  .dslide__hero {
+    padding-inline-start: clamp(24px, 3vw, 48px);
+    border-inline-start: 4px solid var(--ugm-gold);
+  }
+  .dslide__hero strong {
+    display: block;
+    color: var(--ugm-blue);
+    font-size: clamp(72px, min(9.5vw, 15dvh), 160px);
+    font-weight: 300;
+    line-height: .85;
+    letter-spacing: -.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .is-dark .dslide__hero strong { color: var(--ugm-gold); }
+  .dslide__hero span {
+    display: block;
+    max-inline-size: 26ch;
+    margin-block-start: clamp(18px, 2.6dvh, 28px);
+    color: var(--text-secondary);
+    font-size: clamp(17px, 2.4dvh, 24px);
+    line-height: 1.3;
+  }
+  .is-dark .dslide__hero span { color: rgb(255 255 255 / 78%); }
+  .dslide__hero em {
+    display: block;
+    margin-block-start: 14px;
+    color: var(--text-muted);
+    font-size: clamp(12px, 1.6dvh, 15px);
+    font-style: normal;
+  }
+  .is-dark .dslide__hero em { color: rgb(255 255 255 / 56%); }
+
+  /* --- Slide kartu ------------------------------------------------------- */
+
+  .dslide__body--cards {
+    display: grid;
+    grid-template-columns: minmax(280px, .78fr) minmax(0, 1.22fr);
+    gap: clamp(30px, 3.6vw, 64px);
+    align-items: center;
+  }
+  .dslide__cards {
+    min-block-size: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 13vw, 210px), 1fr));
+    gap: clamp(12px, 1.6dvh, 20px);
+  }
+  .dslide__cards article {
+    min-inline-size: 0;
+    padding: clamp(18px, 2.6dvh, 28px);
+    border: 1px solid var(--border-default);
+    border-block-start: 4px solid var(--ugm-blue);
+    background: var(--surface-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .dslide__cards strong {
+    color: var(--ugm-blue);
+    font-size: clamp(30px, 4.2dvh, 46px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .dslide__cards h3 {
+    margin-block-start: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: clamp(14px, 1.9dvh, 18px);
+  }
+  .dslide__cards p {
+    margin-block-start: 6px;
+    color: var(--text-secondary);
+    font-size: clamp(12px, 1.5dvh, 15px);
+    line-height: 1.35;
+  }
+
+  /* --- Slide penutup ----------------------------------------------------- */
+
+  .dslide__body--closing { max-inline-size: 68ch; }
+  .dslide__body--closing h2 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(36px, min(4vw, 7dvh), 60px);
+    line-height: 1.05;
+    letter-spacing: -.025em;
+  }
+  .dslide__body--closing blockquote {
+    margin-block-start: clamp(22px, 3.4dvh, 36px);
+    padding-inline-start: 24px;
+    border-inline-start: 3px solid var(--ugm-gold);
+  }
+  .dslide__body--closing blockquote p {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(20px, min(2vw, 3.2dvh), 30px);
+    font-style: italic;
+    line-height: 1.35;
+  }
+  .dslide__body--closing cite {
+    display: block;
+    margin-block-start: 14px;
+    color: var(--ugm-gold);
+    font-size: clamp(14px, 1.8dvh, 17px);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  /* --- Catatan presenter -------------------------------------------------- */
+
+  .dslide__notes {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    inset: auto var(--pad-x) 44px auto;
+    inline-size: min(560px, calc(100% - 2 * var(--pad-x)));
+    padding: 20px 24px;
+    border: 2px solid var(--ugm-gold);
+    background: #0b1f2e;
+    color: #fff;
+    box-shadow: 0 16px 44px rgb(0 0 0 / 32%);
+  }
+  .dslide__notes strong {
+    color: var(--ugm-gold);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .dslide__notes p { margin-block-start: 8px; color: #fff; font-size: 15px; line-height: 1.5; }
+  :global([data-deck-notes-open="true"]) .dslide__notes { display: block; }
+
+  /* --- Layar pendek: proyektor 1280x720 dan laptop 16:10 ----------------- */
+
+  @media (min-width: 901px) and (max-height: 760px) {
+    .dslide { --pad-y: 20px; row-gap: 8px; }
+    .dslide__stage :global(svg) { max-block-size: min(58dvh, 100%); }
+    .dslide__cards article { padding: 14px 18px; }
+  }
+
+  /* --- Layar sempit: pratinjau di laptop kecil dan tablet ---------------- */
 
   @media (max-width: 900px) {
-    .presentation-slide { height: auto; min-height: 100vh; min-height: 100dvh; grid-template-rows: auto auto auto; padding: 28px 28px 18px; }
-    .presentation-slide__body { grid-template-columns: 1fr; align-content: center; gap: 30px; }
-    .presentation-visual { block-size: auto; min-height: 260px; }
-    .presentation-cards { block-size: auto; grid-template-rows: none; }
-    .presentation-cards article { min-height: 150px; }
-    .presentation-flow { grid-template-columns: 1fr; }
-    .presentation-flow > div { min-height: 140px; }
-    .presentation-flow > i { transform: rotate(90deg); justify-self: center; }
-    .presentation-slide__footer { font-size: 13px; }
-    .presentation-slide__header p { font-size: 13px; }
-    .presentation-slide__header img { width: 180px; }
-    .presenter-notes { inset-inline-end: 28px; width: calc(100% - 56px); }
+    .dslide { block-size: auto; min-block-size: 100dvh; padding: 26px 26px 20px; }
+    .dslide__body--chart,
+    .dslide__body--stat,
+    .dslide__body--cards,
+    .dslide__body--divider {
+      grid-template-columns: 1fr;
+      gap: 26px;
+      align-content: center;
+    }
+    .dslide__pillar-no { font-size: clamp(80px, 22vw, 140px); }
+    .dslide__stage :global(svg) { max-block-size: none; }
+    .dslide__notes { inset-inline: 26px; inline-size: auto; }
   }
 </style>

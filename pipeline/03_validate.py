@@ -327,11 +327,44 @@ def main() -> None:
     # PROFIL LULUSAN.xlsx left 2025/2026 blank for both postgraduate levels; the
     # two dedicated workbooks delivered in September 2026 fill it, so no level
     # is missing a year any more and scene 4.7 no longer draws a gap band.
+    # 2017-2021 comes from the five-year recap tables in the 2021 volume of the
+    # archive, which stop exactly where PROFIL LULUSAN.xlsx starts. The range is
+    # asserted whole so a refresh that drops the archive shortens the chart
+    # loudly rather than quietly redrawing it as a five-year series.
     for level in ("Sarjana", "Magister", "Doktor"):
-        for year in range(2022, 2027):
+        for year in range(2017, 2027):
             assert (level, year) in by_level_year, f"lulusan {level} {year} hilang"
     assert by_level_year[("Magister", 2026)]["lulusan"] == 265
     assert by_level_year[("Doktor", 2026)]["lulusan"] == 74
+    # Faculty totals for the first five years, read off the recap sheets' own
+    # JUMLAH rows, so a misread block heading cannot pass unnoticed.
+    assert [by_level_year[("Sarjana", year)]["lulusan"] for year in range(2017, 2022)] == [685, 670, 575, 455, 480]
+    assert [by_level_year[("Magister", year)]["lulusan"] for year in range(2017, 2022)] == [349, 277, 210, 223, 156]
+    assert [by_level_year[("Doktor", year)]["lulusan"] for year in range(2017, 2022)] == [62, 53, 46, 42, 24]
+    # Study length is the block most easily crossed with "D. Usia Lulus" one
+    # heading below it: a graduation age reads as a plausible 23 years where a
+    # Sarjana degree takes between four and five.
+    for year in range(2017, 2027):
+        tahun_studi = int(by_level_year[("Sarjana", year)]["lama_studi"].split(" ")[0])
+        assert 4 <= tahun_studi <= 5, f"lama studi sarjana {year} di luar rentang wajar"
+
+    # The 2021 delivery published the postgraduate recap twice. The copies agree
+    # everywhere except one cell, reported rather than reconciled: the Data isian
+    # copy repeats Magister Fisika's 3.71 in the Magister Ilmu Komputer column,
+    # where the Rekap Data copy reads 3.4475 — the value that fits that
+    # programme's own run (3.59, 3.62, ..., 3.44, 3.49). The pipeline reads the
+    # Rekap Data copy.
+    lulusan_konflik_sumber = [
+        {
+            "berkas_dipakai": "Laporan Dekan 2021 Program Magister dan Doktor - rekap 2017-2021.xls",
+            "berkas_pembanding": "1.23. Rekap Lulusan S2 S3 5 tahun.xls",
+            "blok": "ipk_rerata",
+            "prodi": "Magister Ilmu Komputer",
+            "tahun_ajaran": "2018/2019",
+            "nilai_dipakai": 3.4475,
+            "nilai_pembanding": 3.71,
+        }
+    ]
 
 
     accreditation = load_json("accreditation.json")
@@ -616,6 +649,7 @@ def main() -> None:
         "tck_unit_mismatch": sorted(mismatched),
         "anomali_kuartal": quarter_anomalies,
         "anomali_akreditasi": akreditasi_selisih,
+        "konflik_sumber_lulusan": lulusan_konflik_sumber,
         "selisih_kepegawaian": staffing_vs_tck,
         "billing_ganda_kerja_sama": revenue["billing_ganda"],
         "verified_anchors": {

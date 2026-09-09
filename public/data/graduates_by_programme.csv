@@ -1,4 +1,24 @@
 jenjang,tahun,prodi,lulusan
+Doktor,2017,Doktor Fisika,16
+Doktor,2017,Doktor Ilmu Komputer,19
+Doktor,2017,Doktor Kimia,19
+Doktor,2017,Doktor Matematika,8
+Doktor,2018,Doktor Fisika,8
+Doktor,2018,Doktor Ilmu Komputer,14
+Doktor,2018,Doktor Kimia,26
+Doktor,2018,Doktor Matematika,5
+Doktor,2019,Doktor Fisika,9
+Doktor,2019,Doktor Ilmu Komputer,11
+Doktor,2019,Doktor Kimia,21
+Doktor,2019,Doktor Matematika,5
+Doktor,2020,Doktor Fisika,9
+Doktor,2020,Doktor Ilmu Komputer,16
+Doktor,2020,Doktor Kimia,10
+Doktor,2020,Doktor Matematika,7
+Doktor,2021,Doktor Fisika,6
+Doktor,2021,Doktor Ilmu Komputer,6
+Doktor,2021,Doktor Kimia,9
+Doktor,2021,Doktor Matematika,3
 Doktor,2022,Doktor Fisika,1
 Doktor,2022,Doktor Ilmu Komputer,12
 Doktor,2022,Doktor Kimia,7
@@ -19,6 +39,26 @@ Doktor,2026,Doktor Fisika,15
 Doktor,2026,Doktor Ilmu Komputer,31
 Doktor,2026,Doktor Kimia,19
 Doktor,2026,Doktor Matematika,9
+Magister,2017,Magister Fisika,69
+Magister,2017,Magister Ilmu Komputer,85
+Magister,2017,Magister Kimia,116
+Magister,2017,Magister Matematika,79
+Magister,2018,Magister Fisika,71
+Magister,2018,Magister Ilmu Komputer,60
+Magister,2018,Magister Kimia,96
+Magister,2018,Magister Matematika,50
+Magister,2019,Magister Fisika,55
+Magister,2019,Magister Ilmu Komputer,51
+Magister,2019,Magister Kimia,55
+Magister,2019,Magister Matematika,49
+Magister,2020,Magister Fisika,42
+Magister,2020,Magister Ilmu Komputer,55
+Magister,2020,Magister Kimia,59
+Magister,2020,Magister Matematika,67
+Magister,2021,Magister Fisika,52
+Magister,2021,Magister Ilmu Komputer,45
+Magister,2021,Magister Kimia,39
+Magister,2021,Magister Matematika,20
 Magister,2022,Magister Fisika,44
 Magister,2022,Magister Ilmu Komputer,45
 Magister,2022,Magister Kimia,36
@@ -43,6 +83,41 @@ Magister,2026,Magister Ilmu Komputer,64
 Magister,2026,Magister Kecerdasan Artifisial,39
 Magister,2026,Magister Kimia,66
 Magister,2026,Magister Matematika,44
+Sarjana,2017,S1 Elektronika dan Instrumentasi,65
+Sarjana,2017,S1 Fisika,64
+Sarjana,2017,S1 Geofisika,105
+Sarjana,2017,S1 Ilmu Komputer,105
+Sarjana,2017,S1 Kimia,204
+Sarjana,2017,S1 Matematika,74
+Sarjana,2017,S1 Statistika,68
+Sarjana,2018,S1 Elektronika dan Instrumentasi,83
+Sarjana,2018,S1 Fisika,73
+Sarjana,2018,S1 Geofisika,82
+Sarjana,2018,S1 Ilmu Komputer,123
+Sarjana,2018,S1 Kimia,172
+Sarjana,2018,S1 Matematika,83
+Sarjana,2018,S1 Statistika,54
+Sarjana,2019,S1 Elektronika dan Instrumentasi,75
+Sarjana,2019,S1 Fisika,51
+Sarjana,2019,S1 Geofisika,60
+Sarjana,2019,S1 Ilmu Komputer,87
+Sarjana,2019,S1 Kimia,173
+Sarjana,2019,S1 Matematika,61
+Sarjana,2019,S1 Statistika,68
+Sarjana,2020,S1 Elektronika dan Instrumentasi,90
+Sarjana,2020,S1 Fisika,64
+Sarjana,2020,S1 Geofisika,47
+Sarjana,2020,S1 Ilmu Komputer,81
+Sarjana,2020,S1 Kimia,90
+Sarjana,2020,S1 Matematika,46
+Sarjana,2020,S1 Statistika,37
+Sarjana,2021,S1 Elektronika dan Instrumentasi,77
+Sarjana,2021,S1 Fisika,51
+Sarjana,2021,S1 Geofisika,39
+Sarjana,2021,S1 Ilmu Komputer,82
+Sarjana,2021,S1 Kimia,149
+Sarjana,2021,S1 Matematika,37
+Sarjana,2021,S1 Statistika,45
 Sarjana,2022,S1 Elektronika dan Instrumentasi,61
 Sarjana,2022,S1 Fisika,71
 Sarjana,2022,S1 Geofisika,37

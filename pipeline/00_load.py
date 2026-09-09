@@ -13,6 +13,8 @@ from utils import (
     ACADEMIC_DIR,
     DEKAN_2026_DIR,
     HEALTH_DIR,
+    HISTORICAL_REKAP_DIR,
+    HISTORICAL_TABEL1_DIR,
     LOADED_DIR,
     MAPPINGS_DIR,
     PARTNERSHIP_DIR,
@@ -609,7 +611,7 @@ def load_graduates() -> pd.DataFrame:
     block = frame.groupby(["jenjang", "tahun"]).agg(lulusan=("lulusan", "sum"), total=("total_lulusan", "max"))
     empty = block[(block["lulusan"] == 0) & block["total"].isna()].index
     frame = frame[~frame.set_index(["jenjang", "tahun"]).index.isin(empty)].reset_index(drop=True)
-    return pd.concat([frame, load_postgraduate_graduates()], ignore_index=True)
+    return pd.concat([load_historical_graduates(), frame, load_postgraduate_graduates()], ignore_index=True)
 
 
 # The two postgraduate workbooks delivered in September 2026 for academic year
@@ -699,6 +701,264 @@ def load_postgraduate_graduates() -> pd.DataFrame:
                 "total_lulusan": float(total),
             })
     return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# Historical graduates, academic years 2016/2017-2020/2021
+#
+# PROFIL LULUSAN.xlsx starts at 2021/2022, so every graduate chart began in
+# 2022. The 2021 volume of the same delivery carries five-year recap tables that
+# stop exactly where that workbook starts, which makes one continuous 2017-2026
+# series rather than two adjoining ones.
+#
+# Both recaps are read positionally: each sheet is one grid of stacked blocks
+# with merged headers, and a row is assigned to a block by the leading label
+# above it ("A. Jumlah", "D. Jumlah Lulusan") rather than by a fixed offset, so
+# an inserted spacer row cannot silently shift a whole block.
+# ---------------------------------------------------------------------------
+
+# Academic year label -> the calendar year the report files it under. The 2026
+# workbook uses the closing year (2021/2022 is filed as 2022), and these five
+# continue that run backwards without overlapping it.
+HISTORICAL_YEARS = {
+    "2016/2017": 2017,
+    "2017/2018": 2018,
+    "2018/2019": 2019,
+    "2019/2020": 2020,
+    "2020/2021": 2021,
+}
+
+# The recap sheets abbreviate programme names; PROFIL LULUSAN.xlsx spells them
+# out. Mapping here rather than later keeps one programme on one line of the
+# chart instead of splitting "Elins" from "S1 Elektronika dan Instrumentasi".
+HISTORICAL_S1_PROGRAMMES = {
+    "Fisika": "S1 FISIKA",
+    "Geofisika": "S1 GEOFISIKA",
+    "Elins": "S1 ELEKTRONIKA DAN INSTRUMENTASI",
+    "Ilmu Komputer": "S1 ILMU KOMPUTER",
+    "Kimia": "S1 KIMIA",
+    "Matematika": "S1 MATEMATIKA",
+    "Statistika": "S1 STATISTIKA",
+    "Aktuaria": "S1 ILMU AKTUARIA",
+}
+
+# Column layout of the postgraduate recap: four Magister programmes from column
+# 2, then the four Doktor ones from column 6, in that order under every block.
+HISTORICAL_POSTGRADUATE_COLUMNS = {
+    "Magister": (2, ["Magister Fisika", "Magister Ilmu Komputer", "Magister Kimia", "Magister Matematika"]),
+    "Doktor": (6, ["Doktor Fisika", "Doktor Ilmu Komputer", "Doktor Kimia", "Doktor Matematika"]),
+}
+
+HISTORICAL_S1_FILE = "1.18. Rekap Kelulusan S1 5 tahun.xls"
+HISTORICAL_S1_SHEET = "JML LULUSAN"
+HISTORICAL_POSTGRADUATE_FILE = "Laporan Dekan 2021 Program Magister dan Doktor - rekap 2017-2021.xls"
+HISTORICAL_POSTGRADUATE_SHEET = "Rekap Lulusan 2016-2020"
+# The same five blocks, republished as table 1.23 in the Data isian set. Read
+# only to check the two copies against each other.
+HISTORICAL_POSTGRADUATE_MIRROR = "1.23. Rekap Lulusan S2 S3 5 tahun.xls"
+
+HISTORICAL_S1_BLOCKS = {
+    "A. Jumlah": "lulusan",
+    "B. Rata-Rata IPK": "ipk_rerata",
+    "C. Masa Studi": "lama_studi",
+}
+HISTORICAL_POSTGRADUATE_BLOCKS = {
+    "A. Rata-Rata IPK": "ipk_rerata",
+    "B. Rata-Rata Lama Studi": "lama_studi",
+    "C. Rata-Rata TOEFL": "toefl",
+    "D. Jumlah Lulusan": "lulusan",
+}
+# Any "A. ", "B. " ... heading opens a block. Both sheets carry blocks this
+# loader does not want — "D. Usia Lulus" on the S1 sheet, "E. Rekapitulasi" on
+# the postgraduate one — and they have to close the block above them. Matching
+# only the wanted headings would leave the previous block open and let graduation
+# age overwrite study length, which reads as a plausible 23 years.
+HISTORICAL_BLOCK_HEADING = re.compile(r"^[A-Z]\.\s")
+
+
+def read_historical_s1_blocks() -> dict[str, dict[str, list[float | None]]]:
+    """Split the S1 recap sheet into its labelled blocks, keyed by programme.
+
+    Returns ``{block: {programme: [value per academic year]}}``, the five years
+    in the order of ``HISTORICAL_YEARS``.
+    """
+    grid = read_workbook(HISTORICAL_TABEL1_DIR / HISTORICAL_S1_FILE, HISTORICAL_S1_SHEET)
+    blocks: dict[str, dict[str, list[float | None]]] = {}
+    current: str | None = None
+    for _, row in grid.iterrows():
+        label = text_cell(row, 0)
+        if HISTORICAL_BLOCK_HEADING.match(label):
+            current = next((key for text, key in HISTORICAL_S1_BLOCKS.items() if label.startswith(text)), None)
+            if current:
+                blocks[current] = {}
+            continue
+        programme = text_cell(row, 1)
+        if current is None or programme not in HISTORICAL_S1_PROGRAMMES:
+            continue
+        # Columns 2..6 are the five academic years. A dash means the programme
+        # had no graduating cohort yet and reads as None, never as zero.
+        blocks[current][programme] = [numeric_cell(row, index) for index in range(2, 7)]
+    missing = set(HISTORICAL_S1_BLOCKS.values()) - set(blocks)
+    if missing:
+        raise ValueError(f"Blok tidak ditemukan pada {HISTORICAL_S1_FILE}: {sorted(missing)}")
+    return blocks
+
+
+def read_historical_postgraduate_blocks(path: Path) -> dict[str, dict[str, list[float | None]]]:
+    """Split a postgraduate recap sheet into its labelled blocks by programme."""
+    grid = read_workbook(path, HISTORICAL_POSTGRADUATE_SHEET)
+    blocks: dict[str, dict[str, list[float | None]]] = {
+        key: {} for key in HISTORICAL_POSTGRADUATE_BLOCKS.values()
+    }
+    current: str | None = None
+    for _, row in grid.iterrows():
+        label = text_cell(row, 0)
+        if HISTORICAL_BLOCK_HEADING.match(label):
+            current = next(
+                (key for text, key in HISTORICAL_POSTGRADUATE_BLOCKS.items() if label.startswith(text)), None
+            )
+            continue
+        if current is None or label not in HISTORICAL_YEARS:
+            continue
+        for offset, programmes in HISTORICAL_POSTGRADUATE_COLUMNS.values():
+            for position, programme in enumerate(programmes):
+                blocks[current].setdefault(programme, []).append(numeric_cell(row, offset + position))
+    missing = [key for key, values in blocks.items() if not values]
+    if missing:
+        raise ValueError(f"Blok tidak ditemukan pada {path.name}: {sorted(missing)}")
+    return blocks
+
+
+def weighted_by_graduates(values: list[float | None], counts: list[float | None]) -> float | None:
+    """Average ``values`` weighted by how many graduates each one describes."""
+    numerator = 0.0
+    denominator = 0.0
+    for value, count in zip(values, counts):
+        if value is None or not count:
+            continue
+        numerator += value * count
+        denominator += count
+    return None if denominator == 0 else numerator / denominator
+
+
+def format_years_as_text(years: float) -> str:
+    """Render decimal years as the "4 th 7 bln" text the 2026 workbook uses."""
+    months = int(round(years * 12))
+    return f"{months // 12} th {months % 12} bln"
+
+
+def load_historical_graduates() -> pd.DataFrame:
+    """Graduates for 2016/2017-2020/2021 from the 2021 five-year recap tables.
+
+    Faculty-level IPK and study length are recomputed as means weighted by the
+    number of graduates per programme. Both sheets carry a "Rata-Rata" row of
+    their own, but it is a plain mean across programmes: in 2016/2017 that lets
+    Matematika's 74 graduates weigh as much as Kimia's 204, and it reads 3.22
+    where the weighted figure is 3.23. The 2025/2026 postgraduate workbooks are
+    already weighted this way, so the whole series follows one rule.
+    """
+    rows: list[dict] = []
+    years = list(HISTORICAL_YEARS.items())
+
+    s1 = read_historical_s1_blocks()
+    for position, (academic_year, year) in enumerate(years):
+        counts = {programme: values[position] for programme, values in s1["lulusan"].items()}
+        programmes = list(counts)
+        total = sum(value for value in counts.values() if value)
+        weighted = {
+            metric: weighted_by_graduates(
+                [s1[metric].get(programme, [None] * len(years))[position] for programme in programmes],
+                [counts[programme] for programme in programmes],
+            )
+            for metric in ("ipk_rerata", "lama_studi")
+        }
+        for programme in programmes:
+            graduates = counts[programme]
+            # A programme with no graduating cohort yet — Ilmu Aktuaria, whose
+            # first intake was 2019/2020 — is left out rather than written as a
+            # zero, which would draw a real cohort of nobody.
+            if not graduates:
+                continue
+            rows.append({
+                "jenjang": "Sarjana",
+                "tahun": year,
+                "tahun_ajaran": academic_year,
+                "prodi": HISTORICAL_S1_PROGRAMMES[programme],
+                "lulusan": graduates,
+                "ipk_rerata": None if weighted["ipk_rerata"] is None else round(weighted["ipk_rerata"], 2),
+                # The recap writes study length in decimal years (4.76); the 2026
+                # workbook writes the same measure as "4 th 7 bln". Converted here
+                # so the column never carries two units at once.
+                "lama_studi": "" if weighted["lama_studi"] is None else format_years_as_text(weighted["lama_studi"]),
+                # Cumlaude counts were not recorded before 2021/2022.
+                "cumlaude": None,
+                "total_lulusan": float(total),
+            })
+
+    postgraduate = read_historical_postgraduate_blocks(
+        HISTORICAL_REKAP_DIR / HISTORICAL_POSTGRADUATE_FILE
+    )
+    for jenjang, (_, programmes) in HISTORICAL_POSTGRADUATE_COLUMNS.items():
+        for position, (academic_year, year) in enumerate(years):
+            counts = {
+                programme: postgraduate["lulusan"].get(programme, [None] * len(years))[position]
+                for programme in programmes
+            }
+            total = sum(value for value in counts.values() if value)
+            weighted = {
+                metric: weighted_by_graduates(
+                    [postgraduate[metric].get(programme, [None] * len(years))[position] for programme in programmes],
+                    [counts[programme] for programme in programmes],
+                )
+                for metric in ("ipk_rerata", "lama_studi", "toefl")
+            }
+            for programme in programmes:
+                graduates = counts[programme]
+                if not graduates:
+                    continue
+                rows.append({
+                    "jenjang": jenjang,
+                    "tahun": year,
+                    "tahun_ajaran": academic_year,
+                    "prodi": programme,
+                    "lulusan": graduates,
+                    "ipk_rerata": None if weighted["ipk_rerata"] is None else round(weighted["ipk_rerata"], 2),
+                    # Postgraduate study length is already in months, the unit
+                    # PROFIL LULUSAN.xlsx uses for these two levels.
+                    "lama_studi": "" if weighted["lama_studi"] is None else f"{weighted['lama_studi']:.2f}",
+                    "toefl": None if weighted["toefl"] is None else round(weighted["toefl"], 1),
+                    "total_lulusan": float(total),
+                })
+
+    return pd.DataFrame(rows)
+
+
+def compare_historical_postgraduate_copies() -> list[dict]:
+    """Cells where the two copies of the postgraduate recap disagree.
+
+    The 2021 delivery published the same five blocks twice, once in the Rekap
+    Data folder and once as table 1.23. They agree everywhere but a handful of
+    cells, so the copies are compared rather than one being trusted in silence.
+    """
+    left = read_historical_postgraduate_blocks(HISTORICAL_REKAP_DIR / HISTORICAL_POSTGRADUATE_FILE)
+    right = read_historical_postgraduate_blocks(HISTORICAL_TABEL1_DIR / HISTORICAL_POSTGRADUATE_MIRROR)
+    years = list(HISTORICAL_YEARS)
+    differences: list[dict] = []
+    for metric, programmes in left.items():
+        for programme, values in programmes.items():
+            other = right.get(metric, {}).get(programme, [None] * len(values))
+            for position, (a, b) in enumerate(zip(values, other)):
+                if a is None and b is None:
+                    continue
+                if a is None or b is None or abs(a - b) > 1e-9:
+                    differences.append({
+                        "blok": metric,
+                        "prodi": programme,
+                        "tahun_ajaran": years[position],
+                        "rekap_data": a,
+                        "tabel_1_23": b,
+                    })
+    return differences
 
 
 def load_achievements() -> pd.DataFrame:

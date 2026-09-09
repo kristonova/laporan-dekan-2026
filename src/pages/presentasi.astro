@@ -1,349 +1,943 @@
 ---
+/**
+ * Bahan tayang Rapat Senat Terbuka — Laporan Dekan FMIPA UGM 2021–2026.
+ *
+ * Aturan pokok halaman ini: bahan tayang TIDAK PERNAH menggambar ulang datanya
+ * sendiri. Setiap grafik di sini adalah komponen yang sama persis dengan yang
+ * dipakai halaman laporan, dengan berkas turunan dan properti yang sama, hanya
+ * dengan naskah yang dipadatkan untuk dibaca dari kursi belakang. Karena itu
+ * angka di layar rapat mustahil berselisih dengan angka di web data story yang
+ * dipindai penonton lewat QR.
+ *
+ * Delapan belas slide, lima pilar - taksonomi yang sama dengan halaman laporan,
+ * supaya penonton yang berpindah dari layar ke ponselnya menemukan pembagian
+ * yang sama. Slide pemisah pilar sengaja dihitung sebagai slide penuh: ia hanya
+ * menahan tiga detik, dan itulah yang memberi jeda antar-babak.
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PresentationSlide from "../components/PresentationSlide.astro";
+import LineAreaChart from "../components/charts/LineAreaChart.astro";
+import StackedBarChart from "../components/charts/StackedBarChart.astro";
+import HorizontalBarChart from "../components/charts/HorizontalBarChart.astro";
+import TrendRows from "../components/charts/TrendRows.astro";
+import DotMatrix from "../components/charts/DotMatrix.astro";
+import WorldMap from "../components/charts/WorldMap.astro";
+import PointMap from "../components/charts/PointMap.astro";
+import ChoroplethMap from "../components/charts/ChoroplethMap.astro";
+import { ACCENT, DEPT, SEQ, UGM_BLUE } from "../lib/palette";
+import { centroidForProvince } from "../lib/province-centroids";
+import { countryNameId } from "../lib/country-centroids";
 import { withBase } from "../lib/paths";
 import "../styles/presentation.css";
+import "../styles/deck-motion.css";
+
 import citationsRaw from "../data/derived/citations_by_year.json";
 import countriesRaw from "../data/derived/collab_countries.json";
-import collabShareRaw from "../data/derived/collab_share.json";
 import fundingRaw from "../data/derived/funding_by_year.json";
-import partnershipRevenueRaw from "../data/derived/partnership_revenue.json";
-import professorTenureRaw from "../data/derived/professor_tenure.json";
-import lecturerRatioRaw from "../data/derived/lecturer_ratio.json";
-import schoolMouRaw from "../data/derived/school_mou.json";
-import institutionRaw from "../data/derived/institution_snapshot.json";
-import journalsRaw from "../data/derived/journals.json";
-import lecturersRaw from "../data/derived/lecturers_positions.json";
 import outreachRaw from "../data/derived/outreach_by_year.json";
 import outreachPointsRaw from "../data/derived/outreach_points.json";
-import publicationsRaw from "../data/derived/publications_by_year_dept.json";
-import sdgRaw from "../data/derived/sdg_matrix.json";
-import sintaRaw from "../data/derived/sinta_by_dept.json";
-import studentResearchRaw from "../data/derived/student_research_by_year.json";
-import tckRaw from "../data/derived/tck_2026_joined.json";
-import topicsRaw from "../data/derived/topics.json";
-import valueModelRaw from "../data/derived/value_model.json";
-import snapshotRaw from "../data/derived/snapshot.json";
 import partnershipsRaw from "../data/derived/partnerships_by_year.json";
-import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
-import admissionsRaw from "../data/derived/admissions_by_year.json";
-import graduatesRaw from "../data/derived/graduates_profile.json";
-import achievementsRaw from "../data/derived/student_achievements.json";
+import partnershipRevenueRaw from "../data/derived/partnership_revenue.json";
+import publicationsRaw from "../data/derived/publications_by_year_dept.json";
+import professorTenureRaw from "../data/derived/professor_tenure.json";
+import institutionRaw from "../data/derived/institution_snapshot.json";
+import accreditationRaw from "../data/derived/accreditation.json";
+import lecturersRaw from "../data/derived/lecturers_positions.json";
+import activeStudentsRaw from "../data/derived/active_students.json";
 import tracerSectorsRaw from "../data/derived/tracer_sectors.json";
 import tracerSummaryRaw from "../data/derived/tracer_summary.json";
-import hpuYearlyRaw from "../data/derived/hpu_posbindu_tahunan.json";
-import origins from "../data/derived/students_origins.json";
-import studentSummaryRaw from "../data/derived/students_summary.json";
-import studentProgrammeRaw from "../data/derived/students_by_programme.json";
-import studentPathwayRaw from "../data/derived/students_by_pathway.json";
-import studentBackgroundRaw from "../data/derived/students_background.json";
-import studentOutcomeRaw from "../data/derived/students_cohort_outcome.json";
+import tckRaw from "../data/derived/tck_2026_joined.json";
+import snapshotRaw from "../data/derived/snapshot.json";
 import studentAccessRaw from "../data/derived/students_access.json";
+import studentSummaryRaw from "../data/derived/students_summary.json";
+import studentProvinceRaw from "../data/derived/students_by_province.json";
 
-const format = (value: number, digits = 2) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
-const tone = (status: string) => ({ tercapai: "good", mendekati: "near", tertinggal: "behind", meleset: "missed" }[status] ?? "neutral");
-const tckByNo = new Map(tckRaw.map((row) => [String(row.no), row]));
-const tck = (no: string) => {
-  const row = tckByNo.get(no);
-  if (!row) throw new Error(`Indikator TCK ${no} tidak ditemukan`);
+const format = (value: number, digits = 0) =>
+  new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
+const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string; scival: string };
+const homeUrl = withBase("/");
+const BILLION = 1_000_000_000;
+
+/* --- Sitasi -------------------------------------------------------------- */
+/* Rentangnya berhenti di 2025 dan itu disengaja: berkas sitasi P2M memang
+   berakhir di sana, sementara ekspor SciVal (publikasi, kolaborasi) berjalan
+   sampai 2026. Menyamakan keduanya justru akan salah. */
+const citationRows = citationsRaw as any[];
+const citations: any[] = citationRows.filter((row) => row.year >= 2019 && row.year <= 2025);
+const citationTotal = citationRows.reduce((sum, row) => sum + row.citations, 0);
+const citationPeriod = citationRows
+  .filter((row) => row.year >= 2021 && row.year <= 2025)
+  .reduce((sum, row) => sum + row.citations, 0);
+const citationShare = (citationPeriod / citationTotal) * 100;
+const citationPeak = citationRows.find((row) => row.year === 2024)?.citations ?? 0;
+const citationFirst = citationRows.find((row) => row.year === 2021)?.citations ?? 0;
+
+/* --- Publikasi per departemen -------------------------------------------- */
+const departmentKey: Record<string, string> = {
+  Fisika: "fisika",
+  "Ilmu Komputer dan Elektronika": "ike",
+  Kimia: "kimia",
+  Matematika: "matematika",
+  "Belum terpetakan": "unmapped",
+};
+const publicationYears = [...new Set((publicationsRaw as any[]).map((row) => row.year))].sort((a, b) => a - b);
+const publications: any[] = publicationYears.map((year) => {
+  const row: Record<string, any> = { year };
+  Object.values(departmentKey).forEach((key) => { row[key] = 0; });
+  (publicationsRaw as any[])
+    .filter((item) => item.year === year)
+    .forEach((item) => { row[departmentKey[item.department] ?? "unmapped"] += item.count; });
   return row;
-};
-const statusItem = (no: string, label: string, target: "target_dinilai" | "target_tw4" = "target_dinilai") => {
-  const row = tck(no);
-  return { label, value: row.capaian_dinilai, max: row[target], display: `${format(row.capaian_dinilai)} / ${format(row[target])}`, status: tone(row.status_kuartal) };
-};
-const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string };
-
-const citationTotal = citationsRaw.reduce((sum, row) => sum + row.citations, 0);
-const citationRecent = citationsRaw.filter((row) => row.year >= 2021 && row.year <= 2025).reduce((sum, row) => sum + row.citations, 0);
-const citationByYear = new Map(citationsRaw.map((row) => [row.year, row.citations]));
-const citationStart = Math.min(...citationsRaw.map((row) => row.year));
-const tckAchieved = tckRaw.filter((row) => row.status_kuartal === "tercapai").length;
-const tckAnnual = tckRaw.filter((row) => row.status_thd_tahunan === "tercapai").length;
-const tckNear = tckRaw.filter((row) => row.status_kuartal === "mendekati").length;
-const tckBehind = tckRaw.length - tckAchieved - tckNear;
-const publicationTotals = new Map<string, number>();
-publicationsRaw.forEach((row) => publicationTotals.set(row.department, (publicationTotals.get(row.department) ?? 0) + row.count));
-/* Same figures the report page states, read from the same aggregate rather
-   than retyped: the deck and the report must never disagree. */
-const publicationTotal = publicationsRaw.reduce((sum, row) => sum + row.count, 0);
-const publicationUnmapped = publicationTotals.get("Belum terpetakan") ?? 0;
-const publicationMappedShare = ((publicationTotal - publicationUnmapped) / publicationTotal) * 100;
-const publicationYearsCovered = [...new Set(publicationsRaw.map((row) => row.year))].sort((a, b) => a - b);
-const collabFrom = collabShareRaw.find((row) => row.year === 2021) ?? collabShareRaw[0];
-const collabTo = collabShareRaw.find((row) => row.year === 2025) ?? collabShareRaw[collabShareRaw.length - 1];
-const publicationItems = [
-  ["Kimia", "Kimia", "good"],
-  ["Fisika", "Fisika", undefined],
-  ["Ilmu Komputer dan Elektronika", "Ilmu Komputer & Elektronika", undefined],
-  ["Matematika", "Matematika", undefined],
-  ["Belum terpetakan", "Belum terpetakan", "behind"],
-].map(([key, label, status]) => ({ label, value: publicationTotals.get(key ?? "") ?? 0, display: format(publicationTotals.get(key ?? "") ?? 0), status }));
-const countryNames: Record<string, string> = { Japan: "Jepang", "South Korea": "Korea Selatan", Germany: "Jerman" };
-const countryItems = countriesRaw.slice(0, 5).map((row) => ({ label: countryNames[row.country] ?? row.country, value: row.n, display: format(row.n) }));
-const positionTotals = new Map<string, number>();
-lecturersRaw.forEach((row) => positionTotals.set(row.position, (positionTotals.get(row.position) ?? 0) + row.n));
-const professorTotal = positionTotals.get("Guru Besar") ?? 0;
-const professorShare = institutionRaw.lecturers ? (professorTotal / institutionRaw.lecturers) * 100 : 0;
-const levelSummary = Object.entries(institutionRaw.study_programmes_by_level)
-  .map(([level, count]) => `${count} ${level}`)
-  .join(", ");
-const sintaByDepartment = new Map(sintaRaw.map((row) => [row.department, row]));
-const fundingByYear = new Map(fundingRaw.filter((row) => row.type === "Total").map((row) => [row.year, row.amount / 1_000_000_000]));
-const outreachByYear = new Map(outreachRaw.map((row) => [row.year, row.n]));
-const outreachArchiveMissing = outreachPointsRaw.filter((row) => row.location_status === "missing").reduce((sum, row) => sum + row.n, 0);
-const sdgByNumber = new Map(sdgRaw.map((row) => [row.sdg, row]));
-const journalTotals = new Map<string, number>();
-journalsRaw.forEach((row) => journalTotals.set(row.journal, (journalTotals.get(row.journal) ?? 0) + row.n));
-const journalLabels: Record<string, string> = {
-  "Indonesian Journal of Chemistry (IJC)": "Indonesian Journal of Chemistry",
-  "Indonesian Journal of Computing and Cybernetics Systems (IJCCS)": "IJCCS",
-  "Indonesian Journal of Electronics and Instrumentation Systems (IJEIS)": "IJEIS",
-  "Jurnal Matematika Thales (JMT)": "Jurnal Matematika Thales",
-};
-const journalItems = [...journalTotals]
-  .filter(([name]) => name !== "Belum terklasifikasi")
-  .map(([name, value]) => ({ label: journalLabels[name] ?? name, value, display: format(value) }));
-const journalClassified = journalItems.reduce((sum, item) => sum + item.value, 0);
-const studentResearchTotal = studentResearchRaw.reduce((sum, row) => sum + row.n, 0);
-const pillarSummary = [
-  ["Reputasi", "Reputasi akademik", "good"],
-  ["Kontribusi", "Kontribusi terhadap bangsa", "missed"],
-  ["Employability", "Employability", "near"],
-  ["Kesejahteraan", "Kesejahteraan", "good"],
-].map(([key, label, status]) => {
-  const rows = tckRaw.filter((row) => row.pilar === key);
-  return { label, display: `${rows.filter((row) => row.status_kuartal === "tercapai").length} / ${rows.length}`, status };
 });
-const tckFlagged = tckRaw.filter((row) => row.anomali).length;
+const publicationSeries = [
+  { key: "fisika", label: "Fisika", color: DEPT.fisika, pattern: "solid" },
+  { key: "ike", label: "Ilmu Komputer & Elektronika", color: DEPT.ike, pattern: "diagonal" },
+  { key: "kimia", label: "Kimia", color: DEPT.kimia, pattern: "dots" },
+  { key: "matematika", label: "Matematika", color: DEPT.matematika, pattern: "cross" },
+  { key: "unmapped", label: "Belum terpetakan", color: DEPT.unmapped, pattern: "diagonal" },
+] as any;
+const publicationTotal = (publicationsRaw as any[]).reduce((sum, row) => sum + row.count, 0);
+const publicationUnmapped = (publicationsRaw as any[])
+  .filter((row) => row.department === "Belum terpetakan")
+  .reduce((sum, row) => sum + row.count, 0);
+const publicationMappedShare = ((publicationTotal - publicationUnmapped) / publicationTotal) * 100;
 
-/* --- Pilar 5: profil mahasiswa ------------------------------------------ */
+/* --- Kolaborasi internasional -------------------------------------------- */
+const collabCountries: any[] = (countriesRaw as any[]).slice(0, 12).map((row) => ({
+  name: countryNameId(row.country),
+  value: row.n,
+  iso3: row.iso3,
+}));
+const collabTop = collabCountries[0];
+
+/* --- Dana riset ----------------------------------------------------------- */
+const funding: any[] = (fundingRaw as any[])
+  .filter((row) => row.type === "Total" && row.year >= 2019 && row.year <= 2025)
+  .map((row) => ({ year: row.year, amount: row.amount / BILLION }));
+const fundingByYear = new Map(funding.map((row) => [row.year, row.amount]));
+const funding2021 = fundingByYear.get(2021) ?? 0;
+const funding2024 = fundingByYear.get(2024) ?? 0;
+const fundingMultiple = funding2021 > 0 ? funding2024 / funding2021 : 0;
+
+/* --- Pengabdian ----------------------------------------------------------- */
+/* Titik peta disusun persis seperti di halaman laporan: kegiatan yang provinsinya
+   tercatat dipetakan ke centroid provinsi, sisanya dilaporkan sebagai satu
+   kelompok "belum dapat dipetakan" - dilaporkan, bukan dibuang diam-diam. */
+const outreachMap = new Map<string, any>();
+const outreachUnmapped = new Map<number, number>();
+for (const row of outreachPointsRaw as any[]) {
+  if (!row.year || row.year < 2021 || row.year > 2025) continue;
+  const centroid = centroidForProvince(row.province);
+  if (!centroid || row.location_status !== "recorded") {
+    outreachUnmapped.set(row.year, (outreachUnmapped.get(row.year) ?? 0) + row.n);
+    continue;
+  }
+  const key = `${row.year}|${row.province}`;
+  const current = outreachMap.get(key) ?? {
+    year: row.year, label: row.province, lat: centroid[0], lng: centroid[1],
+    value: 0, detail: "Centroid provinsi pada batas GeoJSON",
+  };
+  current.value += row.n;
+  outreachMap.set(key, current);
+}
+const outreachPoints: any[] = [
+  ...outreachMap.values(),
+  ...[...outreachUnmapped].map(([year, value]) => ({
+    year, label: "Lokasi belum dapat dipetakan", lat: Number.NaN, lng: Number.NaN, value,
+    detail: "Lokasi kosong, daring, lintas provinsi, atau di luar Indonesia",
+  })),
+];
+const outreachByYear = new Map((outreachRaw as any[]).map((row) => [row.year, row.n]));
+const outreach2021 = outreachByYear.get(2021) ?? 0;
+const outreach2025 = outreachByYear.get(2025) ?? 0;
+const outreachProvinces = new Set([...outreachMap.values()].map((row) => row.label)).size;
+
+/* --- Kerja sama ----------------------------------------------------------- */
+const partnershipByYear = new Map<number, number>();
+(partnershipsRaw as any[]).forEach((row) => {
+  partnershipByYear.set(row.tahun, (partnershipByYear.get(row.tahun) ?? 0) + row.n);
+});
+const revenue = partnershipRevenueRaw as any;
+
+/* --- Lintasan lima tahun --------------------------------------------------
+   Slide pengganti "linimasa peristiwa". Peristiwa institusi (peluncuran alat,
+   penghargaan, kurikulum) tidak berada di pangkalan data mana pun, jadi
+   linimasa berbasis peristiwa akan menjadi klaim tanpa bukti di forum senat.
+   Empat lintasan ini menyampaikan hal yang sama - krisis, pemulihan, puncak -
+   dengan angka yang bisa ditunjuk sumbernya satu per satu. Skala per baris
+   karena keempatnya berbeda satuan dan berbeda orde besaran. */
+const journeyYears = [2021, 2022, 2023, 2024, 2025];
+const journeyRows: any[] = [
+  {
+    label: "Sitasi karya ilmiah",
+    color: ACCENT.navy,
+    values: journeyYears.map((year) => citationRows.find((row) => row.year === year)?.citations ?? null),
+  },
+  {
+    label: "Dana riset (Rp miliar)",
+    color: ACCENT.orange,
+    values: journeyYears.map((year) => fundingByYear.get(year) ?? null),
+  },
+  {
+    label: "Kegiatan pengabdian",
+    color: ACCENT.teal,
+    values: journeyYears.map((year) => outreachByYear.get(year) ?? null),
+  },
+  {
+    label: "Dokumen kerja sama",
+    color: ACCENT.amber,
+    values: journeyYears.map((year) => partnershipByYear.get(year) ?? null),
+  },
+];
+
+/* --- Potret institusi ------------------------------------------------------ */
+const accreditation = accreditationRaw as any;
+const activeStudents = (activeStudentsRaw as any[]).reduce((sum, row) => sum + row.mahasiswa, 0);
+const activePeriod = [...new Set((activeStudentsRaw as any[]).map((row) => row.tahun_ajaran))][0];
+const positionCounts = new Map<string, number>();
+(lecturersRaw as any[]).forEach((row) => positionCounts.set(row.position, (positionCounts.get(row.position) ?? 0) + row.n));
+const professorCount = positionCounts.get("Guru Besar") ?? 0;
+const seniorCount = professorCount + (positionCounts.get("Lektor Kepala") ?? 0) + (positionCounts.get("Lektor") ?? 0);
+const seniorShare = (seniorCount / institutionRaw.lecturers) * 100;
+const doctoralShare = (institutionRaw.lecturer_doctoral / institutionRaw.lecturers) * 100;
+const portraitCards = [
+  { label: "Dosen", value: format(institutionRaw.lecturers), description: `${format(institutionRaw.lecturer_doctoral)} bergelar doktor · ${format(doctoralShare, 1)}%` },
+  { label: "Tenaga kependidikan", value: format(institutionRaw.academic_staff), description: "Roster SIMASTER, 3 September 2026" },
+  { label: "Program studi", value: format(institutionRaw.study_programmes), description: `Seluruhnya terakreditasi Unggul · ${format(accreditation.prodi_internasional)} berakreditasi internasional` },
+  { label: "Laboratorium", value: format(institutionRaw.laboratories), description: "Tersebar di empat departemen" },
+  { label: "Mahasiswa aktif", value: format(activeStudents), description: `Semester gasal ${activePeriod}` },
+  { label: "Guru Besar", value: format(professorCount), description: `${format(seniorShare, 1)}% dosen memegang jabatan Lektor ke atas` },
+];
+
+/* --- Employability -------------------------------------------------------- */
+const tracerSummary = tracerSummaryRaw as any;
+const tracerRamp = [SEQ[700], SEQ[550], SEQ[400], SEQ[250], SEQ[100]];
+/* Dua baris yang bukan sektor - "Belum bekerja" dan sisa "Lainnya" - dikeluarkan
+   dari batang di layar dan dilaporkan sebagai kalimat di bawah angka. Pada
+   halaman laporan keduanya tetap tampil sebagai baris abu-abu netral; di sini
+   keduanya hanya berjumlah empat responden dan pada jarak proyeksi menjadi
+   batang setipis satu piksel yang justru menyesatkan. */
+const tracerNonSector = (tracerSectorsRaw as any[])
+  .filter((row) => row.sektor === "Belum bekerja" || row.sektor === "Lainnya")
+  .reduce((sum, row) => sum + row.n, 0);
+const tracerRanked = (tracerSectorsRaw as any[])
+  .filter((row) => row.sektor !== "Belum bekerja" && row.sektor !== "Lainnya")
+  .sort((a, b) => b.n - a.n);
+const tracerSectors: any[] = tracerRanked.map((row, index) => ({
+  label: row.sektor,
+  value: row.n,
+  color: tracerRamp[Math.min(tracerRamp.length - 1, Math.floor((index / Math.max(1, tracerRanked.length - 1)) * tracerRamp.length))],
+}));
+const tracerRealSectors = tracerRanked.length;
+
+/* --- Mahasiswa & akses ----------------------------------------------------- */
 const students = studentSummaryRaw as any;
 const studentAccess = studentAccessRaw as any;
-const studentBackground = studentBackgroundRaw as any;
-const studentYearRows = students.per_tahun as any[];
-const studentFirst = studentYearRows[0];
-const degreeProgrammes = [...new Set((studentProgrammeRaw as any[]).filter((row) => row.jenjang === "Sarjana").map((row) => row.prodi as string))];
-const genderByProgramme = degreeProgrammes.map((prodi) => {
-  const rows = (studentProgrammeRaw as any[]).filter((item) => item.jenjang === "Sarjana" && item.prodi === prodi);
-  const perempuan = rows.reduce((sum, item) => sum + item.perempuan, 0);
-  const laki = rows.reduce((sum, item) => sum + item.laki, 0);
-  return { prodi, share: (perempuan / Math.max(1, perempuan + laki)) * 100 };
-}).sort((a, b) => b.share - a.share);
-const pathwayTotals = [...new Set((studentPathwayRaw as any[]).map((row) => row.jalur as string))]
-  .map((name) => ({
-    name,
-    total: (studentPathwayRaw as any[]).filter((row) => row.jalur === name).reduce((sum, row) => sum + (row.n ?? 0), 0),
-  }))
-  .sort((a, b) => b.total - a.total);
-const guardianTotals = (studentBackground.pekerjaan_wali_total as any[]).filter((row) => row.n !== null);
-const deckPillarSummary = [
-  ...pillarSummary,
-  { label: "Mahasiswa & akses", display: `${format(origins.total)} rekaman`, status: "neutral" },
-];
-const cohortFirst = (status: string) =>
-  (studentOutcomeRaw as any[]).find((row) => row.angkatan === students.tahun_awal && row.status === status)?.n ?? 0;
-const behindRows = tckRaw
-  .filter((row) => row.status_kuartal === "tertinggal" || row.status_kuartal === "meleset")
-  .sort((a, b) => (a.rasio_kuartal ?? 0) - (b.rasio_kuartal ?? 0));
-const contributionBehind = behindRows.filter((row) => row.pilar === "Kontribusi").slice(0, 3);
-const partnershipTotals = new Map<number, number>();
-partnershipsRaw.forEach((row) => partnershipTotals.set(row.tahun, (partnershipTotals.get(row.tahun) ?? 0) + row.n));
-const partnershipYears = [...partnershipTotals.keys()].sort((a, b) => a - b);
-const admissionTotals = new Map<number, { peminat: number; diterima: number; registrasi: number }>();
-admissionsRaw.forEach((row) => {
-  const current = admissionTotals.get(row.tahun) ?? { peminat: 0, diterima: 0, registrasi: 0 };
-  admissionTotals.set(row.tahun, { peminat: current.peminat + row.peminat, diterima: current.diterima + row.diterima, registrasi: current.registrasi + row.registrasi });
-});
-const admissionRatio = (year: number) => {
-  const row = admissionTotals.get(year);
-  return row && row.diterima > 0 ? row.peminat / row.diterima : 0;
-};
-const admissionYield = (year: number) => {
-  const row = admissionTotals.get(year);
-  return row && row.diterima > 0 ? (row.registrasi / row.diterima) * 100 : 0;
-};
-const admissionYears = [...admissionTotals.keys()].sort((a, b) => a - b);
-const graduateYears = [...new Set(graduatesRaw.map((row) => row.tahun))].sort((a, b) => a - b);
-const achievementYears = [...new Set(achievementsRaw.map((row) => row.tahun))].sort((a, b) => a - b);
-const achievementTotal = achievementsRaw.reduce((sum, row) => sum + row.prestasi, 0);
-const tracerSummary = tracerSummaryRaw as { responden: number; median_bulan: number; dalam_6_bulan: number; bekerja_sebelum_lulus: number };
-/* The deck reads the longitudinal file rather than restating 2026, so a slide
-   can never drift from the scene it summarises. */
-const hpuYear = hpuYearlyRaw as any;
-const hpuStaff = hpuYear.lapisan.find((row: any) => row.kunci === "staf");
-const hpuFirstYear = hpuYear.tahun[0];
-const hpuLastYear = hpuYear.tahun[hpuYear.tahun.length - 1];
-const hpuLatestShare = (row: any) => {
-  const point = row.seri.find((item: any) => item.tahun === hpuLastYear);
-  return Math.round((point?.porsi_berisiko ?? 0) * 100);
-};
-const hpuYearShare = (key: string, year: number) => {
-  const row = hpuStaff.indikator.find((item: any) => item.kunci === key);
-  const point = row?.seri.find((item: any) => item.tahun === year);
-  return Math.round((point?.porsi_berisiko ?? 0) * 100);
-};
-const fundingChange = ((fundingByYear.get(2025) ?? 0) / (fundingByYear.get(2024) ?? 1) - 1) * 100;
-const homeUrl = withBase("/");
+const studentYears = students.tahun as number[];
+const isProvinceCode = (code: unknown) => /^\d+$/.test(String(code ?? ""));
+const provinceMap = (studentAccess.provinsi_total as any[])
+  .filter((row) => isProvinceCode(row.provinsi_kode))
+  .map((row) => ({ code: row.provinsi_kode, name: row.provinsi, value: row.n, withheld: Boolean(row.disamarkan) }));
+const provincePanels = studentYears.map((year) => ({
+  label: String(year),
+  data: (studentProvinceRaw as any[])
+    .filter((row) => row.angkatan === year && isProvinceCode(row.provinsi_kode))
+    .map((row) => ({ code: row.provinsi_kode, name: row.provinsi, value: row.n, withheld: Boolean(row.disamarkan) })),
+}));
 
-const revenue = partnershipRevenueRaw as any;
+/* --- Kesejahteraan --------------------------------------------------------- */
 const tenure = professorTenureRaw as any;
-const ratio = lecturerRatioRaw as any;
-const schoolMou = schoolMouRaw as any;
-const slides: any[] = [
-  { number: "0.0", kicker: "Pembuka", title: "Lompatan Sitasi dalam Lima Tahun Terakhir", takeaway: `Sebagian besar sitasi karya ilmiah dalam sejarah FMIPA UGM tercipta pada kurun waktu lima tahun terakhir (2021–2025).`, mode: "stat", stat: format(citationTotal), statLabel: `total sitasi sepanjang riwayat institusi · ${format((citationRecent / citationTotal) * 100, 1)}% terhimpun pada 2021–2025`, dark: true, source: `Data sitasi FMIPA, ${citationStart}–2025`, note: `Beri jeda setelah menyebutkan total akumulasi ${format(citationTotal)} sitasi. Tekankan bahwa ${format(citationRecent)} sitasi di antaranya terhimpun dalam lima tahun terakhir sebagai refleksi nyata akselerasi reputasi dan mutu riset sivitas.` },
-  { number: "1.1", kicker: "Bagian I · Potret Institusi", title: "Komposisi dan Struktur FMIPA UGM", takeaway: "FMIPA UGM didukung oleh ekosistem akademik yang kokoh: tenaga pendidik berkualifikasi tinggi, staf kependidikan berdedikasi, serta jejaring sarana riset dan laboratorium modern.", mode: "cards", items: [{ label: "Dosen", display: format(institutionRaw.lecturers) }, { label: "Tenaga kependidikan", display: format(institutionRaw.academic_staff) }, { label: "Program studi", display: format(institutionRaw.study_programmes) }, { label: "Laboratorium", display: format(institutionRaw.laboratories) }], source: "Data kepegawaian dan unit FMIPA", note: `Empat departemen menaungi ${institutionRaw.study_programmes} program studi: ${levelSummary}.` },
-  { number: "1.2", kicker: "Bagian I · Akuntabilitas Kinerja", title: `Ketercapaian ${tckRaw.length} Indikator Kinerja Utama`, takeaway: "Capaian indikator yang melampaui target maupun yang memerlukan percepatan disajikan secara objektif, transparan, dan akuntabel.", mode: "status", items: [{ label: "Memenuhi target triwulan", value: tckAchieved, max: tckRaw.length, display: format(tckAchieved), status: "good" }, { label: "Melampaui target tahunan", value: tckAnnual, max: tckRaw.length, display: format(tckAnnual), status: "good" }, { label: "Mendekati target", value: tckNear, max: tckRaw.length, display: format(tckNear), status: "near" }, { label: "Perlu akselerasi", value: tckBehind, max: tckRaw.length, display: format(tckBehind), status: "missed" }], source: `TCK 2026 FMIPA UGM, ${snapshot.label}`, note: `Evaluasi mengacu pada dokumen resmi TCK per ${snapshot.label}. Sebanyak ${tckFlagged} indikator dilengkapi catatan teknis untuk menjaga integritas data.` },
-  { number: "1.3", kicker: "Bagian I · Model Transformasi Nilai", title: "Dari Alokasi Sumber Daya Menuju Dampak Nyata", takeaway: "Dinamika lima tahun tergambar dalam rantai nilai yang runtut: perolehan pendanaan dan komitmen tridharma menghasilkan riset unggulan, terpublikasikan di jurnal terkemuka, serta memberi manfaat nyata bagi masyarakat.", mode: "flow", items: [{ label: "Dana riset", display: `Rp${format(valueModelRaw.metrics.funding_rp / 1_000_000_000)} M` }, { label: "Riset & PkM", display: format(valueModelRaw.metrics.research_n + valueModelRaw.metrics.outreach_n) }, { label: "Publikasi", display: format(valueModelRaw.metrics.publications_n) }, { label: "Sitasi", display: format(valueModelRaw.metrics.citations_n) }], source: "Agregat data historis 2021–2025", note: "Nilai pendanaan mencerminkan total perolehan proposal riset dari berbagai skema sumber dana." },
-  { number: "2.1", kicker: "Pilar 1 · Reputasi Akademik", title: "Lonjakan Sitasi dan Rekognisi Global", takeaway: "Rekognisi ilmiah internasional meningkat pesat: perolehan sitasi tahunan tumbuh lebih dari tiga kali lipat dalam kurun enam tahun terakhir.", mode: "bars", items: [2019, 2021, 2023, 2024, 2025].map((year) => ({ label: year === 2025 ? "2025 · indeksasi berjalan" : String(year), value: citationByYear.get(year) ?? 0, display: format(citationByYear.get(year) ?? 0), status: year === 2025 ? "near" : undefined })), source: "Data sitasi FMIPA UGM", note: "Jelaskan bahwa angka sitasi 2025 merupakan batas akhir pencatatan pada pangkalan data internal dan pengindeksan global terus berjalan." },
-  { number: "2.2", kicker: "Pilar 1 · Reputasi Akademik", title: "Produktivitas Riset dan Publikasi Empat Departemen", takeaway: `Sebanyak ${format(publicationMappedShare, 1)}% karya ilmiah terindeks Scopus terpetakan ke empat departemen, baik melalui verifikasi pangkalan data P2M fakultas maupun penelusuran afiliasi kepenulisan dosen.`, mode: "bars", items: publicationItems, source: `SciVal / Scopus, ${publicationYearsCovered[0]}–${publicationYearsCovered[publicationYearsCovered.length - 1]}`, note: `Sebanyak ${format(publicationUnmapped)} publikasi yang belum terpetakan tetap dicatat transparan dan diverifikasi secara berkala. Tahun ${publicationYearsCovered[publicationYearsCovered.length - 1]} berstatus tahun berjalan.` },
-  { number: "2.3", kicker: "Pilar 1 · Reputasi Akademik", title: `${format(topicsRaw.length)} Klaster Topik Riset Unggulan`, takeaway: "Sains material, energi baru terbarukan, kecerdasan buatan, biosains, dan sensor membentuk klaster riset unggulan yang interdisipliner.", mode: "cards", items: ["Adsorpsi ion logam", "Pirolisis & bio-oil", "Segmentasi citra & DNN", "Fotokatalisis TiO₂"].map((label, index) => ({ label, display: format(topicsRaw[index]?.n ?? 0) })), source: "Klaster topik SciVal", note: "Empat topik ini merupakan contoh klaster dengan produktivitas riset tertinggi di lingkungan fakultas." },
-  { number: "2.4", kicker: "Pilar 1 · Reputasi Akademik", title: `Jejaring Kemitraan Riset di ${countriesRaw.length} Negara`, takeaway: `Kolaborasi global kian intensif: porsi publikasi bersama mitra internasional naik dari ${format(collabFrom.share, 1)}% pada ${collabFrom.year} menjadi ${format(collabTo.share, 1)}% pada ${collabTo.year}.`, mode: "bars", items: countryItems, source: "SciVal / Scopus", note: "Tekankan peningkatan publikasi multinegara sebagai indikator kuat penguatan rekognisi global." },
-  { number: "2.5", kicker: "Pilar 1 · Reputasi Akademik", title: "Komposisi Jabatan Fungsional Dosen", takeaway: `Peningkatan kematangan kepakaran: lebih dari seperempat dosen terverifikasi (${format(professorShare, 1)}%) kini telah menduduki jabatan fungsional tertinggi sebagai Guru Besar.`, mode: "bars", items: ["Tenaga Pengajar", "Asisten Ahli", "Lektor", "Lektor Kepala", "Guru Besar", "Belum terverifikasi"].map((label) => ({ label, value: positionTotals.get(label === "Belum terverifikasi" ? "Belum terisi" : label) ?? 0, display: format(positionTotals.get(label === "Belum terverifikasi" ? "Belum terisi" : label) ?? 0), status: label === "Guru Besar" ? "good" : label === "Belum terverifikasi" ? "behind" : undefined })), source: "TCK 2026 (SIMASTER) dan data kepegawaian FMIPA", note: `Data Guru Besar (${format(professorTotal)}) dan Tenaga Pengajar (${format(positionTotals.get("Tenaga Pengajar") ?? 0)}) mengacu pada pemutakhiran SIMASTER per 31 Agustus 2026, sedangkan jenjang lainnya bersumber dari catatan kepegawaian fakultas per 27 Januari 2026.` },
-  { number: "2.6", kicker: "Pilar 1 · Agenda Penguatan", title: "Pemerataan Produktivitas Publikasi Ilmiah", takeaway: "Agenda penguatan pilar reputasi: mendorong publikasi mahasiswa program doktor dan memperkuat pemerataan produktivitas riset lintas departemen.", mode: "cards", items: [{ label: "Publikasi mahasiswa doktor", display: `${format(tck("11").capaian_dinilai)} / ${format(tck("11").target_dinilai)}`, status: tone(tck("11").status_kuartal), description: "Target TW3" }, { label: "Mitra riset internasional", display: `${format(tck("18").capaian_dinilai)} / ${format(tck("18").target_dinilai)}`, status: tone(tck("18").status_kuartal), description: "Target TW3" }, { label: "Median SINTA Kimia", display: format(sintaByDepartment.get("Kimia")?.median ?? 0) }, { label: "Median SINTA Matematika", display: format(sintaByDepartment.get("Matematika")?.median ?? 0), status: "missed" }], source: "TCK 2026 + data SINTA Kemendikbudristek", note: "Median dihitung dari skor SINTA dosen aktif di masing-masing departemen." },
-  { number: "3.1", kicker: "Pilar 2 · Kontribusi terhadap Bangsa", title: "Pertumbuhan Signifikan Dana Riset", takeaway: `Peningkatan signifikan kapasitas penelitian: perolehan dana riset tumbuh lebih dari 20 kali lipat, mencapai puncaknya senilai Rp${format(fundingByYear.get(2024) ?? 0)} miliar pada 2024.`, mode: "bars", items: [2019, 2021, 2022, 2023, 2024, 2025].map((year) => ({ label: String(year), value: fundingByYear.get(year) ?? 0, display: `Rp${format(fundingByYear.get(year) ?? 0)} M`, status: year === 2024 ? "good" : year === 2025 ? "near" : undefined })), source: "Data riset FMIPA UGM", note: "Meskipun mengalami dinamika pada 2025, perolehan dana riset tetap berada jauh di atas rata-rata tahun-tahun awal, menunjukkan stabilitas ekosistem pendanaan riset." },
-  { number: "3.2", kicker: "Pilar 2 · Kontribusi terhadap Bangsa", title: "Peningkatan Kegiatan Pengabdian kepada Masyarakat", takeaway: `Aktivitas Pengabdian kepada Masyarakat (PkM) meningkat empat kali lipat, dengan ${format(valueModelRaw.metrics.mappable_outreach_n)} kegiatan berhasil terpetakan di berbagai provinsi.`, mode: "bars", items: [2021, 2022, 2023, 2024, 2025].map((year) => ({ label: String(year), value: outreachByYear.get(year) ?? 0, display: format(outreachByYear.get(year) ?? 0), status: year === 2025 ? "good" : undefined })), source: "Data pengabdian FMIPA UGM", note: "Sebaran menjangkau berbagai provinsi di Indonesia berdasarkan surat tugas dan dokumen penugasan resmi." },
-  { number: "3.3", kicker: "Pilar 2 · Kontribusi terhadap Bangsa", title: "Kontribusi Nyata terhadap Agenda Berkelanjutan (SDGs)", takeaway: "Aktivitas tridharma berkontribusi kuat pada pilar industri dan inovasi, kesehatan, konsumsi bertanggung jawab, serta air bersih.", mode: "cards", items: [[9, "SDG 9 · Industri & inovasi"], [3, "SDG 3 · Kesehatan"], [12, "SDG 12 · Konsumsi bertanggung jawab"], [6, "SDG 6 · Air bersih"]].map(([number, label]) => ({ label, display: format(sdgByNumber.get(Number(number))?.research_n ?? 0), status: Number(number) === 9 ? "good" : undefined })), source: "Data riset FMIPA + SciVal", note: "Penguatan pencatatan pada pilar SDGs lainnya terus diintegrasikan secara terpadu ke dalam sistem fakultas." },
-  { number: "3.4", kicker: "Pilar 2 · Diseminasi Ilmu", title: "Diseminasi Pengetahuan Melalui Jurnal Berkala Ilmiah", takeaway: `Empat jurnal ilmiah berkala di lingkungan fakultas aktif menerbitkan ${format(journalClassified)} artikel terakreditasi nasional dan internasional.`, mode: "bars", items: journalItems, source: "Data jurnal internal FMIPA", note: "Empat jurnal berkala dikelola secara profesional dan terakreditasi di tingkat nasional maupun internasional." },
-  { number: "3.5", kicker: "Pilar 2 · Jejaring Kemitraan", title: `${format(partnershipCoverageRaw.total)} Dokumen Kerja Sama Strategis`, takeaway: `Jejaring kerja sama meluas secara konsisten, mencakup ${format(partnershipCoverageRaw.internasional)} dokumen kemitraan internasional dari puluhan negara.`, mode: "bars", items: partnershipYears.map((year) => ({ label: String(year), value: partnershipTotals.get(year) ?? 0, display: format(partnershipTotals.get(year) ?? 0), status: year === partnershipYears[partnershipYears.length - 1] ? "good" : undefined })), source: `LENTERA UGM, ${snapshot.lentera}`, note: `Sebanyak ${format(partnershipCoverageRaw.terpetakan)} dokumen telah teridentifikasi lokasinya, sedangkan ${format(partnershipCoverageRaw.lokasi_kosong)} dokumen lainnya sedang dalam proses verifikasi kelengkapan wilayah mitra.` },
-  { number: "3.5′", kicker: "Pilar 2 · Nilai Kerja Sama", title: `Rp${format(revenue.nominal / 1_000_000_000, 2)} Miliar Nilai Kontrak Kerja Sama`, takeaway: `Kemitraan menghasilkan nilai ekonomi nyata: ${format(revenue.kontrak)} kontrak sepanjang ${revenue.tahun_awal}–${revenue.tahun_akhir}, dengan Rp${format(revenue.dpi / 1_000_000_000, 2)} miliar (${format(revenue.rasio_dpi, 2)}%) kembali ke fakultas sebagai Dana Pengembangan Institusi.`, mode: "bars", items: (revenue.per_tahun as any[]).map((row) => ({ label: String(row.tahun), value: row.nominal / 1_000_000_000, display: `Rp${format(row.nominal / 1_000_000_000, 1)} M`, status: row.tahun === revenue.tahun_akhir ? undefined : "good" })), source: `Penerimaan dan DPI Kerja Sama FMIPA UGM, ${snapshot.label}`, note: `Penerimaan berbasis penagihan, berbeda dari hibah riset pada slide 3.1 dan tidak dijumlahkan dengan angka tersebut. Rp${format(revenue.tanpa_departemen.nominal / 1_000_000_000, 2)} miliar (${format(revenue.tanpa_departemen.porsi, 1)}%) tercatat tanpa keterangan departemen di berkas sumber.` },
-  { number: "3.6", kicker: "Pilar 2 · Agenda Penguatan", title: "Akselerasi Hilirisasi dan Pemanfaatan Luaran Tridharma", takeaway: `Perolehan pendanaan mandiri (creative funding) melampaui target dengan raihan Rp${format(tck("1c").capaian_dinilai)} miliar; prioritas penguatan kini diarahkan pada hilirisasi teknologi dan pemanfaatan paten.`, mode: "cards", items: [...contributionBehind.map((row) => ({ label: row.indikator.length > 40 ? `${row.indikator.slice(0, 38)}…` : row.indikator, display: `${format(row.capaian_dinilai)} / ${format(row.target_dinilai)}`, status: tone(row.status_kuartal) })), { label: "Lokasi PkM belum terpetakan", display: format(outreachArchiveMissing), status: "behind" }], source: "TCK 2026 + Data pengabdian", note: "Fondasi riset sangat kuat; tantangan utama terletak pada percepatan transfer teknologi ke dunia usaha dan pemanfaatan langsung di masyarakat." },
-  { number: "4.1", kicker: "Pilar 3 · Daya Saing & Karier Lulusan", title: "Keragaman Sektor Karier Lulusan", takeaway: "Alumni FMIPA membuktikan keunggulan kompetitif dengan keterserapan tinggi di industri teknologi informasi, perbankan/keuangan, pendidikan, dan manufaktur strategis.", mode: "bars", items: tracerSectorsRaw.slice(0, 6).map((row) => ({ label: row.sektor, value: row.n, display: format(row.n), status: row.sektor === tracerSectorsRaw[0].sektor ? "good" : undefined })), source: "Tracer study FMIPA UGM", note: "Data tracer study kini dihimpun dan dikelola secara mandiri dan berkelanjutan di tingkat fakultas." },
-  { number: "4.2", kicker: "Pilar 3 · Daya Saing & Karier Lulusan", title: `Median Masa Tunggu Kerja ${format(tracerSummary.median_bulan)} Bulan`, takeaway: `Kecepatan keterserapan kerja sangat tinggi: ${format(tracerSummary.dalam_6_bulan)} dari ${format(tracerSummary.responden)} responden langsung terserap kerja dalam waktu kurang dari 6 bulan, dan ${format(tracerSummary.bekerja_sebelum_lulus)} lulusan bahkan telah bekerja sebelum diwisuda.`, mode: "stat", stat: format(tracerSummary.median_bulan), statLabel: `bulan median masa tunggu · ${format(tracerSummary.bekerja_sebelum_lulus)} responden telah bekerja sebelum lulus`, source: "Tracer study FMIPA UGM", note: `Sebanyak ${format(tracerSummary.bekerja_sebelum_lulus)} responden bahkan telah diterima bekerja sebelum resmi diwisuda.` },
-  { number: "4.3", kicker: "Pilar 3 · Kesiapan Karier Mahasiswa", title: "Partisipasi MBKM dan Kesiapan Karier Mahasiswa", takeaway: "Partisipasi mahasiswa dalam program MBKM mandiri maupun pembekalan karier profesional berhasil melampaui target institusi.", mode: "status", items: [statusItem("8a", "MBKM ≥10 SKS", "target_tw4"), statusItem("9", "Mahasiswa berprestasi", "target_tw4"), statusItem("10", "Fast track / RPL / PMDSU", "target_tw4"), statusItem("5b", "Aktif di LinkedIn", "target_tw4")], source: "SIMASTER UGM", note: "Status warna dihitung terhadap target triwulan berjalan; pembanding adalah target tahunan institusi." },
-  { number: "4.4", kicker: "Pilar 3 · Internasionalisasi Mahasiswa", title: "Mobilitas Internasional Mahasiswa", takeaway: "Pertukaran mahasiswa berjalan dua arah: menyambut mahasiswa asing sekaligus memfasilitasi mahasiswa FMIPA menimba pengalaman global.", mode: "status", items: [statusItem("4a", "Program kredit"), statusItem("4b", "Non-kredit")], source: "TCK 2026 #4a–4b", note: `Target tahunan: ${format(tck("4a").target_tw4)} mahasiswa program kredit dan ${format(tck("4b").target_tw4)} mahasiswa program non-kredit.` },
-  { number: "4.5", kicker: "Pilar 3 · Kelulusan Mahasiswa", title: "Kelulusan Tepat Waktu di Seluruh Jenjang", takeaway: "Tingkat kelulusan tepat waktu di jenjang Sarjana, Magister, dan Doktor konsisten melampaui target perjanjian kinerja.", mode: "bars", items: [["8b1", "Sarjana"], ["8b2", "Magister"], ["8b3", "Doktor"]].map(([no, label]) => ({ label: `${label} · TW2`, value: tck(no).capaian_dinilai, max: tck(no).target_dinilai, display: `${format(tck(no).capaian_dinilai)}% dari target ${format(tck(no).target_dinilai)}%`, status: tone(tck(no).status_kuartal) })), source: "TCK 2026 #8b1–8b3", note: "Evaluasi mengacu pada capaian Triwulan II yang memiliki angka penyebut lengkap, mengingat berkas Triwulan III baru mencatat jumlah mahasiswa." },
-  { number: "4.3′", kicker: "Pilar 3 · Keterlibatan Riset", title: `${format(studentResearchTotal)} Judul Riset Melibatkan Mahasiswa`, takeaway: "Keterlibatan mahasiswa sarjana dalam payung riset dosen meningkat pesat, menumbuhkan budaya meneliti sejak bangku kuliah.", mode: "bars", items: studentResearchRaw.map((row) => ({ label: String(row.year), value: row.n, display: format(row.n), status: row.year === 2024 ? "good" : undefined })), source: "Data riset FMIPA UGM", note: "Mencakup judul riset dosen yang secara resmi melibatkan mahasiswa sarjana dalam tim pelaksana." },
-  { number: "4.6", kicker: "Pilar 3 · Seleksi & Minat Masuk", title: "Dinamika Selektivitas Penerimaan Mahasiswa", takeaway: `Peminat sarjana tumbuh dari ${format(admissionTotals.get(admissionYears[0])?.peminat ?? 0)} menjadi ${format(admissionTotals.get(admissionYears[admissionYears.length - 1])?.peminat ?? 0)} pendaftar, diimbangi perluasan kuota dan komitmen daftar ulang yang sangat tinggi (${format(admissionYield(admissionYears[admissionYears.length - 1]), 1)}%).`, mode: "bars", items: admissionYears.map((year) => ({ label: String(year), value: admissionTotals.get(year)?.peminat ?? 0, display: format(admissionTotals.get(year)?.peminat ?? 0) })), source: "Data akademik FMIPA UGM", note: `Rasio keketatan berada pada 1 : ${format(admissionRatio(admissionYears[admissionYears.length - 1]), 1)}, dengan tingkat daftar ulang calon mahasiswa yang lolos seleksi naik dari ${format(admissionYield(admissionYears[0]), 1)}% menjadi ${format(admissionYield(admissionYears[admissionYears.length - 1]), 1)}%.` },
-  { number: "4.7", kicker: "Pilar 3 · Lulusan & Prestasi", title: `${format(achievementTotal)} Prestasi Mahasiswa Sejak 2022`, takeaway: "Tradisi prestasi mahasiswa terus diperkuat, ditandai raihan medali dan penghargaan bergengsi pada kompetisi nasional maupun internasional.", mode: "bars", items: achievementYears.map((year) => { const total = achievementsRaw.filter((row) => row.tahun === year).reduce((sum, row) => sum + row.prestasi, 0); return { label: String(year), value: total, display: format(total), status: year === achievementYears[achievementYears.length - 1] ? "good" : undefined }; }), source: "Data kemahasiswaan FMIPA UGM", note: `Lulusan sarjana pada tahun akademik terakhir mencapai ${format(graduatesRaw.filter((row) => row.jenjang === "Sarjana" && row.tahun === graduateYears[graduateYears.length - 1])[0]?.lulusan ?? 0)} orang.` },
-  { number: "5.1", kicker: "Pilar 4 · Tata Kelola & Kesejahteraan", title: "Pengembangan Karier dan Kualifikasi SDM", takeaway: "Penguatan tata kelola SDM menunjukkan hasil nyata: kelancaran promosi Guru Besar dan perolehan rekognisi internasional melampaui target.", mode: "cards", items: [{ label: "Dosen S3", display: format(tck("24").capaian_dinilai), status: tone(tck("24").status_kuartal) }, { label: "Guru Besar", display: `${format(tck("30").capaian_dinilai)} / ${format(tck("30").target_dinilai)}`, status: tone(tck("30").status_kuartal) }, { label: "Sertifikat kompetensi", display: `${format(tck("25").capaian_dinilai)} / ${format(tck("25").target_dinilai)}`, status: tone(tck("25").status_kuartal) }, { label: "Rekognisi internasional", display: format(tck("23").capaian_dinilai), status: tone(tck("23").status_kuartal) }], source: "TCK 2026 FMIPA UGM", note: "Kenaikan jabatan fungsional dan rekognisi mencerminkan berjalannya pembinaan karier dosen secara terarah." },
-  { number: "5.1′", kicker: "Pilar 4 · Regenerasi Kepakaran", title: `${format(tenure.periode_ini)} dari ${format(tenure.total)} Guru Besar Diangkat pada Periode Ini`, takeaway: `Regenerasi kepakaran berjalan pesat: ${format((tenure.periode_ini / tenure.total) * 100, 1)}% Guru Besar aktif diangkat sepanjang periode kepemimpinan 2021–2026.`, mode: "bars", items: (tenure.per_tahun as any[]).filter((row) => row.year >= 2021).map((row) => ({ label: String(row.year), value: row.n, display: format(row.n) })), source: `Data Guru Besar SIMASTER FMIPA UGM, ${institutionRaw.lecturer_source}`, note: "Dihitung berdasarkan tanggal mulai tugas (TMT) jabatan Guru Besar. Berkas sumber menandai kolom periode ini secara eksplisit sebagai Periode Dekanat 2021-2026." },
-  { number: "5.1″", kicker: "Pilar 4 · Jabatan & Sertifikasi", title: "Rasio Dosen Tanpa Jabatan Akademik dan Cakupan Sertifikasi", takeaway: `Di tingkat fakultas, ${format(ratio.tanpa_jabatan)} dari ${format(ratio.dosen)} dosen (${format(ratio.rasio, 2)}%) belum memiliki jabatan fungsional akademik—masih terjaga di bawah ambang batas ${format(ratio.ambang)}%—meskipun satu departemen memerlukan akselerasi khusus.`, mode: "bars", items: (ratio.per_departemen as any[]).map((row) => ({ label: row.department, value: row.rasio, display: `${format(row.rasio, 2)}%`, status: row.melampaui_ambang ? "missed" : "good" })), source: `Data Rasio Dosen Belum Memiliki Jabatan Akademik SIMASTER, ${institutionRaw.lecturer_source}`, note: `Ambang maksimal 10% tercantum pada catatan berkas sumber. Sebanyak ${format(ratio.tersertifikasi)} dosen (${format(ratio.rasio_sertifikasi, 1)}%) telah mengantongi sertifikat pendidik profesional.` },
-  { number: "5.2", kicker: "Pilar 4 · Fasilitas Inklusif", title: `${format(tck("31").capaian_dinilai)} Fasilitas Kampus Ramah Disabilitas`, takeaway: `Komitmen kampus inklusif diwujudkan melalui pengadaan ${format(tck("31").capaian_dinilai)} fasilitas ramah disabilitas, melampaui target tahunan.`, mode: "stat", stat: format(tck("31").capaian_dinilai), statLabel: `unit fasilitas disabilitas · target tahunan ${format(tck("31").target_tw4)} unit`, source: "TCK 2026 #31", note: `Pengukuran indeks bangunan ramah lingkungan (green building) saat ini sedang disinkronkan dan diverifikasi bersama Direktorat Aset UGM.` },
-  { number: "5.3", kicker: "Pilar 4 · Kesehatan Sivitas", title: `${format(hpuStaff.kunjungan)} Pemeriksaan Kesehatan Dosen dan Tendik, ${hpuFirstYear}–${hpuLastYear}`, takeaway: `Pemantauan lima tahun Posbindu: parameter ${hpuStaff.indikator[0]?.indikator.toLowerCase()} menjadi catatan risiko medis terbanyak (${format(hpuLatestShare(hpuStaff.indikator[0]))}%), diiringi tren peningkatan tekanan darah yang memerlukan program kesehatan preventif berkelanjutan.`, mode: "bars", items: hpuStaff.indikator.map((row: any) => ({ label: row.indikator, value: hpuLatestShare(row), display: `${format(hpuLatestShare(row))}%` })), source: `Posbindu Melati FMIPA · agregat anonim ${hpuFirstYear}–${hpuLastYear}`, note: `Data 2022–2025 distandardisasi retrospektif menggunakan ambang klinis terpadu 2026. Temuan risiko tekanan darah bergerak dari ${format(hpuYearShare("tekanan_darah", hpuFirstYear))}% (${hpuFirstYear}) menjadi ${format(hpuYearShare("tekanan_darah", hpuLastYear))}% (${hpuLastYear}). Seluruh data disajikan secara anonim.` },
-  { number: "6.1", kicker: "Pilar 5 · Mahasiswa & Akses", title: `${format(origins.total)} Mahasiswa Baru Lintas Jenjang (2021–2026)`, takeaway: `Pangkalan data terpadu per ${origins.tanggal} menghimpun rekaman enam angkatan masuk (2021–2026) di jenjang Sarjana, Magister, Doktor, serta program non-gelar.`, mode: "cards", items: [{ label: "Sarjana (S1)", display: format(origins.per_jenjang.S1) }, { label: "Magister (S2)", display: format(origins.per_jenjang.S2) }, { label: "Doktor (S3)", display: format(origins.per_jenjang.S3) }, { label: "Non-gelar", display: format(origins.per_jenjang.NONDEGREE) }], source: `Data Asal Sekolah dan Perguruan Tinggi FMIPA · ${origins.tanggal}`, note: origins.catatan },
-  { number: "6.2", kicker: "Pilar 5 · Jangkauan Wilayah", title: `Jangkauan Asal Mahasiswa dari ${format(students.provinsi_awal)} Menjadi ${format(students.provinsi_akhir)} Provinsi`, takeaway: `Pemerataan akses meluas ke 35 provinsi di tanah air; proporsi mahasiswa asal luar Jawa sempat menyentuh ${format(students.porsi_luar_jawa_puncak, 1)}% pada angkatan ${students.tahun_luar_jawa_puncak}.`, mode: "bars", items: (studentAccess.per_tahun as any[]).map((row: any) => ({ label: String(row.angkatan), value: row.porsi_luar_jawa, display: `${format(row.porsi_luar_jawa, 1)}%`, status: row.angkatan === students.tahun_luar_jawa_puncak ? "good" : undefined })), source: `Daftar mahasiswa S1 & non-gelar FMIPA UGM ${students.tahun_awal}\u2013${students.tahun_akhir}`, note: `Sebanyak ${format(studentAccess.daerah_3t_total)} mahasiswa berasal dari wilayah Terdepan, Terluar, dan Tertinggal (3T).` },
-  { number: "6.3", kicker: "Pilar 5 · Komposisi Gender", title: "Dinamika Komposisi Gender Mahasiswa Antarprogram Studi", takeaway: `Di tingkat fakultas, proporsi mahasiswa perempuan seimbang pada angka ${format(students.porsi_perempuan_akhir, 1)}%, dengan karakteristik minat studi yang beragam di setiap program studi.`, mode: "bars", items: genderByProgramme.map((row) => ({ label: row.prodi, value: Math.round(row.share), display: `${format(row.share, 1)}%`, status: row.share >= 60 ? "good" : row.share <= 30 ? "missed" : undefined })), source: `Daftar mahasiswa S1 & non-gelar FMIPA UGM ${students.tahun_awal}\u2013${students.tahun_akhir}`, note: `Terdapat rentang proporsi perempuan antara program studi tertinggi (${format(genderByProgramme[0].share, 1)}%) dan terendah (${format(genderByProgramme[genderByProgramme.length - 1].share, 1)}%).` },
-  { number: "6.4", kicker: "Pilar 5 · Jalur Masuk", title: `${pathwayTotals[0].name} Menjadi Pintu Masuk Terbesar`, takeaway: `Jalur seleksi mandiri (${pathwayTotals[0].name}) menerima ${format((pathwayTotals[0].total / students.total) * 100, 1)}% mahasiswa baru sarjana, berdampingan dengan seleksi prestasi (SNBP), tes nasional (SNBT), dan jalur International Undergraduate Program (IUP).`, mode: "bars", items: pathwayTotals.map((row) => ({ label: row.name, value: row.total, display: format(row.total) })), source: `Daftar mahasiswa S1 & non-gelar FMIPA UGM ${students.tahun_awal}\u2013${students.tahun_akhir}`, note: "Kategori jalur SNMPTN/SNBP dan SBMPTN/SNBT diselaraskan agar tren penerimaan enam tahun dapat ditelaah secara runtut." },
-  { number: "6.5", kicker: "Pilar 5 · Latar Belakang Keluarga", title: "Sebaran Latar Pekerjaan Orang Tua/Wali Mahasiswa", takeaway: "Latar belakang sosial-ekonomi mahasiswa sangat majemuk: didominasi sektor wirausaha, karyawan swasta, dan ASN, merefleksikan keterbukaan akses pendidikan di FMIPA UGM.", mode: "bars", items: guardianTotals.slice(0, 6).map((row: any) => ({ label: row.pekerjaan_wali, value: row.n, display: format(row.n), status: row.pekerjaan_wali === "Tidak dilaporkan" ? "behind" : undefined })), source: `Daftar mahasiswa S1 & non-gelar FMIPA UGM ${students.tahun_awal}\u2013${students.tahun_akhir}`, note: "Data isian pekerjaan distandardisasi ke dalam 11 kategori utama." },
-  { number: "6.6", kicker: "Pilar 5 · Asal Pendidikan", title: "Jejaring Sekolah dan Perguruan Tinggi Asal", takeaway: "Pemutakhiran basis data berhasil melengkapi sekolah asal sarjana 2021–2022 serta memetakan perguruan tinggi asal mahasiswa magister dan doktor.", mode: "cards", items: origins.panel.filter(p => !p.angkatan).map(p => ({ label: p.label, display: `${format(p.institusi_unik)} nama institusi` })), source: `Data Asal Sekolah dan Perguruan Tinggi FMIPA · ${origins.tanggal}`, note: "Penulisan nama institusi distandardisasi. Perbedaan penulisan nama belum tentu entitas yang berbeda; penggabungan hanya dilakukan bila ada rujukan resmi. Filter jenjang dan angkatan tersedia di laporan utama." },
-  { number: "6.6′", kicker: "Pilar 5 · Jejaring Sekolah", title: `${format(schoolMou.sekolah)} Sekolah Menandatangani Nota Kesepahaman`, takeaway: `Penandatanganan MoU pada 29–31 Juli 2026 menjangkau ${format(schoolMou.sekolah)} sekolah, dan ${format(schoolMou.jejaring_baru)} di antaranya belum pernah mengirimkan mahasiswa ke FMIPA pada enam angkatan terakhir.`, mode: "cards", items: [{ label: "Sudah menjadi sekolah asal", display: format(schoolMou.sudah_menjadi_asal), status: "good" }, { label: "Jejaring baru", display: format(schoolMou.jejaring_baru) }, { label: "Total sekolah", display: format(schoolMou.sekolah) }], source: "Daftar Peserta MoU FMIPA UGM, 29–31 Juli 2026", note: "Pencocokan dengan sekolah asal mahasiswa memakai penyeragaman ejaan yang tercatat di pipeline/mappings/sekolah_mou_alias.csv; angka irisan adalah perkiraan batas bawah. Nama peserta dan narahubung tidak pernah dibaca." },
-  { number: "6.7", kicker: "Pilar 5 · Dinamika Angkatan", title: `Perjalanan Studi Mahasiswa Angkatan ${students.tahun_awal}`, takeaway: `Setelah melewati masa studi lima tahun, sebanyak ${format(cohortFirst("Lulus"))} mahasiswa angkatan ${students.tahun_awal} telah resmi menyandang gelar sarjana, sementara angkatan berikutnya berada pada fase aktif penyelesaian studi.`, mode: "status", items: [{ label: "Lulus", value: cohortFirst("Lulus"), max: studentFirst.total, display: format(cohortFirst("Lulus")), status: "good" }, { label: "Masih aktif", value: cohortFirst("Masih aktif"), max: studentFirst.total, display: format(cohortFirst("Masih aktif")), status: "near" }, { label: "Mengundurkan diri", value: cohortFirst("Mengundurkan diri"), max: studentFirst.total, display: format(cohortFirst("Mengundurkan diri")), status: "behind" }, { label: "Tidak aktif", value: cohortFirst("Tidak aktif"), max: studentFirst.total, display: format(cohortFirst("Tidak aktif")), status: "missed" }], source: `Daftar mahasiswa S1 & non-gelar FMIPA UGM ${students.tahun_awal}\u2013${students.tahun_akhir}`, note: "Tingkat pengunduran diri tertinggi tercatat pada angkatan 2022 (7,6%), bukan pada angkatan tertua." },
-  { number: "7.1", kicker: "Bagian III · Estafet Kepemimpinan", title: "Evaluasi Capaian dan Agenda Akselerasi", takeaway: "Prinsip perbaikan berkelanjutan: menyajikan evaluasi indikator yang memerlukan percepatan secara objektif sebagai dasar perencanaan strategis berikutnya.", mode: "cards", items: [{ label: "Indikator perlu akselerasi", display: `${format(tckBehind)} / ${format(tckRaw.length)}`, status: "missed" }, { label: "Catatan kualitas data", display: `${format(tckFlagged)} indikator`, status: "behind" }, { label: "Alamat mitra belum lengkap", display: `${format(partnershipCoverageRaw.lokasi_kosong)} dokumen`, status: "behind" }, { label: "Dinamika dana riset 2025", display: `${fundingChange < 0 ? "−" : "+"}${format(Math.abs(fundingChange), 1)}%`, status: "near" }], source: "TCK 2026 + Data historis", note: "Indikator yang belum tercapai dipetakan secara berimbang sebagai pijakan perbaikan strategis ke depan." },
-  { number: "7.2", kicker: "Bagian III · Estafet Kepemimpinan", title: "Fondasi Data Teruji untuk Periode Berikutnya", takeaway: "Seluruh capaian dan dinamika lima pilar tridharma kini terdokumentasikan secara terpadu, transparan, dan dapat ditelusuri sebagai pijakan kokoh kelanjutan kepemimpinan fakultas.", mode: "cards", items: deckPillarSummary, source: `TCK 2026 FMIPA UGM, ${snapshot.label}`, note: "Halaman Data & Metodologi disiapkan sebagai pangkalan data rujukan bagi kepemimpinan periode selanjutnya." },
+const tenureGroups: any[] = [
+  {
+    label: "Diangkat 2021–2026",
+    count: tenure.periode_ini,
+    color: DEPT.fisika,
+    description: `${format((tenure.periode_ini / tenure.total) * 100, 1)}% dari seluruh Guru Besar aktif`,
+  },
+  {
+    label: "Sebelum 2021",
+    count: tenure.sebelumnya,
+    color: SEQ[250],
+    description: "Diangkat pada periode kepemimpinan sebelumnya",
+  },
 ];
+
+/* --- Capaian kinerja -------------------------------------------------------- */
+const tck = tckRaw as any[];
+const tckAchieved = tck.filter((row) => row.status_kuartal === "tercapai").length;
+const tckNear = tck.filter((row) => row.status_kuartal === "mendekati").length;
+const tckBehind = tck.length - tckAchieved - tckNear;
+const tckBehindByPillar = ["Reputasi", "Kontribusi", "Employability", "Kesejahteraan"]
+  .map((pilar) => ({
+    pilar,
+    n: tck.filter((row) => row.pilar === pilar && row.status_kuartal !== "tercapai" && row.status_kuartal !== "mendekati").length,
+  }))
+  .filter((row) => row.n > 0)
+  .sort((a, b) => b.n - a.n);
 ---
 
 <BaseLayout
   title="Bahan Tayang Rapat Senat — Lima Tahun FMIPA"
-  description="Bahan tayang interaktif untuk Rapat Senat Terbuka Laporan Dekan FMIPA UGM 2021–2026."
+  description="Bahan tayang Rapat Senat Terbuka Laporan Dekan FMIPA UGM 2021–2026."
   canonicalPath="/presentasi"
   chrome={false}
-  bodyClass="presentation-page"
+  bodyClass="presentation-page presentation-mode"
 >
-  <main id="konten-utama" class="presentation-deck" data-presentation-deck>
-    {slides.map((slide) => <PresentationSlide {...slide} />)}
+  <main id="konten-utama" class="deck" data-deck>
+    <!-- 01 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="01"
+      layout="title"
+      kicker="Rapat Senat Terbuka · Laporan Pertanggungjawaban"
+      title="Meneguhkan Sains Berdampak"
+      takeaway="Lima tahun kepemimpinan dilaporkan dengan satu aturan: setiap angka yang disebut di ruangan ini dapat ditelusuri sampai ke berkas sumbernya."
+      presenter="Prof. Dr. Eng. Kuwat Triyana, M.Si."
+      presenterRole="Dekan FMIPA Universitas Gadjah Mada"
+      period="Masa jabatan 2021–2026"
+      note="Buka dengan konteks awal masa bakti: dekanat dimulai pada puncak pandemi, ketika laboratorium tutup dan perkuliahan berpindah ke layar. Sampaikan bahwa laporan ini tidak menyembunyikan indikator yang belum tercapai — seluruhnya ada di slide penutup dan di web data story yang tautannya dibagikan kepada anggota senat."
+    />
+
+    <!-- 02 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="02"
+      kicker="Pembuka"
+      title="Empat Lintasan, Lima Tahun"
+      takeaway="Tiga dari empat lintasan melompat pada tahun yang sama, 2022: dana riset, pengabdian, dan kerja sama. Sitasi tidak melompat — ia menanjak mantap sepanjang lima tahun."
+      stat={`${format(fundingMultiple, 0)}×`}
+      statLabel={`pertumbuhan dana riset dari ${format(funding2021, 1)} menjadi ${format(funding2024, 1)} miliar rupiah`}
+      statNote="Setiap baris memakai skala rentangnya sendiri karena satuannya berbeda. Angka 2025 masih berjalan pada baris sitasi."
+      source="Sitasi P2M · dana riset FMIPA · Surat Tugas dan SIMPEL · LENTERA UGM"
+      note="Inilah pengganti linimasa peristiwa. Tunjuk 2021 di ujung kiri keempat baris, lalu tarik mata hadirin ke kanan. Kalau ada yang menanyakan peristiwa spesifik seperti peluncuran alat atau penghargaan, jawab bahwa peristiwa itu ada di buku laporan; yang ditampilkan di sini adalah jejak terukurnya."
+    >
+      <TrendRows
+        data={journeyRows}
+        periods={journeyYears}
+        scale="row"
+        width={660}
+        rowHeight={78}
+        title="Empat Lintasan Kinerja FMIPA 2021–2025"
+        hideHeader
+        axisLabel="Skala tiap baris mengikuti rentangnya sendiri"
+        valueFormatter={(value: number) => format(value, 1)}
+      />
+    </PresentationSlide>
+
+    <!-- 03 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="03"
+      layout="cards"
+      kicker="Pembuka"
+      title="Potret FMIPA Hari Ini"
+      takeaway={`Delapan belas program studi, seluruhnya terakreditasi Unggul, ditopang ${format(institutionRaw.lecturers)} dosen dan ${format(institutionRaw.academic_staff)} tenaga kependidikan.`}
+      items={portraitCards}
+      source={`Roster SIMASTER ${institutionRaw.lecturer_source.split(", ")[1]} · registrasi mahasiswa ${activePeriod} · akreditasi prodi 2026`}
+      note={`Satu catatan kejujuran yang perlu disiapkan bila ditanya: angka dosen ${format(institutionRaw.lecturers)} dan tendik ${format(institutionRaw.academic_staff)} berasal dari roster SIMASTER 3 September 2026, dan memang berbeda dari dokumen TCK serta Laporan Dekan 2025. Selisih itu tidak diselaraskan dengan sengaja, dan alasannya tercatat di halaman /data.`}
+    />
+
+    <!-- 04 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="I"
+      layout="divider"
+      accent="blue"
+      kicker="Pilar Pertama"
+      title="Reputasi Akademik"
+      takeaway="Sitasi, publikasi antardepartemen, dan jejaring kolaborasi riset internasional."
+      note="Jeda tiga detik. Sebut bahwa pilar ini yang paling banyak diminta buktinya oleh pemeringkatan universitas."
+    />
+
+    <!-- 05 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="05"
+      kicker="Pilar I · Reputasi Akademik"
+      title="Sebagian Besar Sitasi Sepanjang Sejarah Lahir dalam Lima Tahun Ini"
+      takeaway={`Dari ${format(citationTotal)} sitasi yang pernah diterima karya ilmiah sivitas sejak 1987, sebanyak ${format(citationShare, 1)} persen terhimpun pada 2021–2025 saja.`}
+      stat={format(citationPeriod)}
+      statLabel="sitasi terhimpun sepanjang 2021–2025"
+      statNote="Angka 2025 masih bertambah: berkas sitasi P2M berakhir pada tahun berjalan dan pangkalan data Scopus terus dimutakhirkan."
+      source="Berkas sitasi P2M FMIPA UGM"
+      note={`Puncaknya di 2024 dengan ${format(citationPeak)} sitasi — hampir dua kali lipat capaian 2021 yang ${format(citationFirst)}. Penurunan yang terlihat pada 2025 adalah indeksasi yang belum tuntas, bukan penurunan kinerja; sampaikan itu sebelum ada yang menyimpulkan sendiri.`}
+    >
+      <LineAreaChart
+        data={citations}
+        xKey="year"
+        series={[{ key: "citations", label: "Sitasi", color: UGM_BLUE }]}
+        width={640}
+        height={400}
+        title="Sitasi Karya Ilmiah per Tahun"
+        hideHeader
+        area
+        yLabel="Sitasi per tahun"
+        showMarkers
+        provisionalX={2025}
+        provisionalLabel="Indeksasi berjalan"
+        valueFormatter={(value: number) => format(value)}
+      />
+    </PresentationSlide>
+
+    <!-- 06 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="06"
+      kicker="Pilar I · Reputasi Akademik"
+      title="Keempat Departemen Produktif, Bukan Satu yang Menopang"
+      takeaway="Kimia menyumbang volume terbesar, tetapi seluruh departemen menunjukkan pertumbuhan yang serupa arahnya sepanjang periode."
+      stat={format(publicationTotal)}
+      statLabel="publikasi terindeks Scopus, 2020–2026"
+      statNote={`${format(publicationMappedShare, 1)}% di antaranya berhasil dipetakan ke departemen pengampu; sisanya masih dalam verifikasi. Tahun 2026 masih dalam proses indeksasi.`}
+      source={`SciVal / Scopus · pemutakhiran ${snapshot.scival}`}
+      note="Kalau ada pertanyaan mengapa rentangnya sampai 2026 sementara slide sitasi berhenti di 2025: keduanya sumber yang berbeda. Publikasi berasal dari ekspor SciVal, sitasi dari berkas P2M yang memang berakhir di 2025. Menyamakan keduanya justru akan keliru."
+    >
+      <StackedBarChart
+        data={publications}
+        xKey="year"
+        series={publicationSeries}
+        width={680}
+        height={440}
+        title="Publikasi per Tahun dan Departemen"
+        hideHeader
+        yLabel="Publikasi"
+        provisionalX={2026}
+        provisionalLabel="Indeksasi berjalan"
+        valueFormatter={(value: number) => format(value)}
+      />
+    </PresentationSlide>
+
+    <!-- 07 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="07"
+      kicker="Pilar I · Reputasi Akademik"
+      title="Riset FMIPA Ditulis Bersama Peneliti Lintas Benua"
+      takeaway={`Publikasi bersama tercatat dengan mitra di ${format((countriesRaw as any[]).length)} negara. ${collabTop?.name} menjadi mitra terbesar, disusul jejaring Asia Timur dan Eropa.`}
+      source={`SciVal / Scopus · batas Natural Earth 1:110m · pemutakhiran ${snapshot.scival}`}
+      note="Peta ini menjawab pertanyaan tentang internasionalisasi tanpa perlu menyebut nama satu pun perjanjian. Daftar peringkat di sisi kanan memulihkan informasi urutan yang selalu hilang begitu data dipetakan ke peta."
+    >
+      <WorldMap
+        data={collabCountries}
+        arcs
+        title="Negara Mitra Kolaborasi Riset"
+        hideHeader
+        valueLabel="publikasi bersama"
+        topCount={8}
+        valueFormatter={(value: number) => format(value)}
+      />
+    </PresentationSlide>
+
+    <!-- 08 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="II"
+      layout="divider"
+      accent="orange"
+      kicker="Pilar Kedua"
+      title="Kontribusi terhadap Bangsa"
+      takeaway="Pendanaan riset multi-sumber dan jangkauan pengabdian di berbagai daerah nusantara."
+      note="Jeda. Pilar ini yang paling banyak berubah selama periode kepemimpinan."
+    />
+
+    <!-- 09 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="09"
+      kicker="Pilar II · Kontribusi terhadap Bangsa"
+      title="Dana Riset Naik Lebih dari Dua Puluh Kali Lipat"
+      takeaway={`Perolehan dana riset kompetitif dan kemitraan bergerak dari Rp${format(funding2021, 1)} miliar pada 2021 menjadi Rp${format(funding2024, 1)} miliar pada 2024 — kapasitas riset yang belum pernah tercatat sebesar ini pada berkas pendanaan fakultas.`}
+      stat={`Rp${format(funding2024, 1)} M`}
+      statLabel="perolehan dana riset pada tahun puncak, 2024"
+      statNote={`Nilai kontrak kerja sama dihitung terpisah dan tidak dijumlahkan ke sini: Rp${format(revenue.nominal / BILLION, 1)} miliar dari ${format(revenue.kontrak)} kontrak sepanjang ${revenue.tahun_awal}–${revenue.tahun_akhir}. Tahun 2025 masih berjalan.`}
+      source="Data riset FMIPA UGM, 2019–2025"
+      note="Inilah bukti kemandirian finansial yang paling kuat, dan angkanya berdiri sendiri tanpa perlu retorika. Bila ada yang menanyakan serapan RKAT, jawab jujur: serinya belum lengkap lintas tahun karena kerangka pelaporannya berubah di 2024, sehingga tidak ditampilkan di sini."
+    >
+      <LineAreaChart
+        data={funding}
+        xKey="year"
+        series={[{ key: "amount", label: "Dana riset", color: ACCENT.orange }]}
+        width={640}
+        height={400}
+        title="Perolehan Dana Riset per Tahun"
+        hideHeader
+        area
+        yLabel="Rp miliar"
+        showMarkers
+        provisionalX={2025}
+        provisionalLabel="Tahun berjalan"
+        valueFormatter={(value: number) => `Rp${format(value, 1)} M`}
+      />
+    </PresentationSlide>
+
+    <!-- 10 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="10"
+      kicker="Pilar II · Kontribusi terhadap Bangsa"
+      title="Pengabdian Menjangkau Nusantara, Bukan Sekitar Kampus"
+      takeaway={`Kegiatan pengabdian tumbuh dari ${format(outreach2021)} pada 2021 menjadi ${format(outreach2025)} pada 2025, dan menyebar ke ${format(outreachProvinces)} provinsi.`}
+      stat={`${format(outreach2025 / Math.max(1, outreach2021), 1)}×`}
+      statLabel="lipat pertumbuhan kegiatan pengabdian dalam lima tahun"
+      statNote="Titik peta terakumulasi dari tahun ke tahun. Kegiatan daring, lintas provinsi, atau yang lokasinya belum tercatat dilaporkan terpisah, bukan dihilangkan."
+      source="Surat Tugas, SIMPEL, dan hibah pengabdian FMIPA UGM · batas Peta Nusa"
+      note="Biarkan peta terakumulasi sebentar sebelum bicara. Yang perlu ditekankan bukan jumlahnya, melainkan sebarannya: pengabdian tidak lagi terkonsentrasi di Daerah Istimewa Yogyakarta dan sekitarnya."
+    >
+      {/* Small-multiples per tahun dimatikan di sini. Pada halaman laporan
+          kelima petak kecil itu berguna karena pembaca dapat memindainya
+          sekaligus; di layar proyeksi keduanya bersaing memperebutkan tinggi
+          yang sama, dan peta utama yang kalah. Cerita akumulasinya tetap utuh
+          lewat tombol angkatan di atas peta. */}
+      <PointMap
+        points={outreachPoints}
+        title="Sebaran Kegiatan Pengabdian 2021–2025"
+        hideHeader
+        accumulate
+        showSmallMultiples={false}
+        pointLabel="kegiatan terpetakan"
+      />
+    </PresentationSlide>
+
+    <!-- 11 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="III"
+      layout="divider"
+      accent="green"
+      kicker="Pilar Ketiga"
+      title="Employability & Lulusan"
+      takeaway="Kecepatan serapan lulusan di dunia kerja dan keluasan sektor yang menyerapnya."
+      note="Jeda. Pilar yang paling langsung dirasakan orang tua mahasiswa."
+    />
+
+    <!-- 12 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="12"
+      kicker="Pilar III · Employability & Lulusan"
+      title="Lulusan Terserap Cepat dan Menyebar Luas"
+      takeaway={`Dari ${format(tracerSummary.responden)} responden tracer study, sebanyak ${format(tracerSummary.dalam_6_bulan)} telah bekerja dalam enam bulan pertama, dan ${format(tracerSummary.bekerja_sebelum_lulus)} di antaranya sudah bekerja bahkan sebelum diwisuda.`}
+      stat={`${format(tracerSummary.rerata_bulan, 1)} bulan`}
+      statLabel="rerata masa tunggu memperoleh pekerjaan pertama"
+      statNote={`Median ${format(tracerSummary.median_bulan, 1)} bulan. Angka berasal dari ${format(tracerSummary.responden)} responden angkatan ${tracerSummary.tahun.join(" dan ")}, bukan dari seluruh lulusan. ${format(tracerNonSector)} responden belum bekerja atau belum terklasifikasi dan tidak ditampilkan sebagai sektor.`}
+      source={`Tracer study FMIPA UGM · angkatan ${tracerSummary.tahun.join(" dan ")}`}
+      note={`Sains dasar terbukti relevan lintas industri: lulusan tersebar di ${format(tracerRealSectors)} sektor, dengan teknologi, keuangan, serta pendidikan dan riset sebagai tiga penyerap terbesar. Perlu disebutkan bahwa rerata dan median berbeda cukup jauh — itu wajar karena sebagian responden sudah bekerja sebelum lulus dan tercatat nol bulan.`}
+    >
+      <HorizontalBarChart
+        data={tracerSectors}
+        width={760}
+        rowHeight={40}
+        title="Sektor Kerja Lulusan menurut Tracer Study"
+        hideHeader
+        sort="descending"
+        axisLabel="Responden lulusan"
+        valueFormatter={(value: number) => format(value)}
+      />
+    </PresentationSlide>
+
+    <!-- 13 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="IV"
+      layout="divider"
+      accent="teal"
+      kicker="Pilar Keempat"
+      title="Mahasiswa & Akses Pendidikan"
+      takeaway="Dari daerah mana mahasiswa FMIPA datang, dan seberapa merata jangkauannya."
+      note="Jeda. Pilar ini yang paling jarang masuk laporan dekan, dan justru yang paling kuat secara moral."
+    />
+
+    <!-- 14 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="14"
+      kicker="Pilar IV · Mahasiswa & Akses"
+      title="Jangkauan Nasional yang Terus Melebar"
+      takeaway={`Porsi mahasiswa dari luar Jawa bergerak dari ${format(students.porsi_luar_jawa_awal, 1)} persen pada angkatan 2021 ke puncak ${format(students.porsi_luar_jawa_puncak, 1)} persen pada angkatan ${students.tahun_luar_jawa_puncak}.`}
+      stat={format(students.daerah_3t)}
+      statLabel="mahasiswa berasal dari daerah tertinggal, terdepan, dan terluar"
+      statNote={`Gunakan tombol angkatan pada peta untuk menelusuri perubahan tahun demi tahun. ${format(studentAccess.luar_negeri)} mahasiswa berdomisili di luar negeri dan disajikan terpisah.`}
+      source="Daftar mahasiswa S1 dan non-gelar FMIPA UGM angkatan 2021–2026"
+      note="Peta ini menjawab tuduhan klasik bahwa UGM hanya menerima mahasiswa Jawa. Kalau waktu memungkinkan, tekan tombol angkatan 2021 lalu 2024 supaya hadirin melihat sendiri provinsi yang baru terwakili."
+    >
+      <ChoroplethMap
+        data={provinceMap}
+        panels={provincePanels}
+        title="Sebaran Provinsi Asal Mahasiswa"
+        hideHeader
+        valueLabel="mahasiswa"
+      />
+    </PresentationSlide>
+
+    <!-- 15 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="V"
+      layout="divider"
+      accent="violet"
+      kicker="Pilar Kelima"
+      title="Tata Kelola & Kesejahteraan"
+      takeaway="Percepatan jenjang karier dosen dan regenerasi kepakaran fakultas."
+      note="Jeda. Pilar terakhir sebelum penutup."
+    />
+
+    <!-- 16 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="16"
+      kicker="Pilar V · Tata Kelola & Kesejahteraan"
+      title="Enam dari Sepuluh Guru Besar Diangkat pada Periode Ini"
+      takeaway={`Dari ${format(tenure.total)} Guru Besar aktif, sebanyak ${format(tenure.periode_ini)} memperoleh jabatannya sepanjang 2021–2026 — regenerasi kepakaran yang menentukan kapasitas fakultas satu dekade ke depan.`}
+      stat={`${format((tenure.periode_ini / tenure.total) * 100, 1)}%`}
+      statLabel="Guru Besar aktif diangkat pada masa jabatan ini"
+      statNote={`Secara keseluruhan ${format(seniorShare, 1)} persen dosen memegang jabatan Lektor ke atas, dan ${format(doctoralShare, 1)} persen bergelar doktor.`}
+      source="Data Guru Besar SIMASTER FMIPA UGM, 3 September 2026"
+      note="Setiap titik adalah satu orang. Ini cara paling jujur menampilkan kesejahteraan karier: bukan persentase abstrak, melainkan orang yang bisa dihitung satu per satu oleh hadirin di ruangan ini."
+    >
+      <DotMatrix
+        groups={tenureGroups}
+        width={560}
+        columns={18}
+        unitValue={1}
+        unitLabel="Guru Besar"
+        title="Guru Besar menurut Periode Pengangkatan"
+        hideHeader
+      />
+    </PresentationSlide>
+
+    <!-- 17 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="17"
+      layout="stat"
+      kicker="Estafet Kepemimpinan"
+      title="Yang Tercapai, dan Yang Diserahkan"
+      takeaway={`Dari ${format(tck.length)} indikator perjanjian kinerja 2026, ${format(tckAchieved)} telah tercapai dan ${format(tckNear)} mendekati target. Sisanya diserahkan sebagai agenda terbuka, bukan disembunyikan.`}
+      stat={`${format(tckAchieved)} / ${format(tck.length)}`}
+      statLabel="indikator perjanjian kinerja tercapai pada triwulan berjalan"
+      statNote={`${format(tckBehind)} indikator masih tertinggal, terbanyak pada pilar ${tckBehindByPillar.map((row) => `${row.pilar} (${format(row.n)})`).join(", ")}. Rinciannya terbuka pada halaman /data.`}
+      source="Target Capaian Kinerja FMIPA UGM 2026"
+      note="Slide ini yang membedakan laporan pertanggungjawaban dari bahan promosi. Sebut angka yang tertinggal lebih dulu, baru yang tercapai. Anggota senat yang ingin menelusuri satu indikator dapat membukanya sendiri lewat QR."
+    />
+
+    <!-- 18 ---------------------------------------------------------------- -->
+    <PresentationSlide
+      number="18"
+      layout="closing"
+      kicker="Penutup"
+      title="Merawat Legasi, Menyerahkan Estafet"
+      quote="Sains fundamental adalah akar pohon peradaban, namun dampaknya harus dirasakan sebagai buah manis yang menyejahterakan masyarakat luas."
+      quoteBy="Prof. Dr. Eng. Kuwat Triyana, M.Si."
+      takeaway="Terima kasih kepada seluruh Guru Besar, dosen, tenaga kependidikan, mahasiswa, alumni, dan mitra atas lima tahun kerja bersama."
+      note="Tutup tanpa menambahkan angka baru. Sampaikan bahwa seluruh data yang ditayangkan hari ini tersedia lengkap beserta berkas sumber dan catatan metodologinya di web data story, dan bahwa itulah yang diserahkan kepada kepemimpinan berikutnya sebagai titik awal, bukan sebagai arsip."
+    />
   </main>
-  <nav class="deck-controls" aria-label="Kontrol navigasi presentasi">
+
+  <nav class="deck-bar" aria-label="Kontrol navigasi presentasi">
     <a href={homeUrl} title="Kembali ke laporan utama">Laporan utama</a>
     <button type="button" data-deck-prev aria-label="Slide sebelumnya">←</button>
-    <span data-deck-counter aria-live="polite">1 / {slides.length}</span>
+    <span data-deck-counter aria-live="polite">1 / 18</span>
     <button type="button" data-deck-next aria-label="Slide berikutnya">→</button>
-    <button type="button" data-deck-notes aria-pressed="false" title="Tampilkan catatan presenter (P)">Catatan presenter</button>
-    <button type="button" data-deck-fullscreen title="Layar penuh (F)">Layar penuh</button>
+    <button type="button" data-deck-notes-toggle aria-pressed="false" title="Catatan presenter (N)">Catatan</button>
+    <button type="button" data-deck-full title="Layar penuh (F)">Layar penuh</button>
   </nav>
-  <p class="deck-help">Gunakan tombol ← → untuk berpindah slide · P untuk catatan · F untuk layar penuh</p>
+  <div class="deck-progress" aria-hidden="true"><i data-deck-progress></i></div>
+  <p class="deck-hint">← → berpindah slide · N catatan presenter · F layar penuh</p>
 
   <script>
-    const deck = document.querySelector<HTMLElement>("[data-presentation-deck]");
-    const slides = [...document.querySelectorAll<HTMLElement>("[data-presentation-slide]")];
+    /* Lapisan interaksi grafik yang sama dengan halaman laporan: tooltip,
+       tombol angkatan pada peta titik, dan tab angkatan pada peta koroplet.
+       Tanpa ini tombol-tombol itu terender tetapi tidak melakukan apa pun,
+       dan presenter yang menekannya di depan senat akan mendapati grafik yang
+       diam. */
+    import "../scripts/charts";
+
+    /* ---------------------------------------------------------------------
+       Mesin deck. Tugasnya tiga: memindah slide, melepas satu kelas gerak,
+       dan menyetel jeda pada tanda-tanda di dalam grafik. Ia tidak
+       menganimasikan apa pun sendiri — seluruh gerak adalah transisi CSS di
+       src/styles/deck-motion.css.
+       --------------------------------------------------------------------- */
+    const deck = document.querySelector<HTMLElement>("[data-deck]");
+    const slides = [...document.querySelectorAll<HTMLElement>("[data-deck-slide]")];
     const counter = document.querySelector<HTMLElement>("[data-deck-counter]");
+    const progress = document.querySelector<HTMLElement>("[data-deck-progress]");
     const prev = document.querySelector<HTMLButtonElement>("[data-deck-prev]");
     const next = document.querySelector<HTMLButtonElement>("[data-deck-next]");
-    const notes = document.querySelector<HTMLButtonElement>("[data-deck-notes]");
-    const fullscreen = document.querySelector<HTMLButtonElement>("[data-deck-fullscreen]");
-    let index = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace("#scene-", "")) - 1 || 0));
+    const notesToggle = document.querySelector<HTMLButtonElement>("[data-deck-notes-toggle]");
+    const fullscreen = document.querySelector<HTMLButtonElement>("[data-deck-full]");
 
-    const activate = (requested: number) => {
-      index = Math.max(0, Math.min(slides.length - 1, requested));
-      slides.forEach((slide, slideIndex) => {
-        const active = slideIndex === index;
-        slide.toggleAttribute("data-active", active);
-        slide.setAttribute("aria-hidden", String(!active));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    /* --- Jeda antar-tanda di dalam grafik -------------------------------
+       Dipasang sekali saat boot, bukan setiap kali slide dibuka: selama
+       presentasi berjalan JS tidak boleh menyentuh style sama sekali.
+
+       Jeda dibatasi ATAP. Tanpa itu, grafik dengan tujuh puluh titik peta
+       punya ekor lebih dari empat detik dan presenter yang mengklik cepat
+       mendahului animasinya sendiri. */
+    const MULAI = 260;
+    const ATAP = 900;
+
+    const KELUARGA = [
+      { pilih: ".stack .segment", langkah: 55 },
+      { pilih: ".bar-row", langkah: 48 },
+      { pilih: ".bullet-row", langkah: 48 },
+      { pilih: ".trend-row", langkah: 90 },
+      { pilih: ".dot-group", langkah: 130 },
+      { pilih: ".panel", langkah: 80 },
+      { pilih: "path.line", langkah: 140 },
+      { pilih: ".world-map__markers > circle", langkah: 40 },
+      { pilih: ".map-point > .point", langkah: 12 },
+      { pilih: ".world-map__land, .provinces, .basemap", langkah: 0 },
+    ];
+
+    function siapkanGrafik(): void {
+      for (const panggung of document.querySelectorAll<HTMLElement>("[data-deck-chart]")) {
+        for (const { pilih, langkah } of KELUARGA) {
+          const tanda = panggung.querySelectorAll<HTMLElement>(pilih);
+          tanda.forEach((el, index) => {
+            const tunda = Math.min(ATAP, MULAI + index * langkah);
+            el.style.setProperty("--tunda", `${tunda}ms`);
+          });
+        }
+
+        /* Garis tren menggambar dirinya. Panjang lintasan hanya terukur
+           setelah elemen berada di dokumen; slide non-aktif memakai
+           visibility, bukan display:none, jadi geometrinya tetap terhitung —
+           itu syarat yang membuat pengukuran ini bekerja. */
+        for (const path of panggung.querySelectorAll<SVGPathElement>("path.line")) {
+          if (path.hasAttribute("stroke-dasharray")) continue;
+          let panjang = 0;
+          try { panjang = path.getTotalLength(); } catch { continue; }
+          if (!panjang) continue;
+          path.style.strokeDasharray = String(panjang);
+          path.style.strokeDashoffset = reduceMotion.matches ? "0" : String(panjang);
+          path.dataset.panjang = String(panjang);
+        }
+      }
+    }
+
+    /* --- Angka yang menghitung naik --------------------------------------
+       Hanya untuk angka utama, dan hanya sekali per slide. Teks akhir selalu
+       dituliskan persis seperti yang dirender di server, jadi pembulatan dan
+       pemisah ribuan tidak pernah bergeser sedikit pun dari halaman laporan. */
+    function hitungNaik(slide: HTMLElement): void {
+      if (reduceMotion.matches) return;
+      for (const el of slide.querySelectorAll<HTMLElement>("[data-deck-count]")) {
+        const akhir = el.dataset.akhir ?? el.textContent ?? "";
+        el.dataset.akhir = akhir;
+        const cocok = akhir.match(/[\d.,]+/);
+        if (!cocok) continue;
+        const target = Number(cocok[0].replace(/\./g, "").replace(",", "."));
+        if (!Number.isFinite(target) || target < 10) continue;
+        const desimal = (cocok[0].split(",")[1] ?? "").length;
+        const angka = new Intl.NumberFormat("id-ID", {
+          minimumFractionDigits: desimal,
+          maximumFractionDigits: desimal,
+        });
+        const mulai = performance.now();
+        const durasi = 700;
+        const frame = (kini: number) => {
+          const maju = Math.min(1, (kini - mulai) / durasi);
+          if (maju >= 1) { el.textContent = akhir; return; }
+          const halus = 1 - (1 - maju) ** 3;
+          el.textContent = akhir.replace(cocok[0], angka.format(target * halus));
+          requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+        /* Jaring pengaman: kalau frame loop dicekik oleh tab yang tidak
+           aktif, yang tertinggal di layar tetap angka yang benar. */
+        window.setTimeout(() => { el.textContent = akhir; }, durasi + 400);
+      }
+    }
+
+    let index = 0;
+
+    function nyalakan(i: number): void {
+      /* Slide yang ditinggalkan dikembalikan ke keadaan awal supaya
+         koreografinya terputar ulang ketika presenter mundur — perilaku yang
+         tepat saat satu slide dijelaskan dua kali. */
+      slides.forEach((slide, k) => {
+        if (k === i || !slide.classList.contains("anim-nyala")) return;
+        slide.classList.remove("anim-nyala");
+        slide.querySelectorAll<SVGPathElement>("path.line").forEach((path) => {
+          if (path.dataset.panjang) path.style.strokeDashoffset = path.dataset.panjang;
+        });
+      });
+
+      const aktif = slides[i];
+      if (!aktif) return;
+      /* Reflow paksa. Tanpa baris ini peramban menggabungkan pelepasan dan
+         pemasangan kelas dalam satu kalkulasi gaya, dan transisinya tidak
+         pernah berjalan sama sekali. */
+      if (!reduceMotion.matches) void aktif.offsetWidth;
+      aktif.classList.add("anim-nyala");
+      aktif.querySelectorAll<SVGPathElement>("path.line").forEach((path) => {
+        path.style.strokeDashoffset = "0";
+      });
+      hitungNaik(aktif);
+    }
+
+    function buka(diminta: number): void {
+      index = Math.max(0, Math.min(slides.length - 1, diminta));
+      slides.forEach((slide, i) => {
+        const aktif = i === index;
+        slide.toggleAttribute("data-active", aktif);
+        slide.setAttribute("aria-hidden", String(!aktif));
       });
       if (counter) counter.textContent = `${index + 1} / ${slides.length}`;
+      if (progress) progress.style.inlineSize = `${((index + 1) / slides.length) * 100}%`;
       if (prev) prev.disabled = index === 0;
       if (next) next.disabled = index === slides.length - 1;
-      history.replaceState(null, "", `#scene-${index + 1}`);
-    };
+      history.replaceState(null, "", `#slide-${index + 1}`);
+      nyalakan(index);
+    }
 
-    document.body.classList.add("presentation-enhanced");
-    activate(index);
-    prev?.addEventListener("click", () => activate(index - 1));
-    next?.addEventListener("click", () => activate(index + 1));
-    notes?.addEventListener("click", () => {
-      const visible = document.body.dataset.notesVisible !== "true";
-      document.body.dataset.notesVisible = String(visible);
-      notes.setAttribute("aria-pressed", String(visible));
+    document.body.classList.add("deck-live");
+    siapkanGrafik();
+    buka(Number(location.hash.replace("#slide-", "")) - 1 || 0);
+
+    prev?.addEventListener("click", () => buka(index - 1));
+    next?.addEventListener("click", () => buka(index + 1));
+    notesToggle?.addEventListener("click", () => {
+      const tampil = document.body.dataset.deckNotesOpen !== "true";
+      document.body.dataset.deckNotesOpen = String(tampil);
+      notesToggle.setAttribute("aria-pressed", String(tampil));
     });
-    fullscreen?.addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+    fullscreen?.addEventListener("click", () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    });
+
     document.addEventListener("keydown", (event) => {
-      if (["ArrowRight", "PageDown", " "].includes(event.key)) { event.preventDefault(); activate(index + 1); }
-      if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); activate(index - 1); }
-      if (event.key === "Home") { event.preventDefault(); activate(0); }
-      if (event.key === "End") { event.preventDefault(); activate(slides.length - 1); }
-      if (event.key.toLowerCase() === "p") { event.preventDefault(); notes?.click(); }
-      if (event.key.toLowerCase() === "f") { event.preventDefault(); fullscreen?.click(); }
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select")) return;
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) { event.preventDefault(); buka(index + 1); }
+      else if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); buka(index - 1); }
+      else if (event.key === "Home") { event.preventDefault(); buka(0); }
+      else if (event.key === "End") { event.preventDefault(); buka(slides.length - 1); }
+      else if (event.key.toLowerCase() === "n") { event.preventDefault(); notesToggle?.click(); }
+      else if (event.key.toLowerCase() === "f") { event.preventDefault(); fullscreen?.click(); }
     });
+
+    /* Klik di paruh kanan maju, di paruh kiri mundur — kebiasaan yang sudah
+       dikenal presenter. Kontrol interaktif di dalam slide dikecualikan supaya
+       tombol angkatan pada peta tetap dapat ditekan. */
     deck?.addEventListener("click", (event) => {
-      if ((event.target as HTMLElement).closest("a,button,aside")) return;
-      const x = (event as MouseEvent).clientX;
-      activate(index + (x > window.innerWidth / 2 ? 1 : -1));
+      const target = event.target as HTMLElement;
+      if (target.closest("a, button, aside, [data-map-controls], [data-choropleth] button, details")) return;
+      buka(index + ((event as MouseEvent).clientX > window.innerWidth / 2 ? 1 : -1));
     });
   </script>
 </BaseLayout>
 
 <style>
-  :global(body.presentation-page) { overflow: auto; background: #0B1F2E; }
-  :global(body.presentation-page.presentation-enhanced) { overflow: hidden; }
-  :global(body.presentation-page.presentation-enhanced [data-presentation-deck]) {
+  /* ---------------------------------------------------------------------
+     Panggung deck. Sebelum skrip berjalan, slide tersusun sebagai halaman
+     panjang yang bisa digulir — itu yang membuat halaman tetap terbaca kalau
+     JS gagal dimuat, dan juga yang membuat cetak ke PDF bekerja apa adanya.
+     Kelas .deck-live baru menumpuknya menjadi satu panggung.
+     --------------------------------------------------------------------- */
+  :global(body.presentation-page) { overflow: auto; background: #0b1f2e; }
+  :global(body.deck-live) { overflow: hidden; }
+
+  :global(body.deck-live [data-deck]) {
     position: relative;
     inline-size: 100%;
-    block-size: 100vh;
     block-size: 100dvh;
     overflow: hidden;
   }
-  :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) {
+
+  :global(body.deck-live [data-deck-slide]) {
     position: absolute;
     inset: 0;
     z-index: 1;
-    display: grid;
-    inline-size: 100%;
-    block-size: 100%;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-    will-change: opacity;
-    transition: opacity 500ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 500ms;
+    transition: opacity 420ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 420ms;
   }
-  :global(body.presentation-page.presentation-enhanced [data-presentation-slide][data-active]) {
+
+  :global(body.deck-live [data-deck-slide][data-active]) {
     z-index: 2;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
-    transition: opacity 500ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 0s;
+    transition: opacity 420ms cubic-bezier(.4, 0, .2, 1), visibility 0s linear 0s;
   }
-  .deck-controls { position: fixed; z-index: 100; inset: 14px auto auto 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; padding: 5px; border: 1px solid rgba(255,255,255,.25); background: rgb(11 31 46 / 94%); color: #fff; box-shadow: 0 5px 20px rgb(0 0 0 / 22%); opacity: .78; transition: opacity 180ms ease; }
-  .deck-controls:hover, .deck-controls:focus-within { opacity: 1; }
-  .deck-controls a, .deck-controls button { min-height: 40px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.24); border-radius: 4px; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 700; text-decoration: none; }
-  .deck-controls button:hover, .deck-controls a:hover { background: rgba(255,255,255,.1); }.deck-controls button[aria-pressed="true"] { background: var(--ugm-gold); color: #0B1F2E; }.deck-controls button:disabled { opacity: .35; }
-  .deck-controls span { min-width: 64px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
-  .deck-help { position: fixed; z-index: 90; inset: auto auto 18px 50%; transform: translateX(-50%); margin: 0; color: rgba(255,255,255,.58); font-size: 10px; pointer-events: none; }
-  @media (hover: none) { .deck-controls { opacity: 1; } }
-  @media(max-width:1200px){.deck-controls [data-deck-notes],.deck-controls [data-deck-fullscreen]{inline-size:40px;padding-inline:0;font-size:0}.deck-controls [data-deck-notes]::before{content:"P";font-size:12px}.deck-controls [data-deck-fullscreen]::before{content:"⛶";font-size:18px;line-height:1}}
-  @media(max-width:760px){.deck-controls{inset:8px 8px auto;transform:none;justify-content:center}.deck-controls a,.deck-controls button{padding-inline:9px}.deck-controls [data-deck-fullscreen],.deck-controls [data-deck-notes]{display:none}.deck-help{display:none}}
+
+  /* --- Kendali ---------------------------------------------------------- */
+
+  .deck-bar {
+    position: fixed;
+    z-index: 100;
+    inset: 14px auto auto 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border: 1px solid rgb(255 255 255 / 24%);
+    background: rgb(11 31 46 / 94%);
+    color: #fff;
+    box-shadow: 0 6px 22px rgb(0 0 0 / 24%);
+    opacity: .32;
+    transition: opacity 200ms ease;
+  }
+  .deck-bar:hover, .deck-bar:focus-within { opacity: 1; }
+  .deck-bar a, .deck-bar button {
+    min-block-size: 38px;
+    padding: 6px 10px;
+    border: 1px solid rgb(255 255 255 / 22%);
+    border-radius: 4px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .deck-bar a:hover, .deck-bar button:hover:not(:disabled) { background: rgb(255 255 255 / 12%); }
+  .deck-bar button[aria-pressed="true"] { background: var(--ugm-gold); color: #0b1f2e; }
+  .deck-bar button:disabled { opacity: .3; cursor: default; }
+  .deck-bar span { min-inline-size: 62px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  .deck-progress {
+    position: fixed;
+    z-index: 99;
+    inset: auto 0 0;
+    block-size: 10px;
+    background: rgb(255 255 255 / 14%);
+  }
+  .deck-progress i {
+    display: block;
+    inline-size: 0;
+    block-size: 100%;
+    background: var(--ugm-gold);
+    transition: inline-size 420ms cubic-bezier(.4, 0, .2, 1);
+  }
+  :global(body:not(.deck-live)) .deck-progress { display: none; }
+
+  .deck-hint {
+    position: fixed;
+    z-index: 90;
+    inset: auto auto 20px 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    color: rgb(255 255 255 / 46%);
+    font-size: 10px;
+    letter-spacing: .06em;
+    pointer-events: none;
+  }
+
+  @media (hover: none) { .deck-bar { opacity: 1; } }
+
+  @media (max-width: 900px) {
+    .deck-bar { inset: 8px 8px auto; transform: none; justify-content: center; }
+    .deck-bar [data-deck-full] { display: none; }
+    .deck-hint { display: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    :global(body.presentation-page.presentation-enhanced [data-presentation-slide]) { transition: none; }
+    :global(body.deck-live [data-deck-slide]) { transition: none; }
+    .deck-progress i { transition: none; }
   }
-  @media print { .deck-controls,.deck-help{display:none!important}:global(body.presentation-page){overflow:visible!important}:global(body.presentation-page [data-presentation-slide]){display:block!important;visibility:visible!important;opacity:1!important;break-after:page;transition:none!important} }
+
+  @media print {
+    .deck-bar, .deck-progress, .deck-hint { display: none !important; }
+    :global(body.presentation-page) { overflow: visible !important; }
+    :global(body.deck-live [data-deck]) { block-size: auto; overflow: visible; }
+    :global(body.deck-live [data-deck-slide]) {
+      position: relative;
+      visibility: visible !important;
+      opacity: 1 !important;
+      break-after: page;
+      transition: none !important;
+    }
+  }
 </style>

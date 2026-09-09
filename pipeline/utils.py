@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 from pathlib import Path
 from typing import Any, Iterable
@@ -32,6 +33,18 @@ DEKAN_2026_DIR = WORKSPACE_ROOT / "data laporan dekan 2021-2026" / "Laporan Deka
 if not DEKAN_2026_DIR.exists():
     DEKAN_2026_DIR = DATA_ROOT / "Laporan Dekan 2026"
 SDM_DIR = DEKAN_2026_DIR / "SDM"
+# The 2021 volume of the same delivery. It holds the five-year recap tables the
+# 2026 workbooks do not reach back to: graduate counts, GPA, and study duration
+# for academic years 2016/2017-2020/2021. Only those recaps are read; the rest
+# of the 2021-2025 archive stays out of the pipeline.
+DEKAN_2021_DIR = WORKSPACE_ROOT / "data laporan dekan 2021-2026" / "Laporan Dekan 2021"
+HISTORICAL_TABEL1_DIR = (
+    DEKAN_2021_DIR
+    / "Data isian"
+    / "Tabel 1. Akademik, Kemahasiswaan, Perpustakaan, OIA"
+    / "Tabel 1.1 s.d 1.28. Akademik, Kemahasiswaan, Pepustakaan, OIA"
+)
+HISTORICAL_REKAP_DIR = DEKAN_2021_DIR / "Rekap Data 2017 - 2021"
 WORK_DIR = APP_ROOT / "pipeline" / "work"
 LOADED_DIR = WORK_DIR / "loaded"
 CLEAN_DIR = WORK_DIR / "cleaned"
@@ -67,6 +80,27 @@ def read_parts(pattern: str) -> tuple[pd.DataFrame, list[Path]]:
     return pd.concat(frames, ignore_index=True), files
 
 
+def long_path(path: Path) -> str:
+    r"""Return a path Windows can open even past the 260-character MAX_PATH limit.
+
+    The 2021 recap workbooks sit 270-320 characters deep, and this machine has
+    ``LongPathsEnabled=0``, so opening one raises FileNotFoundError while the
+    directory listing right above it still works. The ``\\?\`` prefix asks Win32
+    for the extended-length namespace, which has no such limit; it requires a
+    fully-qualified, backslash-only path, hence the ``abspath``. Note it also
+    bypasses DOS device names, so a ``subst`` drive must be resolved to its real
+    path first. Other platforms have no limit and are returned untouched.
+    """
+    if os.name != "nt":
+        return str(path)
+    resolved = os.path.abspath(str(path))
+    # Built from chr(92) rather than written literally: the prefix is four
+    # backslashes deep once escaped, which is where it usually gets miscopied.
+    backslash = chr(92)
+    prefix = backslash * 2 + "?" + backslash
+    return resolved if resolved.startswith(prefix) else prefix + resolved
+
+
 def read_workbook(path: Path, sheet: Any = 0, header: Any = None) -> pd.DataFrame:
     """Read one sheet of an .xlsx/.xls workbook as raw positional cells.
 
@@ -74,15 +108,15 @@ def read_workbook(path: Path, sheet: Any = 0, header: Any = None) -> pd.DataFram
     ``header=None``: callers slice the rows they need and name columns themselves
     rather than fighting pandas' header inference.
     """
-    if not path.exists():
+    if not os.path.exists(long_path(path)):
         raise FileNotFoundError(f"Berkas sumber tidak ditemukan: {path}")
     engine = "xlrd" if path.suffix.lower() == ".xls" else "openpyxl"
-    return pd.read_excel(path, sheet_name=sheet, header=header, engine=engine, dtype=object)
+    return pd.read_excel(long_path(path), sheet_name=sheet, header=header, engine=engine, dtype=object)
 
 
 def workbook_sheets(path: Path) -> list[str]:
     engine = "xlrd" if path.suffix.lower() == ".xls" else "openpyxl"
-    with pd.ExcelFile(path, engine=engine) as book:
+    with pd.ExcelFile(long_path(path), engine=engine) as book:
         return list(book.sheet_names)
 
 

@@ -1,6 +1,56 @@
 [
   {
     "jenjang": "Doktor",
+    "tahun": 2017,
+    "tahun_ajaran": "2016/2017",
+    "lulusan": 62,
+    "total_tercatat": 62.0,
+    "ipk_rerata": 3.73,
+    "cumlaude": null,
+    "lama_studi": "68.13"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2018,
+    "tahun_ajaran": "2017/2018",
+    "lulusan": 53,
+    "total_tercatat": 53.0,
+    "ipk_rerata": 3.7,
+    "cumlaude": null,
+    "lama_studi": "67.89"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2019,
+    "tahun_ajaran": "2018/2019",
+    "lulusan": 46,
+    "total_tercatat": 46.0,
+    "ipk_rerata": 3.78,
+    "cumlaude": null,
+    "lama_studi": "59.22"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2020,
+    "tahun_ajaran": "2019/2020",
+    "lulusan": 42,
+    "total_tercatat": 42.0,
+    "ipk_rerata": 3.71,
+    "cumlaude": null,
+    "lama_studi": "57.19"
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2021,
+    "tahun_ajaran": "2020/2021",
+    "lulusan": 24,
+    "total_tercatat": 24.0,
+    "ipk_rerata": 3.78,
+    "cumlaude": null,
+    "lama_studi": "58.17"
+  },
+  {
+    "jenjang": "Doktor",
     "tahun": 2022,
     "tahun_ajaran": "2021/2022",
     "lulusan": 26,
@@ -51,6 +101,56 @@
   },
   {
     "jenjang": "Magister",
+    "tahun": 2017,
+    "tahun_ajaran": "2016/2017",
+    "lulusan": 349,
+    "total_tercatat": 349.0,
+    "ipk_rerata": 3.46,
+    "cumlaude": null,
+    "lama_studi": "32.73"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2018,
+    "tahun_ajaran": "2017/2018",
+    "lulusan": 277,
+    "total_tercatat": 277.0,
+    "ipk_rerata": 3.5,
+    "cumlaude": null,
+    "lama_studi": "32.04"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2019,
+    "tahun_ajaran": "2018/2019",
+    "lulusan": 210,
+    "total_tercatat": 210.0,
+    "ipk_rerata": 3.57,
+    "cumlaude": null,
+    "lama_studi": "29.55"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2020,
+    "tahun_ajaran": "2019/2020",
+    "lulusan": 223,
+    "total_tercatat": 223.0,
+    "ipk_rerata": 3.55,
+    "cumlaude": null,
+    "lama_studi": "29.77"
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2021,
+    "tahun_ajaran": "2020/2021",
+    "lulusan": 156,
+    "total_tercatat": 156.0,
+    "ipk_rerata": 3.62,
+    "cumlaude": null,
+    "lama_studi": "29.46"
+  },
+  {
+    "jenjang": "Magister",
     "tahun": 2022,
     "tahun_ajaran": "2021/2022",
     "lulusan": 156,
@@ -98,6 +198,56 @@
     "ipk_rerata": 3.78,
     "cumlaude": null,
     "lama_studi": "25.44"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "tahun_ajaran": "2016/2017",
+    "lulusan": 685,
+    "total_tercatat": 685.0,
+    "ipk_rerata": 3.23,
+    "cumlaude": null,
+    "lama_studi": "4 th 9 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "tahun_ajaran": "2017/2018",
+    "lulusan": 670,
+    "total_tercatat": 670.0,
+    "ipk_rerata": 3.22,
+    "cumlaude": null,
+    "lama_studi": "5 th 0 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "tahun_ajaran": "2018/2019",
+    "lulusan": 575,
+    "total_tercatat": 575.0,
+    "ipk_rerata": 3.28,
+    "cumlaude": null,
+    "lama_studi": "4 th 5 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "tahun_ajaran": "2019/2020",
+    "lulusan": 455,
+    "total_tercatat": 455.0,
+    "ipk_rerata": 3.28,
+    "cumlaude": null,
+    "lama_studi": "4 th 6 bln"
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "tahun_ajaran": "2020/2021",
+    "lulusan": 480,
+    "total_tercatat": 480.0,
+    "ipk_rerata": 3.32,
+    "cumlaude": null,
+    "lama_studi": "4 th 5 bln"
   },
   {
     "jenjang": "Sarjana",

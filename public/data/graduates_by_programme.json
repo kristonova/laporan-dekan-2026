@@ -1,6 +1,126 @@
 [
   {
     "jenjang": "Doktor",
+    "tahun": 2017,
+    "prodi": "Doktor Fisika",
+    "lulusan": 16
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2017,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 19
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2017,
+    "prodi": "Doktor Kimia",
+    "lulusan": 19
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2017,
+    "prodi": "Doktor Matematika",
+    "lulusan": 8
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2018,
+    "prodi": "Doktor Fisika",
+    "lulusan": 8
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2018,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 14
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2018,
+    "prodi": "Doktor Kimia",
+    "lulusan": 26
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2018,
+    "prodi": "Doktor Matematika",
+    "lulusan": 5
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2019,
+    "prodi": "Doktor Fisika",
+    "lulusan": 9
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2019,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 11
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2019,
+    "prodi": "Doktor Kimia",
+    "lulusan": 21
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2019,
+    "prodi": "Doktor Matematika",
+    "lulusan": 5
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2020,
+    "prodi": "Doktor Fisika",
+    "lulusan": 9
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2020,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 16
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2020,
+    "prodi": "Doktor Kimia",
+    "lulusan": 10
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2020,
+    "prodi": "Doktor Matematika",
+    "lulusan": 7
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2021,
+    "prodi": "Doktor Fisika",
+    "lulusan": 6
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2021,
+    "prodi": "Doktor Ilmu Komputer",
+    "lulusan": 6
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2021,
+    "prodi": "Doktor Kimia",
+    "lulusan": 9
+  },
+  {
+    "jenjang": "Doktor",
+    "tahun": 2021,
+    "prodi": "Doktor Matematika",
+    "lulusan": 3
+  },
+  {
+    "jenjang": "Doktor",
     "tahun": 2022,
     "prodi": "Doktor Fisika",
     "lulusan": 1
@@ -118,6 +238,126 @@
     "tahun": 2026,
     "prodi": "Doktor Matematika",
     "lulusan": 9
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2017,
+    "prodi": "Magister Fisika",
+    "lulusan": 69
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2017,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 85
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2017,
+    "prodi": "Magister Kimia",
+    "lulusan": 116
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2017,
+    "prodi": "Magister Matematika",
+    "lulusan": 79
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2018,
+    "prodi": "Magister Fisika",
+    "lulusan": 71
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2018,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 60
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2018,
+    "prodi": "Magister Kimia",
+    "lulusan": 96
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2018,
+    "prodi": "Magister Matematika",
+    "lulusan": 50
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2019,
+    "prodi": "Magister Fisika",
+    "lulusan": 55
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2019,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 51
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2019,
+    "prodi": "Magister Kimia",
+    "lulusan": 55
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2019,
+    "prodi": "Magister Matematika",
+    "lulusan": 49
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2020,
+    "prodi": "Magister Fisika",
+    "lulusan": 42
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2020,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 55
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2020,
+    "prodi": "Magister Kimia",
+    "lulusan": 59
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2020,
+    "prodi": "Magister Matematika",
+    "lulusan": 67
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2021,
+    "prodi": "Magister Fisika",
+    "lulusan": 52
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2021,
+    "prodi": "Magister Ilmu Komputer",
+    "lulusan": 45
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2021,
+    "prodi": "Magister Kimia",
+    "lulusan": 39
+  },
+  {
+    "jenjang": "Magister",
+    "tahun": 2021,
+    "prodi": "Magister Matematika",
+    "lulusan": 20
   },
   {
     "jenjang": "Magister",
@@ -262,6 +502,216 @@
     "tahun": 2026,
     "prodi": "Magister Matematika",
     "lulusan": 44
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 65
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Fisika",
+    "lulusan": 64
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Geofisika",
+    "lulusan": 105
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 105
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Kimia",
+    "lulusan": 204
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Matematika",
+    "lulusan": 74
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2017,
+    "prodi": "S1 Statistika",
+    "lulusan": 68
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 83
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Fisika",
+    "lulusan": 73
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Geofisika",
+    "lulusan": 82
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 123
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Kimia",
+    "lulusan": 172
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Matematika",
+    "lulusan": 83
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2018,
+    "prodi": "S1 Statistika",
+    "lulusan": 54
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 75
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Fisika",
+    "lulusan": 51
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Geofisika",
+    "lulusan": 60
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 87
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Kimia",
+    "lulusan": 173
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Matematika",
+    "lulusan": 61
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2019,
+    "prodi": "S1 Statistika",
+    "lulusan": 68
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 90
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Fisika",
+    "lulusan": 64
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Geofisika",
+    "lulusan": 47
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 81
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Kimia",
+    "lulusan": 90
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Matematika",
+    "lulusan": 46
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2020,
+    "prodi": "S1 Statistika",
+    "lulusan": 37
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Elektronika dan Instrumentasi",
+    "lulusan": 77
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Fisika",
+    "lulusan": 51
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Geofisika",
+    "lulusan": 39
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Ilmu Komputer",
+    "lulusan": 82
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Kimia",
+    "lulusan": 149
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Matematika",
+    "lulusan": 37
+  },
+  {
+    "jenjang": "Sarjana",
+    "tahun": 2021,
+    "prodi": "S1 Statistika",
+    "lulusan": 45
   },
   {
     "jenjang": "Sarjana",

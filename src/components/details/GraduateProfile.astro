@@ -17,6 +17,14 @@ const latestProfiles=levels.map(level=>{
   return {...level,...row,bulan:months(row.lama_studi)};
 });
 const monthScale=Math.ceil(Math.max(...population.map(r=>months(r.lama_studi)))/24)*24;
+// The trend line runs between these two x positions whatever the year count, so
+// adding the 2016/2017-2020/2021 recap years re-spaces the points instead of
+// running them off the right edge of the viewBox.
+const trendLeft=50, trendRight=482;
+const trendX=(index:number,count:number)=>count<2?trendLeft:trendLeft+index*(trendRight-trendLeft)/(count-1);
+// With ten years the value labels would collide, so they thin out to every
+// other point; the first and last always keep theirs.
+const showTrendValue=(index:number,count:number)=>count<8||index===0||index===count-1||index%2===1;
 const semesterScale=Math.ceil(Math.max(...details.panel.map(p=>p.lama_studi.max??0)));
 ---
 <DetailShell label={mode==='population'?'Profil seluruh lulusan':'Sebaran masa studi dalam daftar TCK'}>
@@ -47,16 +55,16 @@ const semesterScale=Math.ceil(Math.max(...details.panel.map(p=>p.lama_studi.max?
             <div><strong>{fmt(latest.bulan,2)}</strong><span>bulan · rerata lama studi</span></div>
             <div><strong>{fmt(latest.ipk_rerata,2)}</strong><span>rerata IPK · skala 0–4</span></div>
           </div>
-          <ChartFrame id={`profil-lulus-${level.code}`} title={`Profil lulusan ${level.label}`} hideHeader source="Profil Lulusan FMIPA; profil Magister & Doktor 2025/2026" csvHref={withBase('/data/graduates_profile.csv')}
+          <ChartFrame id={`profil-lulus-${level.code}`} title={`Profil lulusan ${level.label}`} hideHeader source="Rekap lulusan lima tahun 2016/2017–2020/2021; Profil Lulusan FMIPA; profil Magister & Doktor 2025/2026" csvHref={withBase('/data/graduates_profile.csv')}
             tableRows={history} tableColumns={[{key:'tahun_ajaran',label:'Tahun akademik'},{key:'lulusan',label:'Lulusan'},{key:'bulan',label:'Lama studi (bulan)',format:v=>fmt(Number(v),2)},{key:'ipk_rerata',label:'Rerata IPK'}]}>
             <div class="detail-grid">
               <div><h4>Perjalanan rerata lama studi</h4><p class="detail-note">Satuan bulan · skala yang sama untuk ketiga jenjang.</p>
                 <svg class="study-trend" viewBox="0 0 520 235" role="img" aria-label={`Rerata lama studi ${level.label}: ${history.map(r=>`${r.tahun_ajaran}: ${fmt(r.bulan,2)} bulan`).join('; ')}`}>
                   {[0,24,48,72].map(v=><g><line x1="38" x2="490" y1={190-v*2} y2={190-v*2} stroke="var(--border-subtle)"/><text x="27" y={194-v*2} text-anchor="end">{v}</text></g>)}
-                  <polyline points={history.map((r,index)=>`${50+index*108},${190-r.bulan*2}`).join(' ')} fill="none" stroke="var(--chart-primary)" stroke-width="2.5"/>
-                  {history.map((r,index)=><g><circle cx={50+index*108} cy={190-r.bulan*2} r="5" fill="var(--surface-card)" stroke="var(--chart-primary)" stroke-width="2.5"/><text x={50+index*108} y={175-r.bulan*2} text-anchor="middle" class="value">{fmt(r.bulan,2)}</text><text x={50+index*108} y="214" text-anchor="middle">{r.tahun_ajaran.slice(2,4)}/{r.tahun_ajaran.slice(7)}</text></g>)}
+                  <polyline points={history.map((r,index)=>`${trendX(index,history.length)},${190-r.bulan*2}`).join(' ')} fill="none" stroke="var(--chart-primary)" stroke-width="2.5"/>
+                  {history.map((r,index)=><g><circle cx={trendX(index,history.length)} cy={190-r.bulan*2} r="5" fill="var(--surface-card)" stroke="var(--chart-primary)" stroke-width="2.5"/>{showTrendValue(index,history.length)&&<text x={trendX(index,history.length)} y={175-r.bulan*2} text-anchor="middle" class="value">{fmt(r.bulan,2)}</text>}<text x={trendX(index,history.length)} y="214" text-anchor="middle">{r.tahun_ajaran.slice(2,4)}/{r.tahun_ajaran.slice(7)}</text></g>)}
                 </svg>
-                <p class="detail-note">S1 dikonversi dari tahun dan bulan pada rekap. Rerata S2/S3 tahun 2025/2026 dibobot menurut jumlah wisudawan pada tiap program studi dan periode wisuda.</p>
+                <p class="detail-note">S1 dikonversi dari tahun dan bulan pada rekap. Tahun akademik 2016/2017–2020/2021 berasal dari rekap lima tahun Laporan Dekan 2021; rerata tiap tahun dibobot menurut jumlah lulusan per program studi, bukan memakai baris rerata sumber yang tidak berbobot. Rerata S2/S3 tahun 2025/2026 dibobot menurut jumlah wisudawan pada tiap program studi dan periode wisuda.</p>
               </div>
               <div><h4>Lulusan menurut program studi</h4><CountBars rows={counts} total={latest.lulusan} color="var(--pillar-teal)"/>
                 {latest.cumlaude!==null&&<p class="detail-note"><strong>{fmt(latest.cumlaude,0)} lulusan cumlaude</strong> · {fmt(latest.cumlaude/latest.lulusan*100)}% dari seluruh lulusan {level.label.toLowerCase()}.</p>}
