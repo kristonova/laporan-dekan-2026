@@ -149,25 +149,25 @@ const tableRows = sortedData.map((row) => ({
   .axis text,
   .target text {
     fill: var(--ink-muted, #656b70);
-    font-size: 11px;
+    font-size: var(--chart-axis-font-size, 11px);
   }
 
   .axis .axis-label {
     fill: currentColor;
-    font-size: 12px;
+    font-size: var(--chart-label-font-size, 12px);
     font-weight: 700;
   }
 
   .category,
   .value {
     fill: currentColor;
-    font-size: 12px;
+    font-size: var(--chart-label-font-size, 12px);
     font-weight: 700;
   }
 
   .annotation {
     fill: var(--ink-muted, #656b70);
-    font-size: 11px;
+    font-size: var(--chart-small-font-size, 11px);
   }
 
   .target line {

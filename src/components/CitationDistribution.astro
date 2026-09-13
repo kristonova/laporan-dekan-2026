@@ -1,0 +1,33 @@
+---
+import HorizontalBarChart from "./charts/HorizontalBarChart.astro";
+import distribution from "../data/derived/citation_distribution.json";
+import profile from "../data/derived/citation_profile.json";
+import { UGM_BLUE, SEQ } from "../lib/palette";
+import { withBase } from "../lib/paths";
+
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
+const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
+const data = distribution.map((row, index) => ({
+  label: row.label,
+  value: row.publications,
+  valueLabel: format(row.publications),
+  annotation: `${format(row.share, 1)}%`,
+  group: "Sitasi kumulatif per publikasi",
+  color: index === 0 ? SEQ[250] : UGM_BLUE,
+}));
+---
+
+<HorizontalBarChart
+  {data}
+  title="Distribusi Publikasi menurut Jumlah Sitasi"
+  hideHeader
+  width={compact ? 760 : 900}
+  rowHeight={compact ? 58 : 64}
+  axisLabel="Jumlah publikasi"
+  source={`SciVal / Scopus · tahun publikasi ${profile.publication_year_start}–${profile.publication_year_end}`}
+  extracted={profile.updated_label}
+  csvHref={withBase("/data/citation_distribution.csv")}
+  tableCaption={`Jumlah publikasi menurut sitasi kumulatif per ${profile.updated_label}; persentase dari ${format(profile.publications)} publikasi`}
+  valueFormatter={(value: number) => format(value)}
+/>

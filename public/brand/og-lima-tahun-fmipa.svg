@@ -15,6 +15,6 @@
   <path d="M72 212h82v3H72z" fill="#FED400"/>
   <text x="72" y="288" fill="#FED400" font-family="Gama Serif, Georgia, serif" font-size="76" font-weight="700">Lima Tahun FMIPA</text>
   <text x="72" y="348" fill="#fff" font-family="Gama Sans, Arial, sans-serif" font-size="28">Laporan Dekan FMIPA UGM 2026</text>
-  <text x="72" y="470" fill="#fff" font-family="Gama Sans, Arial, sans-serif" font-size="76" font-weight="700">70.905 sitasi</text>
-  <text x="72" y="514" fill="#D7DDE1" font-family="Gama Sans, Arial, sans-serif" font-size="24">Dua pertiganya terjadi dalam lima tahun terakhir.</text>
+  <text x="72" y="470" fill="#fff" font-family="Gama Sans, Arial, sans-serif" font-size="64" font-weight="700">Karya dan Kontribusi</text>
+  <text x="72" y="514" fill="#D7DDE1" font-family="Gama Sans, Arial, sans-serif" font-size="24">Riset, pengabdian, dan pendidikan berbasis data.</text>
 </svg>

@@ -8,8 +8,14 @@ import re
 from collections import Counter
 
 import pandas as pd
+from citation_profile import (
+    MISSING_CITATION_POLICY,
+    SOURCE_FILE as CITATION_SOURCE_FILE,
+    aggregate_citation_profile,
+    clean_citation_publications,
+)
 
-from utils import CLEAN_DIR, DERIVED_DIR, LOADED_DIR, MAPPINGS_DIR
+from utils import CLEAN_DIR, DERIVED_DIR, LOADED_DIR, MAPPINGS_DIR, PUBLIC_DATA_DIR
 
 
 EXPECTED_FILES = {
@@ -28,6 +34,8 @@ EXPECTED_FILES = {
     "hpu_posbindu_tahunan.json",
     # Added with the 30 August 2026 SciVal refresh (2020-2026).
     "research_quality.json", "open_access.json", "collab_share.json",
+    # Dedicated full-history SciVal citation snapshot (6 September 2026).
+    "citation_profile.json", "citation_distribution.json",
     # Added with the student roster (six intake cohorts, 2021-2026).
     "students_summary.json", "students_by_programme.json", "students_by_province.json",
     "students_by_pathway.json", "students_background.json", "students_cohort_outcome.json",
@@ -93,6 +101,12 @@ def main() -> None:
     assert manifest["citations"]["rows_loaded"] == 25_300
     assert manifest["publications"]["rows_loaded"] == 3_069
     assert manifest["people"]["rows_loaded"] == 4_813
+    citation_manifest = manifest["citation_publications"]
+    assert citation_manifest["files"] == [CITATION_SOURCE_FILE]
+    assert citation_manifest["rows_loaded"] == citation_manifest["rows_after_deduplication"] == 5_139
+    assert citation_manifest["duplicate_rows_removed"] == 0
+    assert citation_manifest["updated_label"] == "6 September 2026"
+    assert citation_manifest["exported_label"] == "12 September 2026"
 
     missing_outputs = EXPECTED_FILES - {path.name for path in DERIVED_DIR.glob("*.json")}
     assert not missing_outputs, f"Output wajib hilang: {sorted(missing_outputs)}"
@@ -104,6 +118,73 @@ def main() -> None:
     assert citation_lookup[2024] == 12_629
     assert sum(citation_lookup.values()) == 70_905
     assert sum(value for year, value in citation_lookup.items() if 2021 <= year <= 2025) == 46_930
+    assert all(not row["is_partial"] for row in citations), "Arsip P2M tidak boleh mengklaim indeksasi masih berjalan"
+
+    citation_publications = pd.read_csv(CLEAN_DIR / "citation_publications.csv")
+    assert list(citation_publications.columns) == ["eid", "year", "citations"]
+    assert len(citation_publications) == citation_publications["eid"].nunique() == 5_139
+    assert citation_publications["eid"].tolist() == sorted(citation_publications["eid"])
+    assert citation_publications["year"].min() == 1996 and citation_publications["year"].max() == 2027
+    assert not citation_publications[["year", "citations"]].isna().any().any()
+    assert int(citation_publications["citations"].sum()) == 43_632
+    assert int(citation_publications["citations"].eq(0).sum()) == 1_084
+    period = citation_publications[citation_publications["year"].between(2021, 2025)]
+    assert len(period) == 2_340 and int(period["citations"].sum()) == 16_564
+    future = citation_publications[citation_publications["year"].gt(2026)]
+    assert len(future) == 4 and future["year"].eq(2027).all()
+    assert not period["eid"].isin(future["eid"]).any()
+
+    citation_profile = load_json("citation_profile.json")
+    distribution = load_json("citation_distribution.json")
+    expected_profile, expected_distribution = aggregate_citation_profile(citation_publications)
+    assert citation_profile == expected_profile and distribution == expected_distribution
+    assert citation_profile["publications"] == 5_139
+    assert citation_profile["citations"] == 43_632
+    assert citation_profile["cited_publications"] == 4_055
+    assert citation_profile["cited_share"] == 78.9
+    assert citation_profile["highly_cited_publications"] == 22
+    assert citation_profile["current_publications"] == 382
+    assert citation_profile["future_publications"] == 4
+    assert citation_profile["missing_citation_policy"] == MISSING_CITATION_POLICY
+    assert [row["label"] for row in distribution] == ["Belum disitasi", "1–9 sitasi", "10–49 sitasi", "50–99 sitasi", "≥100 sitasi"]
+    assert [row["publications"] for row in distribution] == [1_084, 2_776, 1_138, 119, 22]
+    assert sum(row["publications"] for row in distribution) == 5_139
+    assert sum(row["citations"] for row in distribution) == 43_632
+    assert abs(sum(row["share"] for row in distribution) - 100) <= .2
+    assert pd.read_csv(PUBLIC_DATA_DIR / "citation_distribution.csv").to_dict(orient="records") == distribution
+    for filename in ("citation_profile.json", "citation_distribution.json"):
+        assert json.loads((PUBLIC_DATA_DIR / filename).read_text(encoding="utf-8")) == load_json(filename)
+
+    # Missing values cannot quietly become "Belum disitasi". Exercise invalid
+    # input, boundary values, and deterministic duplicate handling separately
+    # from the fixed source totals above.
+    for invalid in (None, "", "-", "unknown", -1, .5, float("inf")):
+        sample = pd.DataFrame({"eid": ["2-s2.0-1"], "year": [2025], "citations": [invalid]})
+        try:
+            clean_citation_publications(sample)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError(f"Sitasi tidak valid diterima sebagai hitungan: {invalid!r}")
+    boundaries = pd.DataFrame({
+        "eid": [f"2-s2.0-{index}" for index in range(9)],
+        "year": [2025] * 9,
+        "citations": [0, 1, 9, 10, 49, 50, 99, 100, 101],
+    })
+    _, boundary_bins = aggregate_citation_profile(boundaries)
+    assert [row["publications"] for row in boundary_bins] == [1, 2, 2, 2, 2]
+    pd.testing.assert_frame_equal(
+        clean_citation_publications(pd.concat([boundaries.iloc[::-1], boundaries.iloc[:1]])),
+        clean_citation_publications(boundaries),
+    )
+    conflict = boundaries.iloc[:1].copy()
+    conflict["citations"] = 10
+    try:
+        clean_citation_publications(pd.concat([boundaries, conflict]))
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("EID dengan hitungan sitasi berbeda dideduplikasi tanpa pemeriksaan")
 
     publications = pd.read_csv(CLEAN_DIR / "publications.csv")
     assert len(publications) == 3_069
@@ -177,6 +258,10 @@ def main() -> None:
     assert all(row["country"] != "Indonesia" for row in collaborations)
 
     value_model = load_json("value_model.json")
+    assert value_model["metrics"]["citations_n"] == citation_profile["period_citations"] == 16_564
+    assert value_model["metric_definitions"]["citations_n"] == citation_profile["period_citation_definition"]
+    assert value_model["citation_source"]["source_file"] == CITATION_SOURCE_FILE
+    assert value_model["citation_source"]["updated_label"] == "6 September 2026"
     assert value_model["metrics"]["mappable_outreach_n"] == 921
     assert value_model["metrics"]["raw_location_labels_n"] == 126
 
@@ -653,8 +738,11 @@ def main() -> None:
         "selisih_kepegawaian": staffing_vs_tck,
         "billing_ganda_kerja_sama": revenue["billing_ganda"],
         "verified_anchors": {
-            "citations_all_time": sum(citation_lookup.values()),
-            "citations_2021_2025": sum(value for year, value in citation_lookup.items() if 2021 <= year <= 2025),
+            "scival_publications_all_years": citation_profile["publications"],
+            "scival_citations_all_years": citation_profile["citations"],
+            "scival_citations_to_2021_2025_publications": citation_profile["period_citations"],
+            "archived_p2m_citations_all_time": sum(citation_lookup.values()),
+            "archived_p2m_citations_2021_2025": sum(value for year, value in citation_lookup.items() if 2021 <= year <= 2025),
             "funding_2024_rp": funding_total[2024],
             "outreach_missing_location": int(outreach["location_status"].eq("missing").sum()),
             "kerja_sama_2021_2026": coverage["total"],

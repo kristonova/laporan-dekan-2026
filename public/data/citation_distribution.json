@@ -1,0 +1,32 @@
+[
+  {
+    "label": "Belum disitasi",
+    "publications": 1084,
+    "share": 21.1,
+    "citations": 0
+  },
+  {
+    "label": "1–9 sitasi",
+    "publications": 2776,
+    "share": 54.0,
+    "citations": 10030
+  },
+  {
+    "label": "10–49 sitasi",
+    "publications": 1138,
+    "share": 22.1,
+    "citations": 22293
+  },
+  {
+    "label": "50–99 sitasi",
+    "publications": 119,
+    "share": 2.3,
+    "citations": 7886
+  },
+  {
+    "label": "≥100 sitasi",
+    "publications": 22,
+    "share": 0.4,
+    "citations": 3423
+  }
+]

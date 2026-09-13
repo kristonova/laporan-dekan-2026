@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { withBase } from "../lib/paths";
 import snapshotRaw from "../data/derived/snapshot.json";
+import citationProfile from "../data/derived/citation_profile.json";
 import tckRaw from "../data/derived/tck_2026_joined.json";
 import partnershipCoverageRaw from "../data/derived/partnership_coverage.json";
 import tracerSummaryRaw from "../data/derived/tracer_summary.json";
@@ -13,7 +14,7 @@ import studentBackgroundRaw from "../data/derived/students_background.json";
 import institutionRaw from "../data/derived/institution_snapshot.json";
 import lecturerPositionsRaw from "../data/derived/lecturers_positions.json";
 
-const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string };
+const snapshot = snapshotRaw as { label: string; p2m: string; lentera: string; scival: string };
 const tck = tckRaw as any[];
 const flagged = tck.filter((row) => row.anomali);
 const partnershipCoverage = partnershipCoverageRaw as { total: number; terpetakan: number; internasional: number; lokasi_kosong: number };
@@ -37,6 +38,8 @@ const revenue = partnershipRevenueRaw as any;
 const tenure = professorTenureRaw as any;
 const ratio = lecturerRatioRaw as any;
 const schoolMou = schoolMouRaw as any;
+const scivalSource = `SciVal / Scopus · ${snapshot.scival}`;
+const citationSource = `SciVal / Scopus · data ${citationProfile.updated_label} · ekspor ${citationProfile.exported_label}`;
 
 const datasets = [
   { file: "tck_international.json", label: "Profil mahasiswa asing TCK 2026", coverage: "198 rekaman · 90 kredit dan 108 nonkredit · negara, prodi, kegiatan, dan status bukti", source: "Rincian TCK 2026 #4a–4b", scenes: "4.4" },
@@ -60,13 +63,16 @@ const datasets = [
   { file: "students_origins_institutions.json", label: "Sekolah dan universitas asal", coverage: "Jenjang, riwayat pendidikan sebelumnya, angkatan, dan institusi asal; kode angkatan 0 mewakili agregat gabungan tanpa penghitungan ulang", source: origins.sumber, scenes: "6.6" },
   { file: "students_ipk_distribution.json", label: "Ringkasan IPK S1 per program studi", coverage: "Angkatan 2021–2025 · jumlah mahasiswa, median, P25, P75, serta rentang whisker 1,5 IQR", source: "Pangkalan data mahasiswa S1 FMIPA UGM", scenes: "6.7" },
   { file: "tck_2026_joined.json", label: "Indikator TCK 2026", coverage: "42 indikator · target TW1–TW4 · capaian TW1–TW3", source: "TCK 2026 (berkas resmi XLSX)", scenes: "1.2, 2.6, 3.6, 4.3–4.5, 5.1–5.2, 7.1" },
-  { file: "citations_by_year.json", label: "Sitasi per tahun", coverage: "1987–2025 · 70.905 sitasi sepanjang riwayat", source: "Basis data historis FMIPA UGM", scenes: "0.0, 2.1" },
-  { file: "publications_by_year_dept.json", label: "Publikasi per departemen", coverage: "2020–2026 · 3.069 publikasi · 2026 tahun berjalan", source: "SciVal / Scopus", scenes: "2.2" },
-  { file: "research_quality.json", label: "Mutu sitasi per bidang ilmu", coverage: "27 bidang ASJC · FWCI, sitasi, dan jumlah peneliti", source: "SciVal / Scopus", scenes: "2.2p" },
-  { file: "topics.json", label: "Klaster topik riset", coverage: "541 klaster SciVal · dilengkapi persentil prominensi", source: "SciVal", scenes: "2.3" },
-  { file: "collab_countries.json", label: "Kolaborasi negara", coverage: "62 negara mitra internasional", source: "SciVal / Scopus", scenes: "2.4" },
-  { file: "collab_share.json", label: "Porsi kolaborasi internasional", coverage: "2020–2026 · publikasi dengan sedikitnya satu mitra luar negeri", source: "SciVal / Scopus", scenes: "2.4" },
-  { file: "open_access.json", label: "Jalur akses terbuka", coverage: "2020–2026 · gold, hybrid gold, bronze, green, dan tertutup", source: "SciVal / Scopus", scenes: "2.4p" },
+  { file: "citation_profile.json", label: "Profil sitasi kumulatif publikasi", coverage: `${number(citationProfile.publications)} publikasi bertahun ${citationProfile.publication_year_start}–${citationProfile.publication_year_end} · ${number(citationProfile.citations)} sitasi kumulatif pada tanggal sumber`, source: citationSource, scenes: "0.0, 1.3, 2.1; presentasi" },
+  { file: "citation_distribution.json", label: "Distribusi publikasi menurut jumlah sitasi", coverage: "Lima kelompok yang saling lepas: 0, 1–9, 10–49, 50–99, dan ≥100 sitasi per publikasi", source: citationSource, scenes: "2.1; presentasi" },
+  { file: "citation_distribution.csv", label: "Tabel distribusi sitasi (CSV)", coverage: "Data agregat yang sama dengan grafik distribusi sitasi, dalam format tabel", source: citationSource, scenes: "2.1; presentasi" },
+  { file: "citations_by_year.json", label: "Arsip seri sitasi tahunan P2M", coverage: "1987–2025 · 70.905 sitasi pada seri lama · pencatatan sumber telah terhenti", source: "Arsip historis P2M FMIPA UGM", scenes: "Arsip; tidak digunakan dalam narasi atau grafik" },
+  { file: "publications_by_year_dept.json", label: "Publikasi per departemen", coverage: "2020–2026 · 3.069 publikasi · 2026 tahun berjalan", source: scivalSource, scenes: "2.2" },
+  { file: "research_quality.json", label: "Mutu sitasi per bidang ilmu", coverage: "27 bidang ASJC · FWCI, sitasi, dan jumlah peneliti", source: scivalSource, scenes: "2.2p" },
+  { file: "topics.json", label: "Klaster topik riset", coverage: "541 klaster SciVal · dilengkapi persentil prominensi", source: scivalSource, scenes: "2.3" },
+  { file: "collab_countries.json", label: "Kolaborasi negara", coverage: "62 negara mitra internasional", source: scivalSource, scenes: "2.4" },
+  { file: "collab_share.json", label: "Porsi kolaborasi internasional", coverage: "2020–2026 · publikasi dengan sedikitnya satu mitra luar negeri", source: scivalSource, scenes: "2.4" },
+  { file: "open_access.json", label: "Jalur akses terbuka", coverage: "2020–2026 · gold, hybrid gold, bronze, green, dan tertutup", source: scivalSource, scenes: "2.4p" },
   { file: "world-countries.geojson", label: "Batas negara dunia", coverage: "177 negara/teritori · Natural Earth 1:110m · WGS 84", source: "Natural Earth · domain publik", scenes: "2.4" },
   { file: "lecturers_positions.json", label: "Jabatan fungsional dosen", coverage: `${number(institution.lecturers)} dosen pada lima jenjang jabatan`, source: `Data Dosen SIMASTER FMIPA UGM (${institution.lecturer_source})`, scenes: "2.5, 5.1, 5.1′" },
   { file: "sinta_by_dept.json", label: "Skor SINTA per departemen", coverage: "Pemutakhiran per 3 Desember 2025", source: "SINTA Kemendikbudristek", scenes: "2.6" },
@@ -75,8 +81,8 @@ const datasets = [
   { file: "indonesia-provinces.geojson", label: "Batas provinsi Indonesia", coverage: "38 provinsi · geometri teroptimasi untuk web", source: "Peta Nusa / Laravel Nusa · Lisensi MIT", scenes: "3.2" },
   { file: "sdg_matrix.json", label: "Matriks SDG", coverage: "17 tujuan · taksonomi SDG (2025)", source: "Pangkalan data riset + SciVal", scenes: "3.3" },
   { file: "journals.json", label: "Jurnal terbitan FMIPA", coverage: "462 rekaman · 461 terklasifikasi", source: "Pangkalan data jurnal internal", scenes: "3.4" },
-  { file: "value_model.json", label: "Model nilai FMIPA", coverage: "Agregat 2021–2025", source: "Analisis sintesis lintas data", scenes: "1.3" },
-  { file: "snapshot.json", label: "Tanggal penarikan data", coverage: "Label tanggal rujukan tunggal untuk seluruh halaman", source: "Konstanta pemrosesan data", scenes: "seluruh halaman" },
+  { file: "value_model.json", label: "Model nilai FMIPA", coverage: "Agregat 2021–2025; sitasi merupakan akumulasi pada tanggal sumber untuk publikasi terbit 2021–2025", source: "Analisis sintesis lintas data; sitasi dari profil SciVal September 2026", scenes: "1.3" },
+  { file: "snapshot.json", label: "Tanggal penarikan data", coverage: "Tanggal rujukan per sumber; rincian ekspor sitasi juga tercatat pada citation_profile.json", source: "Konstanta pemrosesan data", scenes: "seluruh halaman" },
   { file: "tck_2026_by_dept.json", label: "TCK per departemen", coverage: "30 indikator dengan rincian DIKE/DF/DM/DK", source: "TCK 2026 (berkas resmi XLSX)", scenes: "1.2" },
   { file: "partnerships_by_year.json", label: "Kerja sama per tahun", coverage: "2021–2026 · kemitraan nasional dan internasional", source: "LENTERA UGM", scenes: "3.5" },
   { file: "partnership_partners.json", label: "Profil mitra kerja sama", coverage: "Negara asal dan kategori instansi mitra", source: "LENTERA UGM", scenes: "3.5" },
@@ -135,7 +141,8 @@ const conflicts = [
   { metric: "IPK Magister Ilmu Komputer 2018/2019", tck: "3,45 (rekap 2017–2021)", historical: "3,71 (Tabel 1.23)", explanation: "Laporan Dekan 2021 menerbitkan rekap lulusan pascasarjana dua kali dengan isi yang sama persis kecuali satu sel ini. Salinan Tabel 1.23 mengulang nilai Magister Fisika (3,71) pada kolom Magister Ilmu Komputer, sedangkan salinan Rekap Data menulis 3,45 — nilai yang sejalan dengan lintasan prodi itu sendiri (3,59 · 3,62 · 3,45 · 3,44 · 3,49). Laporan ini memakai salinan Rekap Data dan mencatat selisihnya, bukan mendiamkannya." },
   { metric: "Lama studi S1 Ilmu Komputer 2017/2018", tck: "6,10 tahun (rekap 2017–2021)", historical: "4,49–4,79 tahun (tahun lain pada prodi yang sama)", explanation: "Satu titik yang lebih dari satu tahun di atas seluruh tahun lain pada prodi yang sama, dan satu-satunya penyebab rerata fakultas 2017/2018 menyentuh lima tahun. Angka sumber dipakai apa adanya karena tidak ada berkas pembanding untuk mengoreksinya, dan ditandai di sini agar puncak pada grafik tidak dibaca sebagai perubahan nyata." },
   { metric: "Dosen berkualifikasi S3", tck: conflictRow("24"), historical: `${number(institution.lecturer_doctoral)} dari ${number(institution.lecturers)} dosen`, explanation: `Arah selisih kini berbalik: ekstrak SIMASTER 3 September 2026 mengenali ${number(institution.lecturer_doctoral)} dosen bergelar S3, delapan orang lebih banyak daripada indikator TCK #24 yang disusun per 31 Agustus 2026. Roster kepegawaian sekarang menjadi sensus, bukan lagi batas bawah seperti pada versi laporan sebelumnya.` },
-  { metric: "Sitasi", tck: conflictRow("15"), historical: "12.629 (2024)", explanation: "Indikator TCK menghitung perolehan sitasi pada tahun anggaran berjalan, sedangkan basis data Scopus menghitung seluruh sitasi yang diterima pada tahun tersebut atas seluruh publikasi ilmiah yang pernah dihasilkan FMIPA UGM." },
+  { metric: "Sitasi", tck: conflictRow("15"), historical: `${number(citationProfile.citations)} sitasi kumulatif (SciVal, ${citationProfile.updated_label})`, explanation: "Indikator TCK menghitung capaian sitasi pada tahun anggaran berjalan. Ekspor SciVal menjumlahkan sitasi yang telah diterima publikasi hingga tanggal sumber. Penyaringan publikasi terbit 2021–2025 menghasilkan 16.564 sitasi kumulatif atas 2.340 publikasi; tahun tersebut adalah tahun penerbitan, sehingga nilainya tidak dapat dibandingkan langsung dengan perolehan sitasi tahunan TCK maupun seri tahunan P2M yang diarsipkan." },
+  { metric: "Dua cakupan ekspor SciVal", tck: `${number(citationProfile.publications)} publikasi (${citationProfile.publication_year_start}–${citationProfile.publication_year_end})`, historical: "3.069 publikasi (2020–2026)", explanation: `Profil dan distribusi sitasi memakai ekspor ${citationProfile.exported_label} dengan data per ${citationProfile.updated_label}. Pemetaan departemen, topik, kolaborasi, akses terbuka, serta laporan FWCI per bidang tetap memakai sumber ${snapshot.scival}. Perbedaan cakupan dan tanggal ini dipertahankan; penyebut kedua ekspor tidak digabung.` },
   { metric: "Publikasi terindeks", tck: conflictRow("16"), historical: "539 (2025)", explanation: "Perbedaan timbul akibat waktu penarikan data (cut-off) dan cakupan jenis dokumen. Jumlah publikasi tahun 2025 disesuaikan dari 481 menjadi 539 setelah pemutakhiran data SciVal per 30 Agustus 2026 melengkapi indeksasi karya ilmiah pada periode tersebut." },
   { metric: "Publikasi 2020–2025 pada dua sumber", tck: "3.069 (SciVal, 2020–2026)", historical: "2.726 (arsip P2M, 2020–2025)", explanation: "Ekstraksi data SciVal per 30 Agustus 2026 mencakup 457 publikasi baru yang belum tercatat pada basis data P2M (368 di antaranya terbit pada 2026). Di saat bersamaan, 113 publikasi kurun 2020–2025 tidak lagi masuk ke dalam perimeter entitas FMIPA UGM menurut pemutakhiran SciVal (108 di antaranya sebelumnya memang belum terpetakan ke departemen). Laporan ini menetapkan SciVal sebagai rujukan utama indeksasi internasional, sehingga data publikasi 2020–2024 sedikit disesuaikan dibandingkan laporan terdahulu." },
   { metric: "Program studi terakreditasi Unggul/A", tck: conflictRow("3"), historical: `${number(accreditationRaw.prodi_unggul)} dari ${number(accreditationRaw.prodi_nasional)} prodi`, explanation: "Berkas akreditasi September 2026 mencantumkan predikat Unggul pada seluruh 18 baris rincian, setelah kenaikan peringkat Doktor Ilmu Komputer, Magister Kecerdasan Artifisial, Magister Elektronika dan Instrumentasi, serta S1 Aktuaria. Sel ringkasan pada berkas yang sama dan indikator TCK #3 masih tertulis 15 karena tidak ikut dihitung ulang. Laporan mengikuti baris rincian dan menunggu konfirmasi tertulis fakultas." },
@@ -195,8 +202,8 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <article>
           <p class="source-split__label">Bagian II · Rekam Jejak 2021–2026</p>
           <h3>Data Historis FMIPA UGM</h3>
-          <strong>25 berkas sumber</strong>
-          <p>Publikasi Scopus, sitasi, perolehan dana riset, kegiatan Pengabdian kepada Masyarakat (PkM), SDM, dan luaran institusi per {snapshot.p2m}.</p>
+          <strong>{number(citationProfile.publications)} publikasi SciVal</strong>
+          <p>Profil sitasi memakai data SciVal per {citationProfile.updated_label}, diekspor {citationProfile.exported_label}. Pemetaan departemen, topik, kolaborasi, akses terbuka, dan FWCI per bidang memakai sumber {snapshot.scival}; dana riset, PkM, dan luaran P2M merujuk {snapshot.p2m}.</p>
           <a href="#dataset">Lihat dataset turunan</a>
         </article>
         <div class="source-split__divider" aria-label="Ditambahkan"><span>+</span><small>baru</small></div>
@@ -226,7 +233,7 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
             <p>{dataset.coverage}</p>
             <p><span>Sumber data</span>{dataset.source}</p>
             <p><span>Bagian/Scene</span>{dataset.scenes}</p>
-            <a href={datasetUrl(dataset.file)} download aria-label={`Unduh ${dataset.label}`}>{dataset.file.endsWith(".geojson") ? "GeoJSON ↓" : "JSON ↓"}</a>
+            <a href={datasetUrl(dataset.file)} download aria-label={`Unduh ${dataset.label}`}>{dataset.file.endsWith(".geojson") ? "GeoJSON ↓" : dataset.file.endsWith(".csv") ? "CSV ↓" : "JSON ↓"}</a>
           </article>
         ))}
       </div>
@@ -239,14 +246,15 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
         <p>Penjelasan rinci mengenai satuan, batasan waktu, dan kaidah perhitungan tiap indikator agar interpretasi data konsisten dan akurat.</p>
       </div>
       <dl class="definition-grid">
-        <div><dt>Sitasi</dt><dd>Jumlah sitasi tahunan yang tercatat pada pangkalan data Scopus untuk seluruh artikel berafiliasi FMIPA UGM pada tahun bersangkutan.</dd></div>
-        <div><dt>Publikasi Ilmiah</dt><dd>Seluruh artikel ilmiah terindeks Scopus/SciVal berafiliasi FMIPA UGM untuk semua jenis dokumen akademik.</dd></div>
+        <div><dt>Sitasi Kumulatif Publikasi</dt><dd>Kolom <code>Citations</code> pada ekspor SciVal memuat seluruh sitasi yang telah diterima masing-masing publikasi hingga tanggal pembaruan sumber. Nilai ini digunakan untuk ringkasan pembuka, model nilai, dan distribusi pada scene 2.1. Angka 0 berarti belum tercatat menerima sitasi pada snapshot tersebut.</dd></div>
+        <div><dt>Tahun Publikasi</dt><dd>Kolom <code>Year</code> adalah tahun penerbitan dokumen. Agregat sitasi untuk publikasi terbit 2021–2025 mencakup sitasi yang diterima hingga {citationProfile.updated_label}; agregat tersebut bukan jumlah sitasi yang terjadi selama 2021–2025.</dd></div>
+        <div><dt>Publikasi Ilmiah</dt><dd>Dokumen berafiliasi FMIPA UGM yang masuk dalam cakupan ekspor Scopus/SciVal, meliputi semua jenis publikasi. Setiap EID unik dihitung sekali pada ringkasan portofolio.</dd></div>
         <div><dt>Dana Riset</dt><dd>Akumulasi nilai pendanaan riset (<code>total_funding</code>) berdasarkan tahun disetujuinya proposal dari berbagai skema hibah kompetitif dan kerja sama riset.</dd></div>
         <div><dt>Pengabdian (PkM)</dt><dd>Jumlah kegiatan pengabdian resmi yang terlaksana berdasarkan Surat Tugas, sistem SIMPEL, atau hibah fakultas/universitas.</dd></div>
         <div><dt>Capaian TCK</dt><dd>Realisasi kinerja kumulatif yang dicapai sejak awal tahun anggaran hingga tanggal penarikan data berjalan.</dd></div>
         <div><dt>Target TCK</dt><dd>Target kinerja kumulatif triwulanan. Target Triwulan IV mencerminkan target tahunan fakultas secara utuh.</dd></div>
         <div><dt>Status Tercapai</dt><dd>Kondisi ketika realisasi capaian memenuhi atau melampaui target triwulan berjalan sesuai arah indikator kinerja.</dd></div>
-        <div><dt>Data Berjalan</dt><dd>Data tahun 2025 yang masih dalam proses pemutakhiran berkala di pangkalan data global (Scopus) dan akan terus bertambah seiring waktu.</dd></div>
+        <div><dt>Tahun Berjalan</dt><dd>Data bertahun 2026 pada laporan ini merupakan catatan sebagian tahun sesuai tanggal penarikan masing-masing sumber. Penanda tahun berjalan menunjukkan cakupan waktu yang belum setahun penuh dan tidak menyatakan bahwa sumber akan terus diperbarui.</dd></div>
         <div><dt>Kategori Status Capaian</dt><dd>Rasio capaian terhadap target triwulan dikelompokkan ke dalam empat status: <strong>≥100% Tercapai</strong>, <strong>≥85% Mendekati Target</strong>, <strong>≥50% Perlu Akselerasi</strong>, dan <strong>&lt;50% Belum Tercapai</strong>. Khusus indikator bertipe efisiensi (target nilai yang semakin menurun semakin baik), evaluasi dibalik sehingga capaian yang lebih rendah merefleksikan kinerja lebih optimal.</dd></div>
         <div><dt>Triwulan Evaluasi Valid</dt><dd>Triwulan evaluasi kinerja merujuk pada triwulan terakhir yang memiliki kelengkapan data capaian dan target secara metodologis. Sebanyak empat indikator bertipe persentase dievaluasi berdasarkan Triwulan II karena pelaporan Triwulan III baru mencatat jumlah orang tanpa menyertakan angka penyebut populasi.</dd></div>
         <div><dt>Penyelarasan Jabatan Fungsional Dosen</dt><dd>Komposisi jabatan fungsional dosen kini sepenuhnya mengacu pada satu sumber resmi terpadu, yaitu data kepegawaian SIMASTER per 3 September 2026. Ini menggantikan metode penyusunan dua sumber pada laporan terdahulu. Seluruh {number(institution.lecturers)} dosen aktif terpetakan pada lima jenjang jabatan fungsional akademik secara konsisten.</dd></div>
@@ -285,8 +293,8 @@ const motifStyle = `background-image: url(${JSON.stringify(withBase("/brand/supe
       <ol class="quality-list">
         <li><span>01</span><div><h3>Standardisasi Lokasi Pengabdian</h3><p>Penamaan wilayah dan provinsi dinormalisasi menggunakan kode wilayah standar BPS. Sebanyak 619 kegiatan tanpa koordinat spesifik (kegiatan daring atau lintas provinsi) tetap dicatat secara transparan.</p></div></li>
         <li><span>02</span><div><h3>Pemetaan Afiliasi Departemen</h3><p>Klasifikasi departemen dilakukan melalui verifikasi dua tingkat. Tingkat pertama mengacu pada hasil kurasi internal unit P2M fakultas untuk publikasi yang terindeks di SciVal. Tingkat kedua, bagi karya ilmiah baru yang belum ada di catatan P2M, penentuan departemen didasarkan pada departemen mayoritas dari afiliasi Scopus para penulis FMIPA. Apabila sebaran afiliasi penulis berimbang atau belum teridentifikasi dosen aktif, publikasi dikelompokkan sebagai belum terpetakan dan diverifikasi lebih lanjut.</p></div></li>
-        <li><span>03</span><div><h3>Penggabungan Berkas Multi-bagian</h3><p>Data sitasi dihimpun secara terprogram, disaring dari duplikasi berdasarkan ID dokumen unik, serta diperiksa integritas barisnya. Metadata eksternal dan catatan hak cipta dari berkas mentah SciVal dibersihkan, serta tanda strip (&ldquo;-&rdquo;) yang menunjukkan data kosong distandardisasi menjadi nilai nihil agar tidak terinterpretasi sebagai kategori.</p></div></li>
-        <li><span>04</span><div><h3>Penandaan Periode Tahun Berjalan</h3><p>Periode tahun berjalan disesuaikan dengan siklus pemutakhiran masing-masing sumber. Data publikasi, klaster topik, jejaring kolaborasi, dan jalur akses terbuka bersumber dari SciVal per 30 Agustus 2026 sehingga tahun 2025 telah terekam penuh dan tahun <strong>2026</strong> diposisikan sebagai tahun berjalan. Sebaliknya, data sitasi tahunan bersumber dari pangkalan data P2M yang dimutakhirkan hingga akhir 2025, sehingga tahun <strong>2025</strong> menjadi batas akhir pencatatan. Perbedaan rentang ini disajikan transparan sesuai ketersediaan data primer.</p></div></li>
+        <li><span>03</span><div><h3>Agregasi Distribusi Sitasi</h3><p>Profil sitasi berasal dari <code>{citationProfile.source_file}</code>. Baris publikasi dibaca setelah metadata berkas dan diperiksa berdasarkan EID unik. Setiap publikasi ditempatkan tepat pada satu kelompok: 0, 1–9, 10–49, 50–99, atau ≥100 sitasi. Jumlah kelima kelompok harus sama dengan total {number(citationProfile.publications)} publikasi. Distribusi menggambarkan jangkauan rujukan portofolio; perbedaan usia publikasi memengaruhi lamanya kesempatan memperoleh sitasi, sehingga grafik tidak digunakan untuk menyimpulkan tren mutu antarangkatan.</p></div></li>
+        <li><span>04</span><div><h3>Cakupan Waktu dan Pemisahan Snapshot</h3><p>Ekspor sitasi bertanggal {citationProfile.exported_label} memuat data per {citationProfile.updated_label}, termasuk {number(citationProfile.current_publications)} publikasi bertahun 2026 dan {number(citationProfile.future_publications)} rekaman bertahun 2027. Rekaman 2027 tetap tercakup dalam potret seluruh ekspor, tetapi bukan capaian masa depan dan tidak masuk ringkasan publikasi terbit 2021–2025. Scene departemen, topik, kolaborasi, akses terbuka, dan FWCI per bidang mempertahankan snapshot {snapshot.scival}. Seri sitasi tahunan P2M disimpan hanya sebagai arsip karena pencatatan sumber telah terhenti; seri itu tidak digunakan untuk menerangkan grafik baru.</p></div></li>
         <li><span>05</span><div><h3>Perlindungan Privasi dan Data Pribadi</h3><p>Seluruh informasi identitas pribadi (seperti NIP, NIM, alamat rumah, nomor kontak, serta rekam medis kesehatan individu) disaring dan dianonimkan dari pipeline publikasi.</p></div></li>
         <li><span>06</span><div><h3>Normalisasi Satuan Indikator Kinerja</h3><p>Satuan ukuran kinerja diselaraskan agar mudah diperbandingkan: indikator perolehan dana (<em>creative funding</em>) dikonversikan ke satuan miliar rupiah, sedangkan indikator bertipe persentase yang hanya memuat jumlah orang dikembalikan evaluasinya ke triwulan yang memiliki angka penyebut lengkap.</p></div></li>
         <li><span>07</span><div><h3>Deduplikasi dan Rekonsiliasi Sesi Posbindu</h3><p>Data sesi pemeriksaan Posbindu dideduplikasi berdasarkan tanggal dan identitas anonim peserta untuk mencegah penghitungan ganda, dengan pemulihan data sesi awal tahun dari lembar rekapitulasi terpadu.</p></div></li>

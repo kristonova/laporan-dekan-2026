@@ -5,9 +5,19 @@
     "research_n": 1269,
     "outreach_n": 1481,
     "publications_n": 2340,
-    "citations_n": 46930,
+    "citations_n": 16564,
     "mappable_outreach_n": 921,
     "raw_location_labels_n": 126
+  },
+  "metric_definitions": {
+    "citations_n": "Sitasi kumulatif yang diterima karya terbit 2021–2025 hingga 6 September 2026; bukan jumlah sitasi yang diterima selama tahun kalender 2021–2025."
+  },
+  "citation_source": {
+    "source_file": "Publications_in_Faculty_of_Mathematics_and_Natural_Sciences_UGM_1996_-_2027.csv",
+    "updated_label": "6 September 2026",
+    "exported_label": "12 September 2026",
+    "publication_year_start": 2021,
+    "publication_year_end": 2025
   },
   "nodes": [
     {
@@ -28,7 +38,7 @@
     {
       "id": "impact",
       "label": "Sitasi dan jangkauan",
-      "value": 47851
+      "value": 17485
     }
   ],
   "links": [

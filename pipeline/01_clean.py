@@ -7,6 +7,7 @@ import re
 from collections import Counter
 
 import pandas as pd
+from citation_profile import clean_citation_publications
 
 from utils import (
     CLEAN_DIR,
@@ -916,6 +917,10 @@ def main() -> None:
     citations["year"] = safe_year(citations["year"], 1900, 2030)
     citations["number_of_citation"] = pd.to_numeric(citations["number_of_citation"], errors="coerce").fillna(0).clip(lower=0)
     citations[["Id", "year", "number_of_citation"]].dropna(subset=["year"]).to_csv(CLEAN_DIR / "citations.csv", index=False)
+
+    clean_citation_publications(pd.read_csv(LOADED_DIR / "citation_publications.csv")).to_csv(
+        CLEAN_DIR / "citation_publications.csv", index=False,
+    )
 
     # The P2M lecturer export is still read, but only to map publications onto
     # departments through their Scopus author ids. It is no longer the staffing

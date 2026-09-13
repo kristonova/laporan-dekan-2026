@@ -1,0 +1,56 @@
+{
+  "source_file": "Publications_in_Faculty_of_Mathematics_and_Natural_Sciences_UGM_1996_-_2027.csv",
+  "updated_label": "6 September 2026",
+  "exported_label": "12 September 2026",
+  "publication_year_start": 1996,
+  "publication_year_end": 2027,
+  "publications": 5139,
+  "citations": 43632,
+  "cited_publications": 4055,
+  "cited_share": 78.9,
+  "highly_cited_publications": 22,
+  "highly_cited_threshold": 100,
+  "period_start": 2021,
+  "period_end": 2025,
+  "period_publications": 2340,
+  "period_citations": 16564,
+  "current_year": 2026,
+  "current_publications": 382,
+  "future_publications": 4,
+  "future_year_policy": "Tahun publikasi mengikuti sumber; termasuk tahun 2027 dalam seluruh koleksi, di luar periode 2021–2025.",
+  "missing_citation_policy": "reject_missing_or_invalid",
+  "citation_definition": "Sitasi kumulatif yang diterima publikasi hingga 6 September 2026.",
+  "period_citation_definition": "Sitasi kumulatif yang diterima karya terbit 2021–2025 hingga 6 September 2026; bukan jumlah sitasi yang diterima selama tahun kalender 2021–2025.",
+  "bins": [
+    {
+      "label": "Belum disitasi",
+      "publications": 1084,
+      "share": 21.1,
+      "citations": 0
+    },
+    {
+      "label": "1–9 sitasi",
+      "publications": 2776,
+      "share": 54.0,
+      "citations": 10030
+    },
+    {
+      "label": "10–49 sitasi",
+      "publications": 1138,
+      "share": 22.1,
+      "citations": 22293
+    },
+    {
+      "label": "50–99 sitasi",
+      "publications": 119,
+      "share": 2.3,
+      "citations": 7886
+    },
+    {
+      "label": "≥100 sitasi",
+      "publications": 22,
+      "share": 0.4,
+      "citations": 3423
+    }
+  ]
+}

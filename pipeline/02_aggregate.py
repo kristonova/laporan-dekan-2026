@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 from tck_details import generate_tck_details
+from citation_profile import aggregate_citation_profile
 
 from utils import (
     CLEAN_DIR,
@@ -897,9 +898,17 @@ def main() -> None:
     citation_year = citations.groupby("year", dropna=True)["number_of_citation"].sum().reset_index(name="citations")
     citation_year["year"] = citation_year["year"].astype(int)
     citation_year["citations"] = citation_year["citations"].round().astype(int)
-    citation_year["is_partial"] = citation_year["year"].eq(2025)
+    # Archived P2M series: its indexing feed has stopped, so do not label any
+    # year as still updating. The active scene uses the SciVal profile below.
+    citation_year["is_partial"] = False
     citation_rows = records(citation_year.sort_values("year"))
     output("citations_by_year.json", citation_rows)
+
+    citation_profile, citation_distribution = aggregate_citation_profile(
+        pd.read_csv(CLEAN_DIR / "citation_publications.csv"),
+    )
+    output("citation_profile.json", citation_profile)
+    output("citation_distribution.json", citation_distribution)
 
     publications = pd.read_csv(CLEAN_DIR / "publications.csv", low_memory=False)
     publications["year"] = pd.to_numeric(publications["year"], errors="coerce").astype("Int64")
@@ -908,9 +917,8 @@ def main() -> None:
         mapping=("mapping", lambda values: ",".join(sorted(set(values.dropna().astype(str))))),
     ).reset_index()
     publication_group["year"] = publication_group["year"].astype(int)
-    # 2025 is complete in the 30 August 2026 SciVal snapshot; 2026 is the year
-    # still being indexed. The citation series above keeps 2025 as its running
-    # year because it comes from the P2M export, which stops there.
+    # 2025 is complete in the 30 August 2026 SciVal snapshot; 2026 is the
+    # current publication year, separate from the archived P2M citation feed.
     publication_group["is_partial"] = publication_group["year"].eq(2026)
     publication_rows = records(publication_group.sort_values(["year", "department"]))
     output("publications_by_year_dept.json", publication_rows)
@@ -1119,7 +1127,7 @@ def main() -> None:
     research_5y = int(research[research["year"].isin(years_2021_2025)].shape[0])
     outreach_5y = int(outreach[outreach["year"].isin(years_2021_2025)].shape[0])
     publications_5y = int(publications[publications["year"].isin(years_2021_2025)].shape[0])
-    citations_5y = int(citations[citations["year"].isin(years_2021_2025)]["number_of_citation"].sum())
+    citations_5y = citation_profile["period_citations"]
     outreach_period = outreach[outreach["year"].isin(years_2021_2025)]
     mappable_outreach = int(
         (
@@ -1136,6 +1144,16 @@ def main() -> None:
             "publications_n": publications_5y, "citations_n": citations_5y,
             "mappable_outreach_n": mappable_outreach,
             "raw_location_labels_n": raw_location_labels,
+        },
+        "metric_definitions": {
+            "citations_n": citation_profile["period_citation_definition"],
+        },
+        "citation_source": {
+            "source_file": citation_profile["source_file"],
+            "updated_label": citation_profile["updated_label"],
+            "exported_label": citation_profile["exported_label"],
+            "publication_year_start": citation_profile["period_start"],
+            "publication_year_end": citation_profile["period_end"],
         },
         "nodes": [
             {"id": "funding", "label": "Dana riset", "value": funding_5y},

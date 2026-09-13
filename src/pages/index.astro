@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ColdOpen from "../components/ColdOpen.astro";
+import CitationDistribution from "../components/CitationDistribution.astro";
 import ChapterIntro from "../components/ChapterIntro.astro";
 import StoryScene from "../components/StoryScene.astro";
 import PillarHeader from "../components/PillarHeader.astro";
@@ -51,7 +52,7 @@ import { centroidForProvince } from "../lib/province-centroids";
 import { countryNameId } from "../lib/country-centroids";
 import { withBase } from "../lib/paths";
 
-import citationsRaw from "../data/derived/citations_by_year.json";
+import citationProfile from "../data/derived/citation_profile.json";
 import publicationsRaw from "../data/derived/publications_by_year_dept.json";
 import topicsRaw from "../data/derived/topics.json";
 import countriesRaw from "../data/derived/collab_countries.json";
@@ -101,10 +102,6 @@ import professorTenureRaw from "../data/derived/professor_tenure.json";
 import lecturerRatioRaw from "../data/derived/lecturer_ratio.json";
 import schoolMouRaw from "../data/derived/school_mou.json";
 
-const citations: any[] = (citationsRaw as any[]).filter((row) => row.year >= 2019 && row.year <= 2025);
-const citationTotal = (citationsRaw as any[]).reduce((sum, row) => sum + row.citations, 0);
-const citationStart = Math.min(...(citationsRaw as any[]).map((row) => row.year));
-const citationEnd = Math.max(...(citationsRaw as any[]).map((row) => row.year));
 const tck: any[] = tckRaw as any[];
 const tckByNo = new Map(tck.map((row) => [String(row.no), row]));
 const getTckRow = (no: string) => {
@@ -213,9 +210,8 @@ const schoolMouGroups: any[] = [
 ];
 
 
-/* SciVal's 30 August 2026 snapshot closes 2025 and opens 2026, so the running
-   year moves one step. The citation series above keeps 2025 as its running year:
-   it comes from the P2M export, which stops there. */
+/* Department attribution uses the 30 August 2026 publication export.
+   Citation reach uses its own broader September snapshot. */
 const publicationYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
 const departmentKey: Record<string, string> = {
   "Fisika": "fisika",
@@ -940,6 +936,10 @@ const ipkYears = studentIpk.tahun as number[];
 const ipkStart = ipkYears[0];
 const ipkEnd = ipkYears[ipkYears.length - 1];
 const sceneValues: SceneValues = {
+  citationPublications: citationProfile.publications,
+  citedPublications: citationProfile.cited_publications,
+  citedShare: citationProfile.cited_share,
+  highlyCitedPublications: citationProfile.highly_cited_publications,
   revenueContracts: revenue.kontrak,
   revenueTotal: revenue.nominal / BILLION,
   revenueDpi: revenue.dpi / BILLION,
@@ -1061,7 +1061,7 @@ const sceneValues: SceneValues = {
 const deck = (key: keyof typeof scenes) => deckOf(key, sceneValues);
 
 const pillarSummary = [
-  { number: "1", title: "Reputasi Akademik", status: "Capaian Sangat Baik", achieved: pillarStats.Reputasi.achieved, total: pillarStats.Reputasi.total, takeaway: "Pertumbuhan sitasi dan publikasi internasional meningkat signifikan, diiringi penguatan riset lintas disiplin serta perluasan kemitraan global.", href: "#reputasi", color: "blue" },
+  { number: "1", title: "Reputasi Akademik", status: "Capaian Sangat Baik", achieved: pillarStats.Reputasi.achieved, total: pillarStats.Reputasi.total, takeaway: "Jangkauan rujukan ilmiah, kontribusi publikasi tiap departemen, dan jejaring kolaborasi memberi tiga sudut pandang atas reputasi riset fakultas.", href: "#reputasi", color: "blue" },
   { number: "2", title: "Kontribusi terhadap Bangsa", status: "Fokus Akselerasi", achieved: pillarStats.Kontribusi.achieved, total: pillarStats.Kontribusi.total, takeaway: "Pendanaan riset dan kerja sama tumbuh pesat; hilirisasi inovasi serta dokumentasi kontribusi SDGs menjadi fokus percepatan.", href: "#kontribusi", color: "orange" },
   { number: "3", title: "Employability & Lulusan", status: "Capaian Positif", achieved: pillarStats.Employability.achieved, total: pillarStats.Employability.total, takeaway: "Masa tunggu kerja lulusan singkat dengan serapan luas di berbagai bidang industri; partisipasi MBKM melampaui target tahunan.", href: "#employability", color: "green" },
   { number: "4", title: "Tata Kelola & Kesejahteraan", status: "Tingkat Ketercapaian Terbaik", achieved: pillarStats.Kesejahteraan.achieved, total: pillarStats.Kesejahteraan.total, takeaway: "Pembinaan jabatan Guru Besar dan pengadaan fasilitas kampus inklusif terlaksana baik, didukung pemantauan kesehatan kerja sivitas secara berkala.", href: "#kesejahteraan", color: "violet" },
@@ -1079,10 +1079,8 @@ const pillarSummary = [
       publications={valueModelRaw.metrics.publications_n}
       citations={valueModelRaw.metrics.citations_n}
       outreach={valueModelRaw.metrics.outreach_n}
-      citationsAllTime={citationTotal}
+      citationUpdated={citationProfile.updated_label}
       period={valueModelRaw.period}
-      archiveStart={citationStart}
-      archiveEnd={citationEnd}
     />
 
     <ChapterIntro id="posisi" number={chapters.position.number} title={chapters.position.title} description={chapters.position.description} />
@@ -1110,9 +1108,9 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="model-nilai" number="1.3" question={scenes["1.3"].question} deck={deck("1.3")} wide>
-      <ChartFrame source="Agregat data historis FMIPA UGM" updated="periode 2021–2025" downloadHref={dataUrl("value_model.json")} downloadName="value_model.json" note="Setiap tahapan menggunakan satuan ukur yang relevan, menggambarkan kesinambungan alur transformasi dari alokasi sumber daya hingga terciptanya dampak nyata tridharma.">
+      <ChartFrame source="Agregat FMIPA UGM · SciVal / Scopus" updated={`periode 2021–2025 · sitasi per ${citationProfile.updated_label}`} downloadHref={dataUrl("value_model.json")} downloadName="value_model.json" note="Sitasi merupakan akumulasi rujukan pada karya terbit 2021–2025 hingga tanggal pemutakhiran SciVal. Setiap tahapan menggunakan satuan ukur yang berbeda.">
         <ValueModel metrics={valueModelRaw.metrics} />
-        <table slot="table"><caption>Alur Transformasi Nilai Tridharma FMIPA UGM 2021–2025</caption><thead><tr><th>Tahap</th><th>Ukuran</th><th>Nilai</th></tr></thead><tbody><tr><th scope="row">Masukan (Input)</th><td>Dana riset</td><td>Rp{format(valueModelRaw.metrics.funding_rp / 1_000_000_000, 2)} miliar</td></tr><tr><th scope="row">Aktivitas</th><td>Judul riset</td><td>{format(valueModelRaw.metrics.research_n)}</td></tr><tr><th scope="row">Aktivitas</th><td>Kegiatan PkM</td><td>{format(valueModelRaw.metrics.outreach_n)}</td></tr><tr><th scope="row">Luaran</th><td>Publikasi ilmiah</td><td>{format(valueModelRaw.metrics.publications_n)}</td></tr><tr><th scope="row">Dampak</th><td>Total sitasi</td><td>{format(valueModelRaw.metrics.citations_n)}</td></tr><tr><th scope="row">Dampak</th><td>Kegiatan PkM terpetakan</td><td>{format(valueModelRaw.metrics.mappable_outreach_n)}</td></tr></tbody></table>
+        <table slot="table"><caption>Alur Transformasi Nilai Tridharma FMIPA UGM 2021–2025</caption><thead><tr><th>Tahap</th><th>Ukuran</th><th>Nilai</th></tr></thead><tbody><tr><th scope="row">Masukan (Input)</th><td>Dana riset</td><td>Rp{format(valueModelRaw.metrics.funding_rp / 1_000_000_000, 2)} miliar</td></tr><tr><th scope="row">Aktivitas</th><td>Judul riset</td><td>{format(valueModelRaw.metrics.research_n)}</td></tr><tr><th scope="row">Aktivitas</th><td>Kegiatan PkM</td><td>{format(valueModelRaw.metrics.outreach_n)}</td></tr><tr><th scope="row">Luaran</th><td>Publikasi ilmiah</td><td>{format(valueModelRaw.metrics.publications_n)}</td></tr><tr><th scope="row">Dampak</th><td>Sitasi kumulatif karya terbit 2021–2025</td><td>{format(valueModelRaw.metrics.citations_n)}</td></tr><tr><th scope="row">Dampak</th><td>Kegiatan PkM terpetakan</td><td>{format(valueModelRaw.metrics.mappable_outreach_n)}</td></tr></tbody></table>
       </ChartFrame>
     </StoryScene>
 
@@ -1120,21 +1118,21 @@ const pillarSummary = [
       <p class="chapter-bridge">Lima tahun dedikasi dan ikhtiar, terangkum dalam jejak data yang nyata.</p>
     </ChapterIntro>
 
-    <PillarHeader id="reputasi" number="1" title="Reputasi Akademik" evidence="Data Terverifikasi" color="blue" summary="Rekognisi keilmuan sivitas diakui di kancah global. Pilar ini merangkum perkembangan sitasi, pemetaan publikasi antardepartemen, kemitraan riset internasional, hingga kematangan struktur kepakaran dosen." />
+    <PillarHeader id="reputasi" number="1" title="Reputasi Akademik" evidence="Data Terverifikasi" color="blue" summary="Pilar ini merangkum jangkauan sitasi pada karya ilmiah, pemetaan publikasi antardepartemen, kemitraan riset internasional, hingga struktur kepakaran dosen." />
 
     <StoryScene id="jangkauan-riset" number="2.1" pillar="Reputasi Akademik" question={scenes["2.1"].question} deck={deck("2.1")}>
-      <LineAreaChart data={citations} xKey="year" series={[{ key: "citations", label: "Sitasi", color: UGM_BLUE }]} title={scenes["2.1"].question} hideHeader area yLabel="Sitasi per tahun" provisionalX={2025} provisionalLabel="Indeksasi berjalan" source="CSV sitasi FMIPA" extracted={snapshot.p2m} csvHref={dataUrl("citations_by_year.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="info"><p>Catatan: Angka sitasi untuk tahun 2025 masih bersifat dinamis dan akan terus bertambah seiring pemutakhiran berkala pada pangkalan data Scopus.</p></Insight>
+      <CitationDistribution />
+      <Insight tone="info" label="Cara Membaca"><p>Setiap publikasi masuk tepat satu kelompok berdasarkan sitasi kumulatif per {citationProfile.updated_label}. Total koleksi mencatat <strong>{format(citationProfile.citations)} sitasi</strong>. Tahun {citationProfile.publication_year_start}–{citationProfile.publication_year_end} merujuk pada tahun terbit dalam ekspor, termasuk {format(citationProfile.current_publications)} rekaman 2026 dan {format(citationProfile.future_publications)} rekaman bertahun 2027. Karya yang lebih baru memiliki waktu lebih singkat untuk menerima sitasi. <a href={withBase("/data#definisi")}>Lihat definisi dan cakupan data</a>.</p></Insight>
     </StoryScene>
 
     <StoryScene id="publikasi-departemen" number="2.2" pillar="Reputasi Akademik" question={scenes["2.2"].question} deck={deck("2.2")} tone="paper" wide>
-      <StackedBarChart data={publications} xKey="year" series={publicationSeries} title={scenes["2.2"].question} hideHeader yLabel="Publikasi" provisionalX={2026} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("publications_by_year_dept.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="attention"><p>Sebanyak <strong>{format(publicationMappedShare, 1)}% publikasi ilmiah ({publicationFirstYear}–{publicationLastYear})</strong> berhasil dipetakan ke departemen pengampu masing-masing: sebagian besar melalui penetapan departemen pada basis data fakultas, dan sebagian lainnya melalui identifikasi ID Scopus para penulis. Sebanyak {format(publicationUnmapped)} artikel yang belum terpetakan terus diverifikasi untuk melengkapi potret utuh produktivitas fakultas.</p></Insight>
+      <StackedBarChart data={publications} xKey="year" series={publicationSeries} title={scenes["2.2"].question} hideHeader yLabel="Publikasi" provisionalX={2026} provisionalLabel="Tahun berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("publications_by_year_dept.csv")} valueFormatter={(value:number) => format(value)} />
+      <Insight tone="info" label="Cakupan Data"><p>Pemetaan departemen memakai ekspor publikasi {publicationFirstYear}–{publicationLastYear} per {snapshot.scival}, dipadankan dengan penetapan departemen fakultas dan ID Scopus penulis. Ekspor ini memiliki rentang dan tanggal berbeda dari koleksi sitasi pada scene sebelumnya. Tahun 2026 mencakup rekaman yang tersedia saat penarikan data.</p></Insight>
     </StoryScene>
 
     <StoryScene id="mutu-sitasi" number="2.2p" pillar="Reputasi Akademik" question={scenes["2.2p"].question} deck={deck("2.2p")} wide>
       <HorizontalBarChart data={researchQuality} title={scenes["2.2p"].question} hideHeader axisLabel="Field-Weighted Citation Impact (FWCI)" target={1} targetLabel="Rata-rata dunia" source="SciVal / Scopus · klasifikasi ASJC" extracted={snapshot.scival} csvHref={dataUrl("research_quality.csv")} valueFormatter={fwciFormat} />
-      <Insight tone="info"><p>Indikator FWCI membandingkan dampak sitasi artikel terhadap rata-rata dunia pada bidang dan tahun penerbitan yang sama, dengan angka 1,00 merepresentasikan rata-rata global. Dari {format((researchQualityRaw as any[]).length)} bidang ilmu yang tercatat, <strong>{format(researchQualityAbove)} bidang</strong> telah mencapai atau melampaui rata-rata dunia. Karena sebuah artikel dapat tercatat di beberapa bidang keilmuan sekaligus, jumlah publikasi antarbidang tidak dapat dijumlahkan secara langsung.</p></Insight>
+      <Insight tone="info"><p>FWCI membandingkan dampak sitasi terhadap publikasi sejenis pada bidang dan tahun terbit yang sama; angka 1,00 menandai rata-rata dunia. Satu publikasi dapat tercatat di beberapa bidang, sehingga jumlah publikasi antarbidang tidak dapat dijumlahkan. Grafik ini menunjukkan perbandingan bidang pada satu pemutakhiran data.</p></Insight>
     </StoryScene>
 
     <StoryScene id="topik-riset" number="2.3" pillar="Reputasi Akademik" question={scenes["2.3"].question} deck={deck("2.3")} wide>
@@ -1149,8 +1147,8 @@ const pillarSummary = [
     </StoryScene>
 
     <StoryScene id="akses-terbuka" number="2.4p" pillar="Reputasi Akademik" question={scenes["2.4p"].question} deck={deck("2.4p")} wide>
-      <StackedBarChart data={openAccess} xKey="year" series={openAccessSeries} normalized title={scenes["2.4p"].question} hideHeader yLabel="Proporsi publikasi" provisionalX={2026} provisionalLabel="Indeksasi berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("open_access.csv")} valueFormatter={(value:number) => format(value)} />
-      <Insight tone="attention"><p>Proporsi publikasi yang dapat diakses secara terbuka bergerak di kisaran separuh total publikasi fakultas: {format(openAccessOpenShare(2021), 1)}% pada 2021 dan {format(openAccessOpenShare(2025), 1)}% pada 2025. Sebagian besar artikel terbit melalui jalur <em>Gold Open Access</em> pada penerbit, sedangkan pemanfaatan repositori institusi (<em>Green Open Access</em>) masih perlu ditingkatkan—ruang penguatan mandiri yang berada langsung di bawah kebijakan fakultas.</p></Insight>
+      <StackedBarChart data={openAccess} xKey="year" series={openAccessSeries} normalized title={scenes["2.4p"].question} hideHeader yLabel="Proporsi publikasi" provisionalX={2026} provisionalLabel="Tahun berjalan" source="SciVal / Scopus" extracted={snapshot.scival} csvHref={dataUrl("open_access.csv")} valueFormatter={(value:number) => format(value)} />
+      <Insight tone="info" label="Cara Membaca"><p>Setiap batang menunjukkan proporsi jalur akses pada tahun terbit yang sama. Publikasi dengan beberapa label akses ditempatkan pada satu jalur sesuai urutan Gold, Hybrid gold, Bronze, lalu Green agar tidak dihitung ganda. Green mencakup akses melalui repositori; kategori ini tidak menunjukkan jenis repositorinya.</p></Insight>
     </StoryScene>
 
     <StoryScene id="orang-riset" number="2.5" pillar="Reputasi Akademik" question={scenes["2.5"].question} deck={deck("2.5")}>

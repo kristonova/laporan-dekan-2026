@@ -392,7 +392,7 @@ const tableRows: ProvinceValue[] = [...data]
      tab switch can rewrite it with a single textContent assignment. */
   .choropleth__value {
     fill: var(--ink, #2b2d2f);
-    font-size: 12px;
+    font-size: var(--chart-label-font-size, 12px);
     font-weight: 800;
     paint-order: stroke;
     stroke: var(--surface, #fff);

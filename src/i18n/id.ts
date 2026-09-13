@@ -36,6 +36,10 @@ export const chapters = {
  * data the same page renders.
  */
 export interface SceneValues {
+  citationPublications: number;
+  citedPublications: number;
+  citedShare: number;
+  highlyCitedPublications: number;
   lecturers: number;
   professors: number;
   professorShare: number;
@@ -180,18 +184,19 @@ export const scenes = {
     deck: "Komitmen kerja sivitas dan dukungan pendanaan berbuah nyata di lapangan. Gagasan riset di laboratorium bertumbuh menjadi publikasi ilmiah bereputasi internasional, program pengabdian yang menjangkau masyarakat pelosok, serta kontribusi konkret bagi kemaslahatan publik.",
   },
   "2.1": {
-    question: "Lonjakan Sitasi dan Pengakuan Riset di Tingkat Dunia",
-    deck: "Pengaruh riset sivitas FMIPA melesat tajam dalam enam tahun terakhir. Sitasi tahunan tumbuh lebih dari tiga kali lipat, dari 4.129 sitasi pada 2019 hingga mencapai puncaknya 12.629 sitasi pada 2024. Catatan tahun 2025 sendiri masih bergerak naik seiring proses pemutakhiran berkala pada pangkalan data Scopus.",
+    question: "Jangkauan Sitasi pada Karya Ilmiah FMIPA",
+    deck: (v) =>
+      `Dari ${v.format(v.citationPublications)} publikasi dalam ekspor SciVal, ${v.format(v.citedPublications)} karya (${v.format(v.citedShare, 1)}%) telah menerima setidaknya satu sitasi. Sebanyak ${v.format(v.highlyCitedPublications)} karya telah dirujuk sedikitnya 100 kali. Sebaran berikut memperlihatkan jangkauan rujukan pada seluruh portofolio publikasi yang tercatat.`,
   },
   "2.2": {
     question: "Peta Produktivitas Publikasi di Empat Departemen",
     deck: (v) =>
-      `Sebanyak ${v.format(v.publicationsMappedShare, 1)}% publikasi ilmiah kurun ${v.publicationsFirstYear}–${v.publicationsLastYear} telah terpetakan ke departemen masing-masing, baik melalui basis data fakultas maupun profil Scopus para penulis. Sementara itu, ${v.format(v.publicationsUnmapped)} artikel lainnya terus diverifikasi guna melengkapi potret utuh produktivitas riset fakultas.`,
+      `Sebanyak ${v.format(v.publicationsMappedShare, 1)}% publikasi ilmiah kurun ${v.publicationsFirstYear}–${v.publicationsLastYear} telah terpetakan ke departemen masing-masing, baik melalui basis data fakultas maupun profil Scopus para penulis. Sebanyak ${v.format(v.publicationsUnmapped)} publikasi lainnya belum memiliki atribusi departemen.`,
   },
   "2.2p": {
-    question: "Mutu dan Dampak Sitasi Riset Melampaui Rata-Rata Dunia",
+    question: "Dampak Sitasi per Bidang Ilmu terhadap Rata-Rata Dunia",
     deck: (v) =>
-      `Pertumbuhan jumlah publikasi berjalan seiring dengan peningkatan mutu riset. Dari ${v.format(v.researchAreas)} bidang keilmuan yang tercatat, ${v.format(v.researchAreasAtWorld)} bidang telah menyamai atau melampaui rata-rata dunia (FWCI ≥ 1,00). Bidang ${v.researchLeadArea} menorehkan dampak sitasi tertinggi dengan FWCI ${v.format(v.researchLeadFwci, 2)}, membuktikan bahwa riset FMIPA tidak hanya produktif melainkan berbobot tinggi di mata ilmuwan dunia.`,
+      `Dari ${v.format(v.researchAreas)} bidang keilmuan yang tercatat, ${v.format(v.researchAreasAtWorld)} bidang memiliki dampak sitasi setara atau di atas rata-rata dunia (FWCI ≥ 1,00). Bidang ${v.researchLeadArea} mencatat FWCI tertinggi, sebesar ${v.format(v.researchLeadFwci, 2)}. Perbandingan ini memperhitungkan perbedaan pola sitasi antarbidang.`,
   },
   "2.3": {
     question: "Klaster Riset Unggulan dan Keragaman Keilmuan",
@@ -206,7 +211,7 @@ export const scenes = {
   "2.4p": {
     question: "Keterbukaan Akses Publikasi Ilmiah (Open Access)",
     deck: (v) =>
-      `Sekitar separuh dari karya ilmiah fakultas kini dapat diakses bebas oleh publik dunia: tercatat ${v.format(v.openAccessFirstShare, 1)}% pada ${v.openAccessFirstYear} dan ${v.format(v.openAccessLastShare, 1)}% pada ${v.openAccessLastYear}. Sebagian besar terbit melalui jalur Gold Open Access di pihak penerbit, sedangkan pemanfaatan repositori institusi (Green Open Access) membukukan ${v.format(v.openAccessGreenLatest)} artikel pada ${v.openAccessLastYear}—sebuah ruang mandiri yang terus didorong penguatannya oleh fakultas.`,
+      `Sekitar separuh dari karya ilmiah fakultas kini dapat diakses bebas oleh publik dunia: tercatat ${v.format(v.openAccessFirstShare, 1)}% pada ${v.openAccessFirstYear} dan ${v.format(v.openAccessLastShare, 1)}% pada ${v.openAccessLastYear}. Sebagian besar terbit melalui jalur Gold Open Access di pihak penerbit, sedangkan ${v.format(v.openAccessGreenLatest)} publikasi tercatat melalui jalur Green Open Access pada ${v.openAccessLastYear}.`,
   },
   "2.5": {
     question: "Struktur Kepakaran dan Jabatan Fungsional Dosen",

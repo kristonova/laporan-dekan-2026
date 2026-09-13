@@ -10,13 +10,13 @@ sudah dibongkar. Empat adegan baru ditambahkan (3.5′, 5.1′, 5.1″, dan 6.6�
 sehingga cerita utama menjadi 41 adegan dan deck menjadi 40 slide. Rincian ada di
 [catatan visualisasi](docs/visualisasi-20260905.md) dan [pipeline](pipeline/README.md).
 
-Snapshot utama saat ini adalah **31 Agustus 2026**. Data P2M ditarik pada 19 Agustus 2026 dan data LENTERA pada 20 Agustus 2026. Semua tanggal berasal dari satu konstanta pipeline, bukan teks yang ditulis ulang di tiap komponen.
+Pembaruan 12 September 2026: visualisasi sitasi tahunan pada scene 2.1 diganti dengan distribusi jumlah sitasi per publikasi dari ekspor `Publications_in_Faculty_of_Mathematics_and_Natural_Sciences_UGM_1996_-_2027.csv`. Berkas diekspor pada **12 September 2026** dengan data diperbarui **6 September 2026**. Seri sitasi tahunan P2M telah berhenti dicatat dan hanya disimpan sebagai arsip. Ringkasan sitasi pada pembuka, model nilai, dan presentasi mengikuti sumber baru dengan definisi sitasi kumulatif atas publikasi terbit 2021–2025.
 
 ## Cerita yang dibangun
 Aplikasi web berbasis narasi data (*data storytelling*) untuk menyajikan **Laporan Dekan FMIPA UGM Periode 2021–2026**. Proyek ini merangkum data kinerja institusi, akademik, riset, kerja sama, profil lulusan, kesehatan sivitas akademika, hingga demografi mahasiswa menjadi sajian interaktif yang nyaman dibaca, siap dipresentasikan, transparan secara metodologi, dan dapat diakses secara *offline*.
 
 Laporan ini tidak dimulai sebagai dashboard. Pembaca dibawa dari satu temuan utama menuju konteks, bukti, ketegangan, lalu agenda tindak lanjut.
-Basis data (*snapshot*) utama laporan ini tercatat per **31 Agustus 2026** (data P2M ditarik pada 19 Agustus 2026, data SciVal per 30 Agustus 2026, data LENTERA pada 20 Agustus 2026, serta data kepegawaian SIMASTER dan tabel akademik pendamping per 3 September 2026). Seluruh tanggal dikelola terpusat melalui satu konstanta *pipeline*, sehingga penyajian angka dan konteks waktu selalu konsisten di setiap bagian.
+Tanggal rujukan dicatat per sumber: TCK **31 Agustus 2026**, P2M **19 Agustus 2026**, LENTERA **20 Agustus 2026**, serta kepegawaian SIMASTER dan tabel akademik pendamping **3 September 2026**. SciVal memakai dua snapshot: **30 Agustus 2026** untuk pemetaan departemen, topik, kolaborasi, akses terbuka, dan laporan FWCI per bidang; **6 September 2026** untuk profil sitasi dari ekspor 12 September. Metadata tersimpan pada `snapshot.json` dan `citation_profile.json`, sehingga cakupan sumber dapat ditelusuri di setiap bagian.
 
 | Tahap narasi | Peran dalam cerita | Implementasi saat ini |
 ## Konsep & Struktur Narasi
@@ -25,16 +25,13 @@ Laporan ini dirancang bukan sekadar sebagai *dashboard* kumpulan angka mentah, m
 
 | Tahap Narasi | Peran dalam Narasi | Wujud Implementasi |
 | --- | --- | --- |
-| **1. Hook** | Membuka dengan angka yang langsung memberi skala perubahan | Cold open menampilkan lompatan sitasi dalam lima tahun |
+| **1. Hook** | Membuka dengan angka yang menunjukkan skala kegiatan dan jangkauan riset | Cold open merangkum publikasi terbit 2021–2025, sitasi kumulatif publikasi tersebut pada tanggal sumber, dan kegiatan pengabdian |
 | **2. Orientasi** | Menjawab “FMIPA berada di posisi mana sekarang?” | Potret institusi, 42 indikator TCK 2026, dan model transformasi nilai |
 | **3. Bukti utama** | Membawa pembaca menelusuri perubahan, bukan hanya angka akhir | Lima pilar: Reputasi Akademik, Kontribusi terhadap Bangsa, Employability & Lulusan, Tata Kelola & Kesejahteraan, serta Mahasiswa & Akses Pendidikan |
 | **4. Ketegangan** | Menunjukkan capaian yang belum merata, konflik angka, dan data yang belum tersedia | Insight, status target, anomali sumber, serta kartu *data gap* ditampilkan di dalam alur |
 | **5. Resolusi** | Mengubah laporan masa lalu menjadi pijakan kerja berikutnya | Bagian estafet merangkum agenda akselerasi dan fondasi data untuk kepemimpinan selanjutnya |
-| **1. Hook** | Membuka laporan dengan angka kunci yang memperlihatkan skala perubahan | Adegan pembuka (*cold open*) yang menyorot lonjakan sitasi dalam 5 tahun terakhir |
-| **2. Orientasi** | Menjawab pertanyaan: *"Di mana posisi FMIPA saat ini?"* | Gambaran umum institusi, capaian 42 indikator Target Capaian Kinerja (TCK) 2026, dan model transformasi nilai |
-| **3. Bukti Utama** | Mengajak pembaca menelusuri proses perubahan, bukan sekadar angka akhir | Lima pilar tematik: Reputasi Akademik, Kontribusi terhadap Bangsa, Daya Serap Lulusan (*Employability*), Tata Kelola & Kesejahteraan, serta Mahasiswa & Akses Pendidikan |
-| **4. Tantangan & Kesenjangan** | Memotret capaian yang belum merata, perbedaan data antarsumber, dan ruang yang perlu ditingkatkan | Sorotan kritis (*insights*), status capaian target, anomali data, serta kartu catatan celah data (*data gaps*) di sepanjang alur baca |
-| **5. Resolusi & Estafet** | Mengubah evaluasi masa lalu menjadi pijakan kerja kepengurusan berikutnya | Babak "Estafet" yang merangkum agenda akselerasi dan fondasi data bagi kepemimpinan selanjutnya |
+
+Scene riset memiliki pertanyaan berbeda agar narasinya tidak berulang: **2.1** menunjukkan sebaran jangkauan rujukan melalui kelompok sitasi per publikasi; **2.2** memetakan volume publikasi menurut departemen; **2.2p** membandingkan FWCI antarbidang; **2.3** memperlihatkan topik; **2.4** memetakan mitra kolaborasi; dan **2.4p** menjelaskan jalur akses terbuka. Ringkasan pembuka memakai angka tingkat periode, sedangkan scene 2.1 menguraikan distribusi seluruh portofolio.
 
 Cerita utama terdiri dari **35 scene bernomor dan satu cold open**. Naskah ringkas untuk deck tidak disalin manual dari halaman panjang: kalimat yang memuat angka bergerak dihitung dari dataset yang sama agar presentasi dan laporan tidak saling menyimpang.
 Narasi utama tersusun atas **41 adegan (*scene*) tematik dan satu adegan pembuka (*cold open*)**. Seluruh naskah ringkas pada slide presentasi (*deck*) dihitung dan digenerasi langsung dari sumber data yang sama dengan laporan utama, sehingga tidak ada perbedaan angka di antara keduanya.
@@ -223,7 +220,8 @@ Jika semua tahap perlu dijalankan sekaligus, gunakan `npm run verify`.
 | Enam daftar mahasiswa per angkatan | `data ugm/akademik/daftar mahasiswa/` | Profil mahasiswa 2021–2026, akses, latar, status akhir, dan IPK |
 | Rekap Posbindu | `data ugm/health promotion university posbindu/` | Agregat Health Promoting University |
 | Ekspor P2M (13 jenis dataset dalam 21 berkas CSV) | `data ugm/p2m/` | Sitasi, riset, pengabdian (PkM), SDM dosen & tendik, jurnal, dan eksposur media |
-| Ekspor SciVal Langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi periode 2020–2026 lengkap dengan FWCI, status akses terbuka, klaster topik, dan penandaan SDG; serta rekapitulasi mutu sitasi 27 bidang ilmu ASJC |
+| Ekspor SciVal Langsung (per 30 Agustus 2026) | `data ugm/p2m/from_scival/` | 3.069 publikasi periode 2020–2026 untuk departemen, akses terbuka, topik, kolaborasi, dan SDG; serta laporan FWCI 27 bidang ASJC. Cakupannya tetap terpisah dari profil sitasi September |
+| Ekspor profil sitasi SciVal (ekspor 12 September, data 6 September 2026) | `data ugm/p2m/from_scival/Publications_in_Faculty_of_Mathematics_and_Natural_Sciences_UGM_1996_-_2027.csv` | 5.139 publikasi unik bertahun 1996–2027, dengan 43.632 sitasi kumulatif; sumber profil dan distribusi sitasi serta ringkasan publikasi terbit 2021–2025 |
 | Salinan P2M `publication_scival_exported_*.csv` | `data ugm/p2m/` | Penetapan departemen hasil kurasi fakultas untuk 1.682 publikasi, dipertahankan karena ekspor SciVal tidak memuat kolom departemen |
 | `TCK 2026.xlsx` | `target_capaian_kinerja/tck_2026/` | 42 indikator capaian kinerja dan rincian capaian departemen |
 | Buku Kerja LENTERA | `data ugm/kerjasama/` | Rekapitulasi dokumen kerja sama dan kemitraan 2021–2026 |
@@ -353,11 +351,14 @@ Service worker dibuat ulang dari isi `dist/` setelah setiap build. Untuk rapat t
 > [!WARNING]
 > Meskipun repositori kode dapat disetel privat, hasil terbitan di GitHub Pages dan seluruh isi folder `public/` bersifat terbuka untuk umum. Pastikan **tidak ada data pribadi (PII), kredensial, maupun dokumen internal sensitif** yang tersimpan di dalam `public/` ataupun `src/data/derived/`.
 
-Laporan ini adalah snapshot pertanggungjawaban, bukan sistem transaksi waktu nyata. Seri 2025 yang bergantung pada pemutakhiran Scopus masih dapat bertambah; TCK 2026 bersifat provisional; dan beberapa metrik memiliki periode, penyebut, atau basis populasi berbeda. Batas tersebut sengaja diletakkan dekat dengan grafik serta dirangkum kembali di `/data` agar pembaca tidak memperoleh kepastian yang tidak didukung sumber.
 ## Batasan & Catatan Interpretasi Data
 
 Laporan ini merupakan potret pertanggungjawaban berkala (*periodic snapshot*), bukan sistem basis data transaksi waktu nyata (*real-time database*). Dalam membaca data ini, harap perhatikan beberapa konteks berikut:
-- Data publikasi dan sitasi tahun 2025 masih dapat bertambah seiring pemutakhiran berkala pada basis data pengindeks Scopus.
+- Pada ekspor profil sitasi, `Year` adalah tahun publikasi dan `Citations` adalah sitasi kumulatif hingga **6 September 2026**. Agregat publikasi terbit **2021–2025** berisi **2.340 publikasi** dan **16.564 sitasi**; angka sitasi tersebut mencakup waktu setelah 2025 dan tidak merepresentasikan sitasi yang terjadi selama lima tahun itu.
+- Distribusi scene 2.1 membagi **5.139 publikasi** ke dalam kelompok saling lepas: **0 sitasi: 1.084**, **1–9: 2.776**, **10–49: 1.138**, **50–99: 119**, dan **≥100: 22**. Sebanyak **4.055 publikasi (78,9%)** tercatat telah disitasi. Grafik menggambarkan jangkauan rujukan portofolio; usia publikasi berbeda sehingga distribusi ini tidak menjadi bukti tren mutu antarangkatan.
+- Ekspor baru memuat **382 publikasi bertahun 2026** dan **4 rekaman bertahun 2027**. Rekaman 2027 dipertahankan dalam distribusi seluruh ekspor, tetapi tidak diperlakukan sebagai capaian masa depan atau dimasukkan ke ringkasan publikasi terbit 2021–2025.
+- Profil baru tersedia pada `citation_profile.json`, sedangkan grafik memakai `citation_distribution.json` dan `citation_distribution.csv`. Berkas `citations_by_year.json` tetap tersedia sebagai arsip seri P2M yang pencatatannya terhenti; tidak ada narasi atau grafik yang menggunakannya sebagai sumber aktif.
+- Indikator TCK menghitung capaian pada tahun anggaran. Nilainya tidak dibandingkan langsung dengan akumulasi sitasi pada kumpulan publikasi yang dipilih menurut tahun penerbitannya. Demikian pula, penyebut 5.139 publikasi dari sumber September tidak dicampur dengan 3.069 publikasi pada scene departemen, topik, kolaborasi, dan akses terbuka dari sumber Agustus.
 - Data TCK 2026 masih berstatus sementara (*provisional*) mengikuti periode penarikan data berjalan.
 - Beberapa metrik memiliki perbedaan cakupan tahun, dasar populasi, maupun metode penghitungan penyebut.
 

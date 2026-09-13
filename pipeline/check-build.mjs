@@ -70,6 +70,24 @@ const sw = await readFile(resolve(root, "sw.js"), "utf8");
 // These components once existed and passed type checks while never rendering
 // on the story page. Check the public artifact, not just their source files.
 const storyHtml = await readFile(resolve(root, "index.html"), "utf8");
+const presentationHtml = await readFile(resolve(root, "presentasi/index.html"), "utf8");
+// Both reading modes must render the replacement, not retain the discontinued
+// annual citation narrative behind an otherwise valid build.
+for (const [page, html] of [["index.html", storyHtml], ["presentasi/index.html", presentationHtml]]) {
+  for (const label of ["Distribusi Publikasi menurut Jumlah Sitasi", "Belum disitasi", "1–9 sitasi", "10–49 sitasi", "50–99 sitasi", "≥100 sitasi", "6 September 2026", "citation_distribution.csv"]) {
+    if (!html.includes(label)) failures.push(`${page}: distribusi sitasi baru tidak lengkap (${label})`);
+  }
+  for (const stale of ["Indeksasi berjalan", "citationRows", "citations_by_year.csv", "Sitasi per tahun", "Mayoritas Sitasi Ilmiah FMIPA", "terus bertambah seiring pemutakhiran", "sitasi lima tahun (2021–2025)"]) {
+    if (html.includes(stale)) failures.push(`${page}: narasi sitasi lama masih dirender (${stale})`);
+  }
+}
+if (!storyHtml.includes("16.564") || !storyHtml.includes("sitasi kumulatif karya terbit 2021–2025")) {
+  failures.push("index.html: ringkasan sitasi belum memakai angka dan definisi kohor SciVal terbaru");
+}
+const sharingCard = await readFile(resolve(root, "brand/og-lima-tahun-fmipa.svg"), "utf8");
+if (/70\.905 sitasi|Dua pertiganya terjadi/.test(sharingCard)) {
+  failures.push("Kartu berbagi masih memuat ringkasan sitasi P2M yang dihentikan");
+}
 for (const id of ["profil-mahasiswa-asing", "rincian-lama-studi", "profil-lulusan-jenjang", "rincian-prestasi", "beasiswa", "rincian-pengalaman-belajar", "rincian-fasilitas-gedung"]) {
   if (!storyHtml.includes(`id="${id}"`)) failures.push(`index.html: bagian rincian ${id} tidak terpasang`);
 }

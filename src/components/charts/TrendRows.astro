@@ -58,7 +58,7 @@ const {
   hideHeader,
 } = Astro.props;
 
-const margin = { top: 54, right: 170, bottom: 34, left: 210 };
+const margin = { top: 78, right: 182, bottom: 38, left: 224 };
 const plotWidth = width - margin.left - margin.right;
 const trackHeight = rowHeight - 30;
 const labelWrap = 22;
@@ -158,7 +158,7 @@ const tableColumns = [
     </desc>
 
     <g class="axis" aria-hidden="true">
-      {axisLabel && <text class="axis-label" x={margin.left} y="16">{axisLabel}</text>}
+      {axisLabel && <text class="axis-label" x={margin.left} y="18">{axisLabel}</text>}
       {periods.map((period, index) => (
         <g>
           <line x1={px(index)} x2={px(index)} y1={margin.top - 14} y2={margin.top + rows.length * rowHeight - 18} />
@@ -168,7 +168,7 @@ const tableColumns = [
     </g>
 
     <g class="scale-note" aria-hidden="true">
-      <text x={margin.left + plotWidth} y="16" text-anchor="end">
+      <text x={margin.left + plotWidth} y="42" text-anchor="end">
         {scale === "shared"
           ? `skala bersama ${valueFormatter(sharedMin)}–${valueFormatter(sharedMax)}`
           : "tiap baris berskala sendiri · bandingkan bentuk, bukan tinggi"}
@@ -229,18 +229,18 @@ const tableColumns = [
 
   .axis text {
     fill: var(--ink-muted, #656b70);
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .axis .axis-label {
     fill: currentColor;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
   }
 
   .scale-note text {
     fill: var(--ink-muted, #656b70);
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .baseline {
@@ -269,13 +269,13 @@ const tableColumns = [
 
   .row-label {
     fill: currentColor;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
   }
 
   .row-value {
     fill: currentColor;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
   }
 
@@ -290,12 +290,12 @@ const tableColumns = [
 
   .row-marker {
     fill: var(--ink-muted, #656b70);
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .row-single {
     fill: var(--ink-muted, #656b70);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
   }
 

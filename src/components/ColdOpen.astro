@@ -2,43 +2,33 @@
 import { withBase } from "../lib/paths";
 
 /**
- * The opening figure of a report called "Lima Tahun FMIPA" should be a
- * five-year figure. A single lifetime citation count (1987 onwards) was the
- * larger number but the wrong window, and it left the hero quoting a period the
- * data does not cover. Three numbers, one per strand of the tridharma, say what
- * the five years actually contain — and the citation share below still carries
- * the lifetime comparison that made the old number worth printing.
+ * The five-year window selects publication years. Citations are the stock
+ * received by those works as of the SciVal snapshot, not annual citation flows.
  *
  * The figures are printed, never counted up. This is a document of record that
  * gets screenshotted and printed, and a capture taken part-way through a count
  * would put a number into circulation that is simply wrong.
  */
 interface Props {
-  publications?: number;
-  citations?: number;
-  outreach?: number;
-  /** Lifetime citations, used only for the share sentence. */
-  citationsAllTime?: number;
+  publications: number;
+  citations: number;
+  outreach: number;
+  citationUpdated: string;
   period?: string;
-  archiveStart?: number;
-  archiveEnd?: number;
 }
 
 const {
-  publications = 2_353,
-  citations = 46_930,
-  outreach = 1_481,
-  citationsAllTime = 70_905,
+  publications,
+  citations,
+  outreach,
+  citationUpdated,
   period = "2021–2025",
-  archiveStart = 1987,
-  archiveEnd = 2025,
 } = Astro.props;
 
 const format = (value: number, digits = 0) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(value);
-const shareLabel = `${format((citations / Math.max(1, citationsAllTime)) * 100, 1)}%`;
 const metrics = [
   { value: publications, label: "Publikasi Ilmiah", detail: "terindeks Scopus" },
-  { value: citations, label: "Sitasi Karya Ilmiah", detail: `${shareLabel} dari total sitasi sepanjang sejarah FMIPA` },
+  { value: citations, label: "Sitasi Karya Ilmiah", detail: `kumulatif untuk publikasi terbit ${period}` },
   { value: outreach, label: "Kegiatan Pengabdian", detail: "menjangkau berbagai pelosok Indonesia" },
 ];
 const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/brand/supergraphic-lines.png"))})`;
@@ -58,8 +48,8 @@ const supergraphicStyle = `background-image: url(${JSON.stringify(withBase("/bra
       ))}
     </ul>
     <h1 id="cold-open-title">Lima tahun dedikasi dan lompatan tridharma FMIPA UGM.</h1>
-    <p class="cold-open__statement"><mark>{shareLabel}</mark> dari seluruh sitasi ilmiah sepanjang sejarah fakultas terhimpun dalam kurun waktu lima tahun ini.</p>
-    <p class="cold-open__context">Merujuk pada pangkalan data {archiveStart}–{archiveEnd} (angka {archiveEnd} terus bertambah seiring pemutakhiran berkala di Scopus). Tiga capaian utama ini mencerminkan lonjakan kapasitas riset, produktivitas publikasi di panggung internasional, serta perluasan dampak pengabdian kepada masyarakat selama periode 2021–2025.</p>
+    <p class="cold-open__statement">Karya ilmiah dan pengabdian menjadi jejak kontribusi sivitas sepanjang <mark>{period}</mark>.</p>
+    <p class="cold-open__context">Jumlah publikasi dan kegiatan pengabdian merujuk pada periode {period}. Sitasi dihitung secara kumulatif untuk karya yang terbit dalam periode tersebut, berdasarkan SciVal per {citationUpdated}.</p>
     <a class="cold-open__continue" href="#posisi">Jelajahi Laporan Selengkapnya <span aria-hidden="true">↓</span></a>
   </div>
   <div class="cold-open__band" aria-hidden="true"></div>

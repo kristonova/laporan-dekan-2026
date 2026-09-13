@@ -41,6 +41,8 @@ interface Props extends Omit<ChartChromeProps<CountryDatum>, "tableRows" | "tabl
   valueFormatter?: (value: number) => string;
   /** Draw connector arcs from Yogyakarta, echoing the collaboration scene. */
   arcs?: boolean;
+  /** Limit connector arcs without omitting country markers or totals. */
+  arcCount?: number;
   /** Records that carry no country at all, reported rather than dropped. */
   unmapped?: { label: string; value: number };
   /** How many countries the ranked list names before it stops. */
@@ -53,6 +55,7 @@ const {
   valueLabel = "dokumen kerja sama",
   valueFormatter = (value: number) => formatNumber(value, 0),
   arcs = true,
+  arcCount,
   unmapped,
   topCount = 12,
   note,
@@ -199,6 +202,7 @@ const markers = placed.map((row) => {
     tooltip: `${row.name}: ${valueFormatter(row.value)} ${valueLabel}${row.detail ? `. ${row.detail}` : ""}`,
   };
 });
+const arcMarkers = arcCount === undefined ? markers : markers.slice(0, Math.max(0, arcCount));
 
 const ranked = countries.slice(0, topCount);
 const rankedRest = Math.max(0, countries.length - ranked.length);
@@ -275,7 +279,7 @@ const tableRows = countries.map((row) => ({
 
         {arcs && (
           <g class="world-map__arcs" aria-hidden="true">
-            {markers.map((marker) => (
+            {arcMarkers.map((marker) => (
               <path d={arcPath([marker.x, marker.y])} style={`--arc-weight:${(1.1 + (marker.value / maxValue) * 3).toFixed(2)}`} />
             ))}
           </g>

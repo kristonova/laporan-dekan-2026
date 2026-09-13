@@ -8,6 +8,12 @@ import re
 from pathlib import Path
 
 import pandas as pd
+from citation_profile import (
+    EXPORTED_LABEL as CITATION_EXPORTED_LABEL,
+    SOURCE_FILE as CITATION_SOURCE_FILE,
+    UPDATED_LABEL as CITATION_UPDATED_LABEL,
+    load_citation_publications,
+)
 
 from utils import (
     ACADEMIC_DIR,
@@ -1594,6 +1600,13 @@ def main() -> None:
     publications = load_scival_publications()
     record("publications", publications, [SCIVAL_PUBLICATIONS])
     record("scival_subject_areas", read_scival(SCIVAL_SUBJECT_AREAS), [SCIVAL_SUBJECT_AREAS])
+
+    citation_publications, citation_duplicates = load_citation_publications()
+    record("citation_publications", citation_publications, [CITATION_SOURCE_FILE], citation_duplicates)
+    manifest["citation_publications"].update({
+        "updated_label": CITATION_UPDATED_LABEL,
+        "exported_label": CITATION_EXPORTED_LABEL,
+    })
 
     department_lookup, department_lookup_files = load_department_lookup()
     record("publication_department_lookup", department_lookup, department_lookup_files)

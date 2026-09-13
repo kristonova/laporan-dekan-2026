@@ -32,7 +32,7 @@ const {
   xFormatter = (value) => String(value ?? ""),
   valueFormatter = formatCompact,
   provisionalX,
-  provisionalLabel = "Indeksasi berjalan",
+  provisionalLabel = "Tahun berjalan",
   showMarkers = true,
   title,
   deck,
@@ -244,7 +244,7 @@ const tableColumns = [
   .grid text,
   .x-axis text {
     fill: var(--ink-muted, #656b70);
-    font-size: 12px;
+    font-size: var(--chart-axis-font-size, 12px);
   }
 
   .x-axis line {
@@ -253,7 +253,7 @@ const tableColumns = [
 
   .axis-label {
     fill: var(--ink-muted, #656b70);
-    font-size: 12px;
+    font-size: var(--chart-label-font-size, 12px);
     font-weight: 700;
   }
 
@@ -310,13 +310,13 @@ const tableColumns = [
 
   .direct-label text {
     fill: currentColor;
-    font-size: 12px;
+    font-size: var(--chart-label-font-size, 12px);
     font-weight: 750;
   }
 
   .provisional text {
     fill: var(--ink-muted, #656b70);
-    font-size: 11px;
+    font-size: var(--chart-small-font-size, 11px);
     font-weight: 700;
   }
 
